@@ -154,10 +154,13 @@ const effect = {
   blur: { $type: 'dimension' },
   perspective: { $type: 'dimension' },
   aspect: { $type: 'other' },
+  opacity: { $type: 'number' },
 };
 for (const [m, v] of entriesMatching(/^blur-(.+)$/)) effect.blur[m[1]] = D(v);
 for (const [m, v] of entriesMatching(/^perspective-(.+)$/)) effect.perspective[m[1]] = D(v);
 for (const [m, v] of entriesMatching(/^aspect-(.+)$/)) effect.aspect[m[1]] = { $value: v };
+// opacity: o Tailwind não define tokens (utility usa valor solto) — escala própria 0–100 (a cada 5), 0–1.
+for (let p = 0; p <= 100; p += 5) effect.opacity[p] = { $value: +(p / 100).toFixed(2), $description: `${p}%` };
 write('effect.json', effect);
 
 // ===================== MOVIMENTO (ease/duration/animate) =====================
@@ -181,5 +184,5 @@ for (const [b, roles] of Object.entries(brandAnchors))
 console.log('dimension → space:', n(dim, 'space'), '| radii:', n(dim, 'radii'), '| breakpoint:', n(dim, 'breakpoint'), '| container:', n(dim, 'container'));
 console.log('typography → size:', n(typ.font, 'size'), '| weight:', n(typ.font, 'weight'), '| tracking:', n(typ.font, 'tracking'), '| leading:', n(typ.font, 'leading'), '| lineHeight:', n(typ.font, 'lineHeight'));
 console.log('shadow →', n(shadow, 'shadow'), '| inset:', n(shadow, 'insetShadow'), '| drop:', n(shadow, 'dropShadow'), '| text:', n(shadow, 'textShadow'));
-console.log('effect → blur:', n(effect, 'blur'), '| perspective:', n(effect, 'perspective'), '| aspect:', n(effect, 'aspect'));
+console.log('effect → blur:', n(effect, 'blur'), '| perspective:', n(effect, 'perspective'), '| aspect:', n(effect, 'aspect'), '| opacity:', n(effect, 'opacity'));
 console.log('motion → ease:', n(motion, 'ease'), '| duration:', n(motion, 'duration'), '| animate:', n(motion, 'animate'));
