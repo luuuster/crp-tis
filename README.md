@@ -50,7 +50,7 @@ npm run preview   # build + instrução para abrir preview/index.html
 - **Primária:** `#036EF2` → `color.brand.primary` (rampa 50–950, `500` = cor exata).
 - **Secundária:** `#8e51ff` → `color.brand.secondary` (rampa 50–950, `500` = cor exata).
 
-O botão **primary** usa `brand.primary.600` (não o `500`) porque texto branco sobre `#036EF2` (500) dá **4.44:1**, logo abaixo do AA (4.5). O `600` passa. A cor exata da marca segue disponível em `color.brand.primary.500` (usada em `ring`, `chart-1`). A secundária está em `chart-2` e `color.brand.secondary.*`.
+O botão **primary** usa `brand.primary.600` (não o `500`) porque texto branco sobre `#036EF2` (500) dá **4.44:1**, logo abaixo do AA (4.5). O `600` passa. A cor exata da marca segue disponível em `color.brand.primary.500` (usada em `ring`, `chart-1`). A **secundária** (`#8e51ff`) fica disponível **apenas** em `color.brand.secondary.*` — ainda não aplicada ao contrato shadcn (pronta para usar quando você decidir onde).
 
 > Os primitivos `core/*` foram semeados do Tailwind v4 + marca por `build/seed-palette.mjs`. Para atualizar do Tailwind ou trocar a cor da marca, edite os hexes no script e rode `node build/seed-palette.mjs` (⚠ sobrescreve `core/`), **ou** edite direto no Token Studio.
 
