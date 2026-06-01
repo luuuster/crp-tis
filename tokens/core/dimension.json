@@ -188,8 +188,8 @@
       "$description": "1280px"
     },
     "2xl": {
-      "$value": "96rem",
-      "$description": "1536px"
+      "$value": "90rem",
+      "$description": "1440px"
     }
   },
   "container": {

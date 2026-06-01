@@ -112,6 +112,7 @@ dim.radii.none = D('0px');
 dim.radii.base = D('0.625rem'); // raio base do shadcn (contrato usa {radii.base})
 dim.radii.full = D('9999px');
 for (const [m, v] of entriesMatching(/^breakpoint-(.+)$/)) dim.breakpoint[m[1]] = D(v);
+dim.breakpoint['2xl'] = D('90rem'); // override CRP: 2xl = 1440px (Tailwind default = 96rem/1536px)
 for (const [m, v] of entriesMatching(/^container-(.+)$/)) dim.container[m[1]] = D(v);
 write('dimension.json', dim);
 
