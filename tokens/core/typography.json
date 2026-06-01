@@ -45,43 +45,56 @@
     "size": {
       "$type": "dimension",
       "xs": {
-        "$value": "0.75rem"
+        "$value": "0.75rem",
+        "$description": "12px"
       },
       "sm": {
-        "$value": "0.875rem"
+        "$value": "0.875rem",
+        "$description": "14px"
       },
       "base": {
-        "$value": "1rem"
+        "$value": "1rem",
+        "$description": "16px"
       },
       "lg": {
-        "$value": "1.125rem"
+        "$value": "1.125rem",
+        "$description": "18px"
       },
       "xl": {
-        "$value": "1.25rem"
+        "$value": "1.25rem",
+        "$description": "20px"
       },
       "2xl": {
-        "$value": "1.5rem"
+        "$value": "1.5rem",
+        "$description": "24px"
       },
       "3xl": {
-        "$value": "1.875rem"
+        "$value": "1.875rem",
+        "$description": "30px"
       },
       "4xl": {
-        "$value": "2.25rem"
+        "$value": "2.25rem",
+        "$description": "36px"
       },
       "5xl": {
-        "$value": "3rem"
+        "$value": "3rem",
+        "$description": "48px"
       },
       "6xl": {
-        "$value": "3.75rem"
+        "$value": "3.75rem",
+        "$description": "60px"
       },
       "7xl": {
-        "$value": "4.5rem"
+        "$value": "4.5rem",
+        "$description": "72px"
       },
       "8xl": {
-        "$value": "6rem"
+        "$value": "6rem",
+        "$description": "96px"
       },
       "9xl": {
-        "$value": "8rem"
+        "$value": "8rem",
+        "$description": "128px"
       }
     },
     "lineHeight": {
@@ -147,22 +160,28 @@
     "tracking": {
       "$type": "dimension",
       "tighter": {
-        "$value": "-0.05em"
+        "$value": "-0.05em",
+        "$description": "-0.8px"
       },
       "tight": {
-        "$value": "-0.025em"
+        "$value": "-0.025em",
+        "$description": "-0.4px"
       },
       "normal": {
-        "$value": "0em"
+        "$value": "0em",
+        "$description": "0px"
       },
       "wide": {
-        "$value": "0.025em"
+        "$value": "0.025em",
+        "$description": "0.4px"
       },
       "wider": {
-        "$value": "0.05em"
+        "$value": "0.05em",
+        "$description": "0.8px"
       },
       "widest": {
-        "$value": "0.1em"
+        "$value": "0.1em",
+        "$description": "1.6px"
       }
     }
   }

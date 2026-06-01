@@ -30,6 +30,15 @@ const fmt = (c) => { const k = clampChroma({ mode: 'oklch', l: c.l, c: c.c, h: c
 const hex = (v) => formatHex(v) || v;
 const tok = (value, exactHex) => ({ $value: value, $description: exactHex || hex(value) });
 
+// Para valores de comprimento NÃO-pixel (rem/em), guarda o equivalente em px no $description
+// (rem/em × 16). px / unitless / strings ficam sem $description. D() = dimensão com referência.
+const pxOf = (v) => {
+  if (typeof v !== 'string') return null;
+  const m = v.trim().match(/^(-?[\d.]+)(rem|em)$/);
+  return m ? `${+(parseFloat(m[1]) * 16).toFixed(4)}px` : null;
+};
+const D = (v) => { const px = pxOf(v); return px ? { $value: v, $description: px } : { $value: v }; };
+
 // ===================== CORES =====================
 // Só as 22 famílias OFICIAIS do Tailwind v4 (descarta extras não-padrão do pacote, ex. mauve/olive/mist/taupe).
 const OFFICIAL = new Set([
@@ -97,13 +106,13 @@ const dim = {
   breakpoint: { $type: 'dimension' },
   container: { $type: 'dimension' },
 };
-for (const n of SPACE) dim.space[n] = { $value: n === 0 ? '0px' : `${n * 0.25}rem` };
-for (const [m, v] of entriesMatching(/^radius-(.+)$/)) dim.radii[m[1]] = { $value: v };
-dim.radii.none = { $value: '0px' };
-dim.radii.base = { $value: '0.625rem' }; // raio base do shadcn (contrato usa {radii.base})
-dim.radii.full = { $value: '9999px' };
-for (const [m, v] of entriesMatching(/^breakpoint-(.+)$/)) dim.breakpoint[m[1]] = { $value: v };
-for (const [m, v] of entriesMatching(/^container-(.+)$/)) dim.container[m[1]] = { $value: v };
+for (const n of SPACE) dim.space[n] = D(n === 0 ? '0px' : `${n * 0.25}rem`);
+for (const [m, v] of entriesMatching(/^radius-(.+)$/)) dim.radii[m[1]] = D(v);
+dim.radii.none = D('0px');
+dim.radii.base = D('0.625rem'); // raio base do shadcn (contrato usa {radii.base})
+dim.radii.full = D('9999px');
+for (const [m, v] of entriesMatching(/^breakpoint-(.+)$/)) dim.breakpoint[m[1]] = D(v);
+for (const [m, v] of entriesMatching(/^container-(.+)$/)) dim.container[m[1]] = D(v);
 write('dimension.json', dim);
 
 // ===================== TIPOGRAFIA =====================
@@ -120,9 +129,9 @@ const typ = {
 for (const fam of ['sans', 'serif', 'mono']) if (vars['font-' + fam]) typ.font.family[fam] = { $value: vars['font-' + fam] };
 for (const [m, v] of entriesMatching(/^font-weight-(.+)$/)) typ.font.weight[m[1]] = { $value: Number(v) };
 for (const [m, v] of entriesMatching(/^text-([\w]+)--line-height$/)) typ.font.lineHeight[m[1]] = { $value: v };
-for (const [m, v] of entriesMatching(/^text-([\w]+)$/)) typ.font.size[m[1]] = { $value: v };
+for (const [m, v] of entriesMatching(/^text-([\w]+)$/)) typ.font.size[m[1]] = D(v);
 for (const [m, v] of entriesMatching(/^leading-(.+)$/)) typ.font.leading[m[1]] = { $value: Number(v) || v };
-for (const [m, v] of entriesMatching(/^tracking-(.+)$/)) typ.font.tracking[m[1]] = { $value: v };
+for (const [m, v] of entriesMatching(/^tracking-(.+)$/)) typ.font.tracking[m[1]] = D(v);
 write('typography.json', typ);
 
 // ===================== SOMBRAS (compostas → CSS) =====================
@@ -145,8 +154,8 @@ const effect = {
   perspective: { $type: 'dimension' },
   aspect: { $type: 'other' },
 };
-for (const [m, v] of entriesMatching(/^blur-(.+)$/)) effect.blur[m[1]] = { $value: v };
-for (const [m, v] of entriesMatching(/^perspective-(.+)$/)) effect.perspective[m[1]] = { $value: v };
+for (const [m, v] of entriesMatching(/^blur-(.+)$/)) effect.blur[m[1]] = D(v);
+for (const [m, v] of entriesMatching(/^perspective-(.+)$/)) effect.perspective[m[1]] = D(v);
 for (const [m, v] of entriesMatching(/^aspect-(.+)$/)) effect.aspect[m[1]] = { $value: v };
 write('effect.json', effect);
 

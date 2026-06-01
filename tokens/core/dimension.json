@@ -4,91 +4,120 @@
       "$value": "0px"
     },
     "1": {
-      "$value": "0.25rem"
+      "$value": "0.25rem",
+      "$description": "4px"
     },
     "2": {
-      "$value": "0.5rem"
+      "$value": "0.5rem",
+      "$description": "8px"
     },
     "3": {
-      "$value": "0.75rem"
+      "$value": "0.75rem",
+      "$description": "12px"
     },
     "4": {
-      "$value": "1rem"
+      "$value": "1rem",
+      "$description": "16px"
     },
     "5": {
-      "$value": "1.25rem"
+      "$value": "1.25rem",
+      "$description": "20px"
     },
     "6": {
-      "$value": "1.5rem"
+      "$value": "1.5rem",
+      "$description": "24px"
     },
     "7": {
-      "$value": "1.75rem"
+      "$value": "1.75rem",
+      "$description": "28px"
     },
     "8": {
-      "$value": "2rem"
+      "$value": "2rem",
+      "$description": "32px"
     },
     "9": {
-      "$value": "2.25rem"
+      "$value": "2.25rem",
+      "$description": "36px"
     },
     "10": {
-      "$value": "2.5rem"
+      "$value": "2.5rem",
+      "$description": "40px"
     },
     "11": {
-      "$value": "2.75rem"
+      "$value": "2.75rem",
+      "$description": "44px"
     },
     "12": {
-      "$value": "3rem"
+      "$value": "3rem",
+      "$description": "48px"
     },
     "14": {
-      "$value": "3.5rem"
+      "$value": "3.5rem",
+      "$description": "56px"
     },
     "16": {
-      "$value": "4rem"
+      "$value": "4rem",
+      "$description": "64px"
     },
     "20": {
-      "$value": "5rem"
+      "$value": "5rem",
+      "$description": "80px"
     },
     "24": {
-      "$value": "6rem"
+      "$value": "6rem",
+      "$description": "96px"
     },
     "28": {
-      "$value": "7rem"
+      "$value": "7rem",
+      "$description": "112px"
     },
     "32": {
-      "$value": "8rem"
+      "$value": "8rem",
+      "$description": "128px"
     },
     "36": {
-      "$value": "9rem"
+      "$value": "9rem",
+      "$description": "144px"
     },
     "40": {
-      "$value": "10rem"
+      "$value": "10rem",
+      "$description": "160px"
     },
     "44": {
-      "$value": "11rem"
+      "$value": "11rem",
+      "$description": "176px"
     },
     "48": {
-      "$value": "12rem"
+      "$value": "12rem",
+      "$description": "192px"
     },
     "52": {
-      "$value": "13rem"
+      "$value": "13rem",
+      "$description": "208px"
     },
     "56": {
-      "$value": "14rem"
+      "$value": "14rem",
+      "$description": "224px"
     },
     "60": {
-      "$value": "15rem"
+      "$value": "15rem",
+      "$description": "240px"
     },
     "64": {
-      "$value": "16rem"
+      "$value": "16rem",
+      "$description": "256px"
     },
     "72": {
-      "$value": "18rem"
+      "$value": "18rem",
+      "$description": "288px"
     },
     "80": {
-      "$value": "20rem"
+      "$value": "20rem",
+      "$description": "320px"
     },
     "96": {
-      "$value": "24rem"
+      "$value": "24rem",
+      "$description": "384px"
     },
     "$type": "dimension",
     "px": {
@@ -98,34 +127,43 @@
   "radii": {
     "$type": "dimension",
     "xs": {
-      "$value": "0.125rem"
+      "$value": "0.125rem",
+      "$description": "2px"
     },
     "sm": {
-      "$value": "0.25rem"
+      "$value": "0.25rem",
+      "$description": "4px"
     },
     "md": {
-      "$value": "0.375rem"
+      "$value": "0.375rem",
+      "$description": "6px"
     },
     "lg": {
-      "$value": "0.5rem"
+      "$value": "0.5rem",
+      "$description": "8px"
     },
     "xl": {
-      "$value": "0.75rem"
+      "$value": "0.75rem",
+      "$description": "12px"
     },
     "2xl": {
-      "$value": "1rem"
+      "$value": "1rem",
+      "$description": "16px"
     },
     "3xl": {
-      "$value": "1.5rem"
+      "$value": "1.5rem",
+      "$description": "24px"
     },
     "4xl": {
-      "$value": "2rem"
+      "$value": "2rem",
+      "$description": "32px"
     },
     "none": {
       "$value": "0px"
     },
     "base": {
-      "$value": "0.625rem"
+      "$value": "0.625rem",
+      "$description": "10px"
     },
     "full": {
       "$value": "9999px"
@@ -134,61 +172,79 @@
   "breakpoint": {
     "$type": "dimension",
     "sm": {
-      "$value": "40rem"
+      "$value": "40rem",
+      "$description": "640px"
     },
     "md": {
-      "$value": "48rem"
+      "$value": "48rem",
+      "$description": "768px"
     },
     "lg": {
-      "$value": "64rem"
+      "$value": "64rem",
+      "$description": "1024px"
     },
     "xl": {
-      "$value": "80rem"
+      "$value": "80rem",
+      "$description": "1280px"
     },
     "2xl": {
-      "$value": "96rem"
+      "$value": "96rem",
+      "$description": "1536px"
     }
   },
   "container": {
     "$type": "dimension",
     "3xs": {
-      "$value": "16rem"
+      "$value": "16rem",
+      "$description": "256px"
     },
     "2xs": {
-      "$value": "18rem"
+      "$value": "18rem",
+      "$description": "288px"
     },
     "xs": {
-      "$value": "20rem"
+      "$value": "20rem",
+      "$description": "320px"
     },
     "sm": {
-      "$value": "24rem"
+      "$value": "24rem",
+      "$description": "384px"
     },
     "md": {
-      "$value": "28rem"
+      "$value": "28rem",
+      "$description": "448px"
     },
     "lg": {
-      "$value": "32rem"
+      "$value": "32rem",
+      "$description": "512px"
     },
     "xl": {
-      "$value": "36rem"
+      "$value": "36rem",
+      "$description": "576px"
     },
     "2xl": {
-      "$value": "42rem"
+      "$value": "42rem",
+      "$description": "672px"
     },
     "3xl": {
-      "$value": "48rem"
+      "$value": "48rem",
+      "$description": "768px"
     },
     "4xl": {
-      "$value": "56rem"
+      "$value": "56rem",
+      "$description": "896px"
     },
     "5xl": {
-      "$value": "64rem"
+      "$value": "64rem",
+      "$description": "1024px"
     },
     "6xl": {
-      "$value": "72rem"
+      "$value": "72rem",
+      "$description": "1152px"
     },
     "7xl": {
-      "$value": "80rem"
+      "$value": "80rem",
+      "$description": "1280px"
     }
   }
 }
