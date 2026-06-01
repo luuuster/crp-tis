@@ -1,9 +1,9 @@
 {
-  "background":            { "$type": "color", "$value": "{color.neutral.0}" },
+  "background":            { "$type": "color", "$value": "{color.white}" },
   "foreground":            { "$type": "color", "$value": "{color.neutral.950}" },
-  "card":                  { "$type": "color", "$value": "{color.neutral.0}" },
+  "card":                  { "$type": "color", "$value": "{color.white}" },
   "card-foreground":       { "$type": "color", "$value": "{color.neutral.950}" },
-  "popover":               { "$type": "color", "$value": "{color.neutral.0}" },
+  "popover":               { "$type": "color", "$value": "{color.white}" },
   "popover-foreground":    { "$type": "color", "$value": "{color.neutral.950}" },
   "secondary":             { "$type": "color", "$value": "{color.neutral.100}" },
   "secondary-foreground":  { "$type": "color", "$value": "{color.neutral.900}" },

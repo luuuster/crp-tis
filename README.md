@@ -18,7 +18,10 @@ Token Studio (Figma)  →  GitHub (tokens/*.json)  →  ┬→  Figma Variables 
 tokens/                      # SSOT (sincronizado pelo Token Studio, formato DTCG)
   $metadata.json             # ordem dos token sets
   $themes.json               # grupos Brand × Mode → 4 themes
-  core/                      # PRIMITIVOS (rampas OKLCH, espaçamento, raios, tipografia)
+  core/                      # PRIMITIVOS (OKLCH): paleta completa do Tailwind v4 + marca, dimensão, tipografia
+    color.json               #   29 grupos: 26 paletas Tailwind + white/black + brand (primary/secondary)
+    dimension.json           #   space (escala 0–96), radii (xs–4xl + base/full), breakpoints
+    typography.json          #   font family/weight/size/lineHeight/leading/tracking
   semantic/base.json         # CONSTANTES do contrato (radius, chart-*)
   brand/{crp,marca-b}.json   # contrato que varia por MARCA (primary, ring, sidebar-primary…)
   mode/{light,dark}.json     # contrato que varia por MODO (background, card, border…)
@@ -41,6 +44,15 @@ npm run build     # gera dist/ a partir de tokens/
 npm run check     # valida contrato, referências e contraste WCAG (AA)
 npm run preview   # build + instrução para abrir preview/index.html
 ```
+
+## Cores da marca CRP
+
+- **Primária:** `#036EF2` → `color.brand.primary` (rampa 50–950, `500` = cor exata).
+- **Secundária:** `#8e51ff` → `color.brand.secondary` (rampa 50–950, `500` = cor exata).
+
+O botão **primary** usa `brand.primary.600` (não o `500`) porque texto branco sobre `#036EF2` (500) dá **4.44:1**, logo abaixo do AA (4.5). O `600` passa. A cor exata da marca segue disponível em `color.brand.primary.500` (usada em `ring`, `chart-1`). A secundária está em `chart-2` e `color.brand.secondary.*`.
+
+> Os primitivos `core/*` foram semeados do Tailwind v4 + marca por `build/seed-palette.mjs`. Para atualizar do Tailwind ou trocar a cor da marca, edite os hexes no script e rode `node build/seed-palette.mjs` (⚠ sobrescreve `core/`), **ou** edite direto no Token Studio.
 
 ## Taxonomia (3 tiers)
 
