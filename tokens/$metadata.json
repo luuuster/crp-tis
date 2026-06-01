@@ -1,0 +1,12 @@
+{
+  "tokenSetOrder": [
+    "core/color",
+    "core/dimension",
+    "core/typography",
+    "semantic/base",
+    "brand/crp",
+    "brand/marca-b",
+    "mode/light",
+    "mode/dark"
+  ]
+}

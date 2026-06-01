@@ -1,0 +1,9 @@
+{
+  "button": {
+    "$type": "color",
+    "primary-bg":       { "$value": "{primary}" },
+    "primary-fg":       { "$value": "{primary-foreground}" },
+    "destructive-bg":   { "$value": "{destructive}" },
+    "destructive-fg":   { "$value": "{destructive-foreground}" }
+  }
+}

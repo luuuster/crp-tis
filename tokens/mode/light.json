@@ -1,0 +1,23 @@
+{
+  "background":            { "$type": "color", "$value": "{color.neutral.0}" },
+  "foreground":            { "$type": "color", "$value": "{color.neutral.950}" },
+  "card":                  { "$type": "color", "$value": "{color.neutral.0}" },
+  "card-foreground":       { "$type": "color", "$value": "{color.neutral.950}" },
+  "popover":               { "$type": "color", "$value": "{color.neutral.0}" },
+  "popover-foreground":    { "$type": "color", "$value": "{color.neutral.950}" },
+  "secondary":             { "$type": "color", "$value": "{color.neutral.100}" },
+  "secondary-foreground":  { "$type": "color", "$value": "{color.neutral.900}" },
+  "muted":                 { "$type": "color", "$value": "{color.neutral.100}" },
+  "muted-foreground":      { "$type": "color", "$value": "{color.neutral.500}" },
+  "accent":                { "$type": "color", "$value": "{color.neutral.100}" },
+  "accent-foreground":     { "$type": "color", "$value": "{color.neutral.900}" },
+  "destructive":           { "$type": "color", "$value": "{color.red.600}" },
+  "destructive-foreground":{ "$type": "color", "$value": "{color.neutral.50}" },
+  "border":                { "$type": "color", "$value": "{color.neutral.200}" },
+  "input":                 { "$type": "color", "$value": "{color.neutral.200}" },
+  "sidebar":               { "$type": "color", "$value": "{color.neutral.50}" },
+  "sidebar-foreground":    { "$type": "color", "$value": "{color.neutral.900}" },
+  "sidebar-accent":        { "$type": "color", "$value": "{color.neutral.100}" },
+  "sidebar-accent-foreground": { "$type": "color", "$value": "{color.neutral.900}" },
+  "sidebar-border":        { "$type": "color", "$value": "{color.neutral.200}" }
+}

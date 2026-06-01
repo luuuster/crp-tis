@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CRP Design System — preview de tokens</title>
+  <!-- Usa o CSS GERADO direto (sem Tailwind) só para visualizar a troca de tema/marca. -->
+  <link rel="stylesheet" href="../dist/tokens.css" />
+  <style>
+    /* Estilos mínimos que CONSOMEM o contrato (como o shadcn faria). */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; padding: 2rem;
+      font-family: var(--font-family-sans, system-ui, sans-serif);
+      background: var(--background); color: var(--foreground);
+      transition: background .2s, color .2s;
+    }
+    .bar { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 2rem; }
+    .toggle {
+      padding: .5rem .9rem; border-radius: var(--radius);
+      border: 1px solid var(--border); background: var(--card); color: var(--card-foreground);
+      cursor: pointer; font-size: .875rem;
+    }
+    .toggle[aria-pressed="true"] { background: var(--primary); color: var(--primary-foreground); border-color: var(--primary); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 1rem; }
+    .card {
+      background: var(--card); color: var(--card-foreground);
+      border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem;
+    }
+    .muted { color: var(--muted-foreground); font-size: .875rem; }
+    .btn { display: inline-flex; align-items: center; gap: .5rem; padding: .5rem 1rem; border-radius: var(--radius); border: 0; cursor: pointer; font-weight: 500; }
+    .btn-primary { background: var(--primary); color: var(--primary-foreground); }
+    .btn-secondary { background: var(--secondary); color: var(--secondary-foreground); }
+    .btn-destructive { background: var(--destructive); color: var(--destructive-foreground); }
+    .swatches { display: flex; gap: .4rem; margin-top: .75rem; }
+    .sw { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border); }
+    .row { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; }
+    h1 { font-size: 1.25rem; margin: 0 0 .25rem; }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <button class="toggle" id="mode" aria-pressed="false">🌙 Dark</button>
+    <button class="toggle" id="brandCrp" aria-pressed="true">Marca: CRP</button>
+    <button class="toggle" id="brandB" aria-pressed="false">Marca: B</button>
+  </div>
+
+  <h1>CRP Design System</h1>
+  <p class="muted">Trocando <code>.dark</code> e <code>[data-brand]</code> no &lt;html&gt; — as cores vêm 100% de <code>dist/tokens.css</code> (fonte: Token Studio).</p>
+
+  <div class="grid" style="margin-top:1.5rem">
+    <div class="card">
+      <strong>Botões</strong>
+      <div class="row" style="margin-top:.75rem">
+        <button class="btn btn-primary">Primary</button>
+        <button class="btn btn-secondary">Secondary</button>
+        <button class="btn btn-destructive">Excluir</button>
+      </div>
+      <p class="muted" style="margin-bottom:0">primary segue a marca; destructive/secondary seguem o modo.</p>
+    </div>
+
+    <div class="card">
+      <strong>Texto</strong>
+      <p style="margin:.5rem 0 0">Texto primário (foreground).</p>
+      <p class="muted" style="margin:.25rem 0 0">Texto secundário (muted-foreground).</p>
+    </div>
+
+    <div class="card">
+      <strong>Charts</strong>
+      <div class="swatches">
+        <div class="sw" style="background:var(--chart-1)"></div>
+        <div class="sw" style="background:var(--chart-2)"></div>
+        <div class="sw" style="background:var(--chart-3)"></div>
+        <div class="sw" style="background:var(--chart-4)"></div>
+        <div class="sw" style="background:var(--chart-5)"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const html = document.documentElement;
+    const mode = document.getElementById('mode');
+    const crp = document.getElementById('brandCrp');
+    const b = document.getElementById('brandB');
+    mode.onclick = () => {
+      const dark = html.classList.toggle('dark');
+      mode.setAttribute('aria-pressed', dark);
+      mode.textContent = dark ? '☀️ Light' : '🌙 Dark';
+    };
+    function setBrand(brand) {
+      if (brand === 'marca-b') html.setAttribute('data-brand', 'marca-b');
+      else html.removeAttribute('data-brand');
+      crp.setAttribute('aria-pressed', brand !== 'marca-b');
+      b.setAttribute('aria-pressed', brand === 'marca-b');
+    }
+    crp.onclick = () => setBrand('crp');
+    b.onclick = () => setBrand('marca-b');
+  </script>
+</body>
+</html>

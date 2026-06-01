@@ -1,0 +1,42 @@
+[
+  {
+    "id": "brand-crp",
+    "name": "CRP",
+    "group": "Brand",
+    "selectedTokenSets": {
+      "core/color": "source",
+      "core/dimension": "source",
+      "core/typography": "source",
+      "semantic/base": "enabled",
+      "brand/crp": "enabled"
+    }
+  },
+  {
+    "id": "brand-marca-b",
+    "name": "MarcaB",
+    "group": "Brand",
+    "selectedTokenSets": {
+      "core/color": "source",
+      "core/dimension": "source",
+      "core/typography": "source",
+      "semantic/base": "enabled",
+      "brand/marca-b": "enabled"
+    }
+  },
+  {
+    "id": "mode-light",
+    "name": "Light",
+    "group": "Mode",
+    "selectedTokenSets": {
+      "mode/light": "enabled"
+    }
+  },
+  {
+    "id": "mode-dark",
+    "name": "Dark",
+    "group": "Mode",
+    "selectedTokenSets": {
+      "mode/dark": "enabled"
+    }
+  }
+]

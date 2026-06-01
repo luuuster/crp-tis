@@ -1,0 +1,37 @@
+{
+  "name": "@crp/design-tokens",
+  "version": "0.0.0",
+  "description": "CRP Design System — tokens gerados a partir do Token Studio (SSOT). Saída para Tailwind v4 / shadcn (CSS custom properties).",
+  "type": "module",
+  "license": "UNLICENSED",
+  "private": false,
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    "./theme.css": "./dist/theme.css",
+    "./tokens.css": "./dist/tokens.css",
+    "./tokens": {
+      "types": "./dist/tokens.d.ts",
+      "import": "./dist/tokens.js"
+    }
+  },
+  "scripts": {
+    "build": "node build/build-tokens.mjs",
+    "check": "node build/check.mjs",
+    "preview": "npm run build && node -e \"console.log('Build OK. Abra preview/index.html no navegador.')\"",
+    "release": "npm run build && changeset publish",
+    "prepublishOnly": "npm run build && npm run check"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.0",
+    "@tailwindcss/cli": "^4.3.0",
+    "@tokens-studio/sd-transforms": "^1.2.0",
+    "culori": "^4.0.1",
+    "style-dictionary": "^4.3.0",
+    "tailwindcss": "^4.0.0"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
+}

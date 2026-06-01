@@ -1,0 +1,48 @@
+name: tokens
+
+# Valida em PRs e pushes; publica em GitHub Packages na main (via changesets).
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: write      # bump de versão + push do changelog
+  packages: write      # publicar em GitHub Packages
+  pull-requests: write # changesets abre a PR "Version Packages"
+
+concurrency:
+  group: tokens-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://npm.pkg.github.com
+
+      - run: npm ci
+
+      - name: Build dos tokens
+        run: npm run build          # primitives + themes/* + tokens.css + theme.css
+
+      - name: Validar (refs, contrato, contraste WCAG)
+        run: npm run check
+
+      # Só na main: abre a PR "Version Packages" ou publica quando há changesets pendentes.
+      - name: Release (changesets)
+        if: github.ref == 'refs/heads/main'
+        uses: changesets/action@v1
+        with:
+          version: npx changeset version
+          publish: npm run release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

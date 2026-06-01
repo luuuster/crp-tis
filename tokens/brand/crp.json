@@ -1,0 +1,8 @@
+{
+  "primary":                    { "$type": "color", "$value": "{color.blue.600}" },
+  "primary-foreground":         { "$type": "color", "$value": "{color.neutral.50}" },
+  "ring":                       { "$type": "color", "$value": "{color.blue.600}" },
+  "sidebar-primary":            { "$type": "color", "$value": "{color.blue.600}" },
+  "sidebar-primary-foreground": { "$type": "color", "$value": "{color.neutral.50}" },
+  "sidebar-ring":               { "$type": "color", "$value": "{color.blue.600}" }
+}

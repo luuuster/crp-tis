@@ -1,0 +1,9 @@
+{
+  "radius": { "$type": "dimension", "$value": "{radii.base}" },
+
+  "chart-1": { "$type": "color", "$value": "{color.blue.500}" },
+  "chart-2": { "$type": "color", "$value": "{color.violet.500}" },
+  "chart-3": { "$type": "color", "$value": "{color.green.500}" },
+  "chart-4": { "$type": "color", "$value": "{color.orange.500}" },
+  "chart-5": { "$type": "color", "$value": "{color.red.500}" }
+}
