@@ -109,11 +109,20 @@ Os tokens nascem como JSON no repo. Para levá-los ao plugin via **Load from JSO
 
 O script valida compatibilidade (refs, sets vs `$themes`/`$metadata`, `$type`) e falha se algo quebraria o import. Detalhes no agente `token-studio-export` (`.claude/agents/`).
 
-## Figma Variables (designers, plano free)
+## Figma Variables (designers)
 
-1. No Token Studio, **pull** dos tokens do GitHub.
-2. **Export → Figma Variables** (ação manual do plugin; sync automático exigiria Pro/Enterprise).
-3. Designers montam telas usando os Variables semânticos e trocam o **mode** brand×mode.
+Duas rotas para levar os tokens a **Figma Variables**:
+
+**A) Plugin próprio (direto, 1 clique — recomendado).** `figma-plugin/` é um plugin de dev que
+lê o `token-studio/tokens.json` e **cria as Variables** no arquivo aberto, sem Token Studio nem
+Enterprise (a Plugin API escreve Variables em qualquer plano; a REST API de escrita é Enterprise-only).
+Cria 4 collections no eixo **Brand × Mode**: `CRP/Primitives`, `CRP/Base`, `CRP/Brand` (modes CRP/MarcaB),
+`CRP/Mode` (modes Light/Dark) — contrato todo como **alias** dos primitivos. Passo a passo em
+[`figma-plugin/README.md`](figma-plugin/README.md). Use um arquivo do time **pro** (times *Starter*
+limitam modes).
+
+**B) Token Studio (manual).** Pull dos tokens do GitHub → **Export → Figma Variables** (ação manual
+do plugin; sync automático exigiria Pro/Enterprise).
 
 ⚠️ Só escalares (cor/número/string/bool) viram Variables. Tipografia/sombra (compostos) viram **Styles**. OKLCH é exibido como aproximação **sRGB** no Figma.
 

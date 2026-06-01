@@ -1,0 +1,12 @@
+{
+  "name": "CRP DS — Tokens → Variables",
+  "id": "crp-ds-tokens-to-variables",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "editorType": ["figma"],
+  "networkAccess": {
+    "allowedDomains": ["none"],
+    "reasoning": "O plugin só lê um arquivo JSON local (escolhido pelo usuário) e escreve Variables. Não acessa a rede."
+  }
+}

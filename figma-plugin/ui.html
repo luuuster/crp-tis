@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <style>
+    :root { color-scheme: light dark; }
+    * { box-sizing: border-box; }
+    body {
+      font: 12px/1.45 -apple-system, system-ui, "Segoe UI", sans-serif;
+      margin: 0; padding: 16px;
+      color: var(--figma-color-text, #1e1e1e);
+      background: var(--figma-color-bg, #fff);
+    }
+    h1 { font-size: 13px; margin: 0 0 2px; }
+    p.sub { margin: 0 0 14px; color: var(--figma-color-text-secondary, #777); }
+    .drop {
+      border: 1px dashed var(--figma-color-border, #d9d9d9);
+      border-radius: 8px; padding: 16px; text-align: center;
+      background: var(--figma-color-bg-secondary, #f5f5f5);
+      cursor: pointer; transition: border-color .15s;
+    }
+    .drop.has { border-color: var(--figma-color-border-brand, #0d99ff); border-style: solid; }
+    .drop small { display: block; color: var(--figma-color-text-secondary, #777); margin-top: 4px; }
+    input[type=file] { display: none; }
+    .file { font-weight: 600; word-break: break-all; }
+    button {
+      width: 100%; margin-top: 12px; padding: 9px 12px; border: 0; border-radius: 6px;
+      background: var(--figma-color-bg-brand, #0d99ff); color: #fff; font-weight: 600;
+      font-size: 12px; cursor: pointer;
+    }
+    button:disabled { opacity: .4; cursor: default; }
+    button.secondary { background: var(--figma-color-bg-secondary, #ececec); color: var(--figma-color-text, #1e1e1e); }
+    pre {
+      margin: 12px 0 0; padding: 10px; height: 230px; overflow: auto;
+      background: var(--figma-color-bg-secondary, #f5f5f5);
+      border-radius: 6px; font: 11px/1.5 ui-monospace, Menlo, Consolas, monospace;
+      white-space: pre-wrap; word-break: break-word;
+    }
+    .ok { color: #1a7f37; } .err { color: #cf222e; } .warn { color: #9a6700; }
+  </style>
+</head>
+<body>
+  <h1>CRP DS — Tokens → Variables</h1>
+  <p class="sub">Selecione o <code>token-studio/tokens.json</code> (gerado por <code>npm run export:ts</code>).</p>
+
+  <label class="drop" id="drop">
+    <span id="dropText">Clique para escolher o <span class="file">tokens.json</span></span>
+    <small>ou arraste o arquivo aqui</small>
+    <input type="file" id="file" accept="application/json,.json" />
+  </label>
+
+  <button id="run" disabled>Criar Variables no Figma</button>
+  <button id="close" class="secondary">Fechar</button>
+
+  <pre id="logbox">Aguardando arquivo…</pre>
+
+  <script>
+    var bundle = null;
+    var fileEl = document.getElementById('file');
+    var dropEl = document.getElementById('drop');
+    var dropText = document.getElementById('dropText');
+    var runEl = document.getElementById('run');
+    var logbox = document.getElementById('logbox');
+
+    function append(line, cls) {
+      var span = document.createElement('div');
+      if (cls) span.className = cls;
+      span.textContent = line;
+      logbox.appendChild(span);
+      logbox.scrollTop = logbox.scrollHeight;
+    }
+    function reset() { logbox.textContent = ''; }
+
+    function loadFile(f) {
+      var reader = new FileReader();
+      reader.onload = function () {
+        try {
+          bundle = JSON.parse(reader.result);
+          var sets = Object.keys(bundle).filter(function (k) { return k[0] !== '$'; });
+          dropText.innerHTML = '✔ <span class="file">' + f.name + '</span> — ' + sets.length + ' sets';
+          dropEl.classList.add('has');
+          runEl.disabled = false;
+          reset();
+          append('Pronto: ' + f.name + ' (' + sets.length + ' sets). Clique em "Criar Variables".', 'ok');
+        } catch (e) {
+          bundle = null; runEl.disabled = true;
+          reset(); append('JSON inválido: ' + e.message, 'err');
+        }
+      };
+      reader.readAsText(f);
+    }
+
+    fileEl.addEventListener('change', function (e) { if (e.target.files[0]) loadFile(e.target.files[0]); });
+    dropEl.addEventListener('dragover', function (e) { e.preventDefault(); });
+    dropEl.addEventListener('drop', function (e) {
+      e.preventDefault();
+      if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]);
+    });
+
+    runEl.addEventListener('click', function () {
+      if (!bundle) return;
+      runEl.disabled = true;
+      reset(); append('Importando…');
+      parent.postMessage({ pluginMessage: { type: 'import', bundle: bundle } }, '*');
+    });
+    document.getElementById('close').addEventListener('click', function () {
+      parent.postMessage({ pluginMessage: { type: 'close' } }, '*');
+    });
+
+    onmessage = function (event) {
+      var msg = event.data.pluginMessage;
+      if (!msg) return;
+      if (msg.type === 'log') append(msg.line);
+      else if (msg.type === 'error') { append(msg.line, 'err'); runEl.disabled = false; }
+      else if (msg.type === 'done') {
+        var s = msg.stats;
+        append('—', '');
+        append('✅ Concluído.', 'ok');
+        append('  Primitives: ' + s.primitives + ' | Base: ' + s.base + ' | Brand: ' + s.brand + ' | Mode: ' + s.mode, 'ok');
+        if (s.skipped) append('  Ignorados (tipo não suportado): ' + s.skipped, 'warn');
+        if (s.aliasMissing) append('  Aliases não resolvidos: ' + s.aliasMissing, 'warn');
+        runEl.disabled = false;
+      }
+    };
+  </script>
+</body>
+</html>
