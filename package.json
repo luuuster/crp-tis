@@ -19,6 +19,7 @@
   "scripts": {
     "build": "node build/build-tokens.mjs",
     "check": "node build/check.mjs",
+    "export:ts": "node build/export-token-studio.mjs",
     "preview": "npm run build && node -e \"console.log('Build OK. Abra preview/index.html no navegador.')\"",
     "release": "npm run build && changeset publish",
     "prepublishOnly": "npm run build && npm run check"

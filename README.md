@@ -43,6 +43,7 @@ npm install
 npm run build     # gera dist/ a partir de tokens/
 npm run check     # valida contrato, referências e contraste WCAG (AA)
 npm run preview   # build + instrução para abrir preview/index.html
+npm run export:ts # gera token-studio/tokens.json (bundle p/ importar no Token Studio)
 ```
 
 ## Cores das marcas
@@ -96,6 +97,17 @@ No `globals.css` do app, troque os blocos chumbados do shadcn por:
 ```
 
 Os componentes (`npx shadcn@latest add button card …`) passam a pegar as cores/raios do DS e respondem a `.dark`/`[data-brand]` automaticamente.
+
+## Carregar os tokens no Token Studio (bootstrap, arquivo único)
+
+Os tokens nascem como JSON no repo. Para levá-los ao plugin via **Load from JSON**:
+
+1. `npm run export:ts` → gera `token-studio/tokens.json` (8 sets + `$themes` + `$metadata`).
+2. No Token Studio (Figma): **Settings → ative "Use DTCG format"**.
+3. **Load from file/JSON** → selecione `token-studio/tokens.json`.
+4. Confirme os 8 sets + 4 themes; aplique `CRP-Light` para validar.
+
+O script valida compatibilidade (refs, sets vs `$themes`/`$metadata`, `$type`) e falha se algo quebraria o import. Detalhes no agente `token-studio-export` (`.claude/agents/`).
 
 ## Figma Variables (designers, plano free)
 
