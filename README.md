@@ -25,9 +25,9 @@ tokens/                      # SSOT (sincronizado pelo Token Studio, formato DTC
     shadow.json              #   shadow, inset-shadow, drop-shadow, text-shadow (compostos → só CSS)
     effect.json              #   blur, perspective, aspect
     motion.json              #   ease (cubic-bezier), duration, animate (keyframes vêm do @import tailwindcss)
-  semantic/base.json         # CONSTANTES do contrato (radius, chart-*)
+  semantic/base.json         # CONSTANTES do contrato (radius, chart-*, opacity.{disabled,muted,overlay})
   brand/{crp,marca-b}.json   # contrato que varia por MARCA (primary, ring, sidebar-primary…)
-  mode/{light,dark}.json     # contrato que varia por MODO (background, card, border…)
+  mode/{light,dark}.json     # contrato que varia por MODO (background, card, border…, elevation.* = sombra por modo)
   components/                # tier 3 (opcional, ainda não ligado aos themes)
 build/
   build-tokens.mjs           # Style Dictionary v4 + sd-transforms → dist/

@@ -19,5 +19,14 @@
   "sidebar-foreground":    { "$type": "color", "$value": "{color.neutral.900}" },
   "sidebar-accent":        { "$type": "color", "$value": "{color.neutral.100}" },
   "sidebar-accent-foreground": { "$type": "color", "$value": "{color.neutral.900}" },
-  "sidebar-border":        { "$type": "color", "$value": "{color.neutral.200}" }
+  "sidebar-border":        { "$type": "color", "$value": "{color.neutral.200}" },
+
+  "elevation": {
+    "$type": "boxShadow",
+    "xs": { "$value": "{shadow.xs}" },
+    "sm": { "$value": "{shadow.sm}" },
+    "md": { "$value": "{shadow.md}" },
+    "lg": { "$value": "{shadow.lg}" },
+    "xl": { "$value": "{shadow.xl}" }
+  }
 }
