@@ -3,7 +3,7 @@
 // ⚠ SOBRESCREVE os 3 arquivos core/ — use só para semear/atualizar do Tailwind; depois disso a
 // fonte da verdade é o Token Studio. Mudou a cor da marca? Edite os hexes e re-rode (ou edite no Token Studio).
 import { readFileSync, writeFileSync } from 'node:fs';
-import { oklch, clampChroma } from 'culori';
+import { oklch, clampChroma, formatHex } from 'culori';
 
 const theme = readFileSync('node_modules/tailwindcss/theme.css', 'utf8');
 
@@ -41,23 +41,28 @@ function brandRamp(hex, templateName) {
   return out;
 }
 
+// Cada token guarda o $value em OKLCH e, em $description, o HEX de referência (sRGB).
+const hex = (v) => formatHex(v) || v;
+const tok = (value, exactHex) => ({ $value: value, $description: exactHex || hex(value) });
+
 const colorJson = { color: { $type: 'color' } };
 // black/white
-if (palettes.white) colorJson.color.white = { $value: palettes.white };
-if (palettes.black) colorJson.color.black = { $value: palettes.black };
+if (palettes.white) colorJson.color.white = tok(palettes.white, '#ffffff');
+if (palettes.black) colorJson.color.black = tok(palettes.black, '#000000');
 // todas as rampas do Tailwind
 for (const [name, shades] of Object.entries(palettes)) {
   if (name === 'white' || name === 'black') continue;
   colorJson.color[name] = {};
-  for (const [s, val] of Object.entries(shades)) colorJson.color[name][s] = { $value: val };
+  for (const [s, val] of Object.entries(shades)) colorJson.color[name][s] = tok(val);
 }
-// rampas da marca CRP
-colorJson.color.brand = {
-  primary: Object.fromEntries(Object.entries(brandRamp('#036EF2', 'blue')).map(([s, v]) => [s, { $value: v }])),
-  secondary: Object.fromEntries(Object.entries(brandRamp('#8e51ff', 'violet')).map(([s, v]) => [s, { $value: v }])),
+// rampas da marca CRP (500/DEFAULT = HEX exato informado)
+const mkBrand = (hexInput, tpl) => {
+  const obj = Object.fromEntries(Object.entries(brandRamp(hexInput, tpl)).map(([s, v]) => [s, tok(v)]));
+  obj['500'].$description = hexInput.toLowerCase();
+  obj.DEFAULT = tok(fmt(oklch(hexInput)), hexInput.toLowerCase());
+  return obj;
 };
-colorJson.color.brand.primary.DEFAULT = { $value: fmt(oklch('#036EF2')) };
-colorJson.color.brand.secondary.DEFAULT = { $value: fmt(oklch('#8e51ff')) };
+colorJson.color.brand = { primary: mkBrand('#036EF2', 'blue'), secondary: mkBrand('#8e51ff', 'violet') };
 writeFileSync('tokens/core/color.json', JSON.stringify(colorJson, null, 2) + '\n');
 
 // ---------- DIMENSÕES ----------

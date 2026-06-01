@@ -45,6 +45,16 @@ function declaredVarNames(css) {
   return names;
 }
 
+// Remove o header do SD e os comentários inline de hex (/** #rrggbb */, vindos do $description)
+// SEM colapsar linhas. O hex de referência vive no color.json/Token Studio, não no CSS de produção.
+function stripComments(css) {
+  return css
+    .replace(/\/\*\*[\s\S]*?\*\//g, '') // header + comentários inline /** ... */
+    .replace(/[ \t]+$/gm, '')           // espaços à direita
+    .replace(/\n{3,}/g, '\n\n')         // colapsa linhas em branco extras
+    .trim();
+}
+
 async function main() {
   if (existsSync(DIST)) rmSync(DIST, { recursive: true, force: true });
   mkdirSync(THEMES_DIR, { recursive: true });
@@ -85,13 +95,13 @@ async function main() {
       const m = line.match(/^\s*(--[\w-]+)\s*:/);
       return !(m && primitiveNames.has(m[1]));
     });
-    // remove comentário de cabeçalho duplicado do SD
-    stripped[name] = kept.join('\n').replace(/\/\*\*[\s\S]*?\*\/\n*/g, '').trim() + '\n';
+    // remove header/comentários do SD (as linhas de contrato não têm $description)
+    stripped[name] = stripComments(kept.join('\n')) + '\n';
   }
 
   // 4a) tokens.css = primitivos (:root) + cada bloco de tema no seu seletor.
   const header = `/**\n * CRP Design System — tokens.css\n * GERADO automaticamente a partir de tokens/. NÃO EDITE À MÃO.\n * Fonte da verdade: Token Studio.\n */\n\n`;
-  const tokensCss = header + primitivesCss.replace(/\/\*\*[\s\S]*?\*\/\n*/g, '').trim() + '\n\n' +
+  const tokensCss = header + stripComments(primitivesCss) + '\n\n' +
     Object.entries(stripped).map(([name, css]) => `/* theme: ${name} */\n${css}`).join('\n');
   writeFileSync(join(DIST, 'tokens.css'), tokensCss);
 
