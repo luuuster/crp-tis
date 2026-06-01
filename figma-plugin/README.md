@@ -10,7 +10,7 @@ direto no arquivo aberto — sem Token Studio, sem plano Enterprise. Roda no pla
 
 | Collection | Modes | Conteúdo |
 |---|---|---|
-| `CRP/Primitives` | `Value` | `core/*`: 432 primitivos (cor, dimensão, tipografia) |
+| `CRP/Primitives` | `Value` | `core/*`: ~413 escalares (cor, dimensão, container, blur, perspectiva, tipografia). Compostos (sombra/easing/animação) ficam só no CSS — o Figma não guarda Variable composta. |
 | `CRP/Base` | `Value` | `semantic/base`: `radius`, `chart-1..5` (alias dos primitivos) |
 | `CRP/Brand` | `CRP`, `MarcaB` | `brand/*`: `primary`, `ring`, `sidebar-*` (alias dos primitivos) |
 | `CRP/Mode` | `Light`, `Dark` | `mode/*`: `background`, `card`, `border`… (alias dos primitivos) |

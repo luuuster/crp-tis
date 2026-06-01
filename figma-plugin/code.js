@@ -195,9 +195,11 @@ function createVariableCompat(name, coll, type) {
 
 function runImport(bundle) {
   if (!bundle || typeof bundle !== 'object') throw new Error('Bundle inválido (JSON vazio?).');
-  const need = ['core/color', 'core/dimension', 'core/typography', 'semantic/base', 'brand/crp', 'brand/marca-b', 'mode/light', 'mode/dark'];
+  const need = ['core/color', 'semantic/base', 'brand/crp', 'brand/marca-b', 'mode/light', 'mode/dark'];
   const missing = need.filter((k) => !bundle[k]);
   if (missing.length) throw new Error('Faltam sets no bundle: ' + missing.join(', ') + '. Rode `npm run export:ts`.');
+  // Primitivos = TODOS os sets core/* presentes no bundle (color, dimension, typography, shadow, effect, motion…).
+  const coreSets = Object.keys(bundle).filter((k) => k.indexOf('core/') === 0);
 
   const stats = { primitives: 0, base: 0, brand: 0, mode: 0, skipped: 0, aliasMissing: 0 };
 
@@ -221,7 +223,6 @@ function runImport(bundle) {
   const primMap = new Map(); // dotpath -> variable
   const prim = setupCollection(COLLECTIONS.primitives, ['Value']);
   const primMode = prim.modeIds['Value'];
-  const coreSets = ['core/color', 'core/dimension', 'core/typography'];
   for (const setName of coreSets) {
     for (const { path, token, type } of flattenSet(bundle[setName])) {
       const ft = figmaType(type);

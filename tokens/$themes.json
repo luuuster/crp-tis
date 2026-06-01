@@ -7,6 +7,9 @@
       "core/color": "source",
       "core/dimension": "source",
       "core/typography": "source",
+      "core/shadow": "source",
+      "core/effect": "source",
+      "core/motion": "source",
       "semantic/base": "enabled",
       "brand/crp": "enabled"
     }
@@ -19,6 +22,9 @@
       "core/color": "source",
       "core/dimension": "source",
       "core/typography": "source",
+      "core/shadow": "source",
+      "core/effect": "source",
+      "core/motion": "source",
       "semantic/base": "enabled",
       "brand/marca-b": "enabled"
     }

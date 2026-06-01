@@ -1,0 +1,38 @@
+{
+  "ease": {
+    "$type": "cubicBezier",
+    "in": {
+      "$value": "cubic-bezier(0.4, 0, 1, 1)"
+    },
+    "out": {
+      "$value": "cubic-bezier(0, 0, 0.2, 1)"
+    },
+    "in-out": {
+      "$value": "cubic-bezier(0.4, 0, 0.2, 1)"
+    },
+    "DEFAULT": {
+      "$value": "cubic-bezier(0.4, 0, 0.2, 1)"
+    }
+  },
+  "duration": {
+    "$type": "duration",
+    "DEFAULT": {
+      "$value": "150ms"
+    }
+  },
+  "animate": {
+    "$type": "other",
+    "spin": {
+      "$value": "spin 1s linear infinite"
+    },
+    "ping": {
+      "$value": "ping 1s cubic-bezier(0, 0, 0.2, 1) infinite"
+    },
+    "pulse": {
+      "$value": "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite"
+    },
+    "bounce": {
+      "$value": "bounce 1s infinite"
+    }
+  }
+}

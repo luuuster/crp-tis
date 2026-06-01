@@ -18,10 +18,13 @@ Token Studio (Figma)  →  GitHub (tokens/*.json)  →  ┬→  Figma Variables 
 tokens/                      # SSOT (sincronizado pelo Token Studio, formato DTCG)
   $metadata.json             # ordem dos token sets
   $themes.json               # grupos Brand × Mode → 4 themes
-  core/                      # PRIMITIVOS (OKLCH): paleta completa do Tailwind v4 + marca, dimensão, tipografia
-    color.json               #   26 paletas Tailwind + white/black + brand.<marca>.{primary,secondary}
-    dimension.json           #   space (escala 0–96), radii (xs–4xl + base/full), breakpoints
+  core/                      # PRIMITIVOS — paridade total com o Tailwind v4 (+ marca)
+    color.json               #   22 paletas oficiais (OKLCH) + white/black + brand.<marca>.{primary,secondary}
+    dimension.json           #   space (0–96), radii (xs–4xl + base/full), breakpoints, container (3xs–7xl)
     typography.json          #   font family/weight/size/lineHeight/leading/tracking
+    shadow.json              #   shadow, inset-shadow, drop-shadow, text-shadow (compostos → só CSS)
+    effect.json              #   blur, perspective, aspect
+    motion.json              #   ease (cubic-bezier), duration, animate (keyframes vêm do @import tailwindcss)
   semantic/base.json         # CONSTANTES do contrato (radius, chart-*)
   brand/{crp,marca-b}.json   # contrato que varia por MARCA (primary, ring, sidebar-primary…)
   mode/{light,dark}.json     # contrato que varia por MODO (background, card, border…)
