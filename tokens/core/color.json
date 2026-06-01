@@ -1206,104 +1206,208 @@
       }
     },
     "brand": {
-      "primary": {
-        "50": {
-          "$value": "oklch(0.97 0.014 258.68)",
-          "$description": "#f0f6ff"
+      "crp": {
+        "primary": {
+          "50": {
+            "$value": "oklch(0.971 0.015 258.68)",
+            "$description": "#eff6ff"
+          },
+          "100": {
+            "$value": "oklch(0.936 0.034 258.68)",
+            "$description": "#dcebff"
+          },
+          "200": {
+            "$value": "oklch(0.885 0.062 258.68)",
+            "$description": "#c1dbff"
+          },
+          "300": {
+            "$value": "oklch(0.808 0.106 258.68)",
+            "$description": "#96c2ff"
+          },
+          "400": {
+            "$value": "oklch(0.704 0.168 258.68)",
+            "$description": "#5a9eff"
+          },
+          "500": {
+            "$value": "oklch(0.637 0.211 258.68)",
+            "$description": "#2b85ff"
+          },
+          "600": {
+            "$value": "oklch(0.569 0.215 258.68)",
+            "$description": "#036ef2"
+          },
+          "700": {
+            "$value": "oklch(0.505 0.19 258.68)",
+            "$description": "#045dce"
+          },
+          "800": {
+            "$value": "oklch(0.444 0.159 258.68)",
+            "$description": "#0c4ea9"
+          },
+          "900": {
+            "$value": "oklch(0.396 0.134 258.68)",
+            "$description": "#0f438d"
+          },
+          "950": {
+            "$value": "oklch(0.258 0.09 258.68)",
+            "$description": "#03214e"
+          },
+          "DEFAULT": {
+            "$value": "oklch(0.569 0.215 258.68)",
+            "$description": "#036ef2"
+          }
         },
-        "100": {
-          "$value": "oklch(0.932 0.032 258.68)",
-          "$description": "#dceaff"
-        },
-        "200": {
-          "$value": "oklch(0.882 0.059 258.68)",
-          "$description": "#c1daff"
-        },
-        "300": {
-          "$value": "oklch(0.809 0.105 258.68)",
-          "$description": "#97c2ff"
-        },
-        "400": {
-          "$value": "oklch(0.707 0.166 258.68)",
-          "$description": "#5c9fff"
-        },
-        "500": {
-          "$value": "oklch(0.569 0.215 258.68)",
-          "$description": "#036ef2"
-        },
-        "600": {
-          "$value": "oklch(0.546 0.247 258.68)",
-          "$description": "#0061fc"
-        },
-        "700": {
-          "$value": "oklch(0.488 0.236 258.68)",
-          "$description": "#004fe1"
-        },
-        "800": {
-          "$value": "oklch(0.424 0.2 258.68)",
-          "$description": "#0041b8"
-        },
-        "900": {
-          "$value": "oklch(0.379 0.147 258.68)",
-          "$description": "#003c8e"
-        },
-        "950": {
-          "$value": "oklch(0.282 0.092 258.68)",
-          "$description": "#082756"
-        },
-        "DEFAULT": {
-          "$value": "oklch(0.569 0.215 258.68)",
-          "$description": "#036ef2"
+        "secondary": {
+          "50": {
+            "$value": "oklch(0.971 0.017 293.89)",
+            "$description": "#f6f4ff"
+          },
+          "100": {
+            "$value": "oklch(0.936 0.037 293.89)",
+            "$description": "#ebe6ff"
+          },
+          "200": {
+            "$value": "oklch(0.885 0.068 293.89)",
+            "$description": "#dbd1ff"
+          },
+          "300": {
+            "$value": "oklch(0.808 0.117 293.89)",
+            "$description": "#c4b1ff"
+          },
+          "400": {
+            "$value": "oklch(0.704 0.187 293.89)",
+            "$description": "#a883ff"
+          },
+          "500": {
+            "$value": "oklch(0.637 0.235 293.89)",
+            "$description": "#9860ff"
+          },
+          "600": {
+            "$value": "oklch(0.601 0.242 293.89)",
+            "$description": "#8e51ff"
+          },
+          "700": {
+            "$value": "oklch(0.505 0.213 293.89)",
+            "$description": "#703bcf"
+          },
+          "800": {
+            "$value": "oklch(0.444 0.179 293.89)",
+            "$description": "#5d33aa"
+          },
+          "900": {
+            "$value": "oklch(0.396 0.15 293.89)",
+            "$description": "#4e2e8d"
+          },
+          "950": {
+            "$value": "oklch(0.258 0.102 293.89)",
+            "$description": "#28144f"
+          },
+          "DEFAULT": {
+            "$value": "oklch(0.601 0.242 293.89)",
+            "$description": "#8e51ff"
+          }
         }
       },
-      "secondary": {
-        "50": {
-          "$value": "oklch(0.969 0.016 293.89)",
-          "$description": "#f5f3ff"
+      "marca-b": {
+        "primary": {
+          "50": {
+            "$value": "oklch(0.971 0.019 18.84)",
+            "$description": "#fff1f0"
+          },
+          "100": {
+            "$value": "oklch(0.936 0.042 18.84)",
+            "$description": "#ffdfdf"
+          },
+          "200": {
+            "$value": "oklch(0.885 0.079 18.84)",
+            "$description": "#ffc5c5"
+          },
+          "300": {
+            "$value": "oklch(0.808 0.141 18.84)",
+            "$description": "#ff999c"
+          },
+          "400": {
+            "$value": "oklch(0.704 0.193 18.84)",
+            "$description": "#ff626f"
+          },
+          "500": {
+            "$value": "oklch(0.637 0.219 18.84)",
+            "$description": "#f33a54"
+          },
+          "600": {
+            "$value": "oklch(0.577 0.219 18.84)",
+            "$description": "#dd1c43"
+          },
+          "700": {
+            "$value": "oklch(0.487 0.193 18.84)",
+            "$description": "#b30631"
+          },
+          "800": {
+            "$value": "oklch(0.444 0.162 18.84)",
+            "$description": "#99182e"
+          },
+          "900": {
+            "$value": "oklch(0.396 0.136 18.84)",
+            "$description": "#801a28"
+          },
+          "950": {
+            "$value": "oklch(0.258 0.092 18.84)",
+            "$description": "#460711"
+          },
+          "DEFAULT": {
+            "$value": "oklch(0.487 0.193 18.84)",
+            "$description": "#b30631"
+          }
         },
-        "100": {
-          "$value": "oklch(0.943 0.028 293.89)",
-          "$description": "#ede9fe"
-        },
-        "200": {
-          "$value": "oklch(0.894 0.055 293.89)",
-          "$description": "#ddd6fe"
-        },
-        "300": {
-          "$value": "oklch(0.811 0.108 293.89)",
-          "$description": "#c5b4ff"
-        },
-        "400": {
-          "$value": "oklch(0.702 0.177 293.89)",
-          "$description": "#a785ff"
-        },
-        "500": {
-          "$value": "oklch(0.601 0.242 293.89)",
-          "$description": "#8e51ff"
-        },
-        "600": {
-          "$value": "oklch(0.541 0.273 293.89)",
-          "$description": "#8028f9"
-        },
-        "700": {
-          "$value": "oklch(0.491 0.262 293.89)",
-          "$description": "#7213e2"
-        },
-        "800": {
-          "$value": "oklch(0.432 0.225 293.89)",
-          "$description": "#5e14bc"
-        },
-        "900": {
-          "$value": "oklch(0.38 0.183 293.89)",
-          "$description": "#4d1a97"
-        },
-        "950": {
-          "$value": "oklch(0.283 0.137 293.89)",
-          "$description": "#310e65"
-        },
-        "DEFAULT": {
-          "$value": "oklch(0.601 0.242 293.89)",
-          "$description": "#8e51ff"
+        "secondary": {
+          "50": {
+            "$value": "oklch(0.971 0.015 255.35)",
+            "$description": "#eff6ff"
+          },
+          "100": {
+            "$value": "oklch(0.936 0.034 255.35)",
+            "$description": "#dbebff"
+          },
+          "200": {
+            "$value": "oklch(0.885 0.062 255.35)",
+            "$description": "#bedcff"
+          },
+          "300": {
+            "$value": "oklch(0.808 0.107 255.35)",
+            "$description": "#91c3ff"
+          },
+          "400": {
+            "$value": "oklch(0.704 0.162 255.35)",
+            "$description": "#54a1ff"
+          },
+          "500": {
+            "$value": "oklch(0.624 0.184 255.35)",
+            "$description": "#2886f3"
+          },
+          "600": {
+            "$value": "oklch(0.577 0.184 255.35)",
+            "$description": "#1277e2"
+          },
+          "700": {
+            "$value": "oklch(0.505 0.162 255.35)",
+            "$description": "#0c62be"
+          },
+          "800": {
+            "$value": "oklch(0.444 0.136 255.35)",
+            "$description": "#10529c"
+          },
+          "900": {
+            "$value": "oklch(0.396 0.114 255.35)",
+            "$description": "#134682"
+          },
+          "950": {
+            "$value": "oklch(0.258 0.077 255.35)",
+            "$description": "#042347"
+          },
+          "DEFAULT": {
+            "$value": "oklch(0.624 0.184 255.35)",
+            "$description": "#2886f3"
+          }
         }
       }
     }

@@ -1,8 +1,8 @@
 {
-  "primary":                    { "$type": "color", "$value": "{color.brand.primary.600}" },
+  "primary":                    { "$type": "color", "$value": "{color.brand.crp.primary.700}" },
   "primary-foreground":         { "$type": "color", "$value": "{color.neutral.50}" },
-  "ring":                       { "$type": "color", "$value": "{color.brand.primary.500}" },
-  "sidebar-primary":            { "$type": "color", "$value": "{color.brand.primary.600}" },
+  "ring":                       { "$type": "color", "$value": "{color.brand.crp.primary.600}" },
+  "sidebar-primary":            { "$type": "color", "$value": "{color.brand.crp.primary.700}" },
   "sidebar-primary-foreground": { "$type": "color", "$value": "{color.neutral.50}" },
-  "sidebar-ring":               { "$type": "color", "$value": "{color.brand.primary.500}" }
+  "sidebar-ring":               { "$type": "color", "$value": "{color.brand.crp.primary.600}" }
 }

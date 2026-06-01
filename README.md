@@ -19,7 +19,7 @@ tokens/                      # SSOT (sincronizado pelo Token Studio, formato DTC
   $metadata.json             # ordem dos token sets
   $themes.json               # grupos Brand × Mode → 4 themes
   core/                      # PRIMITIVOS (OKLCH): paleta completa do Tailwind v4 + marca, dimensão, tipografia
-    color.json               #   29 grupos: 26 paletas Tailwind + white/black + brand (primary/secondary)
+    color.json               #   26 paletas Tailwind + white/black + brand.<marca>.{primary,secondary}
     dimension.json           #   space (escala 0–96), radii (xs–4xl + base/full), breakpoints
     typography.json          #   font family/weight/size/lineHeight/leading/tracking
   semantic/base.json         # CONSTANTES do contrato (radius, chart-*)
@@ -45,14 +45,22 @@ npm run check     # valida contrato, referências e contraste WCAG (AA)
 npm run preview   # build + instrução para abrir preview/index.html
 ```
 
-## Cores da marca CRP
+## Cores das marcas
 
-- **Primária:** `#036EF2` → `color.brand.primary` (rampa 50–950, `500` = cor exata).
-- **Secundária:** `#8e51ff` → `color.brand.secondary` (rampa 50–950, `500` = cor exata).
+Cada marca tem rampa própria em `color.brand.<marca>.<papel>` (50–950 + `DEFAULT`). O **shade-âncora** e o `DEFAULT` carregam o HEX exato informado; a rampa é gerada de forma monotônica (mesma hue, croma em sino).
 
-O botão **primary** usa `brand.primary.600` (não o `500`) porque texto branco sobre `#036EF2` (500) dá **4.44:1**, logo abaixo do AA (4.5). O `600` passa. A cor exata da marca segue disponível em `color.brand.primary.500` (usada em `ring`, `chart-1`). A **secundária** (`#8e51ff`) fica disponível **apenas** em `color.brand.secondary.*` — ainda não aplicada ao contrato shadcn (pronta para usar quando você decidir onde).
+| Marca | Papel | HEX | Onde fica a cor exata |
+|-------|-------|-----|------------------------|
+| CRP | primary | `#036EF2` | `color.brand.crp.primary.600` (= DEFAULT) |
+| CRP | secondary | `#8e51ff` | `color.brand.crp.secondary.600` |
+| Marca B | primary | `#B30631` | `color.brand.marca-b.primary.700` |
+| Marca B | secondary | `#2886F3` | `color.brand.marca-b.secondary.500` |
 
-> Os primitivos `core/*` foram semeados do Tailwind v4 + marca por `build/seed-palette.mjs`. Para atualizar do Tailwind ou trocar a cor da marca, edite os hexes no script e rode `node build/seed-palette.mjs` (⚠ sobrescreve `core/`), **ou** edite direto no Token Studio.
+**Botão primary (AA):** texto branco sobre `#036EF2` dá só **4.44:1** (< AA 4.5), então o `primary` da CRP usa `brand.crp.primary.700` (mais escuro); a cor exata segue em `ring` (`600`). Já `#B30631` é escuro e passa com folga (**6.75:1**), então a Marca B usa `brand.marca-b.primary.700` (= cor exata) no botão e no ring.
+
+**Secundárias** (`#8e51ff`, `#2886F3`) ficam disponíveis **apenas** como primitivos em `color.brand.<marca>.secondary.*` — não aplicadas ao contrato shadcn (prontas para usar onde você decidir). Os `chart-*` usam paleta genérica do Tailwind (não as cores de marca).
+
+> Os primitivos `core/*` foram semeados do Tailwind v4 + marcas por `build/seed-palette.mjs` (config `BRANDS` no topo). Para trocar uma cor de marca, adicionar marca, ou atualizar do Tailwind: edite o script e rode `node build/seed-palette.mjs` (⚠ sobrescreve `core/`), **ou** edite direto no Token Studio.
 
 ## Taxonomia (3 tiers)
 

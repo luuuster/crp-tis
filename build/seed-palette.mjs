@@ -26,19 +26,22 @@ for (const [k, v] of Object.entries(vars)) {
   if (mm) palettes[mm[1]] = v;
 }
 
-// Rampas da marca: 500 = cor exata; demais seguem a curva (L,C) de um template Tailwind, com a hue da marca.
+// Rampas da marca: ancora a cor EXATA no shade de lightness mais próximo e gera uma rampa
+// MONOTÔNICA (hue da marca + croma em sino). Funciona p/ qualquer cor — clara ou escura.
 const SHADES = [50,100,200,300,400,500,600,700,800,900,950];
-function brandRamp(hex, templateName) {
-  const base = oklch(hex);
-  const tpl = {}; for (const s of SHADES) tpl[s] = oklch(palettes[templateName][s]);
-  const c500 = tpl[500].c || base.c;
+const LADDER = { 50:0.971,100:0.936,200:0.885,300:0.808,400:0.704,500:0.637,600:0.577,700:0.505,800:0.444,900:0.396,950:0.258 };
+const BELL   = { 50:0.10,100:0.22,200:0.42,300:0.65,400:0.88,500:1.0,600:1.0,700:0.88,800:0.74,900:0.62,950:0.42 };
+function ramp(hexInput) {
+  const base = oklch(hexInput);
+  let anchor = 500, best = Infinity;
+  for (const s of SHADES) { const d = Math.abs(LADDER[s] - base.l); if (d < best) { best = d; anchor = s; } }
   const out = {};
   for (const s of SHADES) {
-    out[s] = s === 500
+    out[s] = s === anchor
       ? fmt({ l: base.l, c: base.c, h: base.h })
-      : fmt({ l: tpl[s].l, c: tpl[s].c * (base.c / c500), h: base.h });
+      : fmt({ l: LADDER[s], c: base.c * BELL[s] / BELL[anchor], h: base.h });
   }
-  return out;
+  return { out, anchor };
 }
 
 // Cada token guarda o $value em OKLCH e, em $description, o HEX de referência (sRGB).
@@ -55,14 +58,26 @@ for (const [name, shades] of Object.entries(palettes)) {
   colorJson.color[name] = {};
   for (const [s, val] of Object.entries(shades)) colorJson.color[name][s] = tok(val);
 }
-// rampas da marca CRP (500/DEFAULT = HEX exato informado)
-const mkBrand = (hexInput, tpl) => {
-  const obj = Object.fromEntries(Object.entries(brandRamp(hexInput, tpl)).map(([s, v]) => [s, tok(v)]));
-  obj['500'].$description = hexInput.toLowerCase();
-  obj.DEFAULT = tok(fmt(oklch(hexInput)), hexInput.toLowerCase());
-  return obj;
+
+// Cores das marcas (primary/secondary por marca). O shade-âncora e o DEFAULT = HEX exato informado.
+const BRANDS = {
+  crp:       { primary: '#036EF2', secondary: '#8e51ff' },
+  'marca-b': { primary: '#B30631', secondary: '#2886F3' },
 };
-colorJson.color.brand = { primary: mkBrand('#036EF2', 'blue'), secondary: mkBrand('#8e51ff', 'violet') };
+const brandAnchors = {};
+colorJson.color.brand = {};
+for (const [brand, roles] of Object.entries(BRANDS)) {
+  colorJson.color.brand[brand] = {};
+  brandAnchors[brand] = {};
+  for (const [role, h] of Object.entries(roles)) {
+    const { out, anchor } = ramp(h);
+    const obj = Object.fromEntries(Object.entries(out).map(([s, v]) => [s, tok(v)]));
+    obj[anchor].$description = h.toLowerCase();           // shade-âncora = cor exata
+    obj.DEFAULT = tok(fmt(oklch(h)), h.toLowerCase());    // DEFAULT = cor exata
+    colorJson.color.brand[brand][role] = obj;
+    brandAnchors[brand][role] = anchor;
+  }
+}
 writeFileSync('tokens/core/color.json', JSON.stringify(colorJson, null, 2) + '\n');
 
 // ---------- DIMENSÕES ----------
@@ -100,8 +115,9 @@ for (const [k, v] of Object.entries(vars)) {
 writeFileSync('tokens/core/typography.json', JSON.stringify(typ, null, 2) + '\n');
 
 // resumo
-console.log('paletas:', Object.keys(palettes).filter((p) => p !== 'white' && p !== 'black').length, '+ white/black + brand(primary,secondary)');
-console.log('brand.primary.500 =', colorJson.color.brand.primary[500].$value, '(#036EF2)');
-console.log('brand.secondary.500 =', colorJson.color.brand.secondary[500].$value, '(#8e51ff)');
+console.log('paletas Tailwind:', Object.keys(palettes).filter((p) => p !== 'white' && p !== 'black').length, '+ white/black');
+for (const [b, roles] of Object.entries(brandAnchors))
+  for (const [role, a] of Object.entries(roles))
+    console.log(`brand.${b}.${role}: âncora=${a}, exato=${colorJson.color.brand[b][role].DEFAULT.$description}`);
 console.log('space:', Object.keys(dim.space).length, '| radii:', Object.keys(dim.radii).length - 1, '| breakpoints:', Object.keys(dim.breakpoint).length - 1);
 console.log('font sizes:', Object.keys(typ.font.size).length, '| weights:', Object.keys(typ.font.weight).length, '| tracking:', Object.keys(typ.font.tracking).length - 1, '| leading:', Object.keys(typ.font.leading).length - 1);
