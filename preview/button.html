@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CRP DS — Button</title>
+  <!-- Tokens do Design System (primitivos + contrato + elevation/opacity/motion). -->
+  <link rel="stylesheet" href="../dist/tokens.css" />
+  <style>
+    @keyframes btn-spin { to { transform: rotate(360deg); } }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--foreground);
+      font-family: var(--font-family-sans, system-ui, sans-serif);
+      font-size: var(--font-size-sm);
+      line-height: 1.5;
+      transition: background-color var(--duration-default) var(--ease-in-out), color var(--duration-default) var(--ease-in-out);
+    }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; }
+
+    /* ---------- toolbar ---------- */
+    .toolbar {
+      position: sticky; top: 0; z-index: 10;
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+      padding: 14px 24px; margin-bottom: 8px;
+      background: color-mix(in oklch, var(--background) 88%, transparent);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+    .toolbar h1 { font-size: var(--font-size-base); margin: 0; font-weight: var(--font-weight-semibold); }
+    .toolbar .spacer { flex: 1; }
+    .seg { display: inline-flex; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .seg button {
+      appearance: none; border: 0; background: transparent; color: var(--muted-foreground);
+      padding: 6px 12px; font: inherit; cursor: pointer;
+    }
+    .seg button[aria-pressed="true"] { background: var(--primary); color: var(--primary-foreground); }
+
+    /* ---------- layout de seções ---------- */
+    h2 { font-size: var(--font-size-lg); margin: 40px 0 4px; font-weight: var(--font-weight-semibold); }
+    .hint { color: var(--muted-foreground); margin: 0 0 18px; font-size: var(--font-size-sm); }
+    .panel {
+      background: var(--card); color: var(--card-foreground);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 22px; box-shadow: var(--elevation-sm);
+    }
+    .grid { display: grid; gap: 14px 18px; align-items: center; }
+    .matrix { grid-template-columns: 110px repeat(5, 1fr); }
+    .matrix .col-h { font-size: var(--font-size-xs); color: var(--muted-foreground); text-transform: uppercase; letter-spacing: .04em; text-align: center; }
+    .matrix .row-h { font-size: var(--font-size-sm); color: var(--muted-foreground); font-weight: var(--font-weight-medium); }
+    .row { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+    .cell { display: flex; justify-content: center; }
+    .stack { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+    .stack .lbl { font-size: var(--font-size-xs); color: var(--muted-foreground); }
+
+    /* ============================================================
+       BOTÃO — 100% dirigido pelos tokens do DS
+       intent → 3 vars (--_bg sólido, --_fg texto-no-sólido, --_accent)
+       ============================================================ */
+    .btn {
+      --_bg: var(--primary); --_fg: var(--primary-foreground); --_accent: var(--primary);
+      --_fs: var(--font-size-sm); --_py: var(--space-2); --_px: var(--space-4); --_gap: var(--space-2);
+      position: relative;
+      display: inline-flex; align-items: center; justify-content: center; gap: var(--_gap);
+      font-family: inherit; font-weight: var(--font-weight-medium); font-size: var(--_fs); line-height: 1;
+      padding: var(--_py) var(--_px);
+      border: 1px solid transparent; border-radius: var(--radius);
+      cursor: pointer; white-space: nowrap; user-select: none; text-decoration: none;
+      transition: background-color var(--duration-default) var(--ease-in-out),
+                  color var(--duration-default) var(--ease-in-out),
+                  border-color var(--duration-default) var(--ease-in-out),
+                  box-shadow var(--duration-default) var(--ease-in-out),
+                  opacity var(--duration-default) var(--ease-in-out);
+    }
+    .btn svg { width: 1.05em; height: 1.05em; flex: none; }
+
+    /* intents */
+    .btn.intent-primary   { --_bg: var(--primary);         --_fg: var(--primary-foreground);     --_accent: var(--primary); }
+    .btn.intent-secondary { --_bg: var(--secondary);       --_fg: var(--secondary-foreground);   --_accent: var(--secondary-foreground); }
+    .btn.intent-danger    { --_bg: var(--destructive);     --_fg: var(--destructive-foreground); --_accent: var(--destructive); }
+    .btn.intent-warning   { --_bg: var(--color-amber-500); --_fg: var(--color-amber-950);        --_accent: var(--color-amber-600); }
+    .btn.intent-success   { --_bg: var(--color-green-600); --_fg: var(--color-white);            --_accent: var(--color-green-600); }
+
+    /* estilo: SÓLIDO */
+    .btn.solid { background: var(--_bg); color: var(--_fg); box-shadow: var(--elevation-xs); }
+    .btn.solid:hover,  .btn.solid.is-hover  { background: color-mix(in oklch, var(--_bg) 88%, #000); }
+    .btn.solid:active, .btn.solid.is-active { background: color-mix(in oklch, var(--_bg) 78%, #000); box-shadow: none; }
+
+    /* estilo: OUTLINE */
+    .btn.outline { background: transparent; color: var(--_accent); border-color: color-mix(in oklch, var(--_accent) 45%, transparent); }
+    .btn.outline:hover,  .btn.outline.is-hover  { background: color-mix(in oklch, var(--_accent) 10%, transparent); border-color: var(--_accent); }
+    .btn.outline:active, .btn.outline.is-active { background: color-mix(in oklch, var(--_accent) 18%, transparent); }
+
+    /* estilo: SOFT */
+    .btn.soft { background: color-mix(in oklch, var(--_accent) 15%, transparent); color: var(--_accent); }
+    .btn.soft:hover,  .btn.soft.is-hover  { background: color-mix(in oklch, var(--_accent) 24%, transparent); }
+    .btn.soft:active, .btn.soft.is-active { background: color-mix(in oklch, var(--_accent) 32%, transparent); }
+
+    /* estilo: GHOST */
+    .btn.ghost { background: transparent; color: var(--_accent); }
+    .btn.ghost:hover,  .btn.ghost.is-hover  { background: color-mix(in oklch, var(--_accent) 12%, transparent); }
+    .btn.ghost:active, .btn.ghost.is-active { background: color-mix(in oklch, var(--_accent) 20%, transparent); }
+
+    /* estilo: LINK */
+    .btn.link { background: transparent; color: var(--_accent); padding-left: 0; padding-right: 0; border-radius: 0; }
+    .btn.link:hover, .btn.link.is-hover { text-decoration: underline; text-underline-offset: 3px; }
+
+    /* foco (todos) — usa o anel da marca */
+    .btn:focus-visible, .btn.is-focus { outline: 2px solid var(--ring); outline-offset: 2px; }
+
+    /* desabilitado — usa o token de opacidade do DS */
+    .btn:disabled, .btn.is-disabled { opacity: var(--opacity-disabled); pointer-events: none; box-shadow: none; }
+
+    /* tamanhos */
+    .btn.sm { --_fs: var(--font-size-sm);   --_py: var(--space-1); --_px: var(--space-3); --_gap: var(--space-1); }
+    .btn.md { --_fs: var(--font-size-sm);   --_py: var(--space-2); --_px: var(--space-4); --_gap: var(--space-2); }
+    .btn.lg { --_fs: var(--font-size-base); --_py: var(--space-3); --_px: var(--space-6); --_gap: var(--space-2); }
+
+    /* só ícone — quadrado */
+    .btn.icon-only { padding: var(--_py); aspect-ratio: 1; }
+
+    /* loading — esconde conteúdo e mostra spinner (currentColor = cor do texto da variante) */
+    .btn.is-loading { pointer-events: none; }
+    .btn.is-loading > * { visibility: hidden; }
+    .btn.is-loading::after {
+      content: ""; position: absolute; inset: 0; margin: auto;
+      width: 1.1em; height: 1.1em;
+      border: 2px solid currentColor; border-right-color: transparent; border-radius: 9999px;
+      animation: btn-spin .6s linear infinite;
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <h1>CRP DS · Button</h1>
+    <div class="spacer"></div>
+    <div class="seg" id="brand">
+      <button data-brand="" aria-pressed="true">CRP</button>
+      <button data-brand="marca-b" aria-pressed="false">Marca B</button>
+    </div>
+    <div class="seg" id="mode">
+      <button data-mode="light" aria-pressed="true">Light</button>
+      <button data-mode="dark" aria-pressed="false">Dark</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <h2>1. Matriz — Intent × Estilo</h2>
+    <p class="hint">5 intents (Primária, Secundária, Danger, Warning, Success) × 5 estilos (Sólido, Outline, Soft, Ghost, Link). Tamanho M.</p>
+    <div class="panel"><div class="grid matrix" id="matrix"></div></div>
+
+    <h2>2. Tamanhos — Pequeno · Normal · Grande</h2>
+    <p class="hint">Padding/fonte/gap vêm de <code>--space-*</code> e <code>--font-size-*</code>. Cada estilo nos 3 tamanhos (intent Primária).</p>
+    <div class="panel" id="sizes"></div>
+
+    <h2>3. Estados — Normal · Hover · Active · Focus · Desabilitado · Loading</h2>
+    <p class="hint">Hover/Active/Focus aqui são forçados via classe para você ver todos de uma vez. Foco usa <code>--ring</code>; desabilitado usa <code>--opacity-disabled</code>; loading usa <code>--animate</code>/<code>--duration</code>.</p>
+    <div class="panel" id="states"></div>
+
+    <h2>4. Ícones — esquerda · direita · ambos · só ícone</h2>
+    <p class="hint">Gap entre ícone e texto via <code>--space-*</code>. "Só ícone" vira quadrado (<code>aspect-ratio:1</code>).</p>
+    <div class="panel" id="icons"></div>
+
+    <h2>5. Tudo junto — intents × estados (Sólido, M, com ícone)</h2>
+    <p class="hint">Visão de stress: cada intent em cada estado.</p>
+    <div class="panel" id="full"></div>
+  </div>
+
+  <script>
+    const ICON = {
+      arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+      plus:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>',
+      check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+    };
+    const INTENTS = [
+      { k: 'primary',   l: 'Primária' },
+      { k: 'secondary', l: 'Secundária' },
+      { k: 'danger',    l: 'Danger' },
+      { k: 'warning',   l: 'Warning' },
+      { k: 'success',   l: 'Success' },
+    ];
+    const STYLES = [
+      { k: 'solid',   l: 'Sólido' },
+      { k: 'outline', l: 'Outline' },
+      { k: 'soft',    l: 'Soft' },
+      { k: 'ghost',   l: 'Ghost' },
+      { k: 'link',    l: 'Link' },
+    ];
+    const SIZES = [{ k: 'sm', l: 'Pequeno' }, { k: 'md', l: 'Normal' }, { k: 'lg', l: 'Grande' }];
+    const STATES = [
+      { k: 'normal',   l: 'Normal' },
+      { k: 'hover',    l: 'Hover' },
+      { k: 'active',   l: 'Active' },
+      { k: 'focus',    l: 'Focus' },
+      { k: 'disabled', l: 'Desabilitado' },
+      { k: 'loading',  l: 'Loading' },
+    ];
+
+    function btn(o) {
+      const c = ['btn', o.style || 'solid', 'intent-' + (o.intent || 'primary'), o.size || 'md'];
+      const st = o.state || 'normal';
+      if (st === 'hover') c.push('is-hover');
+      if (st === 'active') c.push('is-active');
+      if (st === 'focus') c.push('is-focus');
+      if (st === 'loading') c.push('is-loading');
+      const dis = st === 'disabled' ? 'disabled' : '';
+      const ic = ICON[o.icon === 'check' ? 'check' : 'arrow'];
+      const label = o.label || 'Button';
+      let inner;
+      if (o.layout === 'only') { c.push('icon-only'); inner = ICON.plus; return `<button class="${c.join(' ')}" ${dis} aria-label="${label}">${inner}</button>`; }
+      inner = '';
+      if (o.layout === 'left' || o.layout === 'both') inner += ic;
+      inner += `<span>${label}</span>`;
+      if (o.layout === 'right' || o.layout === 'both') inner += ic;
+      return `<button class="${c.join(' ')}" ${dis}>${inner}</button>`;
+    }
+    const el = (id) => document.getElementById(id);
+
+    // 1. Matriz intent × estilo
+    (function () {
+      let h = '<div></div>' + STYLES.map((s) => `<div class="col-h">${s.l}</div>`).join('');
+      for (const it of INTENTS) {
+        h += `<div class="row-h">${it.l}</div>`;
+        for (const s of STYLES) h += `<div class="cell">${btn({ intent: it.k, style: s.k, label: s.l })}</div>`;
+      }
+      el('matrix').innerHTML = h;
+    })();
+
+    // 2. Tamanhos — cada estilo nas 3 medidas
+    (function () {
+      el('sizes').innerHTML = STYLES.map((s) => `
+        <div class="stack" style="margin-bottom:16px">
+          <span class="lbl">${s.l}</span>
+          <div class="row">${SIZES.map((z) => btn({ intent: 'primary', style: s.k, size: z.k, label: z.l })).join('')}</div>
+        </div>`).join('');
+    })();
+
+    // 3. Estados — sólido + outline (intent primária)
+    (function () {
+      const rows = [{ style: 'solid', l: 'Sólido' }, { style: 'outline', l: 'Outline' }, { style: 'soft', l: 'Soft' }];
+      el('states').innerHTML = rows.map((r) => `
+        <div class="stack" style="margin-bottom:18px">
+          <span class="lbl">${r.l}</span>
+          <div class="row">${STATES.map((st) => `<div class="stack"><span class="lbl">${st.l}</span>${btn({ intent: 'primary', style: r.style, state: st.k, label: 'Button' })}</div>`).join('')}</div>
+        </div>`).join('');
+    })();
+
+    // 4. Ícones
+    (function () {
+      const layouts = [{ k: 'left', l: 'Ícone à esquerda' }, { k: 'right', l: 'Ícone à direita' }, { k: 'both', l: 'Ícone dos dois lados' }, { k: 'only', l: 'Só ícone' }];
+      let h = '<div class="stack" style="margin-bottom:18px"><span class="lbl">Layouts (Sólido / Primária / M)</span><div class="row">';
+      h += layouts.map((lay) => btn({ intent: 'primary', style: 'solid', layout: lay.k, label: lay.l })).join('');
+      h += '</div></div>';
+      h += '<div class="stack" style="margin-bottom:18px"><span class="lbl">Só ícone — por intent</span><div class="row">';
+      h += INTENTS.map((it) => btn({ intent: it.k, style: 'solid', layout: 'only', label: it.l })).join('');
+      h += '</div></div>';
+      h += '<div class="stack"><span class="lbl">Só ícone — por tamanho</span><div class="row">';
+      h += SIZES.map((z) => btn({ intent: 'primary', style: 'outline', size: z.k, layout: 'only', label: z.l })).join('');
+      h += '</div></div>';
+      el('icons').innerHTML = h;
+    })();
+
+    // 5. Tudo junto — intents × estados (sólido, com ícone)
+    (function () {
+      el('full').innerHTML = INTENTS.map((it) => `
+        <div class="stack" style="margin-bottom:16px">
+          <span class="lbl">${it.l}</span>
+          <div class="row">${STATES.map((st) => btn({ intent: it.k, style: 'solid', state: st.k, layout: 'left', label: st.l })).join('')}</div>
+        </div>`).join('');
+    })();
+
+    // ---------- toggles de marca / modo (re-tematiza tudo via tokens.css) ----------
+    document.getElementById('brand').addEventListener('click', (e) => {
+      const b = e.target.closest('button'); if (!b) return;
+      const brand = b.dataset.brand;
+      if (brand) document.documentElement.setAttribute('data-brand', brand);
+      else document.documentElement.removeAttribute('data-brand');
+      [...e.currentTarget.children].forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    });
+    document.getElementById('mode').addEventListener('click', (e) => {
+      const b = e.target.closest('button'); if (!b) return;
+      document.documentElement.classList.toggle('dark', b.dataset.mode === 'dark');
+      [...e.currentTarget.children].forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    });
+  </script>
+</body>
+</html>
