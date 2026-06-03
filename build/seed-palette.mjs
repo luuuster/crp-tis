@@ -116,6 +116,37 @@ dim.breakpoint['2xl'] = D('90rem'); // override CRP: 2xl = 1440px (Tailwind defa
 for (const [m, v] of entriesMatching(/^container-(.+)$/)) dim.container[m[1]] = D(v);
 write('dimension.json', dim);
 
+// ===================== BORDA (largura) =====================
+// Não vem do theme.css do Tailwind (utilities usam valor solto) — escala própria. 1 = padrão.
+// 'borderWidth' (não 'border') p/ não colidir com o token de contrato `border` (cor da borda shadcn).
+const border = {
+  borderWidth: {
+    $type: 'dimension',
+    0: { $value: '0px' },
+    1: { $value: '1px' },
+    2: { $value: '2px' },
+    4: { $value: '4px' },
+    8: { $value: '8px' },
+  },
+};
+write('border.json', border);
+
+// ===================== ÍCONE (tamanho) =====================
+// Escala dedicada p/ ícones (px fixos) — desacoplada de font.size, p/ ícones não escalarem com texto.
+const icon = {
+  icon: {
+    $type: 'dimension',
+    xs: { $value: '12px' },
+    sm: { $value: '16px' },
+    md: { $value: '20px' },
+    lg: { $value: '24px' },
+    xl: { $value: '32px' },
+    '2xl': { $value: '40px' },
+    '3xl': { $value: '48px' },
+  },
+};
+write('icon.json', icon);
+
 // ===================== TIPOGRAFIA =====================
 const typ = {
   font: {
@@ -128,6 +159,11 @@ const typ = {
   },
 };
 for (const fam of ['sans', 'serif', 'mono']) if (vars['font-' + fam]) typ.font.family[fam] = { $value: vars['font-' + fam] };
+// Webfonts da marca (NÃO vêm do Tailwind) — stacks que a tipografia semântica (font.heading/body) referencia.
+// Carregue as famílias no app (Google Fonts/self-host). Mantidas no seed p/ sobreviverem ao re-seed.
+const EMOJI = "'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'";
+typ.font.family.inter = { $value: `Inter, ui-sans-serif, system-ui, sans-serif, ${EMOJI}` };
+typ.font.family['source-sans-3'] = { $value: `'Source Sans 3', ui-sans-serif, system-ui, sans-serif, ${EMOJI}` };
 for (const [m, v] of entriesMatching(/^font-weight-(.+)$/)) typ.font.weight[m[1]] = { $value: Number(v) };
 for (const [m, v] of entriesMatching(/^text-([\w]+)--line-height$/)) typ.font.lineHeight[m[1]] = { $value: v };
 for (const [m, v] of entriesMatching(/^text-([\w]+)$/)) typ.font.size[m[1]] = D(v);

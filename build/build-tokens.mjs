@@ -10,12 +10,13 @@
 //  4) Concatena tudo em tokens.css e gera theme.css (Tailwind @theme inline) para o shadcn.
 
 import StyleDictionary from 'style-dictionary';
-import { register, permutateThemes } from '@tokens-studio/sd-transforms';
+import { register, permutateThemes, expandTypesMap } from '@tokens-studio/sd-transforms';
 import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
 
 const ROOT = process.cwd();
 const TOKENS = join(ROOT, 'tokens');
+const SRC = join(ROOT, 'src');
 const DIST = join(ROOT, 'dist');
 const THEMES_DIR = join(DIST, 'themes');
 
@@ -45,6 +46,26 @@ function declaredVarNames(css) {
   return names;
 }
 
+// Artefatos de a11y AUTORADOS (src/) — não derivam de token via Style Dictionary.
+// O build LÊ o fonte e ESCREVE em dist/ com um header "GERADO" (nunca edite dist/ à mão).
+// O fonte continua sendo a fonte da verdade desses CSS/JS; o dist/ é a cópia shippada.
+function gerHeader(srcRel) {
+  // /** */ vale tanto p/ CSS quanto p/ JS — header único.
+  const body =
+    `CRP Design System — GERADO a partir de ${srcRel}. NÃO EDITE À MÃO.\n` +
+    `Fonte da verdade: ${srcRel}. Regenerado por build/build-tokens.mjs (npm run build).`;
+  return `/**\n * ${body.replace(/\n/g, '\n * ')}\n */\n`;
+}
+function emitAuthored(srcRel, distRel) {
+  const srcPath = join(SRC, srcRel);
+  if (!existsSync(srcPath)) throw new Error(`Fonte autorada ausente: src/${srcRel} (necessária p/ gerar dist/${distRel}).`);
+  const distPath = join(DIST, distRel);
+  mkdirSync(dirname(distPath), { recursive: true });
+  const source = readFileSync(srcPath, 'utf8').replace(/^﻿/, '');
+  writeFileSync(distPath, gerHeader(`src/${srcRel}`) + '\n' + source);
+  return distRel;
+}
+
 // Remove o header do SD e os comentários inline de hex (/** #rrggbb */, vindos do $description)
 // SEM colapsar linhas. O hex de referência vive no color.json/Token Studio, não no CSS de produção.
 function stripComments(css) {
@@ -53,6 +74,24 @@ function stripComments(css) {
     .replace(/[ \t]+$/gm, '')           // espaços à direita
     .replace(/\n{3,}/g, '\n\n')         // colapsa linhas em branco extras
     .trim();
+}
+
+// Nomes (kebab) dos tokens de CONTRATO do tipo color — base do @theme inline (--color-*).
+// Tokens de contrato não-cor (radius, inset, gap, state, opacity, elevation, button-*) NÃO viram --color-*.
+function colorContractNames(setNames) {
+  const names = new Set();
+  for (const s of setNames) {
+    if (s.startsWith('core/')) continue; // primitivos não são contrato
+    const file = join(TOKENS, `${s}.json`);
+    if (!existsSync(file)) continue;
+    (function walk(node, prefix, inherited) {
+      if (!node || typeof node !== 'object') return;
+      const type = typeof node.$type === 'string' ? node.$type : inherited;
+      if ('$value' in node) { if (type === 'color') names.add(prefix.join('-')); return; }
+      for (const k of Object.keys(node)) { if (k.startsWith('$')) continue; walk(node[k], prefix.concat(k), type); }
+    })(JSON.parse(readFileSync(file, 'utf8')), [], undefined);
+  }
+  return names;
 }
 
 async function main() {
@@ -83,6 +122,10 @@ async function main() {
     const sd = new StyleDictionary({
       source: sets.map((s) => `tokens/${s}.json`),
       preprocessors: ['tokens-studio'],
+      // Expande SÓ os compostos de tipografia (DTCG `typography`) em props individuais
+      // (--text-h1-font-size, -line-height, -letter-spacing, …) preservando o letterSpacing
+      // — que o shorthand `font` do CSS descartaria. boxShadow/border NÃO expandem.
+      expand: { typesMap: expandTypesMap, include: ['typography'] },
       platforms: { css: baseCssPlatform([
         { destination: `themes/${name}.css`, format: 'css/variables', options: { selector, outputReferences: true } },
       ]) },
@@ -107,8 +150,8 @@ async function main() {
 
   // 4b) theme.css = ponte para o Tailwind v4 / shadcn (@theme inline).
   const contractNames = [...declaredVarNames(stripped['CRP-Light'])].map((n) => n.slice(2)); // sem '--'
-  const colorNames = contractNames.filter((n) => n !== 'radius');
-  const colorMap = colorNames.map((n) => `  --color-${n}: var(--${n});`).join('\n');
+  // só tokens de contrato COLOR viram --color-* (senão inset/gap/state/elevation/button virariam utilitário de cor).
+  const colorMap = [...colorContractNames(themes['CRP-Light'])].map((n) => `  --color-${n}: var(--${n});`).join('\n');
 
   const themeCss = `/**
  * CRP Design System — theme.css (Tailwind v4 + shadcn/ui)
@@ -123,15 +166,30 @@ async function main() {
   /* cores do contrato shadcn -> utilities (bg-*, text-*, border-*) apontando p/ vars swappable */
 ${colorMap}
 
-  /* raio (shadcn deriva sm/md/lg/xl a partir de --radius) */
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  /* raio: escala vinda do contrato (radius-* → radii.*), não mais calc-offset */
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
 
-  /* tipografia */
-  --font-sans: var(--font-family-sans);
-  --font-mono: var(--font-family-mono);
+  /* z-index / camadas (overlays) — vira utilitário z-* do Tailwind (z-modal, z-tooltip…) */
+  --z-base: var(--layer-base);
+  --z-raised: var(--layer-raised);
+  --z-dropdown: var(--layer-dropdown);
+  --z-sticky: var(--layer-sticky);
+  --z-fixed: var(--layer-fixed);
+  --z-overlay: var(--layer-overlay);
+  --z-modal: var(--layer-modal);
+  --z-popover: var(--layer-popover);
+  --z-toast: var(--layer-toast);
+  --z-tooltip: var(--layer-tooltip);
+
+  /* tipografia — famílias semânticas (heading=Inter, body=Source Sans 3); sans default = body */
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-heading);
+  --font-body: var(--font-body);
+  --font-mono: var(--font-mono);
   --text-xs: var(--font-size-xs);
   --text-sm: var(--font-size-sm);
   --text-base: var(--font-size-base);
@@ -154,10 +212,20 @@ ${colorMap}
     `export declare const modes: string[];\n` +
     `export declare const themes: string[];\n`);
 
+  // 5) A11y de COMPORTAMENTO (artefatos autorados em src/) -> dist/ com header "GERADO".
+  //    Camada base agnóstica + componente botão (CSS) + guard JS. Consumidos pelo app E
+  //    pelos previews (a demo prova o artefato shippado; nada de CSS/JS duplicado).
+  const a11yOut = [
+    emitAuthored('a11y/base.css', 'base.css'),
+    emitAuthored('components/button.css', 'components/button.css'),
+    emitAuthored('components/button.js', 'components/button.js'),
+  ];
+
   console.log('✅ build OK');
   console.log(`   primitivos: ${primitiveNames.size} vars`);
   console.log(`   temas: ${Object.keys(themes).join(', ')}`);
   console.log(`   contrato (por tema): ${contractNames.length} vars`);
+  console.log(`   a11y (autorado -> dist): ${a11yOut.map((p) => 'dist/' + p).join(', ')}`);
 }
 
 main().catch((e) => { console.error('❌ build falhou:\n', e); process.exit(1); });

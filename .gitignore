@@ -1,6 +1,7 @@
 node_modules/
 dist/
 token-studio/
+.cursor/
 *.log
 .DS_Store
 .env
