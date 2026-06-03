@@ -1,0 +1,71 @@
+/**
+ * CRP Design System — base de acessibilidade (a11y), agnóstica de framework.
+ *
+ * Camada de comportamento token-driven que QUALQUER app deve carregar para herdar
+ * as garantias de a11y do DS, independentemente de usar Tailwind/shadcn ou não.
+ * Tudo via var(--...) — sem valores chumbados; a cor do foco é a --ring da marca ativa.
+ *
+ * Importe junto do contrato:
+ *   import "@crp/design-tokens/tokens.css";  (ou theme.css, no fluxo Tailwind)
+ *   import "@crp/design-tokens/base.css";
+ *
+ * Decisão: esta base NÃO entra via @import no theme.css. O theme.css é a ponte Tailwind
+ * (@theme inline) e o app Tailwind já tem preflight/reset próprio; misturar resets de a11y
+ * ali arriscaria conflito de cascata e duplicação. Mantê-la como artefato/export separado
+ * deixa o consumo explícito e opcional. Use @layer base para baixa especificidade — o app
+ * sempre consegue sobrescrever pontualmente.
+ */
+
+@layer base {
+  /* ----------------------------------------------------------------
+     Foco visível GLOBAL — WCAG 2.4.7 / 2.4.11 (Focus Appearance).
+     Anel na cor da marca (--ring), nunca o outline preto default do browser.
+     :focus-visible (não :focus) → só aparece em navegação por teclado.
+     Fallbacks tornam a regra resiliente caso o contrato ainda não defina os tokens.
+     ---------------------------------------------------------------- */
+  :where(:focus-visible) {
+    outline: var(--button-ring-width, 2px) solid var(--ring, currentColor);
+    outline-offset: var(--button-ring-offset, 2px);
+  }
+
+  /* Remove o outline default só quando vamos pintar o nosso (mantém em :focus puro p/ legados). */
+  :where(:focus:not(:focus-visible)) {
+    outline: none;
+  }
+
+  /* ----------------------------------------------------------------
+     prefers-reduced-motion — WCAG 2.3.3 (Animation from Interactions).
+     Reset completo: zera animações, transições e scroll suave para quem
+     pediu menos movimento. !important para vencer estilos de componente.
+     ---------------------------------------------------------------- */
+  @media (prefers-reduced-motion: reduce) {
+    /* Reset de movimento — EXCETO movimento ESSENCIAL, que se declara com
+       [data-crp-motion="essential"] (ex.: spinner de "carregando"). Congelar um loader o
+       faria parecer QUEBRADO e esconderia o status; movimento essencial é isento do
+       WCAG 2.3.3. Para os essenciais, o COMPONENTE decide a versão reduzida (girar mais
+       devagar). A exclusão precisa morar AQUI (camada base): no cascade de !important a
+       camada mais ANTIGA vence, então um override em @layer components NÃO conseguiria
+       "descongelar" o que este * !important da base congelou. */
+    *:not([data-crp-motion="essential"]),
+    *:not([data-crp-motion="essential"])::before,
+    *:not([data-crp-motion="essential"])::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* ----------------------------------------------------------------
+     forced-colors (Alto Contraste do Windows) — WCAG 1.4.1 / 1.4.11.
+     Defaults de segurança globais: garante que o anel de foco continue
+     visível com as cores do sistema. Componentes (ex.: button.css) trazem
+     seus próprios ajustes finos; aqui ficam só as garantias agnósticas.
+     ---------------------------------------------------------------- */
+  @media (forced-colors: active) {
+    :where(:focus-visible) {
+      outline: 2px solid Highlight;
+      outline-offset: 2px;
+    }
+  }
+}

@@ -32,9 +32,19 @@ tokens/                      # SSOT (sincronizado pelo Token Studio, formato DTC
 build/
   build-tokens.mjs           # Style Dictionary v4 + sd-transforms → dist/
   check.mjs                  # valida refs, contrato e contraste WCAG
+src/                         # FONTES autoradas da a11y de comportamento (SSOT desses CSS/JS)
+  a11y/base.css              #   foco global (--ring) + reduced-motion + forced-colors (@layer base)
+  components/button.css      #   o componente .btn auditado (intents/estilos/tamanhos/estados, @layer components)
+  components/button.js       #   guard de ativação p/ [aria-disabled="true"] (1 listener delegado, idempotente)
+build/
+  build-tokens.mjs           # Style Dictionary v4 + sd-transforms → dist/ (+ emite os fontes de src/ com header)
+  check.mjs                  # valida refs, contrato, contraste WCAG E presença dos artefatos a11y
 dist/                        # GERADO — não editar à mão
   tokens.css                 # :root + .dark + [data-brand] (CSS custom properties)
   theme.css                  # Tailwind v4 @theme inline (importe isto no app)
+  base.css                   # a11y agnóstica de framework (gerado de src/a11y/base.css)
+  components/button.css      # componente .btn (gerado de src/components/button.css)
+  components/button.js       # guard aria-disabled (gerado de src/components/button.js)
   tokens.{js,d.ts}           # brands/modes/themes para o provider de tema
 preview/index.html           # preview visual da troca de tema/marca (abre direto no navegador)
 ```
@@ -100,6 +110,41 @@ No `globals.css` do app, troque os blocos chumbados do shadcn por:
 ```
 
 Os componentes (`npx shadcn@latest add button card …`) passam a pegar as cores/raios do DS e respondem a `.dark`/`[data-brand]` automaticamente.
+
+## Acessibilidade (a11y) no produto
+
+A a11y de **comportamento** (foco global, `prefers-reduced-motion`, `forced-colors`, e o componente `.btn` acessível) é **shippada no `dist/`** — não fica só nos previews. Importe:
+
+```js
+import "@crp/design-tokens/theme.css";              // (ou tokens.css) — o contrato de tokens
+import "@crp/design-tokens/base.css";                // foco global (--ring) + reduced-motion + forced-colors
+import "@crp/design-tokens/components/button.css";   // o componente .btn (intents/estilos/tamanhos/estados)
+import "@crp/design-tokens/components/button.js";    // guard de ativação p/ [aria-disabled="true"] (auto-instala)
+```
+
+> **Decisão — `base.css` é export separado, não `@import` no `theme.css`.** O `theme.css` é a ponte Tailwind (`@theme inline`) e o app Tailwind já tem preflight/reset próprio. Embutir resets de a11y ali arriscaria conflito de cascata e duplicação. Como export à parte (`./base.css`), o consumo é explícito e opcional, e a base usa `@layer base` (baixa especificidade — o app sobrescreve quando precisar). O botão usa `@layer components`.
+
+### Contrato de markup (o que o consumidor deve seguir)
+
+- **`type="button"`** em todo `<button>` que não submete (evita submit implícito dentro de `<form>`).
+- **Só-ícone** SEMPRE com **`aria-label`** (o rótulo acessível; preservado inclusive carregando).
+- **Ícones** (`<svg>`) com **`aria-hidden="true"` `focusable="false"`** (decorativos; não entram na árvore nem no tab).
+- **Desabilitado** = **`aria-disabled="true"`** (NÃO o atributo nativo `disabled`): o botão segue **focável** e descobrível (o leitor anuncia "desabilitado"); a ativação por mouse/teclado fica inerte pelo **guard** de `button.js`.
+- **Loading** = **`aria-busy="true"` + `aria-disabled="true"`**, com o **nome acessível preservado** (use `opacity` no conteúdo, nunca `visibility:hidden`/`display:none`); o spinner é um `<span class="btn-spinner" data-crp-motion="essential" aria-hidden="true">` decorativo. O **`data-crp-motion="essential"`** é o que mantém o loader **girando (mais devagar) sob `prefers-reduced-motion`** em vez de congelar — sem ele, a base.css zera a animação e o anel fica parado.
+- **Foco** usa **`--ring`** (anel da marca) via `:focus-visible` — nunca o outline preto default.
+
+```html
+<!-- normal -->        <button type="button" class="btn solid intent-primary md"><span>Salvar</span></button>
+<!-- só-ícone -->      <button type="button" class="btn solid icon-only" aria-label="Adicionar"><svg aria-hidden="true" focusable="false">…</svg></button>
+<!-- desabilitado -->  <button type="button" class="btn solid" aria-disabled="true"><span>Salvar</span></button>
+<!-- loading -->       <button type="button" class="btn solid" aria-busy="true" aria-disabled="true"><span>Salvar</span><span class="btn-spinner" data-crp-motion="essential" aria-hidden="true"></span></button>
+```
+
+### Garantias
+
+- **WCAG 2.2 AA.** Contraste **textual** (≥ 4.5:1) e **não-textual / 1.4.11** (≥ 3:1: borda de outline em repouso e anel de foco) são validados em **CI** (`npm run check`) nos 4 temas (CRP/MarcaB × Light/Dark).
+- O `check.mjs` também falha o build se `dist/base.css`, `dist/components/button.css` ou `dist/components/button.js` faltarem ou perderem suas regras-chave (foco+`--ring`, `prefers-reduced-motion`, `forced-colors`, estados do botão, guard `aria-disabled`).
+- Fonte da verdade desses artefatos = **`src/`** (autorado). O build LÊ `src/` e ESCREVE em `dist/` com header "GERADO" — **nunca edite `dist/` à mão**. Os previews (`preview/button.html`, `preview/login.html`) **consomem o `dist/`** — a demo prova o artefato shippado, sem CSS/JS duplicado.
 
 ## Carregar os tokens no Token Studio (bootstrap, arquivo único)
 

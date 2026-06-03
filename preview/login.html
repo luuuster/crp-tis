@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CRP DS — Tela de Login</title>
+  <!-- Fontes do DS: heading=Inter, body=Source Sans 3 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" />
+  <!-- Contrato + primitivos do Design System -->
+  <link rel="stylesheet" href="../dist/tokens.css" />
+  <!-- A11y de comportamento SHIPPADA (mesmos artefatos que o app consome):
+       base = foco global (--ring) + reduced-motion + forced-colors · button.css = o componente .btn. -->
+  <link rel="stylesheet" href="../dist/base.css" />
+  <link rel="stylesheet" href="../dist/components/button.css" />
+  <style>
+    @keyframes float-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    /* foco GLOBAL (--ring) e reduced-motion vêm de dist/base.css — não duplicados aqui. */
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--foreground);
+      font-family: var(--font-body, system-ui, sans-serif);
+      font-size: var(--text-body-font-size);
+      line-height: var(--text-body-line-height);
+      transition: background-color var(--duration-default) var(--ease-in-out), color var(--duration-default) var(--ease-in-out);
+    }
+
+    /* ===== helpers de tipografia (consomem os tokens compostos text.*) ===== */
+    .ty-display { font-family: var(--text-display-font-family); font-weight: var(--text-display-font-weight); font-size: var(--text-display-font-size); line-height: var(--text-display-line-height); letter-spacing: var(--text-display-letter-spacing); }
+    .ty-h2 { font-family: var(--text-h2-font-family); font-weight: var(--text-h2-font-weight); font-size: var(--text-h2-font-size); line-height: var(--text-h2-line-height); letter-spacing: var(--text-h2-letter-spacing); }
+    .ty-h3 { font-family: var(--text-h3-font-family); font-weight: var(--text-h3-font-weight); font-size: var(--text-h3-font-size); line-height: var(--text-h3-line-height); letter-spacing: var(--text-h3-letter-spacing); }
+    .ty-body { font-family: var(--text-body-font-family); font-weight: var(--text-body-font-weight); font-size: var(--text-body-font-size); line-height: var(--text-body-line-height); }
+    .ty-body-sm { font-family: var(--text-body-sm-font-family); font-weight: var(--text-body-sm-font-weight); font-size: var(--text-body-sm-font-size); line-height: var(--text-body-sm-line-height); }
+    .ty-label { font-family: var(--text-label-sm-font-family); font-weight: var(--text-label-sm-font-weight); font-size: var(--text-label-sm-font-size); line-height: var(--text-label-sm-line-height); }
+    .ty-caption { font-family: var(--text-caption-font-family); font-weight: var(--text-caption-font-weight); font-size: var(--text-caption-font-size); line-height: var(--text-caption-line-height); }
+
+    /* ===== link (text-link + cor do contrato) ===== */
+    .link {
+      font-family: var(--text-link-font-family); font-weight: var(--text-link-font-weight);
+      color: var(--link); text-decoration: var(--text-link-text-decoration); text-underline-offset: 2px;
+      cursor: pointer; background: none; border: 0; padding: 0;
+      border-radius: var(--radius-sm); /* arredonda o anel de foco (outline segue o radius) */
+    }
+    .link:hover { color: color-mix(in oklch, var(--link), var(--foreground) 18%); }
+
+    /* ===== switcher flutuante (marca / modo) ===== */
+    .switcher { position: fixed; top: var(--space-4); right: var(--space-4); z-index: 20; display: flex; gap: var(--gap-xs); }
+    .seg { display: inline-flex; border: var(--border-width-1) solid var(--border); border-radius: var(--radius-full); overflow: hidden; background: color-mix(in oklch, var(--card) 80%, transparent); backdrop-filter: blur(8px); }
+    .seg button { appearance: none; border: 0; background: transparent; color: var(--muted-foreground); padding: 6px 14px; font-family: var(--font-body); font-size: var(--text-caption-font-size); font-weight: var(--font-weight-medium); cursor: pointer; }
+    .seg button[aria-pressed="true"] { background: var(--primary); color: var(--primary-foreground); }
+
+    /* ===== layout split ===== */
+    .login { min-height: 100%; display: grid; grid-template-columns: 1.05fr 1fr; }
+    @media (max-width: 920px) { .login { grid-template-columns: 1fr; } .brandside { display: none; } }
+
+    /* --- painel da marca (mostra --primary como área grande) --- */
+    .brandside {
+      position: relative; overflow: hidden;
+      background: var(--primary); color: var(--primary-foreground);
+      padding: var(--space-12) var(--space-10);
+      display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-10);
+    }
+    .brandside .blob { position: absolute; border-radius: var(--radius-full); background: var(--primary-foreground); opacity: 0.08; pointer-events: none; }
+    .brandside .blob.a { width: 420px; height: 420px; top: -140px; right: -120px; }
+    .brandside .blob.b { width: 280px; height: 280px; bottom: -90px; left: -80px; opacity: 0.06; }
+    .brandside > * { position: relative; }
+    .brandside .pitch { max-width: 540px; }
+    .brandside .pitch h2 { text-wrap: balance; }
+    .brandside .pitch p { margin: var(--space-4) 0 0; opacity: 0.85; text-wrap: pretty; max-width: 420px; }
+    .feature { display: flex; align-items: center; gap: var(--gap-sm); margin-top: var(--space-4); opacity: 0.95; }
+    .feature .tick { flex: none; width: 22px; height: 22px; border-radius: var(--radius-full); display: grid; place-items: center; background: color-mix(in oklch, var(--primary-foreground) 18%, transparent); }
+    .feature .tick svg { width: 13px; height: 13px; }
+    .brandside .foot { opacity: 0.8; }
+    .brandside .top { display: flex; flex-direction: column; gap: var(--space-40); }
+
+    /* depoimento — card translúcido sobre --primary */
+    .quote {
+      margin: 0; max-width: 42ch;
+      background: color-mix(in oklch, var(--primary-foreground) 10%, transparent);
+      border: var(--border-width-1) solid color-mix(in oklch, var(--primary-foreground) 20%, transparent);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+    }
+    .quote blockquote { margin: 0 0 var(--space-4); }
+    .author { display: flex; align-items: center; gap: var(--gap-sm); }
+    .author .avatar { width: 42px; height: 42px; flex: none; border-radius: var(--radius-full); background: var(--primary-foreground); color: var(--primary); display: grid; place-items: center; font-family: var(--font-heading); font-weight: var(--font-weight-bold); font-size: var(--font-size-sm); }
+    .author .name { display: block; font-family: var(--font-heading); font-weight: var(--font-weight-semibold); }
+    .author .role { display: block; opacity: 0.82; }
+
+    /* --- lado do formulário: card flutuante sobre superfície muted --- */
+    .formside { display: grid; place-items: center; padding: var(--space-8) var(--space-6); background: var(--muted); }
+    .formcard {
+      width: 100%; max-width: 408px;
+      background: var(--card); color: var(--card-foreground);
+      border: var(--border-width-1) solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--elevation-xl);
+      padding: var(--space-8);
+      animation: float-in var(--duration-default) var(--ease-out) both;
+    }
+
+    /* logo / monograma */
+    .logo { display: inline-flex; align-items: center; gap: var(--gap-xs); font-family: var(--font-heading); font-weight: var(--font-weight-extrabold); }
+    .logo .mark { width: 36px; height: 36px; border-radius: var(--radius-md); display: grid; place-items: center; font-size: var(--font-size-base); }
+    .logo.on-card .mark { background: var(--primary); color: var(--primary-foreground); }
+    .logo.on-brand .mark { background: var(--primary-foreground); color: var(--primary); }
+    .logo .word { font-size: var(--font-size-xl); letter-spacing: -0.02em; }
+
+    .head { margin: var(--space-7) 0 var(--space-6); }
+    .head h1 { margin: 0; }
+    .head p { margin: var(--space-2) 0 0; color: var(--muted-foreground); }
+
+    /* ===== campos ===== */
+    .field { margin-bottom: var(--space-4); }
+    .field .lbl-row { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: var(--space-2); }
+    .field label { display: block; color: var(--foreground); }
+    .input-wrap { position: relative; display: flex; align-items: center; }
+    .input-wrap .lead { position: absolute; left: var(--inset-md); color: var(--muted-foreground); display: grid; place-items: center; pointer-events: none; }
+    .input-wrap .lead svg { width: var(--icon-sm); height: var(--icon-sm); }
+    .input {
+      width: 100%;
+      font-family: var(--font-body); font-size: var(--text-body-font-size); color: var(--foreground);
+      background: var(--background);
+      border: var(--border-width-1) solid var(--input);
+      border-radius: var(--radius);
+      padding: var(--inset-sm) var(--inset-md) var(--inset-sm) calc(var(--inset-md) + var(--icon-sm) + var(--space-2));
+      transition: border-color var(--duration-default) var(--ease-in-out), box-shadow var(--duration-default) var(--ease-in-out);
+    }
+    .input::placeholder { color: var(--muted-foreground); }
+    .input:hover { border-color: color-mix(in oklch, var(--input), var(--foreground) 22%); }
+    .input:focus-visible { outline: none; border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring) 28%, transparent); }
+    .input.has-toggle { padding-right: calc(var(--space-10)); }
+    .toggle {
+      position: absolute; right: var(--space-1); top: 50%; transform: translateY(-50%);
+      appearance: none; border: 0; background: transparent; color: var(--foreground);
+      width: 34px; height: 34px; display: grid; place-items: center; border-radius: var(--radius-sm); cursor: pointer;
+      transition: background-color var(--duration-default) var(--ease-in-out), color var(--duration-default) var(--ease-in-out);
+    }
+    /* normal = preto · hover/active = soft azul + ícone azul */
+    .toggle:hover { background: color-mix(in oklch, var(--primary) calc(var(--state-soft) * 100%), transparent); color: var(--link); }
+    .toggle:active { background: color-mix(in oklch, var(--primary) calc(var(--state-soft-hover) * 100%), transparent); color: var(--link); }
+    .toggle svg { width: var(--icon-sm); height: var(--icon-sm); }
+
+    /* erro de campo — BORDA usa --destructive (preenchimento/edge, passa 1.4.11 ≥3:1);
+       TEXTO usa --destructive-text (mode-aware: red.400 no dark) p/ passar AA como texto.
+       Usar --destructive no texto dava 3.64 sobre o card escuro (reprova). */
+    .field.error .input { border-color: var(--destructive); }
+    .field.error .input:focus-visible { border-color: var(--destructive); box-shadow: 0 0 0 3px color-mix(in oklch, var(--destructive) 28%, transparent); }
+    .field .err { display: none; margin: var(--space-1) 0 0; color: var(--destructive-text); }
+    .field.error .err { display: block; }
+
+    /* checkbox custom */
+    .row-between { display: flex; align-items: center; justify-content: space-between; margin: var(--space-2) 0 var(--space-6); }
+    .check { display: inline-flex; align-items: center; gap: var(--gap-xs); cursor: pointer; user-select: none; color: var(--foreground); }
+    .check input { position: absolute; opacity: 0; width: 0; height: 0; }
+    .check .box { width: 18px; height: 18px; flex: none; border: var(--border-width-1) solid var(--input); border-radius: var(--radius-sm); background: var(--background); display: grid; place-items: center; color: transparent; transition: background-color var(--duration-default) var(--ease-in-out), border-color var(--duration-default) var(--ease-in-out); }
+    .check .box svg { width: 12px; height: 12px; }
+    .check input:checked + .box { background: var(--primary); border-color: var(--primary); color: var(--primary-foreground); }
+    .check input:focus-visible + .box { box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring) 28%, transparent); }
+
+    /* divisor "ou" */
+    .divider { display: flex; align-items: center; gap: var(--gap-sm); margin: var(--space-6) 0; color: var(--muted-foreground); }
+    .divider::before, .divider::after { content: ""; height: var(--border-width-1); background: var(--border); flex: 1; }
+
+    .foot-cta { text-align: center; margin: var(--space-6) 0 0; color: var(--muted-foreground); }
+
+    /* O componente .btn (solid/block/lg, foco, loading, forced-colors) vem 100% de
+       dist/components/button.css — o MESMO artefato shippado que o app consome.
+       Esta tela só estiliza inputs, checkbox, links e o layout do card. */
+  </style>
+</head>
+<body>
+  <div class="switcher">
+    <div class="seg" id="brand">
+      <button data-brand="" aria-pressed="true">CRP</button>
+      <button data-brand="marca-b" aria-pressed="false">Marca B</button>
+    </div>
+    <div class="seg" id="mode">
+      <button data-mode="light" aria-pressed="true">Light</button>
+      <button data-mode="dark" aria-pressed="false">Dark</button>
+    </div>
+  </div>
+
+  <main class="login">
+    <!-- ===== painel da marca (área grande em --primary) ===== -->
+    <section class="brandside">
+      <span class="blob a"></span><span class="blob b"></span>
+      <div class="top">
+        <div class="logo on-brand"><span class="mark">C</span><span class="word">CRP</span></div>
+
+        <div class="pitch">
+          <h2 class="ty-display" style="margin:0">Gestão de pessoas, sem atrito.</h2>
+          <p class="ty-body-lg">Centralize times, jornadas e indicadores numa plataforma só — rápida, segura e do seu jeito.</p>
+          <div class="feature ty-body-sm"><span class="tick">✓</span> Multi-marca e tema claro/escuro nativos</div>
+          <div class="feature ty-body-sm"><span class="tick">✓</span> Acesso seguro com SSO e 2FA</div>
+          <div class="feature ty-body-sm"><span class="tick">✓</span> Relatórios em tempo real</div>
+        </div>
+      </div>
+
+      <figure class="quote">
+        <blockquote class="ty-body-lg">“Migramos 1.200 colaboradores em uma semana. O CRP virou o centro da nossa operação de pessoas.”</blockquote>
+        <figcaption class="author">
+          <span class="avatar">MA</span>
+          <span>
+            <span class="name ty-body">Marina Alves</span>
+            <span class="role ty-body-sm">Head de RH · Northwind</span>
+          </span>
+        </figcaption>
+      </figure>
+
+      <p class="foot ty-caption" style="margin:0">© 2026 CRP · Todos os direitos reservados</p>
+    </section>
+
+    <!-- ===== formulário ===== -->
+    <section class="formside">
+      <div class="formcard">
+        <div class="logo on-card"><span class="mark">C</span><span class="word">CRP</span></div>
+
+        <div class="head">
+          <h1 class="ty-h3">Entrar na sua conta</h1>
+          <p class="ty-body-sm">Bem-vindo de volta! Informe suas credenciais para continuar.</p>
+        </div>
+
+        <form id="form" novalidate>
+          <div class="field" id="f-email">
+            <div class="lbl-row"><label class="ty-label" for="email">E-mail</label></div>
+            <div class="input-wrap">
+              <span class="lead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></span>
+              <input class="input" id="email" type="email" placeholder="voce@empresa.com" autocomplete="email" />
+            </div>
+            <p class="err ty-caption">Informe um e-mail válido.</p>
+          </div>
+
+          <div class="field" id="f-pass">
+            <div class="lbl-row"><label class="ty-label" for="password">Senha</label></div>
+            <div class="input-wrap">
+              <span class="lead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+              <input class="input has-toggle" id="password" type="password" placeholder="••••••••" autocomplete="current-password" />
+              <button type="button" class="toggle" id="eye" aria-label="Mostrar senha">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+            <p class="err ty-caption">Informe sua senha.</p>
+          </div>
+
+          <div class="row-between">
+            <label class="check ty-body-sm">
+              <input type="checkbox" id="remember" checked />
+              <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+              <span>Lembrar de mim</span>
+            </label>
+            <button type="button" class="link ty-caption">Esqueceu a senha?</button>
+          </div>
+
+          <button type="submit" class="btn solid block lg" id="submit"><span>Entrar</span></button>
+        </form>
+
+        <p class="foot-cta ty-body-sm">Não tem uma conta? <button type="button" class="link">Criar conta</button></p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // mostrar/ocultar senha
+    const pass = document.getElementById('password');
+    document.getElementById('eye').addEventListener('click', () => {
+      const show = pass.type === 'password';
+      pass.type = show ? 'text' : 'password';
+      document.getElementById('eye').setAttribute('aria-label', show ? 'Ocultar senha' : 'Mostrar senha');
+    });
+
+    // validação simples → demonstra estado de erro (--destructive) e loading (--duration/--animate)
+    const form = document.getElementById('form');
+    const submit = document.getElementById('submit');
+    const fEmail = document.getElementById('f-email'), fPass = document.getElementById('f-pass');
+    const reEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (submit.classList.contains('is-loading')) return; // já carregando → não re-submete
+      const okE = reEmail.test(document.getElementById('email').value.trim());
+      const okP = pass.value.length > 0;
+      fEmail.classList.toggle('error', !okE);
+      fPass.classList.toggle('error', !okP);
+      if (!okE || !okP) return;
+      // loading via o MESMO contrato do componente shippado (dist/components/button.css):
+      // .is-loading oculta o conteúdo (opacity, preservando o nome acessível) e o spinner é um
+      // filho .btn-spinner decorativo (aria-hidden). O estado é anunciado por aria-busy/aria-disabled;
+      // a ativação fica inerte pelo guard de dist/components/button.js.
+      submit.classList.add('is-loading');
+      submit.setAttribute('aria-busy', 'true');      // anuncia "ocupado" no leitor de tela
+      submit.setAttribute('aria-disabled', 'true');  // inerte durante o load, segue focável
+      if (!submit.querySelector('.btn-spinner')) {
+        submit.insertAdjacentHTML('beforeend', '<span class="btn-spinner" aria-hidden="true"></span>');
+      }
+      setTimeout(() => {
+        submit.classList.remove('is-loading');
+        submit.removeAttribute('aria-busy');
+        submit.removeAttribute('aria-disabled');
+        submit.querySelector('.btn-spinner')?.remove();
+      }, 1400);
+    });
+    [['email', fEmail], ['password', fPass]].forEach(([id, f]) =>
+      document.getElementById(id).addEventListener('input', () => f.classList.remove('error')));
+
+    // toggles de marca/modo — re-tematiza tudo via tokens.css
+    document.getElementById('brand').addEventListener('click', (e) => {
+      const b = e.target.closest('button'); if (!b) return;
+      const brand = b.dataset.brand;
+      if (brand) document.documentElement.setAttribute('data-brand', brand);
+      else document.documentElement.removeAttribute('data-brand');
+      [...e.currentTarget.children].forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    });
+    document.getElementById('mode').addEventListener('click', (e) => {
+      const b = e.target.closest('button'); if (!b) return;
+      document.documentElement.classList.toggle('dark', b.dataset.mode === 'dark');
+      [...e.currentTarget.children].forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    });
+  </script>
+  <!-- Guard de ativação aria-disabled — artefato shippado (auto-instala 1 listener delegado). -->
+  <script src="../dist/components/button.js"></script>
+  <!-- Editor embutido (opcional): painel flutuante p/ editar texto, trocar tipografia e tokens ao vivo -->
+  <script defer src="_editor.js"></script>
+</body>
+</html>

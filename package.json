@@ -11,6 +11,9 @@
   "exports": {
     "./theme.css": "./dist/theme.css",
     "./tokens.css": "./dist/tokens.css",
+    "./base.css": "./dist/base.css",
+    "./components/button.css": "./dist/components/button.css",
+    "./components/button.js": "./dist/components/button.js",
     "./tokens": {
       "types": "./dist/tokens.d.ts",
       "import": "./dist/tokens.js"
@@ -19,7 +22,11 @@
   "scripts": {
     "build": "node build/build-tokens.mjs",
     "check": "node build/check.mjs",
+    "audit:dark": "node build/audit-dark.mjs",
     "export:ts": "node build/export-token-studio.mjs",
+    "export:figma": "node build/export-figma.mjs",
+    "export": "npm run export:ts && npm run export:figma",
+    "verify:figma": "node build/verify-figma.mjs",
     "preview": "npm run build && node -e \"console.log('Build OK. Abra preview/index.html no navegador.')\"",
     "release": "npm run build && changeset publish",
     "prepublishOnly": "npm run build && npm run check"

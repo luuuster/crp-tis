@@ -1,0 +1,171 @@
+/**
+ * CRP Design System — Botão (`.btn`), 100% token-driven.
+ *
+ * O artefato REAL do "nosso botão": o sistema acessível auditado no preview/button.html,
+ * extraído e organizado em @layer components. Tudo via var(--...) — sem valores chumbados.
+ *
+ * Importe com a base de a11y e o contrato de tokens:
+ *   import "@crp/design-tokens/tokens.css";          (ou theme.css, no fluxo Tailwind)
+ *   import "@crp/design-tokens/base.css";            (foco global, reduced-motion, forced-colors)
+ *   import "@crp/design-tokens/components/button.css";
+ *   import "@crp/design-tokens/components/button.js"; (guard de ativação p/ aria-disabled)
+ *
+ * Contrato de markup (ver README): type="button"; só-ícone com aria-label; <svg> com
+ * aria-hidden="true" focusable="false"; disabled = aria-disabled="true" (focável + guard JS);
+ * loading = aria-busy="true" + aria-disabled="true" com o nome acessível preservado.
+ *
+ * Anatomia de cor por intent (4 vars):
+ *   --_bg    fundo do SÓLIDO
+ *   --_fg    texto/ícone sobre o sólido
+ *   --_text  texto/ícone das variantes NÃO-sólidas (token *-text, mode-aware, AA garantido)
+ *   --_tint  cor base das superfícies translúcidas (outline border / soft / ghost-hover)
+ *            = --_text, p/ que o color-mix preserve o AA validado no check.mjs
+ */
+
+@keyframes crp-btn-spin {
+  to { transform: rotate(360deg); }
+}
+
+@layer components {
+  .btn {
+    --_bg: var(--primary); --_fg: var(--primary-foreground);
+    --_text: var(--primary-text); --_tint: var(--primary-text);
+    --_fs: var(--button-font-size-md); --_py: var(--button-padding-y-md); --_px: var(--button-padding-x-md);
+    --_gap: var(--button-gap-md); --_icon: var(--button-icon-size-md); --_minh: var(--button-height-md);
+    position: relative;
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--_gap);
+    min-height: var(--_minh);
+    font-family: inherit; font-weight: var(--button-font-weight); font-size: var(--_fs); line-height: 1;
+    padding: var(--_py) var(--_px);
+    border: var(--button-border-width) solid transparent; border-radius: var(--button-radius);
+    cursor: pointer; white-space: nowrap; user-select: none; text-decoration: none;
+    transition: background-color var(--duration-default) var(--ease-in-out),
+                color var(--duration-default) var(--ease-in-out),
+                border-color var(--duration-default) var(--ease-in-out),
+                box-shadow var(--duration-default) var(--ease-in-out),
+                opacity var(--duration-default) var(--ease-in-out);
+  }
+  .btn svg { width: var(--_icon); height: var(--_icon); flex: none; }
+
+  /* intents — sólido (--_bg/--_fg) + acento de TEXTO mode-aware (--_text/--_tint) p/ não-sólidas */
+  .btn.intent-primary   { --_bg: var(--primary);     --_fg: var(--primary-foreground);     --_text: var(--primary-text);        --_tint: var(--primary-text); }
+  .btn.intent-secondary { --_bg: var(--secondary);   --_fg: var(--secondary-foreground);   --_text: var(--secondary-foreground); --_tint: var(--secondary-foreground); }
+  .btn.intent-danger    { --_bg: var(--destructive); --_fg: var(--destructive-foreground); --_text: var(--destructive-text);    --_tint: var(--destructive-text); }
+  .btn.intent-warning   { --_bg: var(--warning);     --_fg: var(--warning-foreground);     --_text: var(--warning-text);        --_tint: var(--warning-text); }
+  .btn.intent-success   { --_bg: var(--success);     --_fg: var(--success-foreground);     --_text: var(--success-text);        --_tint: var(--success-text); }
+  .btn.intent-info      { --_bg: var(--info);        --_fg: var(--info-foreground);        --_text: var(--info-text);           --_tint: var(--info-text); }
+
+  /* estilo: SÓLIDO */
+  .btn.solid { background: var(--_bg); color: var(--_fg); box-shadow: var(--elevation-xs); }
+  .btn.solid:hover,  .btn.solid.is-hover  { background: color-mix(in oklch, var(--_bg), var(--state-overlay) calc(var(--state-hover) * 100%)); }
+  .btn.solid:active, .btn.solid.is-active { background: color-mix(in oklch, var(--_bg), var(--state-overlay) calc(var(--state-active) * 100%)); box-shadow: none; }
+
+  /* estilo: OUTLINE — texto/ícone = --_text (AA); borda/realce = --_tint */
+  .btn.outline { background: transparent; color: var(--_text); border-color: color-mix(in oklch, var(--_tint) calc(var(--state-border) * 100%), transparent); }
+  .btn.outline:hover,  .btn.outline.is-hover  { background: color-mix(in oklch, var(--_tint) calc(var(--state-hover) * 100%), transparent); border-color: var(--_tint); }
+  .btn.outline:active, .btn.outline.is-active { background: color-mix(in oklch, var(--_tint) calc(var(--state-active) * 100%), transparent); }
+
+  /* estilo: SOFT — texto = --_text sobre a tinta do MESMO --_text (par validado no check.mjs) */
+  .btn.soft { background: color-mix(in oklch, var(--_tint) calc(var(--state-soft) * 100%), transparent); color: var(--_text); }
+  .btn.soft:hover,  .btn.soft.is-hover  { background: color-mix(in oklch, var(--_tint) calc(var(--state-soft-hover) * 100%), transparent); }
+  .btn.soft:active, .btn.soft.is-active { background: color-mix(in oklch, var(--_tint) calc(var(--state-soft-active) * 100%), transparent); }
+
+  /* estilo: GHOST */
+  .btn.ghost { background: transparent; color: var(--_text); }
+  .btn.ghost:hover,  .btn.ghost.is-hover  { background: color-mix(in oklch, var(--_tint) calc(var(--state-hover) * 100%), transparent); }
+  .btn.ghost:active, .btn.ghost.is-active { background: color-mix(in oklch, var(--_tint) calc(var(--state-active) * 100%), transparent); }
+
+  /* estilo: LINK — sublinhado PERSISTENTE (não só no hover).
+     WCAG 1.4.1 (uso de cor): o link não pode se distinguir SÓ por cor; o sublinhado é o
+     indicador não-cromático presente em repouso. No hover, engrossamos o sublinhado p/ feedback. */
+  .btn.link { background: transparent; color: var(--_text); padding-left: 0; padding-right: 0; border-radius: 0; min-height: 0;
+              text-decoration: underline; text-decoration-thickness: var(--button-border-width); text-underline-offset: var(--space-1); }
+  .btn.link:hover, .btn.link.is-hover { text-decoration-thickness: var(--button-ring-width); }
+
+  /* foco (todos) — usa o anel da marca */
+  .btn:focus-visible, .btn.is-focus { outline: var(--button-ring-width) solid var(--ring); outline-offset: var(--button-ring-offset); }
+
+  /* desabilitado — aria-disabled (NÃO o atributo nativo): o botão segue FOCÁVEL e descobrível
+     pelo leitor de tela (anuncia "desabilitado"); a ativação é bloqueada pelo guard de clique
+     (components/button.js). Sem pointer-events:none p/ o cursor not-allowed aparecer e o foco funcionar. */
+  .btn[aria-disabled="true"], .btn.is-disabled { opacity: var(--opacity-disabled); box-shadow: none; cursor: not-allowed; }
+
+  /* tamanhos */
+  .btn.sm { --_fs: var(--button-font-size-sm); --_py: var(--button-padding-y-sm); --_px: var(--button-padding-x-sm); --_gap: var(--button-gap-sm); --_icon: var(--button-icon-size-sm); --_minh: var(--button-height-sm); }
+  .btn.md { --_fs: var(--button-font-size-md); --_py: var(--button-padding-y-md); --_px: var(--button-padding-x-md); --_gap: var(--button-gap-md); --_icon: var(--button-icon-size-md); --_minh: var(--button-height-md); }
+  .btn.lg { --_fs: var(--button-font-size-lg); --_py: var(--button-padding-y-lg); --_px: var(--button-padding-x-lg); --_gap: var(--button-gap-lg); --_icon: var(--button-icon-size-lg); --_minh: var(--button-height-lg); }
+
+  /* largura cheia (block) */
+  .btn.block { width: 100%; }
+
+  /* só ícone — quadrado, lado = altura mínima do tamanho (alvo de toque) */
+  .btn.icon-only { padding: var(--_py); aspect-ratio: 1; min-width: var(--_minh); }
+
+  /* loading — estado OCUPADO (busy), VISUALMENTE DISTINTO de DESABILITADO.
+     O loading também carrega aria-disabled (p/ o guard tornar o botão inerte e impedir
+     duplo-clique/duplo-submit), MAS não deve PARECER desabilitado: mantém a cor cheia
+     (opacity:1, sobrepondo o esmaecimento herdado de [aria-disabled]) e comunica o estado
+     pelo SPINNER — não pelo apagamento. "Carregando" ≠ "indisponível".
+     Bônus a11y (1.4.11): o spinner é currentColor; esmaecer o botão derrubaria o contraste
+     do indicador. Em opacity:1 o spinner se mantém nítido. cursor:progress (não not-allowed).
+
+     Conteúdo: opacity:0 (NÃO visibility:hidden nem display:none) — sai da vista MAS continua
+     na árvore de acessibilidade, preservando o NOME do botão durante o load (visibility:hidden/
+     display:none removeriam o nome → botão "sem nome" no leitor). Segue ocupando layout (sem
+     salto); o spinner fica absoluto por cima. O spinner é decorativo (aria-hidden no markup);
+     o estado é anunciado por aria-busy. */
+  .btn.is-loading { cursor: progress; opacity: 1; box-shadow: var(--elevation-xs); }
+  .btn.is-loading.outline, .btn.is-loading.ghost, .btn.is-loading.soft, .btn.is-loading.link { box-shadow: none; }
+  .btn.is-loading > *:not(.btn-spinner) { opacity: 0; }
+  .btn-spinner {
+    position: absolute; inset: 0; margin: auto;
+    width: 1.1em; height: 1.1em;
+    border: var(--button-ring-width) solid currentColor; border-right-color: transparent; border-radius: var(--radii-full);
+    animation: crp-btn-spin .6s linear infinite;
+  }
+
+  /* ----------------------------------------------------------------
+     A11y: respeita prefers-reduced-motion — sem giro, transições instantâneas.
+     (A base global já zera; aqui reforçamos o spinner e a transição do próprio botão.)
+     ---------------------------------------------------------------- */
+  @media (prefers-reduced-motion: reduce) {
+    .btn { transition: none; }
+    /* O spinner é movimento ESSENCIAL (feedback de "carregando"): NÃO congela — só gira mais
+       DEVAGAR. Funciona porque o markup marca o spinner com data-crp-motion="essential", então
+       o reset global de base.css (* !important) não o atinge e este override de duração vale. */
+    .btn-spinner { animation-duration: 1s; }
+  }
+
+  /* ----------------------------------------------------------------
+     A11y: forced-colors (Alto Contraste do Windows).
+     Garante que TODAS as variantes (incl. outline/ghost/soft/link) fiquem
+     visíveis com cores de sistema; nada "some". Borda sempre visível.
+     ---------------------------------------------------------------- */
+  @media (forced-colors: active) {
+    .btn {
+      /* deixa o sistema pintar texto/fundo; mantemos só o layout */
+      forced-color-adjust: none;
+      background: ButtonFace;
+      color: ButtonText;
+      border: var(--button-border-width) solid ButtonText;
+    }
+    .btn svg { color: ButtonText; }
+    /* sólido = botão "preenchido" (cor de destaque do sistema) */
+    .btn.solid { background: ButtonText; color: ButtonFace; border-color: ButtonText; }
+    .btn.solid svg { color: ButtonFace; }
+    /* não-sólidas: fundo neutro + borda visível p/ não desaparecerem */
+    .btn.outline, .btn.soft, .btn.ghost { background: ButtonFace; color: ButtonText; border-color: ButtonText; }
+    .btn.outline svg, .btn.soft svg, .btn.ghost svg { color: ButtonText; }
+    /* link = texto sublinhado em cor de link do sistema, sem caixa */
+    .btn.link { background: transparent; color: LinkText; border-color: transparent; text-decoration: underline; }
+    .btn.link svg { color: LinkText; }
+    /* hover/foco usam o par de destaque do sistema */
+    .btn:hover, .btn.is-hover, .btn:active, .btn.is-active { background: Highlight; color: HighlightText; border-color: Highlight; }
+    .btn:hover svg, .btn.is-hover svg { color: HighlightText; }
+    .btn:focus-visible, .btn.is-focus { outline: 2px solid Highlight; outline-offset: 2px; }
+    /* desabilitado: texto cinza do sistema (GrayText) */
+    .btn:disabled, .btn.is-disabled, .btn[aria-disabled="true"] { color: GrayText; border-color: GrayText; opacity: 1; }
+    .btn:disabled svg, .btn.is-disabled svg, .btn[aria-disabled="true"] svg { color: GrayText; }
+    .btn-spinner { border-color: ButtonText; border-right-color: ButtonFace; }
+  }
+}

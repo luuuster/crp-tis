@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CRP DS — Tipografia (composição semântica)</title>
+  <!-- Webfonts do DS: heading=Inter, body=Source Sans 3. O app precisa carregá-las (Google Fonts/self-host). -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" />
+  <link rel="stylesheet" href="../dist/tokens.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--background); color: var(--foreground);
+      /* default da UI = body (Source Sans 3) */
+      font-family: var(--font-body); font-size: var(--font-size-base); line-height: var(--font-line-height-base);
+      transition: background-color var(--duration-default) var(--ease-in-out), color var(--duration-default) var(--ease-in-out);
+    }
+    .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px 96px; }
+
+    .toolbar {
+      position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+      padding: 14px 24px; margin-bottom: 8px;
+      background: color-mix(in oklch, var(--background) 88%, transparent);
+      backdrop-filter: blur(8px); border-bottom: 1px solid var(--border);
+    }
+    .toolbar h1 { font-family: var(--font-heading); font-size: var(--font-size-base); margin: 0; font-weight: var(--font-weight-semibold); }
+    .toolbar .spacer { flex: 1; }
+    .seg { display: inline-flex; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .seg button { appearance: none; border: 0; background: transparent; color: var(--muted-foreground); padding: 6px 12px; font: inherit; cursor: pointer; }
+    .seg button[aria-pressed="true"] { background: var(--primary); color: var(--primary-foreground); }
+
+    h2 { font-family: var(--font-heading); font-size: var(--font-size-lg); margin: 44px 0 4px; font-weight: var(--font-weight-semibold); }
+    .hint { color: var(--muted-foreground); margin: 0 0 18px; font-size: var(--font-size-sm); }
+    code { font-family: var(--font-mono); font-size: .85em; background: var(--muted); color: var(--muted-foreground); padding: .1em .35em; border-radius: var(--radius-sm); }
+    .panel { background: var(--card); color: var(--card-foreground); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 24px; box-shadow: var(--elevation-sm); }
+
+    /* famílias */
+    .fam { display: grid; grid-template-columns: 120px 1fr; gap: 8px 20px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid var(--border); }
+    .fam:last-child { border-bottom: 0; }
+    .fam .k { font-family: var(--font-mono); font-size: var(--font-size-xs); color: var(--muted-foreground); }
+    .fam .pangram { margin: 0; }
+
+    /* linha de escala */
+    .ty { padding: 18px 0; border-bottom: 1px solid var(--border); }
+    .ty:last-child { border-bottom: 0; }
+    .ty .sample { margin: 0 0 6px; }
+    .ty .meta { display: flex; flex-wrap: wrap; gap: 4px 14px; font-family: var(--font-mono); font-size: var(--font-size-xs); color: var(--muted-foreground); }
+    .ty .meta .name { color: var(--foreground); }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <h1>CRP DS · Tipografia</h1>
+    <div class="spacer"></div>
+    <div class="seg" id="brand">
+      <button data-brand="" aria-pressed="true">CRP</button>
+      <button data-brand="marca-b" aria-pressed="false">Marca B</button>
+    </div>
+    <div class="seg" id="mode">
+      <button data-mode="light" aria-pressed="true">Light</button>
+      <button data-mode="dark" aria-pressed="false">Dark</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <h2>1. Famílias</h2>
+    <p class="hint">Papéis semânticos de fonte — <code>--font-heading</code>, <code>--font-body</code>, <code>--font-mono</code>. Troque a fonte de um papel num único lugar e todos os estilos seguem.</p>
+    <div class="panel" id="families"></div>
+
+    <h2>2. Escala — composição tipográfica</h2>
+    <p class="hint">Cada estilo é um token composto <code>typography</code> (<code>text.*</code>), expandido em <code>font-family/size/weight/line-height/letter-spacing</code>. O <strong>px</strong>/<strong>lh</strong> ao lado são lidos do CSS computado (prova de que os tokens resolvem).</p>
+    <div class="panel" id="scale"></div>
+  </div>
+
+  <script>
+    // (key, exemplo, transform opcional)
+    const FAMILIES = [
+      ['heading', 'Inter', 'Bom Pé Que Data: foi à zona, Júlio.'],
+      ['body', 'Source Sans 3', 'Bom Pé Que Data: foi à zona, Júlio.'],
+      ['mono', 'monoespaçada', 'const tokens = { ok: true }; // 0123456789'],
+    ];
+    const SCALE = [
+      ['display', 'Design System CRP'],
+      ['h1', 'Título de página (h1)'],
+      ['h2', 'Título de seção (h2)'],
+      ['h3', 'Subtítulo (h3)'],
+      ['h4', 'Cabeçalho de card (h4)'],
+      ['h5', 'Título menor (h5)'],
+      ['h6', 'Menor heading (h6)'],
+      ['body-lg', 'Parágrafo de destaque (lead). O texto longo usa Source Sans 3 com altura de linha confortável para leitura.'],
+      ['body', 'Parágrafo padrão. A raposa marrom e ágil salta sobre o cão preguiçoso enquanto revisamos a escala tipográfica do sistema.'],
+      ['body-sm', 'Texto secundário e descrições de apoio em 14px.'],
+      ['label-lg', 'Rótulo / botão lg (18px)'],
+      ['label', 'Rótulo / botão md — PADRÃO (16px)'],
+      ['label-sm', 'Rótulo / botão sm (14px)'],
+      ['link', 'Link de exemplo (cor = link, sublinhado)', 'color:var(--link);text-decoration:var(--text-link-text-decoration)'],
+      ['caption', 'Legenda / texto de ajuda em 12px.'],
+      ['overline', 'Eyebrow / sobrelinha', 'text-transform:uppercase'],
+      ['code', 'npm run build && npm run check'],
+    ];
+
+    const props = (k) => `font-family:var(--text-${k}-font-family);font-weight:var(--text-${k}-font-weight);font-size:var(--text-${k}-font-size);line-height:var(--text-${k}-line-height);letter-spacing:var(--text-${k}-letter-spacing)`;
+
+    document.getElementById('families').innerHTML = FAMILIES.map(([k, name, pangram]) =>
+      `<div class="fam">
+         <span class="k">--font-${k}<br>${name}</span>
+         <p class="pangram" style="font-family:var(--font-${k});font-size:var(--font-size-xl)">${pangram}</p>
+       </div>`).join('');
+
+    document.getElementById('scale').innerHTML = SCALE.map(([k, sample, extra]) =>
+      `<div class="ty">
+         <p class="sample" data-k="${k}" style="${props(k)}${extra ? ';' + extra : ''}">${sample}</p>
+         <div class="meta"><span class="name">text-${k}</span><span data-f="size"></span><span data-f="lh"></span><span data-f="weight"></span><span data-f="ls"></span><span data-f="family"></span></div>
+       </div>`).join('');
+
+    // lê o CSS computado de cada amostra e preenche a meta (prova de resolução)
+    function refreshMeta() {
+      for (const el of document.querySelectorAll('.ty .sample')) {
+        const cs = getComputedStyle(el);
+        const meta = el.parentElement.querySelector('.meta');
+        const px = parseFloat(cs.fontSize);
+        const lh = parseFloat(cs.lineHeight);
+        meta.querySelector('[data-f="size"]').textContent = `${px}px`;
+        meta.querySelector('[data-f="lh"]').textContent = `lh ${lh ? (lh / px).toFixed(2) : '—'}`;
+        meta.querySelector('[data-f="weight"]').textContent = cs.fontWeight;
+        meta.querySelector('[data-f="ls"]').textContent = `tracking ${cs.letterSpacing === 'normal' ? '0' : cs.letterSpacing}`;
+        meta.querySelector('[data-f="family"]').textContent = cs.fontFamily.split(',')[0].replace(/["']/g, '');
+      }
+    }
+    refreshMeta();
+
+    document.getElementById('brand').addEventListener('click', (e) => {
+      const b = e.target.closest('button'); if (!b) return;
+      const brand = b.dataset.brand;
+      if (brand) document.documentElement.setAttribute('data-brand', brand);
+      else document.documentElement.removeAttribute('data-brand');
+      [...e.currentTarget.children].forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      refreshMeta();
+    });
+    document.getElementById('mode').addEventListener('click', (e) => {
+      const b = e.target.closest('button'); if (!b) return;
+      document.documentElement.classList.toggle('dark', b.dataset.mode === 'dark');
+      [...e.currentTarget.children].forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      refreshMeta();
+    });
+  </script>
+  <script defer src="_editor.js"></script>
+</body>
+</html>
