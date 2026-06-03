@@ -1,8 +1,11 @@
 {
-  "primary":                    { "$type": "color", "$value": "{color.brand.crp.primary.700}" },
-  "primary-foreground":         { "$type": "color", "$value": "{color.neutral.50}" },
-  "ring":                       { "$type": "color", "$value": "{color.brand.crp.primary.600}" },
-  "sidebar-primary":            { "$type": "color", "$value": "{color.brand.crp.primary.700}" },
-  "sidebar-primary-foreground": { "$type": "color", "$value": "{color.neutral.50}" },
-  "sidebar-ring":               { "$type": "color", "$value": "{color.brand.crp.primary.600}" }
+  "brand-primary":              { "$type": "color", "$value": "{color.brand.crp.primary.700}", "$description": "Âncora de marca: primary em superfície CLARA (Light). Consumido por mode/light (primary/sidebar-primary)." },
+  "brand-primary-foreground":   { "$type": "color", "$value": "{color.neutral.50}", "$description": "Âncora: texto/ícone sobre o primary no Light." },
+  "brand-ring":                 { "$type": "color", "$value": "{color.brand.crp.primary.600}", "$description": "Âncora: anel de foco da marca no Light (shade 600). Consumido por mode/light (ring/sidebar-ring)." },
+  "brand-primary-on-dark":      { "$type": "color", "$value": "{color.brand.crp.primary.600}", "$description": "Âncora: primary p/ o modo DARK (shade 600 → mais visível no fundo escuro que o 700, mantendo TEXTO BRANCO em AA). Consumido por mode/dark." },
+  "brand-primary-on-dark-text": { "$type": "color", "$value": "{color.brand.crp.primary.400}", "$description": "Âncora: brand primary p/ TEXTO/links em superfície escura (shade 400 → AA como texto no card escuro). Consumido por mode/dark (link/primary-text)." },
+
+  "brand-font-heading": { "$type": "fontFamily", "$value": "{font.family.inter}", "$description": "Âncora tipográfica de MARCA: família de títulos da CRP — Inter. Consumida por semantic font.heading. Troque aqui p/ reskin de headings desta marca." },
+  "brand-font-body":    { "$type": "fontFamily", "$value": "{font.family.source-sans-3}", "$description": "Âncora tipográfica de MARCA: família de corpo da CRP — Source Sans 3. Consumida por semantic font.body (e --font-sans)." },
+  "brand-font-mono":    { "$type": "fontFamily", "$value": "{font.family.mono}", "$description": "Âncora tipográfica de MARCA: monoespaçada da CRP (stack de sistema). Consumida por semantic font.mono." }
 }

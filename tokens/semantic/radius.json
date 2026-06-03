@@ -1,0 +1,13 @@
+{
+  "radius": {
+    "$type": "dimension",
+    "$description": "Arredondamento de cantos do CONTRATO. 'radius' é o knob base do shadcn (--radius); radius-sm…2xl/full são a escala consumida pelos componentes e pelas utilities rounded-*. Todos apelidam radii.* (primitivo). px: sm 4 · md 6 · lg 8 · base 10 · xl 12 · 2xl 16 · full ∞.",
+    "$value": "{radii.base}"
+  },
+  "radius-sm": { "$type": "dimension", "$value": "{radii.sm}" },
+  "radius-md": { "$type": "dimension", "$value": "{radii.md}" },
+  "radius-lg": { "$type": "dimension", "$value": "{radii.lg}" },
+  "radius-xl": { "$type": "dimension", "$value": "{radii.xl}" },
+  "radius-2xl": { "$type": "dimension", "$value": "{radii.2xl}" },
+  "radius-full": { "$type": "dimension", "$value": "{radii.full}" }
+}

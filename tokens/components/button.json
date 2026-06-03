@@ -1,9 +1,47 @@
 {
   "button": {
-    "$type": "color",
-    "primary-bg":       { "$value": "{primary}" },
-    "primary-fg":       { "$value": "{primary-foreground}" },
-    "destructive-bg":   { "$value": "{destructive}" },
-    "destructive-fg":   { "$value": "{destructive-foreground}" }
+    "radius": { "$type": "dimension", "$value": "{radius}" },
+    "font-weight": { "$type": "fontWeight", "$value": "{font.weight.medium}" },
+    "border-width": { "$type": "dimension", "$value": "{borderWidth.1}" },
+    "ring-width": { "$type": "dimension", "$value": "{borderWidth.2}" },
+    "ring-offset": { "$type": "dimension", "$value": "{borderWidth.2}" },
+
+    "gap": {
+      "$type": "dimension",
+      "sm": { "$value": "{gap.2xs}" },
+      "md": { "$value": "{gap.xs}" },
+      "lg": { "$value": "{gap.xs}" }
+    },
+    "padding-x": {
+      "$type": "dimension",
+      "sm": { "$value": "{inset.sm}" },
+      "md": { "$value": "{inset.md}" },
+      "lg": { "$value": "{inset.lg}" }
+    },
+    "padding-y": {
+      "$type": "dimension",
+      "sm": { "$value": "{inset.2xs}" },
+      "md": { "$value": "{inset.xs}" },
+      "lg": { "$value": "{inset.sm}" }
+    },
+    "font-size": {
+      "$type": "dimension",
+      "sm": { "$value": "{font.size.sm}" },
+      "md": { "$value": "{font.size.base}" },
+      "lg": { "$value": "{font.size.lg}" }
+    },
+    "icon-size": {
+      "$type": "dimension",
+      "sm": { "$value": "{icon.sm}" },
+      "md": { "$value": "{icon.md}" },
+      "lg": { "$value": "{icon.lg}" }
+    },
+    "height": {
+      "$type": "dimension",
+      "$description": "Altura mínima (alvo de toque). md/lg ≥ 40px (WCAG 2.5.8 / alvo confortável); sm = 32px (denso, ainda razoável). Aplicado como min-height; o padding-y mantém a aparência, a min-height garante o alvo.",
+      "sm": { "$value": "{space.8}" },
+      "md": { "$value": "{space.10}" },
+      "lg": { "$value": "{space.11}" }
+    }
   }
 }

@@ -10,8 +10,16 @@
       "core/shadow": "source",
       "core/effect": "source",
       "core/motion": "source",
-      "semantic/base": "enabled",
-      "brand/crp": "enabled"
+      "core/border": "source",
+      "core/icon": "source",
+      "semantic/opacity": "enabled",
+      "semantic/spacing": "enabled",
+      "semantic/state": "enabled",
+      "semantic/radius": "enabled",
+      "semantic/typography": "enabled",
+      "semantic/layer": "enabled",
+      "brand/crp": "enabled",
+      "components/button": "enabled"
     }
   },
   {
@@ -25,8 +33,16 @@
       "core/shadow": "source",
       "core/effect": "source",
       "core/motion": "source",
-      "semantic/base": "enabled",
-      "brand/marca-b": "enabled"
+      "core/border": "source",
+      "core/icon": "source",
+      "semantic/opacity": "enabled",
+      "semantic/spacing": "enabled",
+      "semantic/state": "enabled",
+      "semantic/radius": "enabled",
+      "semantic/typography": "enabled",
+      "semantic/layer": "enabled",
+      "brand/marca-b": "enabled",
+      "components/button": "enabled"
     }
   },
   {

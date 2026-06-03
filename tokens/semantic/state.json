@@ -1,0 +1,12 @@
+{
+  "state": {
+    "$type": "number",
+    "$description": "Camada de interação (intensidade 0–1 dos overlays/tints de estado). hover/active = força do overlay no sólido (escurece/clareia via state-overlay) e do tint em ghost/outline; border = opacidade da borda do outline em repouso (≥0.70 p/ a borda translúcida do outline passar WCAG 1.4.11 ≥3:1 contra a superfície, validado em check.mjs); soft/soft-hover/soft-active = tint da variante soft. Consumido via color-mix no componente. Apelidos de opacity.*.",
+    "hover": { "$value": "{opacity.10}" },
+    "active": { "$value": "{opacity.20}" },
+    "border": { "$value": "{opacity.75}", "$description": "Opacidade da borda do outline em repouso. 0.75 (não 0.45) p/ o color-mix(tint, transparent) resultar em borda ≥3:1 contra bg/card nos 4 temas (WCAG 1.4.11 contraste não-textual). Pior caso medido: CRP-Dark/success/card = 3.6:1." },
+    "soft": { "$value": "{opacity.15}" },
+    "soft-hover": { "$value": "{opacity.25}" },
+    "soft-active": { "$value": "{opacity.35}" }
+  }
+}

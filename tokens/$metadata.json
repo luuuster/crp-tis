@@ -6,10 +6,18 @@
     "core/shadow",
     "core/effect",
     "core/motion",
-    "semantic/base",
+    "core/border",
+    "core/icon",
+    "semantic/opacity",
+    "semantic/spacing",
+    "semantic/state",
+    "semantic/radius",
+    "semantic/typography",
+    "semantic/layer",
     "brand/crp",
     "brand/marca-b",
     "mode/light",
-    "mode/dark"
+    "mode/dark",
+    "components/button"
   ]
 }

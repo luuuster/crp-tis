@@ -1,0 +1,193 @@
+{
+  "font": {
+    "heading": {
+      "$type": "fontFamily",
+      "$value": "{brand-font-heading}",
+      "$description": "Fonte de títulos/headings — vem da MARCA (brand-font-heading). CRP=Inter, Marca B=Montserrat. A família é decisão de marca; troque na camada brand/<marca>, não aqui."
+    },
+    "body": {
+      "$type": "fontFamily",
+      "$value": "{brand-font-body}",
+      "$description": "Fonte de corpo/texto — vem da MARCA (brand-font-body). CRP=Source Sans 3, Marca B=Roboto. Default da UI (mapeada em --font-sans)."
+    },
+    "mono": {
+      "$type": "fontFamily",
+      "$value": "{brand-font-mono}",
+      "$description": "Fonte monoespaçada — vem da MARCA (brand-font-mono). Código/dados tabulares."
+    }
+  },
+  "text": {
+    "$type": "typography",
+    "display": {
+      "$value": {
+        "fontFamily": "{font.heading}",
+        "fontWeight": "{font.weight.extrabold}",
+        "fontSize": "{font.size.6xl}",
+        "lineHeight": "{font.lineHeight.6xl}",
+        "letterSpacing": "{font.tracking.tighter}"
+      },
+      "$description": "Hero/display — 60px · Inter 800 · tracking -0.05em."
+    },
+    "h1": {
+      "$value": {
+        "fontFamily": "{font.heading}",
+        "fontWeight": "{font.weight.bold}",
+        "fontSize": "{font.size.5xl}",
+        "lineHeight": "{font.lineHeight.5xl}",
+        "letterSpacing": "{font.tracking.tight}"
+      },
+      "$description": "Título de página — 48px · Inter 700 · tracking -0.025em."
+    },
+    "h2": {
+      "$value": {
+        "fontFamily": "{font.heading}",
+        "fontWeight": "{font.weight.bold}",
+        "fontSize": "{font.size.4xl}",
+        "lineHeight": "{font.lineHeight.4xl}",
+        "letterSpacing": "{font.tracking.tight}"
+      },
+      "$description": "Seção — 36px · Inter 700 · tracking -0.025em."
+    },
+    "h3": {
+      "$value": {
+        "fontFamily": "{font.heading}",
+        "fontWeight": "{font.weight.semibold}",
+        "fontSize": "{font.size.3xl}",
+        "lineHeight": "{font.lineHeight.3xl}",
+        "letterSpacing": "{font.tracking.normal}"
+      },
+      "$description": "Subseção — 30px · Inter 600."
+    },
+    "h4": {
+      "$value": {
+        "fontFamily": "{font.heading}",
+        "fontWeight": "{font.weight.semibold}",
+        "fontSize": "{font.size.2xl}",
+        "lineHeight": "{font.lineHeight.2xl}",
+        "letterSpacing": "{font.tracking.normal}"
+      },
+      "$description": "Cabeçalho de card/bloco — 24px · Inter 600."
+    },
+    "h5": {
+      "$value": {
+        "fontFamily": "{font.heading}",
+        "fontWeight": "{font.weight.semibold}",
+        "fontSize": "{font.size.xl}",
+        "lineHeight": "{font.lineHeight.xl}",
+        "letterSpacing": "{font.tracking.normal}"
+      },
+      "$description": "Título menor — 20px · Inter 600."
+    },
+    "h6": {
+      "$value": {
+        "fontFamily": "{font.heading}",
+        "fontWeight": "{font.weight.semibold}",
+        "fontSize": "{font.size.lg}",
+        "lineHeight": "{font.lineHeight.lg}",
+        "letterSpacing": "{font.tracking.normal}"
+      },
+      "$description": "Menor heading — 18px · Inter 600."
+    },
+    "body-lg": {
+      "$value": {
+        "fontFamily": "{font.body}",
+        "fontWeight": "{font.weight.normal}",
+        "fontSize": "{font.size.lg}",
+        "lineHeight": "{font.lineHeight.lg}",
+        "letterSpacing": "{font.tracking.normal}"
+      },
+      "$description": "Corpo grande/lead — 18px · Source Sans 3 400."
+    },
+    "body": {
+      "$value": {
+        "fontFamily": "{font.body}",
+        "fontWeight": "{font.weight.normal}",
+        "fontSize": "{font.size.base}",
+        "lineHeight": "{font.lineHeight.base}",
+        "letterSpacing": "{font.tracking.normal}"
+      },
+      "$description": "Corpo padrão — 16px · Source Sans 3 400."
+    },
+    "body-sm": {
+      "$value": {
+        "fontFamily": "{font.body}",
+        "fontWeight": "{font.weight.normal}",
+        "fontSize": "{font.size.sm}",
+        "lineHeight": "{font.lineHeight.sm}",
+        "letterSpacing": "{font.tracking.normal}"
+      },
+      "$description": "Corpo pequeno/secundário — 14px · Source Sans 3 400."
+    },
+    "label-lg": {
+      "$value": {
+        "fontFamily": "{font.body}",
+        "fontWeight": "{font.weight.medium}",
+        "fontSize": "{font.size.lg}",
+        "lineHeight": "{font.lineHeight.lg}",
+        "letterSpacing": "{font.tracking.normal}"
+      },
+      "$description": "Rótulo grande — botão lg — 18px · Source Sans 3 500."
+    },
+    "label": {
+      "$value": {
+        "fontFamily": "{font.body}",
+        "fontWeight": "{font.weight.medium}",
+        "fontSize": "{font.size.base}",
+        "lineHeight": "{font.lineHeight.base}",
+        "letterSpacing": "{font.tracking.normal}"
+      },
+      "$description": "Rótulo PADRÃO — botão md (default) — 16px · Source Sans 3 500."
+    },
+    "label-sm": {
+      "$value": {
+        "fontFamily": "{font.body}",
+        "fontWeight": "{font.weight.medium}",
+        "fontSize": "{font.size.sm}",
+        "lineHeight": "{font.lineHeight.sm}",
+        "letterSpacing": "{font.tracking.normal}"
+      },
+      "$description": "Rótulo pequeno — botão sm — 14px · Source Sans 3 500."
+    },
+    "link": {
+      "$value": {
+        "fontFamily": "{font.body}",
+        "fontWeight": "{font.weight.medium}",
+        "fontSize": "{font.size.base}",
+        "lineHeight": "{font.lineHeight.base}",
+        "letterSpacing": "{font.tracking.normal}",
+        "textDecoration": "underline"
+      },
+      "$description": "Link/âncora — 16px · Source Sans 3 500 · sublinhado. A COR vem do contrato (primary), não da tipografia."
+    },
+    "caption": {
+      "$value": {
+        "fontFamily": "{font.body}",
+        "fontWeight": "{font.weight.normal}",
+        "fontSize": "{font.size.xs}",
+        "lineHeight": "{font.lineHeight.xs}",
+        "letterSpacing": "{font.tracking.normal}"
+      },
+      "$description": "Legenda/ajuda — 12px · Source Sans 3 400."
+    },
+    "overline": {
+      "$value": {
+        "fontFamily": "{font.body}",
+        "fontWeight": "{font.weight.semibold}",
+        "fontSize": "{font.size.xs}",
+        "lineHeight": "{font.lineHeight.xs}",
+        "letterSpacing": "{font.tracking.widest}"
+      },
+      "$description": "Eyebrow/sobrelinha — 12px · Source Sans 3 600 · tracking 0.1em (aplique uppercase no CSS)."
+    },
+    "code": {
+      "$value": {
+        "fontFamily": "{font.mono}",
+        "fontWeight": "{font.weight.normal}",
+        "fontSize": "{font.size.sm}",
+        "lineHeight": "{font.lineHeight.sm}",
+        "letterSpacing": "{font.tracking.normal}"
+      },
+      "$description": "Código inline/bloco — 14px · monoespaçada 400."
+    }
+  }
+}

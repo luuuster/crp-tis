@@ -133,5 +133,14 @@
       "$description": "100%"
     },
     "$type": "number"
+  },
+  "zIndex": {
+    "$type": "number",
+    "0": { "$value": 0, "$description": "Sem empilhamento (fluxo normal)." },
+    "10": { "$value": 10 },
+    "20": { "$value": 20 },
+    "30": { "$value": 30 },
+    "40": { "$value": 40 },
+    "50": { "$value": 50, "$description": "Topo do empilhamento LOCAL (dentro de um componente/contexto). Overlays globais usam semantic/layer." }
   }
 }

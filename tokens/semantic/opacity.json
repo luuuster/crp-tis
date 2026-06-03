@@ -1,0 +1,5 @@
+{
+  "opacity-disabled": { "$type": "number", "$value": "{opacity.50}" },
+  "opacity-muted": { "$type": "number", "$value": "{opacity.70}" },
+  "opacity-overlay": { "$type": "number", "$value": "{opacity.80}" }
+}

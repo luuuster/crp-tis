@@ -1,8 +1,11 @@
 {
-  "primary":                    { "$type": "color", "$value": "{color.brand.marca-b.primary.700}" },
-  "primary-foreground":         { "$type": "color", "$value": "{color.neutral.50}" },
-  "ring":                       { "$type": "color", "$value": "{color.brand.marca-b.primary.700}" },
-  "sidebar-primary":            { "$type": "color", "$value": "{color.brand.marca-b.primary.700}" },
-  "sidebar-primary-foreground": { "$type": "color", "$value": "{color.neutral.50}" },
-  "sidebar-ring":               { "$type": "color", "$value": "{color.brand.marca-b.primary.700}" }
+  "brand-primary":              { "$type": "color", "$value": "{color.brand.marca-b.primary.700}", "$description": "Âncora de marca: primary em superfície CLARA (Light). Consumido por mode/light (primary/sidebar-primary)." },
+  "brand-primary-foreground":   { "$type": "color", "$value": "{color.neutral.50}", "$description": "Âncora: texto/ícone sobre o primary no Light." },
+  "brand-ring":                 { "$type": "color", "$value": "{color.brand.marca-b.primary.700}", "$description": "Âncora: anel de foco da marca no Light (Marca B usa shade 700). Consumido por mode/light (ring/sidebar-ring)." },
+  "brand-primary-on-dark":      { "$type": "color", "$value": "{color.brand.marca-b.primary.600}", "$description": "Âncora: primary p/ o modo DARK (shade 600). Consumido por mode/dark." },
+  "brand-primary-on-dark-text": { "$type": "color", "$value": "{color.brand.marca-b.primary.400}", "$description": "Âncora: brand primary p/ TEXTO/links em superfície escura (shade 400). Consumido por mode/dark (link/primary-text)." },
+
+  "brand-font-heading": { "$type": "fontFamily", "$value": "{font.family.montserrat}", "$description": "Âncora tipográfica de MARCA: família de títulos da Marca B — Montserrat. Identidade própria (a CRP usa Inter). Troque aqui p/ a fonte de headings desta marca." },
+  "brand-font-body":    { "$type": "fontFamily", "$value": "{font.family.roboto}", "$description": "Âncora tipográfica de MARCA: família de corpo da Marca B — Roboto (a CRP usa Source Sans 3). Consumida por semantic font.body (e --font-sans)." },
+  "brand-font-mono":    { "$type": "fontFamily", "$value": "{font.family.mono}", "$description": "Âncora tipográfica de MARCA: monoespaçada da Marca B (stack de sistema, igual à CRP por ora)." }
 }

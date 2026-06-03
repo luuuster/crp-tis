@@ -1,0 +1,15 @@
+{
+  "layer": {
+    "$type": "number",
+    "base":     { "$value": "{zIndex.0}",  "$description": "Conteúdo no fluxo normal (z=0)." },
+    "raised":   { "$value": "{zIndex.10}", "$description": "Elevado dentro do contexto local — ex.: item em hover, badge sobre card." },
+    "dropdown": { "$value": 1000, "$description": "Menus, selects e dropdowns abertos." },
+    "sticky":   { "$value": 1100, "$description": "Cabeçalhos / colunas sticky (grudam ao rolar)." },
+    "fixed":    { "$value": 1200, "$description": "Barras fixas (app bar, bottom bar)." },
+    "overlay":  { "$value": 1300, "$description": "Backdrop/scrim de modal e drawer." },
+    "modal":    { "$value": 1400, "$description": "Diálogo / modal / drawer (acima do backdrop)." },
+    "popover":  { "$value": 1500, "$description": "Popover / menu flutuante (pode abrir a partir de um modal)." },
+    "toast":    { "$value": 1600, "$description": "Toasts / notificações." },
+    "tooltip":  { "$value": 1700, "$description": "Tooltip — sempre no topo da pilha." }
+  }
+}

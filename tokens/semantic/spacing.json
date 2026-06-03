@@ -1,0 +1,24 @@
+{
+  "inset": {
+    "$type": "dimension",
+    "$description": "Espaçamento INTERNO (padding): distância entre a borda do componente e seu conteúdo. Use em padding. Para padding assimétrico, componha níveis diferentes em X e Y. Apelidos de space.*.",
+    "2xs": { "$value": "{space.1}" },
+    "xs": { "$value": "{space.2}" },
+    "sm": { "$value": "{space.3}" },
+    "md": { "$value": "{space.4}" },
+    "lg": { "$value": "{space.6}" },
+    "xl": { "$value": "{space.8}" },
+    "2xl": { "$value": "{space.12}" }
+  },
+  "gap": {
+    "$type": "dimension",
+    "$description": "Espaçamento ENTRE itens irmãos (gap em flex/grid, space-between): distância de um elemento para o próximo. Use em gap/column-gap/row-gap, não em padding. Apelidos de space.*.",
+    "2xs": { "$value": "{space.1}" },
+    "xs": { "$value": "{space.2}" },
+    "sm": { "$value": "{space.3}" },
+    "md": { "$value": "{space.4}" },
+    "lg": { "$value": "{space.6}" },
+    "xl": { "$value": "{space.8}" },
+    "2xl": { "$value": "{space.12}" }
+  }
+}
