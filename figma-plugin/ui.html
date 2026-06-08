@@ -203,11 +203,12 @@
 
     <section>
       <p class="step-label">4 · Gerar no canvas (opcional)</p>
-      <div class="seg-row">
+      <div class="seg-row" style="flex-wrap:wrap">
         <button class="btn ghost" id="genSheet" type="button" style="padding:6px 11px">Folha de tokens</button>
         <button class="btn ghost" id="genButton" type="button" style="padding:6px 11px">Button de exemplo</button>
+        <button class="btn ghost" id="genComponents" type="button" style="padding:6px 11px">Components (shadcn)</button>
       </div>
-      <p class="hint">Cria amostras usando as Variables/Styles já importados (paleta, tipografia, elevação, e um Button ligado aos tokens).</p>
+      <p class="hint">Amostras usando as Variables/Styles já importados. <b>Components (shadcn)</b> cria um ComponentSet <code>Button</code> (variant × size) ligado aos tokens.</p>
     </section>
 
     <section class="panel" id="planPanel" aria-live="polite">
@@ -304,34 +305,32 @@
       syncMaster('col'); syncMaster('sty');
     }
 
+    function applyBundle(parsed, name) {
+      if (!parsed || (!Array.isArray(parsed.collections) && !parsed.styles)) throw new Error('Não parece o figma-variables.json. Gere com "npm run export:figma".');
+      bundle = parsed;
+      var present = { collections: {}, styles: {} };
+      (parsed.collections || []).forEach(function (c) { present.collections[c.name.replace('CRP/', '')] = (c.variables || []).length; });
+      var S = parsed.styles || {};
+      STY_KEYS.forEach(function (k) { present.styles[k] = (S[k] && S[k].length) || 0; });
+      var nColl = (parsed.collections || []).length;
+      var nVar = (parsed.collections || []).reduce(function (a, c) { return a + (c.variables ? c.variables.length : 0); }, 0);
+      var nSty = STY_KEYS.reduce(function (a, k) { return a + present.styles[k]; }, 0);
+      $('fileName').textContent = name;
+      $('fileMeta').innerHTML = nColl + ' collections · ' + nVar + ' variables · ' + nSty + ' styles' + (parsed.$schema ? ' · <code>' + parsed.$schema + '</code>' : '');
+      setAvailability(present);
+      dropEl.classList.add('loaded');
+      $('planPanel').classList.remove('on');
+      setStatus('Pronto para importar');
+      updateRunState();
+      healthEl.classList.remove('on');
+      $('fix').style.display = 'none'; lastReport = null;
+      parent.postMessage({ pluginMessage: { type: 'audit', doc: bundle, parts: gatherParts(), silent: true } }, '*'); // selo de saúde
+    }
     function loadFile(f) {
       var reader = new FileReader();
       reader.onload = function () {
-        try {
-          var parsed = JSON.parse(reader.result);
-          if (!parsed || (!Array.isArray(parsed.collections) && !parsed.styles)) throw new Error('Não parece o figma-variables.json. Gere com "npm run export:figma".');
-          bundle = parsed;
-          var present = { collections: {}, styles: {} };
-          (parsed.collections || []).forEach(function (c) { present.collections[c.name.replace('CRP/', '')] = (c.variables || []).length; });
-          var S = parsed.styles || {};
-          STY_KEYS.forEach(function (k) { present.styles[k] = (S[k] && S[k].length) || 0; });
-          var nColl = (parsed.collections || []).length;
-          var nVar = (parsed.collections || []).reduce(function (a, c) { return a + (c.variables ? c.variables.length : 0); }, 0);
-          var nSty = STY_KEYS.reduce(function (a, k) { return a + present.styles[k]; }, 0);
-          $('fileName').textContent = f.name;
-          $('fileMeta').innerHTML = nColl + ' collections · ' + nVar + ' variables · ' + nSty + ' styles' + (parsed.$schema ? ' · <code>' + parsed.$schema + '</code>' : '');
-          setAvailability(present);
-          dropEl.classList.add('loaded');
-          $('planPanel').classList.remove('on');
-          resetLog(); append('Arquivo válido. Pré-visualize ou crie.', 'ok');
-          setStatus('Pronto para importar');
-          updateRunState();
-          healthEl.classList.remove('on');
-          $('fix').style.display = 'none'; lastReport = null;
-          parent.postMessage({ pluginMessage: { type: 'audit', doc: bundle, parts: gatherParts(), silent: true } }, '*'); // selo de saúde
-        } catch (e) {
-          bundle = null; resetLog(); append(e.message, 'err'); setStatus('Arquivo inválido'); updateRunState();
-        }
+        try { applyBundle(JSON.parse(reader.result), f.name); resetLog(); append('Arquivo válido. Pré-visualize ou crie.', 'ok'); }
+        catch (e) { bundle = null; resetLog(); append(e.message, 'err'); setStatus('Arquivo inválido'); updateRunState(); }
       };
       reader.readAsText(f);
     }
@@ -345,7 +344,12 @@
     function clearBusy() { busy = false; runEl.textContent = 'Criar'; cancelEl.style.display = 'none'; setProgress(false); updateRunState(); }
 
     prevEl.addEventListener('click', function () { if (!bundle) return; resetLog(); append('Calculando o plano…'); setStatus('Pré-visualizando…'); send('preview'); });
-    runEl.addEventListener('click', function () { if (!bundle) return; $('planPanel').classList.remove('on'); resetLog(); append('Importando…'); setBusy('Criando…'); send('import'); });
+    runEl.addEventListener('click', function () {
+      if (!bundle) return;
+      // #9 confirma antes de prune (remoção é destrutiva)
+      if ($('optPrune').checked && typeof confirm === 'function' && !confirm('Prune está LIGADO — Variables/Styles órfãos (nossos) serão REMOVIDOS do arquivo. Continuar?')) return;
+      $('planPanel').classList.remove('on'); resetLog(); append('Importando…'); setBusy('Criando…'); send('import');
+    });
     auditEl.addEventListener('click', function () { if (!bundle) return; resetLog(); append('Auditando…'); setStatus('Auditando…'); parent.postMessage({ pluginMessage: { type: 'audit', doc: bundle, parts: gatherParts(), silent: false } }, '*'); });
     $('fix').addEventListener('click', function () { if (!bundle || !lastReport || busy) return; resetLog(); append('Sincronizando o que divergiu…'); busy = true; updateRunState(); $('fix').disabled = true; setStatus('Sincronizando…'); parent.postMessage({ pluginMessage: { type: 'fixDrift', doc: bundle, parts: gatherParts(), report: lastReport } }, '*'); });
     cancelEl.addEventListener('click', function () { parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*'); append('Cancelando…', 'warn'); setStatus('Cancelando…'); });
@@ -356,6 +360,7 @@
     });
     $('genSheet').addEventListener('click', function () { append('Gerando folha de tokens…'); setStatus('Gerando…'); parent.postMessage({ pluginMessage: { type: 'buildSheet' } }, '*'); });
     $('genButton').addEventListener('click', function () { append('Gerando Button…'); setStatus('Gerando…'); parent.postMessage({ pluginMessage: { type: 'buildButton' } }, '*'); });
+    $('genComponents').addEventListener('click', function () { append('Gerando Components (shadcn)…'); setStatus('Gerando…'); parent.postMessage({ pluginMessage: { type: 'buildComponents' } }, '*'); });
     $('close').addEventListener('click', function () { parent.postMessage({ pluginMessage: { type: 'close' } }, '*'); });
 
     // aplicar marca/modo na seleção
@@ -382,6 +387,19 @@
       return '<div class="note warn">⚠ Dependências faltando — esses vínculos ficarão vazios:</div>'
         + w.map(function (x) { return '<div class="note warn">· ' + x + '</div>'; }).join('');
     }
+    // #7 diff detalhado: quais Variables existentes mudam de valor
+    function changesNotes(plan) {
+      var ch = (plan && plan.changes) || [];
+      if (!ch.length) return '';
+      var head = '<div class="note">↻ ' + ch.length + (plan.changesMore ? '+' + plan.changesMore : '') + ' variável(is) mudam de valor:</div>';
+      return head + ch.slice(0, 12).map(function (c) { return '<div class="note" style="color:var(--tx-2)">· ' + c.scope + '/' + c.name + ' [' + c.mode + '] ' + c.from + ' → ' + c.to + '</div>'; }).join('');
+    }
+    // #5 problemas estruturais do bundle (validação estrita)
+    function issueNotes(plan) {
+      var is = (plan && plan.bundleIssues) || [];
+      if (!is.length) return '';
+      return '<div class="note warn">⚠ Bundle com ' + is.length + ' problema(s) de estrutura:</div>' + is.slice(0, 8).map(function (x) { return '<div class="note warn">· ' + x + '</div>'; }).join('');
+    }
 
     function renderDone(s) {
       var nRem = renderPlan(s.plan || { collections: {}, styles: {} }, false);
@@ -392,6 +410,8 @@
       if (s.aliasMissing) notes.push(['warn', '• ' + s.aliasMissing + ' aliases não resolvidos']);
       if (s.valueErrors) notes.push(['warn', '• ' + s.valueErrors + ' valores com erro (ver log) — o import seguiu']);
       if (s.nameCollisions) notes.push(['warn', '• ' + s.nameCollisions + ' nomes em colisão entre collections (ver log)']);
+      if (s.renamed) notes.push(['ok', '↻ ' + s.renamed + ' renomeada(s) — bindings preservados']);
+      if (s.typeChanges) notes.push(['warn', '• ' + s.typeChanges + ' var(s) recriadas por troca de tipo (bindings externos podem orfanar)']);
       if (s.styleWarnings) notes.push(['warn', '• ' + s.styleWarnings + ' avisos (ver log)']);
       if (s.cancelled) notes.push(['warn', '• cancelado — resultado parcial']);
       $('planNotes').innerHTML = notes.map(function (x) { return '<div class="note ' + x[0] + '">' + x[1] + '</div>'; }).join('') + warnNotes(s.plan);
@@ -445,7 +465,10 @@
       else if (msg.type === 'previewResult') {
         renderPlan(msg.plan, true);
         var pruneNote = msg.prune ? '<div class="note rem">Prune LIGADO — “Criar” vai remover os itens acima.</div>' : '<div class="note">Prune desligado — nada será removido.</div>';
-        $('planNotes').innerHTML = warnNotes(msg.plan) + pruneNote;
+        var deps = (msg.plan.depsToEnable && msg.plan.depsToEnable.collections) || [];
+        var depsBtn = deps.length ? '<button class="copy" id="enableDeps" type="button" style="margin-top:4px">+ Incluir dependências (' + deps.join(', ') + ')</button>' : '';
+        $('planNotes').innerHTML = warnNotes(msg.plan) + depsBtn + issueNotes(msg.plan) + changesNotes(msg.plan) + pruneNote;
+        if (deps.length) { var eb = $('enableDeps'); if (eb) eb.addEventListener('click', function () { deps.forEach(function (k) { var b = $('col-' + k); if (b && !b.disabled) b.checked = true; }); syncMaster('col'); updateRunState(); append('Dependências incluídas: ' + deps.join(', ') + '. Pré-visualize de novo.', 'ok'); }); }
         $('planPanel').classList.add('on'); setStatus('Plano pronto');
         var nW = (msg.plan && msg.plan.warnings || []).length;
         append(nW ? 'Plano calculado — ⚠ ' + nW + ' dependência(s) faltando.' : 'Plano calculado.', nW ? 'warn' : 'ok');
@@ -461,7 +484,12 @@
         if (busy) clearBusy();
       }
       else if (msg.type === 'done') { append(msg.stats && msg.stats.cancelled ? '■ Cancelado.' : '✅ Concluído.', msg.stats && msg.stats.cancelled ? 'warn' : 'ok'); renderDone(msg.stats || {}); setStatus(msg.stats && msg.stats.cancelled ? 'Cancelado' : 'Concluído'); clearBusy(); }
-      else if (msg.type === 'prefs') { savedParts = msg.parts || null; if (bundle) { /* já carregado: reaplica */ } }
+      else if (msg.type === 'prefs') {
+        savedParts = msg.parts || null;
+        if (msg.lastBundle && !bundle) { // #10 restaura o último bundle (sem reselecionar o arquivo)
+          try { applyBundle(msg.lastBundle, 'último importado'); resetLog(); append('Bundle restaurado da última sessão — recarregue o arquivo se ele mudou.', 'ok'); } catch (e) {}
+        }
+      }
       else if (msg.type === 'modeApplied') { append('✓ modo aplicado (' + (msg.brand || '—') + '/' + (msg.light || '—') + ') em ' + msg.nodes + '.', 'ok'); setStatus('Modo aplicado'); }
       else if (msg.type === 'sheetDone') { append('✓ gerado: ' + msg.name, 'ok'); setStatus('Gerado'); }
     };

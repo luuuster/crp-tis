@@ -7632,6 +7632,20 @@
           }
         },
         {
+          "name": "border-width/3",
+          "type": "FLOAT",
+          "scopes": [
+            "WIDTH_HEIGHT",
+            "GAP"
+          ],
+          "code": "--border-width-3",
+          "values": {
+            "Value": {
+              "number": 3
+            }
+          }
+        },
+        {
           "name": "border-width/4",
           "type": "FLOAT",
           "scopes": [
@@ -7656,6 +7670,20 @@
           "values": {
             "Value": {
               "number": 8
+            }
+          }
+        },
+        {
+          "name": "border-width/1-5",
+          "type": "FLOAT",
+          "scopes": [
+            "WIDTH_HEIGHT",
+            "GAP"
+          ],
+          "code": "--border-width-1-5",
+          "values": {
+            "Value": {
+              "number": 1.5
             }
           }
         },
@@ -13577,5 +13605,6 @@
         "fg": "sidebar-accent-foreground"
       }
     ]
-  }
+  },
+  "renames": []
 }

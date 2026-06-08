@@ -511,6 +511,9 @@ const doc = {
   ],
   styles: { text: textStyles, textFamilies, effect: effectStyles, paint: paintStyles, grid: gridStyles },
   audit: { contrastPairs },
+  // migração de rename (opt-in): [{ from, to }] — o plugin renomeia a Variable existente (preserva
+  // bindings) antes de criar/prune. Vazio por padrão; popule ao renomear um token p/ não perder vínculos.
+  renames: [],
 };
 
 if (!existsSync(OUT_DIR)) mkdirSync(OUT_DIR, { recursive: true });

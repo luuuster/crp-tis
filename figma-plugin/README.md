@@ -117,6 +117,15 @@ e **re-audita** no fim (o painel volta a "em dia"). Fecha o loop Auditar → cor
 **Guard de versão:** o bundle carrega `"$schema"` (`crp-figma-variables/2`); o plugin **avisa** se for de uma
 versão que ele não conhece, em vez de importar errado em silêncio.
 
+**Pré-visualizar mais esperto:** além do plano e dos avisos de dependência, o dry-run mostra **quais Variables
+mudam de valor** (`de → para`, por mode), um botão **"Incluir dependências"** que marca as collections que
+faltam num clique, e **problemas estruturais** do bundle (cor fora de 0..1, número não-finito, alias inválido).
+
+**Outras salvaguardas:** **confirma antes do prune** (remoção é destrutiva); **migração de rename** — se o
+bundle traz `renames:[{from,to}]`, o plugin **renomeia** a Variable existente (preserva os bindings) em vez de
+remover+criar; **avisa ao recriar** uma var por troca de tipo; e **lembra o último bundle** (clientStorage) —
+reabriu o plugin, ele restaura sem você reselecionar o arquivo.
+
 ### Higiene de publicação
 Checkbox **"Ocultar primitivos da publicação"** → marca `CRP/Primitives` como `hiddenFromPublishing`.
 A biblioteca publicada expõe só o contrato semântico (Brand/Modes/Base/Components). (Aplicado ao **Criar**,
@@ -125,7 +134,17 @@ se Primitives estiver selecionado; vale só p/ assets locais.)
 ### Gerar no canvas (opcional)
 - **Folha de tokens** — paleta do contrato, tipografia (aplicando os Text Styles) e elevação, numa página.
 - **Button de exemplo** — um Button ligado aos `components/button` + fill `primary` + `Text/Label/Base`.
+- **Components (shadcn)** — um **ComponentSet `Button` completo**: `variant` (default/secondary/destructive/
+  outline/ghost/link) × `size` (sm/md/lg/icon), **ligado aos tokens** (cor do contrato + `components/button`
+  por size). Cada botão tem **ícone à esquerda + texto + ícone à direita**, com propriedades **BOOLEAN**
+  (`Ícone esquerda`/`Ícone direita`) p/ ligar/desligar cada ícone (visíveis por padrão); o size `icon` é um
+  botão quadrado de ícone. `outline` é **stroke-only** (sem fill). Vira biblioteca de verdade — trocar
+  marca/modo repinta tudo. (Ícones são placeholders — o designer troca por vetores.)
 Usam os Variables/Styles **já importados** (avisam se faltar).
+
+### Dev Mode (codegen)
+Em **Dev Mode**, o plugin roda como **codegen**: selecione um node e ele lista as **Variables ligadas** como
+`var(--token)` (CSS), pro handoff. Sem UI — registrado via `figma.codegen` (manifest `editorType: [figma, dev]`).
 
 Rodar de novo é **idempotente** (reusa collections/modes/variáveis **e styles** pelo nome; não duplica).
 
@@ -160,5 +179,10 @@ Rodar de novo é **idempotente** (reusa collections/modes/variáveis **e styles*
 - **`documentAccess: dynamic-page`** está **ligado** no manifest (todo caminho de leitura já é async-first;
   só restam fallbacks síncronos guardados que não rodam sob dynamic-page). Future-proof p/ a direção do Figma.
 - **Toasts**: ações (importar, sincronizar, aplicar modo, gerar) também avisam via `figma.notify`, além do log.
-- **Adiados de propósito** (próxima rodada): **import em 1 undo** (exige carregar fontes antes de escrever —
-  só validável no Figma), **yield na main thread** p/ imports grandes, e **aviso ao recriar var por troca de tipo**.
+- **Responsividade**: imports grandes **cedem a thread** entre lotes (não congelam a UI) e **pré-carregam as
+  fontes** antes de escrever os Text Styles.
+- **Testes**: as funções puras (WCAG `contrastRatio`, `numClose` float32, `colorClose`) têm testes
+  (`npm test`) que **extraem a implementação real** do `code.js` — drift quebra o teste.
+- **Adiado de propósito** (1 item): **import em 1 undo** — conflita com o *yield na main thread* (todo `await`
+  quebra o agrupamento de undo do Figma) e o comportamento só é validável rodando no Figma; preferimos a
+  responsividade. Fica como modo opt-in numa próxima rodada.

@@ -5,7 +5,9 @@
   "main": "code.js",
   "ui": "ui.html",
   "documentAccess": "dynamic-page",
-  "editorType": ["figma"],
+  "editorType": ["figma", "dev"],
+  "capabilities": ["codegen"],
+  "codegenLanguages": [{ "label": "CSS", "value": "css" }],
   "networkAccess": {
     "allowedDomains": ["none"],
     "reasoning": "O plugin só lê um arquivo JSON local (escolhido pelo usuário) e escreve Variables. Não acessa a rede."
