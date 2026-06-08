@@ -6,8 +6,16 @@
     "1": {
       "$value": "1px"
     },
+    "1-5": {
+      "$value": "1.5px",
+      "$description": "Meio-termo óptico p/ stroke de ícone (Lucide 16/20px). 1.5px = 0.09375rem."
+    },
     "2": {
       "$value": "2px"
+    },
+    "3": {
+      "$value": "3px",
+      "$description": "Stroke mais encorpado p/ ícone grande (Lucide 32px). 3px = 0.1875rem."
     },
     "4": {
       "$value": "4px"

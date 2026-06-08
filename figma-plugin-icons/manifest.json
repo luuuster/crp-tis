@@ -1,0 +1,12 @@
+{
+  "name": "CRP DS — Ícones → Components",
+  "id": "crp-ds-lucide-to-components",
+  "api": "1.0.0",
+  "main": "code.bundled.js",
+  "ui": "ui.html",
+  "editorType": ["figma"],
+  "networkAccess": {
+    "allowedDomains": ["none"],
+    "reasoning": "O plugin só lê um JSON local (lucide-icons.json ou material-*.json, escolhido pelo usuário) e cria Components. Não acessa a rede."
+  }
+}

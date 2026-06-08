@@ -1,6 +1,15 @@
 node_modules/
 dist/
 token-studio/
+# bundles de ícones gerados (regenerados por `npm run icons` e no CI)
+figma-plugin-icons/lucide-icons.json
+figma-plugin-icons/material-outlined.json
+figma-plugin-icons/material-rounded.json
+figma-plugin-icons/material-sharp.json
+figma-plugin-icons/material-outlined-fill.json
+figma-plugin-icons/material-rounded-fill.json
+figma-plugin-icons/material-sharp-fill.json
+figma-plugin-icons/code.bundled.js
 .cursor/
 *.log
 .DS_Store

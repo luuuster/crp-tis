@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<style>
+  :root {
+    color-scheme: light dark;
+    --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; --sp-5: 20px; --sp-6: 28px;
+    --brand: var(--figma-color-bg-brand, #0d99ff);
+    --brand-text: var(--figma-color-text-onbrand, #fff);
+    --brand-soft: var(--figma-color-bg-brand-tertiary, rgba(13, 153, 255, .12));
+    --brand-tx: var(--figma-color-text-brand, #0d99ff);
+    --line: var(--figma-color-border, #e6e6e6);
+    --bg: var(--figma-color-bg, #fff);
+    --bg-2: var(--figma-color-bg-secondary, #f5f5f5);
+    --tx: var(--figma-color-text, #1a1a1a);
+    --tx-2: var(--figma-color-text-secondary, #8a8a8a);
+  }
+  * { box-sizing: border-box; }
+  body { font: 13px/1.5 Inter, -apple-system, system-ui, sans-serif; margin: 0; padding: var(--sp-5); background: var(--bg); color: var(--tx); }
+
+  /* Cabeçalho */
+  .head { display: flex; align-items: center; gap: var(--sp-3); margin-bottom: var(--sp-5); }
+  .mark { flex: none; width: 36px; height: 36px; border-radius: 9px; background: var(--brand); display: flex; align-items: center; justify-content: center; }
+  .mark svg { width: 20px; height: 20px; fill: none; stroke: var(--brand-text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  h1 { font-size: 15px; font-weight: 700; margin: 0; letter-spacing: -.01em; }
+  .sub { color: var(--tx-2); margin: 2px 0 0; font-size: 12px; }
+
+  /* Seções / cartões */
+  .card { border: 1px solid var(--line); border-radius: 10px; padding: var(--sp-5); margin-bottom: var(--sp-4); background: var(--bg-2); }
+  .sec { display: flex; align-items: center; gap: var(--sp-2); font-weight: 600; font-size: 13px; margin: 0 0 var(--sp-4); }
+  .sec .num { flex: none; width: 20px; height: 20px; border-radius: 50%; background: var(--brand); color: var(--brand-text); font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .field { margin-bottom: var(--sp-5); }
+  .field:last-child { margin-bottom: 0; }
+  label { display: block; font-weight: 600; margin-bottom: var(--sp-2); }
+  .divider { height: 1px; background: var(--line); margin: var(--sp-5) calc(-1 * var(--sp-5)); }
+  .between { display: flex; justify-content: space-between; align-items: center; }
+  .srcrow { display: flex; gap: var(--sp-3); }
+  .srccol { flex: 1; }
+  .linklike { background: none; border: 0; padding: 0; margin-top: var(--sp-1); font: inherit; font-size: 12px; color: var(--brand-tx); cursor: pointer; text-decoration: underline; }
+
+  /* Variante padrão — linha própria, não hint */
+  .subrow { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); margin-top: var(--sp-3); padding: var(--sp-2) var(--sp-3); border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
+  .subrow .lbl { font-weight: 500; }
+  .subrow .lbl small { display: block; color: var(--tx-2); font-weight: 400; }
+  .subrow select { width: auto; min-width: 64px; }
+
+  /* Inputs */
+  input[type="text"], select { width: 100%; padding: 9px 11px; border-radius: 6px; border: 1px solid var(--figma-color-border, #d9d9d9); background: var(--bg); color: inherit; font: inherit; }
+  input[type="file"] { width: 100%; font: inherit; color: var(--tx-2); }
+  select:focus-visible, input:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
+
+  /* Tamanhos — segmented chips */
+  .sizes { display: flex; gap: var(--sp-2); }
+  .sizes label { position: relative; flex: 1; text-align: center; cursor: pointer; user-select: none; margin: 0; font-weight: 600; border: 1px solid var(--line); border-radius: 6px; padding: 10px 0; background: var(--bg); transition: background .1s, border-color .1s, color .1s; }
+  .sizes label input { position: absolute; opacity: 0; pointer-events: none; margin: 0; }
+  .sizes label:hover { border-color: var(--brand); }
+  .sizes label:has(input:checked) { background: var(--brand-soft); border-color: var(--brand); color: var(--brand-tx); }
+  .sizes label:has(input:focus-visible) { outline: 2px solid var(--brand); outline-offset: 1px; }
+
+  /* Espessura por tamanho */
+  .strokes { display: flex; gap: var(--sp-2); }
+  .strokes .cell { flex: 1; display: flex; flex-direction: column; gap: 3px; margin: 0; }
+  .strokes .cell select { width: 100%; text-align: center; padding: 8px 4px; }
+  .strokes .cell small { text-align: center; color: var(--tx-2); font-size: 11px; }
+
+  /* Toggles — chips de texto */
+  .toggles { display: flex; gap: var(--sp-2); margin-top: var(--sp-2); flex-wrap: wrap; }
+  .toggles label { position: relative; display: inline-flex; align-items: center; margin: 0; cursor: pointer; user-select: none; font-weight: 500; border: 1px solid var(--line); border-radius: 6px; padding: 7px 12px; background: var(--bg); transition: background .1s, border-color .1s, color .1s; }
+  .toggles label input { position: absolute; opacity: 0; pointer-events: none; margin: 0; }
+  .toggles label:hover { border-color: var(--brand); }
+  .toggles label:has(input:checked) { background: var(--brand-soft); border-color: var(--brand); color: var(--brand-tx); }
+
+  /* Botões */
+  button { padding: 11px 12px; border-radius: 6px; border: 0; cursor: pointer; font: 600 13px Inter, sans-serif; }
+  button:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+  button.primary { background: var(--brand); color: var(--brand-text); padding: 13px; font-size: 14px; }
+  button.primary:hover:not(:disabled) { filter: brightness(1.06); }
+  button.ghost { background: var(--bg); color: inherit; border: 1px solid var(--line); }
+  button.ghost:hover:not(:disabled) { background: var(--bg-2); border-color: var(--brand); }
+  button.danger:hover:not(:disabled) { border-color: var(--figma-color-border-danger, #d4380d); color: var(--figma-color-text-danger, #d4380d); }
+  .full { width: 100%; }
+  .actions { display: flex; flex-direction: column; gap: var(--sp-2); }
+  .actions .helpers { display: flex; gap: var(--sp-2); }
+  .actions .helpers button { flex: 1; }
+
+  /* Manutenção — rodapé discreto */
+  .maint { border: 1px dashed var(--line); border-radius: 10px; padding: var(--sp-4) var(--sp-5); margin-top: var(--sp-3); }
+  .maint-head { font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--tx-2); margin: 0 0 var(--sp-3); }
+
+  /* Progresso / estado */
+  .warn { color: var(--figma-color-text-warning, #b25e00); font-size: 12px; margin-top: var(--sp-3); }
+  .bar { height: 8px; border-radius: 4px; background: var(--bg-2); overflow: hidden; margin-top: var(--sp-2); }
+  .bar > i { display: block; height: 100%; width: 0; background: var(--brand); border-radius: 4px; transition: width .12s; }
+
+  /* Preview */
+  #preview { display: grid; grid-template-columns: repeat(auto-fill, 32px); gap: var(--sp-2); max-height: 168px; overflow: auto; margin-top: var(--sp-2); color: var(--tx); }
+  #preview .ic { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
+  #preview .ic svg { width: 18px; height: 18px; }
+
+  /* Utilitários (usados via JS) */
+  .muted { color: var(--tx-2); }
+  .hint { font-size: 12px; color: var(--tx-2); margin-top: var(--sp-2); }
+  code { background: var(--bg-2); padding: 1px 4px; border-radius: 3px; font-size: .95em; }
+  .ok { color: var(--figma-color-text-success, #2a9d3f); font-weight: 600; }
+  .err { color: var(--figma-color-text-danger, #d4380d); }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+  <header class="head">
+    <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+    <div>
+      <h1>Ícones → Components</h1>
+      <p class="sub">Lucide ou Google Material — 1 ComponentSet por ícone, busca por nome no Assets.</p>
+    </div>
+  </header>
+
+  <div class="card" id="loadCard">
+    <div class="sec"><span class="num">1</span> Conjunto de ícones</div>
+    <div class="field">
+      <div class="srcrow">
+        <div class="srccol">
+          <label for="source">Fonte</label>
+          <select id="source">
+            <option value="lucide">Lucide</option>
+            <option value="material">Google Material Symbols</option>
+          </select>
+        </div>
+        <div class="srccol hidden" id="styleWrap">
+          <label for="style">Estilo</label>
+          <select id="style">
+            <option value="outlined">Outlined</option>
+            <option value="rounded">Rounded</option>
+            <option value="sharp">Sharp</option>
+          </select>
+        </div>
+      </div>
+      <div class="toggles hidden" id="fillWrap" style="margin-top:var(--sp-3)">
+        <label><input type="checkbox" id="filled"> Preenchido <span class="muted" style="font-weight:400">(fill)</span></label>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:0">
+      <div class="hidden" id="fileWrap">
+        <input type="file" id="file" accept="application/json,.json" />
+        <p class="hint" id="expectInfo"></p>
+      </div>
+      <p id="loadInfo" class="hint"></p>
+      <button type="button" class="linklike" id="fileToggle">carregar arquivo manualmente…</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="optCard">
+    <div class="sec"><span class="num">2</span> Opções</div>
+
+    <div class="field">
+      <label>Tamanhos do ícone <span class="muted" style="font-weight:400">(px)</span></label>
+      <div class="sizes" id="sizes">
+        <label><input type="checkbox" value="16" checked> 16</label>
+        <label><input type="checkbox" value="20" checked> 20</label>
+        <label><input type="checkbox" value="24" checked> 24</label>
+        <label><input type="checkbox" value="32" checked> 32</label>
+      </div>
+      <div class="subrow">
+        <span class="lbl">Variante padrão <small>inserida ao colocar o componente</small></span>
+        <select id="defaultSize" aria-label="Tamanho da variante padrão">
+          <option value="16">16 px</option><option value="20" selected>20 px</option><option value="24">24 px</option><option value="32">32 px</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field" id="strokeField">
+      <label>Espessura por tamanho do ícone <span class="muted" style="font-weight:400">(liga a <code>border-width/&lt;n&gt;</code>)</span></label>
+      <div class="strokes" id="strokes">
+        <span class="cell"><select data-sz="16" aria-label="Espessura do traço p/ ícone de 16px"><option>1</option><option selected>1.5</option><option>2</option><option>3</option><option>4</option></select><small>16px</small></span>
+        <span class="cell"><select data-sz="20" aria-label="Espessura do traço p/ ícone de 20px"><option>1</option><option selected>1.5</option><option>2</option><option>3</option><option>4</option></select><small>20px</small></span>
+        <span class="cell"><select data-sz="24" aria-label="Espessura do traço p/ ícone de 24px"><option>1</option><option>1.5</option><option selected>2</option><option>3</option><option>4</option></select><small>24px</small></span>
+        <span class="cell"><select data-sz="32" aria-label="Espessura do traço p/ ícone de 32px"><option>1</option><option>1.5</option><option>2</option><option selected>3</option><option>4</option></select><small>32px</small></span>
+      </div>
+      <p class="hint">Os números <b>16 · 20 · 24 · 32</b> são o <b>tamanho do ícone</b> (px); o valor do seletor é a espessura do traço de cada um.</p>
+    </div>
+
+    <div class="field">
+      <label>Cor do ícone</label>
+      <select id="colorVar"></select>
+      <p class="hint">Liga stroke+fill à Variable (segue o tema). “Editável” = cor fixa sem bind.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field">
+      <label>Filtrar <span class="muted" style="font-weight:400">(opcional)</span></label>
+      <input type="text" id="filter" placeholder="nome ou tag — ex.: arrow, home, user" />
+      <div class="toggles" id="toggleRow">
+        <label><input type="checkbox" id="hideAlias" checked> Ocultar aliases</label>
+        <label><input type="checkbox" id="essentials"> Só essenciais</label>
+      </div>
+      <p class="hint" id="selInfo"></p>
+    </div>
+
+    <div class="field">
+      <label for="mode">Ao gerar</label>
+      <select id="mode">
+        <option value="skip">Pular ícones que já existem (retomar)</option>
+        <option value="sync">Sincronizar (sobrescrever + remover órfãos)</option>
+      </select>
+    </div>
+    <p class="warn" id="warn"></p>
+  </div>
+
+  <div class="card hidden" id="previewCard">
+    <div class="between"><label style="margin:0">Preview <span class="muted" id="previewCount"></span></label></div>
+    <div id="preview"></div>
+  </div>
+
+  <div class="card hidden" id="actCard">
+    <div class="sec"><span class="num">3</span> Gerar</div>
+    <div class="actions">
+      <div class="helpers">
+        <button class="ghost" id="preview-btn">Prever</button>
+        <button class="ghost" id="test">Testar (30)</button>
+      </div>
+      <button class="primary" id="gen">Gerar</button>
+    </div>
+    <p class="hint" id="planInfo"></p>
+  </div>
+
+  <div class="card hidden" id="progCard">
+    <div class="between"><span id="progLabel">Gerando…</span><span class="muted" id="progPct">0%</span></div>
+    <div class="bar"><i id="progBar"></i></div>
+    <p class="hint" id="progDetail"></p>
+    <button class="ghost full" id="cancel" style="margin-top:var(--sp-2)">Cancelar</button>
+  </div>
+
+  <div class="card hidden" id="doneCard"><p id="doneMsg" style="margin:0"></p></div>
+
+  <div class="maint" id="maintCard">
+    <p class="maint-head">Manutenção</p>
+    <button class="ghost danger full" id="clear">Remover todos os <code>lucide/*</code> da página</button>
+    <p class="hint">Apaga os ComponentSets gerados (e o frame-grid vazio) na página <code>Lucide Icons</code>. Não toca em Variables nem em outras páginas.</p>
+  </div>
+
+<script>
+  var bundle = null, filtered = [], running = false, colorVars = [], prefs = {};
+  var PREVIEW_CAP = 120;
+
+  // Lista curada de ícones comuns de UI. Nomes inexistentes no bundle são ignorados.
+  var ESSENTIALS = ['arrow-up','arrow-down','arrow-left','arrow-right','arrow-up-right','chevron-up','chevron-down','chevron-left','chevron-right','chevrons-up-down','check','check-check','x','plus','minus','circle-plus','circle-minus','circle-check','circle-x','search','settings','settings-2','sliders-horizontal','funnel','menu','ellipsis','ellipsis-vertical','house','user','users','user-plus','circle-user','bell','bell-off','mail','mail-open','send','message-circle','message-square','phone','calendar','calendar-days','clock','alarm-clock','timer','heart','star','bookmark','flag','eye','eye-off','lock','lock-open','key','shield','shield-check','log-in','log-out','upload','download','share','share-2','link','link-2','external-link','copy','clipboard','clipboard-copy','scissors','trash','trash-2','pencil','square-pen','pen','save','file','file-text','file-plus','files','folder','folder-open','folder-plus','image','images','camera','video','music','mic','mic-off','volume','volume-1','volume-2','volume-x','play','pause','circle-stop','skip-back','skip-forward','rewind','fast-forward','refresh-cw','refresh-ccw','rotate-cw','rotate-ccw','loader','loader-circle','info','circle-alert','triangle-alert','circle-help','ban','circle','square','triangle','hexagon','sun','moon','cloud','cloud-rain','zap','wifi','wifi-off','bluetooth','battery','power','plug','globe','map','map-pin','navigation','compass','shopping-cart','shopping-bag','credit-card','dollar-sign','tag','tags','gift','package','truck','box','layers','layout-grid','layout-dashboard','grid-3x3','list','table','columns-3','panel-left','maximize','minimize','maximize-2','minimize-2','move','zoom-in','zoom-out','thumbs-up','thumbs-down','smile','frown','meh','sparkles','wand-sparkles','palette','paintbrush','type','bold','italic','underline','align-left','align-center','align-right','align-justify','code','terminal','git-branch','git-commit-horizontal','git-merge','github','database','server','hard-drive','cpu','monitor','smartphone','tablet','laptop','printer','mouse-pointer','hand','command','delete','filter'];
+  var ESSENTIALS_SET = {}; ESSENTIALS.forEach(function (n) { ESSENTIALS_SET[n] = 1; });
+  var $ = function (id) { return document.getElementById(id); };
+  function show(el, on) { el.classList.toggle('hidden', !on); }
+
+  // ---- Fonte/estilo/fill (Lucide x Google Material) ----
+  var bundles = {}, activeSource = 'lucide', activeStyle = null, activeFilled = false;   // bundles desta sessão, por chave
+  var embeddedMeta = {};                                            // o que vem embutido no plugin (sem carregar arquivo)
+  function normSrc(s) { return s === 'material' ? 'material' : 'lucide'; }
+  function cap(s) { s = String(s); return s.charAt(0).toUpperCase() + s.slice(1); }
+  function curSource() { return $('source').value === 'material' ? 'material' : 'lucide'; }
+  function curStyle() { return curSource() === 'material' ? $('style').value : null; }
+  function curFilled() { return curSource() === 'material' && $('filled').checked; }
+  function keyOf(src, sty, fl) { return src === 'material' ? ('material:' + sty + (fl ? ':fill' : '')) : 'lucide'; }
+  function srcLabel(src, sty, fl) { return src === 'material' ? ('Material ' + cap(sty) + (fl ? ' Fill' : '')) : 'Lucide'; }
+  function activePrefix() { return curSource() === 'material' ? ('material-' + $('style').value + (curFilled() ? '-fill' : '') + '/') : 'lucide/'; }
+  function activePage() { return curSource() === 'material' ? ('Material ' + cap($('style').value) + (curFilled() ? ' Fill' : '')) : 'Lucide Icons'; }
+  function expectedFile() { return curSource() === 'material' ? ('material-' + $('style').value + (curFilled() ? '-fill' : '') + '.json') : 'lucide-icons.json'; }
+
+  // File picker é só FALLBACK (ícones vêm embutidos). on=true mostra o picker e esconde o link; on=false o contrário.
+  function showFile(on) { show($('fileWrap'), on); show($('fileToggle'), !on); }
+
+  // Mostra/esconde controles conforme a fonte; Material é PREENCHIDO (sem espessura) e não tem aliases/essenciais.
+  function onSourceUi() {
+    var mat = curSource() === 'material';
+    show($('styleWrap'), mat);
+    show($('fillWrap'), mat);
+    show($('strokeField'), !mat);
+    show($('toggleRow'), !mat);
+    $('expectInfo').innerHTML = 'Arquivo esperado: <code>' + expectedFile() + '</code> (<code>npm run ' + (mat ? 'export:material' : 'export:lucide') + '</code>).';
+  }
+
+  function showLoaded(src, sty, fl, n, fromSaved) {
+    $('loadInfo').innerHTML = '<span class="ok">✓</span> ' + Number(n).toLocaleString('pt-BR') + ' ícones · ' + srcLabel(src, sty, fl) +
+      (bundle && bundle.version ? ' v' + bundle.version : '') + (fromSaved ? ' <span class="muted">(salvo)</span>' : ' <span class="muted">(embutido)</span>');
+    show($('optCard'), true); show($('actCard'), true);
+  }
+
+  // Descompacta base64+gzip -> objeto (DecompressionStream; Figma roda Chromium moderno). Rejeita se indisponível.
+  function inflate(b64) {
+    var bytes = Uint8Array.from(atob(b64), function (c) { return c.charCodeAt(0); });
+    var stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+    return new Response(stream).text().then(function (t) { return JSON.parse(t); });
+  }
+
+  // Pede o conjunto ativo: cache em memória; senão pede ao code.js (embed ou clientStorage).
+  function requestActive() {
+    onSourceUi();
+    var src = curSource(), sty = curStyle(), fl = curFilled(); activeSource = src; activeStyle = sty; activeFilled = fl;
+    updateClearLabel();
+    var b = bundles[keyOf(src, sty, fl)];
+    if (b) { bundle = b; showLoaded(src, sty, fl, b.icons.length); showFile(false); applyFilter(); return; }
+    bundle = null; showFile(false); show($('optCard'), false); show($('actCard'), false); show($('previewCard'), false);
+    var meta = embeddedMeta[keyOf(src, sty, fl)];
+    $('loadInfo').innerHTML = '<span class="muted">Carregando ' + srcLabel(src, sty, fl) + (meta ? ' (' + Number(meta.count).toLocaleString('pt-BR') + ')' : '') + '…</span>';
+    parent.postMessage({ pluginMessage: { type: 'getBundle', source: src, style: sty, filled: fl } }, '*');
+  }
+  function switchActive() { requestActive(); }
+
+  function checkedSizes() {
+    return Array.prototype.slice.call($('sizes').querySelectorAll('input:checked')).map(function (c) { return Number(c.value); });
+  }
+  function strokeMap() {
+    var m = {};
+    Array.prototype.forEach.call($('strokes').querySelectorAll('select'), function (i) {
+      var v = parseFloat(i.value); if (!isNaN(v) && v > 0) m[Number(i.getAttribute('data-sz'))] = v;
+    });
+    return m;
+  }
+  function colorVarId() { return $('colorVar').value; }
+  function defaultSize() { return Number($('defaultSize').value) || 20; }
+
+  function populateColors(list, selectedId) {
+    var sel = $('colorVar'); sel.innerHTML = '';
+    (list || []).forEach(function (v) { var o = document.createElement('option'); o.value = v.id; o.textContent = v.name; sel.appendChild(o); });
+    var ed = document.createElement('option'); ed.value = ''; ed.textContent = '(cor editável — sem bind)'; sel.appendChild(ed);
+    var want = selectedId || null;
+    if (!want) { var pf = (list || []).filter(function (v) { return v.name === 'primary-foreground'; })[0]; want = pf ? pf.id : ''; }
+    sel.value = want != null ? want : '';
+  }
+
+  function applyFilter() {
+    if (!bundle) return;
+    var q = $('filter').value.trim().toLowerCase();
+    var lucide = curSource() === 'lucide';   // aliases/essenciais são conceitos do Lucide
+    var hideAlias = lucide && $('hideAlias').checked, onlyEss = lucide && $('essentials').checked;
+    filtered = bundle.icons.filter(function (i) {
+      if (hideAlias && i.alias) return false;
+      if (onlyEss && !ESSENTIALS_SET[i.name]) return false;
+      if (!q) return true;
+      if (i.name.toLowerCase().indexOf(q) >= 0) return true;
+      for (var t = 0; t < (i.tags || []).length; t++) if (String(i.tags[t]).toLowerCase().indexOf(q) >= 0) return true;
+      return false;
+    });
+    var n = filtered.length, nSizes = checkedSizes().length || 0, comps = n * nSizes;
+    $('selInfo').textContent = n.toLocaleString('pt-BR') + ' ícones · ' + comps.toLocaleString('pt-BR') + ' components (' + n.toLocaleString('pt-BR') + ' × ' + nSizes + ' tamanhos)';
+    $('warn').textContent = comps > 2000 ? '⚠ ' + comps.toLocaleString('pt-BR') + ' components é pesado — pode levar minutos. Teste com 30 antes, ou filtre.' : '';
+    $('gen').textContent = 'Gerar ' + n;
+    renderPreview();
+  }
+
+  function renderPreview() {
+    var list = filtered.slice(0, PREVIEW_CAP), html = '';
+    for (var i = 0; i < list.length; i++) html += '<div class="ic" title="' + list[i].name + '">' + list[i].svg + '</div>';
+    $('preview').innerHTML = html;
+    $('previewCount').textContent = filtered.length > PREVIEW_CAP ? '(primeiros ' + PREVIEW_CAP + ' de ' + filtered.length.toLocaleString('pt-BR') + ')' : '(' + filtered.length + ')';
+    show($('previewCard'), filtered.length > 0);
+  }
+
+  function loadBundleData(data, fromSaved) {
+    if (!data || !Array.isArray(data.icons)) throw new Error('Arquivo de ícones inválido (faltou "icons").');
+    // O arquivo é a verdade: lê fonte/estilo/fill dele e reflete nos seletores.
+    var src = normSrc(data.source), sty = src === 'material' ? (data.style || 'outlined') : null, fl = src === 'material' && !!data.filled;
+    bundles[keyOf(src, sty, fl)] = data;
+    $('source').value = src;
+    if (src === 'material') { if (sty) $('style').value = sty; $('filled').checked = fl; }
+    onSourceUi();
+    activeSource = src; activeStyle = sty; activeFilled = fl; bundle = data;
+    $('loadInfo').innerHTML = '<span class="ok">✓</span> ' + data.icons.length.toLocaleString('pt-BR') + ' ícones · ' + srcLabel(src, sty, fl) + (data.version ? ' v' + data.version : '') + (fromSaved ? ' <span class="muted">(salvo)</span>' : '');
+    show($('optCard'), true); show($('actCard'), true);
+    showFile(false);
+    updateClearLabel();
+    applyFilter();
+  }
+
+  $('file').addEventListener('change', function (e) {
+    var f = e.target.files && e.target.files[0]; if (!f) return;
+    var r = new FileReader();
+    r.onload = function () {
+      try {
+        var data = JSON.parse(r.result);
+        loadBundleData(data, false);
+        var src = normSrc(data.source), sty = src === 'material' ? (data.style || 'outlined') : null, fl = src === 'material' && !!data.filled;
+        parent.postMessage({ pluginMessage: { type: 'saveBundle', bundle: data, source: src, style: sty, filled: fl } }, '*'); // persiste p/ próxima vez
+      } catch (err) {
+        bundle = null;
+        $('loadInfo').innerHTML = '<span class="err">✗</span> ' + (err.message || err);
+        showFile(true);
+        show($('optCard'), false); show($('actCard'), false); show($('previewCard'), false);
+      }
+    };
+    r.readAsText(f);
+  });
+
+  $('fileToggle').addEventListener('click', function () { showFile(true); });
+  $('source').addEventListener('change', switchActive);
+  $('style').addEventListener('change', switchActive);
+  $('filled').addEventListener('change', switchActive);
+  $('filter').addEventListener('input', applyFilter);
+  $('sizes').addEventListener('change', applyFilter);
+  $('hideAlias').addEventListener('change', applyFilter);
+  $('essentials').addEventListener('change', applyFilter);
+
+  function start(list) {
+    if (running || !bundle) return;
+    var sizes = checkedSizes();
+    if (!sizes.length) { $('warn').textContent = '⚠ Selecione ao menos 1 tamanho.'; return; }
+    if (!list.length) { $('warn').textContent = '⚠ Nenhum ícone para gerar (filtro vazio?).'; return; }
+    running = true;
+    show($('progCard'), true); show($('doneCard'), false);
+    $('test').disabled = $('gen').disabled = true;
+    $('progBar').style.width = '0%'; $('progPct').textContent = '0%'; $('progDetail').textContent = '';
+    var payload = list.map(function (i) { return { name: i.name, svg: i.svg, tags: i.tags || [] }; });
+    var mode = $('mode').value;
+    parent.postMessage({ pluginMessage: {
+      type: 'run', icons: payload, sizes: sizes, defaultSize: defaultSize(),
+      strokes: curSource() === 'material' ? null : strokeMap(), colorVarId: colorVarId(),
+      mode: mode, allNames: mode === 'sync' ? bundle.icons.map(function (i) { return i.name; }) : null,
+      version: bundle.version || '', source: activeSource, style: activeStyle, filled: activeFilled
+    } }, '*');
+  }
+
+  $('test').addEventListener('click', function () { start(filtered.slice(0, 30)); });
+  $('gen').addEventListener('click', function () { start(filtered.slice()); });
+  $('preview-btn').addEventListener('click', function () {
+    if (!bundle) return;
+    var mode = $('mode').value;
+    $('planInfo').textContent = 'Calculando…';
+    parent.postMessage({ pluginMessage: {
+      type: 'dryRun', names: filtered.map(function (i) { return i.name; }),
+      allNames: mode === 'sync' ? bundle.icons.map(function (i) { return i.name; }) : null,
+      mode: mode, source: activeSource, style: activeStyle, filled: activeFilled
+    } }, '*');
+  });
+  $('cancel').addEventListener('click', function () { parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*'); $('cancel').disabled = true; });
+
+  var clearArmed = false, clearTimer = null;
+  function updateClearLabel() { if (clearArmed) return; $('clear').innerHTML = 'Remover todos os <code>' + activePrefix() + '*</code> da página'; }
+  function resetClear() { clearArmed = false; if (clearTimer) { clearTimeout(clearTimer); clearTimer = null; } $('clear').classList.remove('err'); $('clear').disabled = false; updateClearLabel(); }
+  $('clear').addEventListener('click', function () {
+    if (running) return;
+    if (!clearArmed) {
+      clearArmed = true; $('clear').textContent = 'Confirmar — remover TODOS os ' + activePrefix() + '* ?'; $('clear').classList.add('err');
+      clearTimer = setTimeout(resetClear, 4000); return;
+    }
+    if (clearTimer) { clearTimeout(clearTimer); clearTimer = null; }
+    clearArmed = false; $('clear').textContent = 'Removendo…'; $('clear').disabled = true; $('clear').classList.remove('err');
+    parent.postMessage({ pluginMessage: { type: 'clearAll', source: activeSource, style: activeStyle, filled: activeFilled } }, '*');
+  });
+
+  window.onmessage = function (e) {
+    var m = e.data && e.data.pluginMessage; if (!m) return;
+
+    if (m.type === 'init') {
+      colorVars = m.colorVars || []; prefs = m.prefs || {}; embeddedMeta = m.embeddedMeta || {};
+      populateColors(colorVars, prefs.colorVarId);
+      if (Array.isArray(prefs.sizes)) Array.prototype.forEach.call($('sizes').querySelectorAll('input'), function (c) { c.checked = prefs.sizes.indexOf(Number(c.value)) >= 0; });
+      if (prefs.defaultSize) $('defaultSize').value = String(prefs.defaultSize);
+      // Só restaura espessuras de prefs da versão atual — prefs antigas NÃO sobrescrevem os defaults novos (ex.: 32→3px).
+      if (prefs.strokes && prefs.v >= 2) Array.prototype.forEach.call($('strokes').querySelectorAll('select'), function (i) { var v = prefs.strokes[i.getAttribute('data-sz')]; if (v != null) i.value = String(v); });
+      if (prefs.mode) $('mode').value = prefs.mode;
+      // Fonte/estilo/fill do último conjunto ativo.
+      if (m.savedSource) $('source').value = normSrc(m.savedSource);
+      if (normSrc(m.savedSource) === 'material') { if (m.savedStyle) $('style').value = m.savedStyle; $('filled').checked = !!m.savedFilled; }
+      requestActive();   // pede o conjunto ativo (embutido ou salvo) — sem carregar arquivo
+      return;
+    }
+    if (m.type === 'bundle') {
+      var bsrc = normSrc(m.source), bsty = bsrc === 'material' ? (m.style || 'outlined') : null, bfl = bsrc === 'material' && !!m.filled, bkey = keyOf(bsrc, bsty, bfl);
+      var stillActive = function () { return curSource() === bsrc && (curStyle() || null) === (bsty || null) && curFilled() === bfl; };
+      var apply = function (data) {
+        if (!data || !Array.isArray(data.icons)) {
+          if (stillActive()) { bundle = null; $('loadInfo').innerHTML = '<span class="muted">Não embutido — carregue o arquivo abaixo.</span>'; showFile(true); show($('optCard'), false); show($('actCard'), false); show($('previewCard'), false); }
+          return;
+        }
+        bundles[bkey] = data;
+        if (stillActive()) { bundle = data; showLoaded(bsrc, bsty, bfl, data.icons.length); showFile(false); applyFilter(); }
+      };
+      if (m.blob) inflate(m.blob).then(apply).catch(function () { apply(null); });
+      else apply(m.bundle || null);
+      return;
+    }
+    if (m.type === 'saved') {
+      if (!m.ok && bundle) $('loadInfo').innerHTML += ' <span class="muted">(não persistiu — bundle grande; recarregue o arquivo na próxima)</span>';
+      return;
+    }
+    if (m.type === 'syncPlan') {
+      var parts = [m.willCreate + ' novos'];
+      if (m.mode === 'sync') { parts.push(m.willUpdate + ' atualizados'); if (m.willRemoveOrphans) parts.push(m.willRemoveOrphans + ' órfãos a remover'); }
+      else parts.push(m.willSkip + ' pulados');
+      $('planInfo').innerHTML = '<b>Prévia (' + (m.mode === 'sync' ? 'sincronizar' : 'pular') + '):</b> ' + parts.join(' · ') + '. <span class="muted">(' + m.existing + ' já no arquivo)</span>';
+      return;
+    }
+
+    if (m.type === 'progress') {
+      var pct = Math.round((m.done / m.total) * 100);
+      $('progBar').style.width = pct + '%'; $('progPct').textContent = pct + '%';
+      $('progDetail').textContent = m.done + '/' + m.total + ' · ' + m.created + ' criados' + (m.skipped ? ', ' + m.skipped + ' pulados' : '') + (m.failed ? ', ' + m.failed + ' falharam' : '') + ' · ' + m.name;
+    } else if (m.type === 'done' || m.type === 'cancelled') {
+      running = false; $('cancel').disabled = false;
+      $('test').disabled = $('gen').disabled = false;
+      show($('progCard'), false); show($('doneCard'), true); updateClearLabel();
+      var t = m.elapsed != null ? ' em ' + m.elapsed + 's' : '';
+      var color = m.colorName ? (m.linked ? 'Cor: ligada à Variable <code>' + m.colorName + '</code>.' : '<span class="err">Cor não ligou</span> em <code>' + m.colorName + '</code> (cor fixa).') : 'Cor: fixa (editável, sem bind).';
+      var size;
+      if (m.fill) size = m.boundSizes
+        ? 'Tamanho → <code>icon/*</code>. <span class="muted">(preenchido — sem espessura de traço)</span>'
+        : '<span class="err">Tamanho não ligado</span> — rode o plugin de Variables (CRP) antes (cria <code>icon/*</code>).';
+      else if (m.boundSizes && m.boundStroke) size = 'Tamanho → <code>icon/*</code> · espessura → <code>border-width/*</code> (CRP/Primitives).';
+      else if (m.boundSizes) size = 'Tamanho → <code>icon/*</code>. <span class="err">Espessura não ligada</span> (border-width ausente).';
+      else size = '<span class="err">Tamanho/espessura não ligados</span> — rode o plugin de Variables (CRP) antes (cria icon/* e border-width/*).';
+      var counts = m.created + ' criados' + (m.updated ? ', ' + m.updated + ' atualizados' : '') + (m.skipped ? ', ' + m.skipped + ' pulados' : '') + (m.orphans ? ', ' + m.orphans + ' órfãos removidos' : '') + (m.failed ? ', <span class="err">' + m.failed + ' falharam</span>' : '');
+      $('doneMsg').innerHTML = (m.type === 'cancelled' ? '⏹ Cancelado — ' : '<span class="ok">✓ Pronto</span> — ') + counts + t
+        + '.<br><span class="muted">Página: ' + (m.page || '?') + ' · busque <code>' + (m.prefix || 'lucide/') + '</code> no Assets · variante padrão <b>' + (m.defaultSize || 20) + 'px</b>.<br>' + color + '<br>' + size + '</span>';
+    } else if (m.type === 'cleared') {
+      resetClear();
+      show($('doneCard'), true);
+      var pfx = activePrefix();
+      $('doneMsg').innerHTML = m.removed
+        ? '<span class="ok">✓</span> ' + m.removed + ' <code>' + pfx + '*</code> removidos da página.'
+        : 'Nada para remover (nenhum <code>' + pfx + '*</code> na página <code>' + activePage() + '</code>).';
+    } else if (m.type === 'error') {
+      running = false; $('test').disabled = $('gen').disabled = false; resetClear();
+      show($('progCard'), false); show($('doneCard'), true);
+      $('doneMsg').innerHTML = '<span class="err">✗ Erro:</span> ' + m.message;
+    }
+  };
+</script>
+</body>
+</html>

@@ -36,6 +36,12 @@ jobs:
       - name: Validar (refs, contrato, contraste WCAG)
         run: npm run check
 
+      - name: Gerar e embutir bundles de ícones (Lucide + Material)
+        run: npm run icons   # export (lucide-static + @material-symbols) + embed -> *.json e code.bundled.js (testes leem os .json)
+
+      - name: Testes (plugins Figma + bundles Lucide/Material)
+        run: npm test          # pure.test + bundle.test (lucide) + material.test + embed.test + run.test (lógica)
+
       # Só na main: abre a PR "Version Packages" ou publica quando há changesets pendentes.
       - name: Release (changesets)
         if: github.ref == 'refs/heads/main'
