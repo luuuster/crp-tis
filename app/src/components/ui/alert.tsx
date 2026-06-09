@@ -9,8 +9,9 @@ const alertVariants = cva(
     variants: {
       variant: {
         default: "bg-card text-card-foreground",
+        // destructive usa o token de TEXTO (-text): AA sobre card também no dark (o --destructive cru é FILL).
         destructive:
-          "bg-card text-destructive *:data-[slot=alert-description]:text-destructive/90 [&>svg]:text-current",
+          "bg-card text-destructive-text *:data-[slot=alert-description]:text-destructive-text/90 [&>svg]:text-current",
       },
     },
     defaultVariants: {

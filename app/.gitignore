@@ -3,3 +3,7 @@ dist
 dist-ssr
 *.local
 .vite
+
+# ferramentas locais de screenshot (usam playwright-core via --no-save) + artefatos
+scripts
+*.png

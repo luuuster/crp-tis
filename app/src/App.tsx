@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Moon, Sun } from 'lucide-react'
+import { LogOut, Moon, Palette, Sun } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -17,9 +17,9 @@ type View = 'login' | 'dashboard' | 'componentes'
 export function App() {
   const [brand, setBrand] = useState<Brand>('crp')
   const [mode, setMode] = useState<Mode>('light')
-  const [view, setView] = useState<View>('dashboard')
+  const [view, setView] = useState<View>('login')
 
-  // Re-tematiza tudo igual aos previews: classe .dark + atributo [data-brand] no <html>.
+  // Re-tematiza tudo: classe .dark + atributo [data-brand] no <html>.
   // Os tokens do CRP (importados em main.tsx) cuidam do resto — zero cor escrita à mão.
   useEffect(() => {
     const root = document.documentElement
@@ -30,22 +30,29 @@ export function App() {
 
   return (
     <TooltipProvider delayDuration={200}>
-      {/* Controles flutuantes (compartilhados): view · marca · tema */}
-      <div className="fixed top-3 right-3 z-50 flex items-center gap-2 rounded-full border bg-card/85 p-1 shadow-sm backdrop-blur">
-        <Tabs value={view} onValueChange={(v) => setView(v as View)}>
-          <TabsList className="h-8">
-            <TabsTrigger value="login" className="text-xs">Login</TabsTrigger>
-            <TabsTrigger value="dashboard" className="text-xs">Dashboard</TabsTrigger>
-            <TabsTrigger value="componentes" className="text-xs">Componentes</TabsTrigger>
-          </TabsList>
-        </Tabs>
-        <Separator orientation="vertical" className="h-5" />
-        <Tabs value={brand} onValueChange={(v) => setBrand(v as Brand)}>
-          <TabsList className="h-8">
-            <TabsTrigger value="crp" className="text-xs">CRP</TabsTrigger>
-            <TabsTrigger value="marca-b" className="text-xs">Marca B</TabsTrigger>
-          </TabsList>
-        </Tabs>
+      {/* Controle flutuante: marca + tema sempre; navegação de views só DEPOIS de logado. */}
+      <div className="fixed top-4 right-4 z-50 flex items-center gap-1.5 rounded-full border border-border/50 bg-card/70 p-1 shadow-xs backdrop-blur-md">
+        {view !== 'login' && (
+          <>
+            <Tabs value={view} onValueChange={(v) => setView(v as View)}>
+              <TabsList className="h-8">
+                <TabsTrigger value="dashboard" className="text-xs">Dashboard</TabsTrigger>
+                <TabsTrigger value="componentes" className="text-xs">Componentes</TabsTrigger>
+              </TabsList>
+            </Tabs>
+            <Button variant="ghost" size="icon-sm" aria-label="Sair" onClick={() => setView('login')}><LogOut /></Button>
+            <Separator orientation="vertical" className="h-5" />
+          </>
+        )}
+
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label={`Trocar para ${brand === 'crp' ? 'Marca B' : 'TIS'}`}
+          onClick={() => setBrand((b) => (b === 'crp' ? 'marca-b' : 'crp'))}
+        >
+          <Palette />
+        </Button>
         <Button
           variant="ghost"
           size="icon-sm"
@@ -56,9 +63,15 @@ export function App() {
         </Button>
       </div>
 
-      {view === 'login' ? <LoginPage /> : view === 'dashboard' ? <Dashboard /> : <Showcase />}
+      {view === 'login' ? (
+        <LoginPage onLogin={() => setView('dashboard')} />
+      ) : view === 'dashboard' ? (
+        <Dashboard />
+      ) : (
+        <Showcase />
+      )}
 
-      <Toaster />
+      <Toaster theme={mode} />
     </TooltipProvider>
   )
 }

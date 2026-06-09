@@ -6,7 +6,7 @@
 
 /* Mapeia o contrato CRP para o tema do Tailwind v4 (shadcn usa bg-*, text-*, border-*, ring-*).
    inline mantem o var() em runtime: trocar marca/tema re-tematiza tudo sem rebuild.
-   radius e spacing entram naturais porque os nomes do CRP sobrescrevem os do Tailwind.
+   radius/shadow entram naturais porque os nomes do CRP sobrescrevem os do Tailwind.
    IMPORTANTE: nao colar :root/.dark de sidebar aqui (o CLI do shadcn tenta) — os tokens de
    sidebar ja vem do CRP (multi-marca); um :root fixo em HSL atropelaria e nao trocaria de marca. */
 @theme inline {
@@ -30,6 +30,12 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
+  /* acentos como TEXTO (variantes -text/link): AA sobre background/card nos 4 temas — use
+     estes p/ texto/ícone colorido, nunca o token de FILL (primary/destructive) que é p/ sólido. */
+  --color-link: var(--link);
+  --color-primary-text: var(--primary-text);
+  --color-destructive-text: var(--destructive-text);
+
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -44,9 +50,41 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
+  /* tipografia: familias semanticas + escala de tamanho vinda do contrato (font-size-*),
+     pra que as utilities text-* do Tailwind tambem resolvam pelos tokens do CRP. */
   --font-sans: var(--font-body);
+  --font-heading: var(--font-heading);
   --font-mono: var(--font-mono);
+  --text-xs: var(--font-size-xs);
+  --text-sm: var(--font-size-sm);
+  --text-base: var(--font-size-base);
+  --text-lg: var(--font-size-lg);
+  --text-xl: var(--font-size-xl);
+  --text-2xl: var(--font-size-2xl);
+  --text-3xl: var(--font-size-3xl);
+  --text-4xl: var(--font-size-4xl);
+  --text-5xl: var(--font-size-5xl);
+
+  /* espacamento: amarra a base do Tailwind ao token CRP (--space-1 = 0.25rem; a escala e
+     4px-linear, entao p-*, m-*, gap-*, size-* passam a derivar literalmente do contrato). */
+  --spacing: var(--space-1);
 }
+
+/* Type styles semanticos do CRP (display/h1../body/label/overline). Consomem as vars
+   --text-<papel>-* do contrato: familia, peso, tamanho, line-height e letter-spacing — tudo
+   tokenizado e multi-marca. Classes "unlayered": vencem as utilities text-* do Tailwind. */
+.ty-display  { font-family: var(--text-display-font-family);  font-weight: var(--text-display-font-weight);  font-size: var(--text-display-font-size);  line-height: var(--text-display-line-height);  letter-spacing: var(--text-display-letter-spacing); }
+.ty-h1       { font-family: var(--text-h1-font-family);       font-weight: var(--text-h1-font-weight);       font-size: var(--text-h1-font-size);       line-height: var(--text-h1-line-height);       letter-spacing: var(--text-h1-letter-spacing); }
+.ty-h2       { font-family: var(--text-h2-font-family);       font-weight: var(--text-h2-font-weight);       font-size: var(--text-h2-font-size);       line-height: var(--text-h2-line-height);       letter-spacing: var(--text-h2-letter-spacing); }
+.ty-h3       { font-family: var(--text-h3-font-family);       font-weight: var(--text-h3-font-weight);       font-size: var(--text-h3-font-size);       line-height: var(--text-h3-line-height);       letter-spacing: var(--text-h3-letter-spacing); }
+.ty-h4       { font-family: var(--text-h4-font-family);       font-weight: var(--text-h4-font-weight);       font-size: var(--text-h4-font-size);       line-height: var(--text-h4-line-height);       letter-spacing: var(--text-h4-letter-spacing); }
+.ty-body-lg  { font-family: var(--text-body-lg-font-family);  font-weight: var(--text-body-lg-font-weight);  font-size: var(--text-body-lg-font-size);  line-height: var(--text-body-lg-line-height);  letter-spacing: var(--text-body-lg-letter-spacing); }
+.ty-body     { font-family: var(--text-body-font-family);     font-weight: var(--text-body-font-weight);     font-size: var(--text-body-font-size);     line-height: var(--text-body-line-height);     letter-spacing: var(--text-body-letter-spacing); }
+.ty-body-sm  { font-family: var(--text-body-sm-font-family);  font-weight: var(--text-body-sm-font-weight);  font-size: var(--text-body-sm-font-size);  line-height: var(--text-body-sm-line-height);  letter-spacing: var(--text-body-sm-letter-spacing); }
+.ty-label    { font-family: var(--text-label-font-family);    font-weight: var(--text-label-font-weight);    font-size: var(--text-label-font-size);    line-height: var(--text-label-line-height);    letter-spacing: var(--text-label-letter-spacing); }
+.ty-label-sm { font-family: var(--text-label-sm-font-family); font-weight: var(--text-label-sm-font-weight); font-size: var(--text-label-sm-font-size); line-height: var(--text-label-sm-line-height); letter-spacing: var(--text-label-sm-letter-spacing); }
+.ty-caption  { font-family: var(--text-caption-font-family);  font-weight: var(--text-caption-font-weight);  font-size: var(--text-caption-font-size);  line-height: var(--text-caption-line-height);  letter-spacing: var(--text-caption-letter-spacing); }
+.ty-overline { font-family: var(--text-overline-font-family); font-weight: var(--text-overline-font-weight); font-size: var(--text-overline-font-size); line-height: var(--text-overline-line-height); letter-spacing: var(--text-overline-letter-spacing); text-transform: uppercase; }
 
 body {
   font-family: var(--font-sans, system-ui, sans-serif);

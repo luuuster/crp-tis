@@ -91,11 +91,13 @@ function FormLabel({
 }: React.ComponentProps<typeof LabelPrimitive.Root>) {
   const { error, formItemId } = useFormField()
 
+  // No erro, label e mensagem usam o token de TEXTO (-text), AA sobre o fundo também no dark
+  // (o --destructive cru é cor de FILL e reprova como texto no escuro).
   return (
     <Label
       data-slot="form-label"
       data-error={!!error}
-      className={cn("data-[error=true]:text-destructive", className)}
+      className={cn("data-[error=true]:text-destructive-text", className)}
       htmlFor={formItemId}
       {...props}
     />
@@ -145,7 +147,7 @@ function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
     <p
       data-slot="form-message"
       id={formMessageId}
-      className={cn("text-sm text-destructive", className)}
+      className={cn("text-sm text-destructive-text", className)}
       {...props}
     >
       {body}
