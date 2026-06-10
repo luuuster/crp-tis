@@ -31,6 +31,10 @@ const REQUIRED = [
   'chart-7','chart-8','chart-9','chart-10','chart-11','chart-12',
   'sidebar','sidebar-foreground','sidebar-primary','sidebar-primary-foreground',
   'sidebar-accent','sidebar-accent-foreground','sidebar-border','sidebar-ring',
+  // Camada de interação — o button.css depende deles; ausência = estados quebrados (e a
+  // validação de estados compostos da seção 5b seria pulada em silêncio). FATAL.
+  'state-hover','state-active','state-border','state-soft','state-soft-active',
+  'state-veil-darken','state-veil-lighten',
 ];
 
 // Pares (foreground, background) a checar. fatal=true reprova o build.
@@ -241,6 +245,62 @@ for (const [label, sel] of Object.entries(EXPECTED_SELECTORS)) {
       const ratio = wcagContrast(parse(accent), parse(tint));
       const ok = ratio >= AA;
       if (!ok) errors.push(`CONTRASTE [${label}] soft ${textTok} sobre tinta(${surf}) = ${ratio.toFixed(2)}:1 < ${AA}`);
+    }
+  }
+}
+
+// 5b) ESTADOS COMPOSTOS do button (:hover/:active) — espelha src/components/button.css. FATAL.
+//     O repouso passar NÃO garante o estado: o véu/tinta pode comer a margem AA (era o caso:
+//     92 combinações reprovavam antes do redesenho dos estados).
+//     solid: fg sobre color-mix(in oklch, bg, VÉU p%) — véu por intent (darken; warning = lighten,
+//            sempre na direção OPOSTA ao fg). outline/ghost: texto sobre tinta própria 10% (hover)
+//            e state-soft 15% (active). soft: hover mantém a tinta de repouso (validada na seção 5,
+//            o feedback é o contorno --_tint, coberto pelos PAIRS 4.5 > 3:1); active = tinta
+//            state-soft-active. Teto medido da tinta própria ≈ 16% (pior caso dark/success/card).
+const SOLID_INTENTS = [
+  // [fg, bg, véu] — espelha .btn.intent-* (--_fg/--_bg/--_veil)
+  ['primary-foreground', 'primary', 'darken'],
+  ['secondary-foreground', 'secondary', 'darken'],
+  ['destructive-foreground', 'destructive', 'darken'],
+  ['warning-foreground', 'warning', 'lighten'],
+  ['success-foreground', 'success', 'darken'],
+  ['info-foreground', 'info', 'darken'],
+];
+for (const [label, sel] of Object.entries(EXPECTED_SELECTORS)) {
+  const scope = bySelector[sel];
+  if (!scope) continue;
+  const R = (t) => resolve(scope[`--${t}`], scope);
+  const P = (t) => parseFloat(R(t));
+  const veils = { darken: R('state-veil-darken'), lighten: R('state-veil-lighten') };
+  const STATES_SOLID = [['hover', P('state-hover')], ['active', P('state-active')]];
+  const STATES_TINT = [
+    ['outline/ghost:hover', P('state-hover')],
+    ['outline/ghost:active', P('state-soft')],
+    ['soft:active', P('state-soft-active')],
+  ];
+  if (!veils.darken || !veils.lighten || STATES_SOLID.some(([, p]) => !(p >= 0)) || STATES_TINT.some(([, p]) => !(p >= 0))) {
+    warnings.push(`[${label}] estados: tokens state-* ausentes/ilegíveis — estados compostos não validados`);
+    continue;
+  }
+  // solid hover/active: fg sobre o fundo com véu (mix OKLCH real, como o browser)
+  for (const [fgT, bgT, veil] of SOLID_INTENTS) {
+    for (const [st, p] of STATES_SOLID) {
+      const mixed = mixOklch(R(bgT), veils[veil], p);
+      if (!mixed) { warnings.push(`[${label}] estados: não compus solid:${st} de ${bgT}`); continue; }
+      const ratio = wcagContrast(parse(R(fgT)), parse(mixed));
+      if (ratio < AA) errors.push(`ESTADO [${label}] solid:${st} ${fgT}/${bgT}+véu-${veil} = ${ratio.toFixed(2)}:1 < ${AA}`);
+    }
+  }
+  // translúcidas: texto-accent sobre a tinta da PRÓPRIA cor, compositada sobre bg e card
+  for (const [textTok] of SOFT_INTENTS) {
+    const text = R(textTok);
+    for (const [st, p] of STATES_TINT) {
+      for (const surf of ['background', 'card']) {
+        const tinted = tintOver(text, p, R(surf));
+        if (!tinted) { warnings.push(`[${label}] estados: não compus ${st} de ${textTok} sobre ${surf}`); continue; }
+        const ratio = wcagContrast(parse(text), parse(tinted));
+        if (ratio < AA) errors.push(`ESTADO [${label}] ${st} ${textTok}/tinta(${surf}) = ${ratio.toFixed(2)}:1 < ${AA}`);
+      }
     }
   }
 }

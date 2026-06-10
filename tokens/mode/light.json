@@ -110,7 +110,5 @@
     "md": { "$value": "{shadow.md}" },
     "lg": { "$value": "{shadow.lg}" },
     "xl": { "$value": "{shadow.xl}" }
-  },
-
-  "state-overlay": { "$type": "color", "$value": "{color.black}" }
+  }
 }

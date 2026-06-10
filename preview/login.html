@@ -173,7 +173,7 @@
     }
     /* normal = foreground · hover/active = soft do primary + ícone no tom de link */
     .toggle:hover  { background: color-mix(in oklch, var(--primary) calc(var(--state-soft) * 100%), transparent); color: var(--link); }
-    .toggle:active { background: color-mix(in oklch, var(--primary) calc(var(--state-soft-hover) * 100%), transparent); color: var(--link); }
+    .toggle:active { background: color-mix(in oklch, var(--primary) calc(var(--state-soft-active) * 100%), transparent); color: var(--link); }
     .toggle svg { width: var(--icon-sm); height: var(--icon-sm); }
 
     /* erro de campo — BORDA usa --destructive (preenchimento/edge, passa 1.4.11 ≥3:1);

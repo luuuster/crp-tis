@@ -14,12 +14,22 @@
  * aria-hidden="true" focusable="false"; disabled = aria-disabled="true" (focável + guard JS);
  * loading = aria-busy="true" + aria-disabled="true" com o nome acessível preservado.
  *
- * Anatomia de cor por intent (4 vars):
+ * Anatomia de cor por intent (5 vars):
  *   --_bg    fundo do SÓLIDO
  *   --_fg    texto/ícone sobre o sólido
  *   --_text  texto/ícone das variantes NÃO-sólidas (token *-text, mode-aware, AA garantido)
  *   --_tint  cor base das superfícies translúcidas (outline border / soft / ghost-hover)
  *            = --_text, p/ que o color-mix preserve o AA validado no check.mjs
+ *   --_veil  véu de hover/active do sólido — SEMPRE na direção oposta ao --_fg
+ *            (texto claro → veil-darken; texto escuro, ex. warning → veil-lighten),
+ *            p/ o estado AUMENTAR o contraste em vez de comê-lo. Validado no check.mjs.
+ *
+ * Estados (AA fatal no check.mjs — estados compostos):
+ *   solid    hover/active = véu 10%/20% (afasta o fundo do texto)
+ *   outline  hover = tinta 10%; active = tinta 15% (teto AA da tinta própria ≈ 16%)
+ *   ghost    idem outline
+ *   soft     hover = CONTORNO (--_tint) com tinta intacta; active = contorno + tinta 10%
+ *            ('afundar' clareando — mais tinta da própria cor reprovaria AA)
  */
 
 @keyframes crp-btn-spin {
@@ -30,6 +40,7 @@
   .btn {
     --_bg: var(--primary); --_fg: var(--primary-foreground);
     --_text: var(--primary-text); --_tint: var(--primary-text);
+    --_veil: var(--state-veil-darken);
     --_fs: var(--button-font-size-md); --_py: var(--button-padding-y-md); --_px: var(--button-padding-x-md);
     --_gap: var(--button-gap-md); --_icon: var(--button-icon-size-md); --_minh: var(--button-height-md);
     position: relative;
@@ -51,29 +62,31 @@
   .btn.intent-primary   { --_bg: var(--primary);     --_fg: var(--primary-foreground);     --_text: var(--primary-text);        --_tint: var(--primary-text); }
   .btn.intent-secondary { --_bg: var(--secondary);   --_fg: var(--secondary-foreground);   --_text: var(--secondary-foreground); --_tint: var(--secondary-foreground); }
   .btn.intent-danger    { --_bg: var(--destructive); --_fg: var(--destructive-foreground); --_text: var(--destructive-text);    --_tint: var(--destructive-text); }
-  .btn.intent-warning   { --_bg: var(--warning);     --_fg: var(--warning-foreground);     --_text: var(--warning-text);        --_tint: var(--warning-text); }
+  .btn.intent-warning   { --_bg: var(--warning);     --_fg: var(--warning-foreground);     --_text: var(--warning-text);        --_tint: var(--warning-text); --_veil: var(--state-veil-lighten); /* fg escuro → véu clareia */ }
   .btn.intent-success   { --_bg: var(--success);     --_fg: var(--success-foreground);     --_text: var(--success-text);        --_tint: var(--success-text); }
   .btn.intent-info      { --_bg: var(--info);        --_fg: var(--info-foreground);        --_text: var(--info-text);           --_tint: var(--info-text); }
 
   /* estilo: SÓLIDO */
   .btn.solid { background: var(--_bg); color: var(--_fg); box-shadow: var(--elevation-xs); }
-  .btn.solid:hover,  .btn.solid.is-hover  { background: color-mix(in oklch, var(--_bg), var(--state-overlay) calc(var(--state-hover) * 100%)); }
-  .btn.solid:active, .btn.solid.is-active { background: color-mix(in oklch, var(--_bg), var(--state-overlay) calc(var(--state-active) * 100%)); box-shadow: none; }
+  .btn.solid:hover,  .btn.solid.is-hover  { background: color-mix(in oklch, var(--_bg), var(--_veil) calc(var(--state-hover) * 100%)); }
+  .btn.solid:active, .btn.solid.is-active { background: color-mix(in oklch, var(--_bg), var(--_veil) calc(var(--state-active) * 100%)); box-shadow: none; }
 
   /* estilo: OUTLINE — texto/ícone = --_text (AA); borda/realce = --_tint */
   .btn.outline { background: transparent; color: var(--_text); border-color: color-mix(in oklch, var(--_tint) calc(var(--state-border) * 100%), transparent); }
   .btn.outline:hover,  .btn.outline.is-hover  { background: color-mix(in oklch, var(--_tint) calc(var(--state-hover) * 100%), transparent); border-color: var(--_tint); }
-  .btn.outline:active, .btn.outline.is-active { background: color-mix(in oklch, var(--_tint) calc(var(--state-active) * 100%), transparent); }
+  .btn.outline:active, .btn.outline.is-active { background: color-mix(in oklch, var(--_tint) calc(var(--state-soft) * 100%), transparent); }
 
   /* estilo: SOFT — texto = --_text sobre a tinta do MESMO --_text (par validado no check.mjs) */
   .btn.soft { background: color-mix(in oklch, var(--_tint) calc(var(--state-soft) * 100%), transparent); color: var(--_text); }
-  .btn.soft:hover,  .btn.soft.is-hover  { background: color-mix(in oklch, var(--_tint) calc(var(--state-soft-hover) * 100%), transparent); }
-  .btn.soft:active, .btn.soft.is-active { background: color-mix(in oklch, var(--_tint) calc(var(--state-soft-active) * 100%), transparent); }
+  /* hover = CONTORNO da própria cor (tinta intacta — mais tinta comeria o AA do texto);
+     active = contorno + tinta mais clara ('pressionado p/ dentro'). Borda já existe (transparent) → sem layout shift. */
+  .btn.soft:hover,  .btn.soft.is-hover  { border-color: var(--_tint); }
+  .btn.soft:active, .btn.soft.is-active { border-color: var(--_tint); background: color-mix(in oklch, var(--_tint) calc(var(--state-soft-active) * 100%), transparent); }
 
   /* estilo: GHOST */
   .btn.ghost { background: transparent; color: var(--_text); }
   .btn.ghost:hover,  .btn.ghost.is-hover  { background: color-mix(in oklch, var(--_tint) calc(var(--state-hover) * 100%), transparent); }
-  .btn.ghost:active, .btn.ghost.is-active { background: color-mix(in oklch, var(--_tint) calc(var(--state-active) * 100%), transparent); }
+  .btn.ghost:active, .btn.ghost.is-active { background: color-mix(in oklch, var(--_tint) calc(var(--state-soft) * 100%), transparent); }
 
   /* estilo: LINK — sublinhado PERSISTENTE (não só no hover).
      WCAG 1.4.1 (uso de cor): o link não pode se distinguir SÓ por cor; o sublinhado é o
