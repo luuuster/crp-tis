@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Suspense, lazy, useEffect, useState } from 'react'
 import { LogOut, Moon, Palette, Sun } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -6,11 +6,15 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Separator } from '@/components/ui/separator'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { Toaster } from '@/components/ui/sonner'
+import { Spinner } from '@/components/ui/spinner'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { LoginPage } from '@/pages/LoginPage'
 import { RegisterPage } from '@/pages/RegisterPage'
-import { Dashboard } from '@/pages/Dashboard'
-import { Showcase } from '@/pages/Showcase'
+
+// Code-split: Dashboard (recharts) e Showcase (galeria inteira) só carregam após o login —
+// corta o chunk inicial (aviso de >500 kB do vite build) sem mudar comportamento.
+const Dashboard = lazy(() => import('@/pages/Dashboard').then((m) => ({ default: m.Dashboard })))
+const Showcase = lazy(() => import('@/pages/Showcase').then((m) => ({ default: m.Showcase })))
 
 type Brand = 'crp' | 'marca-b'
 type Mode = 'light' | 'dark'
@@ -70,10 +74,16 @@ export function App() {
           <LoginPage onLogin={() => setView('dashboard')} onCreateAccount={() => setView('register')} />
         ) : view === 'register' ? (
           <RegisterPage onBackToLogin={() => setView('login')} onRegistered={() => setView('login')} />
-        ) : view === 'dashboard' ? (
-          <Dashboard />
         ) : (
-          <Showcase />
+          <Suspense
+            fallback={
+              <div className="grid min-h-dvh place-items-center" role="status" aria-label="Carregando página">
+                <Spinner className="size-6" />
+              </div>
+            }
+          >
+            {view === 'dashboard' ? <Dashboard /> : <Showcase />}
+          </Suspense>
         )}
       </ErrorBoundary>
 
