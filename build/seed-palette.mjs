@@ -49,7 +49,8 @@ const FORCE = process.argv.includes('--force');
 
 const r = (n, d = 3) => Math.round(n * 10 ** d) / 10 ** d;
 const fmt = (c) => { const k = clampChroma({ mode: 'oklch', l: c.l, c: c.c, h: c.h }, 'oklch', 'p3');
-  return `oklch(${r(k.l)} ${r(k.c)} ${r(k.h ?? 0, 2)})`; };
+  // L em PERCENTUAL (97.1%) p/ um formato único em todas as paletas (as demais já são %). #7
+  return `oklch(${r(k.l * 100, 1)}% ${r(k.c)} ${r(k.h ?? 0, 2)})`; };
 const hex = (v) => formatHex(v) || v;
 const tok = (value, exactHex) => ({ $value: value, $description: exactHex || hex(value) });
 
