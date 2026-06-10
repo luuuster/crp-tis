@@ -27,6 +27,8 @@ jobs:
         with:
           node-version: 20
           registry-url: https://npm.pkg.github.com
+          cache: npm
+          cache-dependency-path: package-lock.json
 
       - run: npm ci
 
@@ -75,6 +77,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            app/package-lock.json
 
       # O app consome @crp/design-tokens via file:.. → instala e gera o dist na RAIZ primeiro.
       - name: Tokens (dist consumido pelo app)

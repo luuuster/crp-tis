@@ -4,6 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "description": "App de demonstração — componentes shadcn/ui tematizados pelos tokens do CRP Design System (multi-marca, claro/escuro).",
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "npm@11.11.0",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",

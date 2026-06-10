@@ -15,6 +15,7 @@ figma-plugin/figma-variables.json
 # backups automáticos do seed-palette (--force)
 tokens/.core-backup-*/
 .cursor/
+.claude/settings.local.json
 *.log
 .DS_Store
 .env
