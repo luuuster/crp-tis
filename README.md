@@ -177,7 +177,22 @@ limitam modes).
 **B) Token Studio (manual).** Pull dos tokens do GitHub → **Export → Figma Variables** (ação manual
 do plugin; sync automático exigiria Pro/Enterprise).
 
-⚠️ Só escalares (cor/número/string/bool) viram Variables. Tipografia/sombra (compostos) viram **Styles**. OKLCH é exibido como aproximação **sRGB** no Figma.
+⚠️ Só escalares (cor/número/string/bool) viram Variables. Tipografia/sombra (compostos) viram **Styles**.
+
+### Gamut de cor (sRGB × P3) — trade-off conhecido
+
+As paletas usam **OKLCH wide-gamut** (herança do Tailwind v4): **117 das 290** cores ficam **fora do
+sRGB** (faixas mais saturadas de red/orange/amber etc.). Implicações:
+
+- **No browser:** telas P3 renderizam essas cores na saturação real (CSS `oklch()` é gamut-aware).
+- **No Figma:** o modelo de cor é **sRGB**, então o export (`build/lib/color.mjs`) **clampa** cada canal
+  a `0..1`. As Variables ficam levemente menos saturadas que o browser nessas 117 cores. O
+  `npm run export:figma` **loga a contagem** (`Gamut: 117/290 …`) a cada build, para o trade-off ficar visível.
+- **Verificação:** `verify-figma.mjs` compara Figma vs CSS **ambos já clampados em sRGB** — então confirma
+  que a *conversão* está correta, não que o Figma iguala o P3 do browser (não há como: o Figma é sRGB).
+
+É **intencional** e não bloqueia nada: a paleta canônica (browser/produção) preserva o wide-gamut; só a
+representação no Figma é clampada. Se algum dia o Figma suportar P3, basta remover o clamp em `color.mjs`.
 
 ## Versionamento (changesets)
 
