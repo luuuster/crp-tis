@@ -51,6 +51,16 @@ jobs:
           path: figma-plugin/figma-variables.json
           if-no-files-found: error
 
+      - name: Exportar token-studio/tokens.json (bundle p/ Load from JSON, gerado e não versionado)
+        run: npm run export:ts
+
+      - name: Publicar token-studio/tokens.json (artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: token-studio
+          path: token-studio/tokens.json
+          if-no-files-found: error
+
       - name: Gerar e embutir bundles de ícones (Lucide + Material)
         run: npm run icons   # export (lucide-static + @material-symbols) + embed -> *.json e code.bundled.js (testes leem os .json)
 

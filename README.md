@@ -162,6 +162,11 @@ Os tokens nascem como JSON no repo. Para levá-los ao plugin via **Load from JSO
 
 O script valida compatibilidade (refs, sets vs `$themes`/`$metadata`, `$type`) e falha se algo quebraria o import. Detalhes no agente `token-studio-export` (`.claude/agents/`).
 
+> ⚠️ **`token-studio/tokens.json` é GERADO e gitignored** (como o `figma-variables.json`). Ele NÃO acompanha
+> o git, então pode ficar **stale** se você mudou tokens depois de gerá-lo — **rode `npm run export:ts`
+> antes de importar**. O CI também o publica como **artifact** (`token-studio`) a cada build da `main`,
+> então dá pra baixar a versão canônica de lá em vez de regenerar.
+
 ## Figma Variables (designers)
 
 Duas rotas para levar os tokens a **Figma Variables**:
