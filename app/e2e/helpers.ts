@@ -13,6 +13,13 @@ export async function login(page: Page) {
   await expect(page.getByRole('tab', { name: 'Componentes' })).toBeVisible()
 }
 
+// Login → "Criar conta" → tela de cadastro (espera o 1º campo aparecer).
+export async function gotoRegister(page: Page) {
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Criar conta' }).click()
+  await expect(page.getByLabel(/Nome completo/)).toBeVisible()
+}
+
 // Acerta marca + tema clicando nos toggles flutuantes (mesma fonte de verdade do app:
 // [data-brand] + .dark no <html>). Idempotente: só clica se o estado atual divergir.
 export async function setTheme(page: Page, brand: Brand, mode: Mode) {

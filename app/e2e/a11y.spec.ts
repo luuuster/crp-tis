@@ -1,15 +1,23 @@
 import { test, expect } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
-import { login, setTheme, type Brand, type Mode } from './helpers'
+import { login, gotoRegister, setTheme, type Brand, type Mode } from './helpers'
 
-// A dimensão que o axe.test.tsx (jsdom) NÃO cobre: CONTRASTE renderizado. Aqui o navegador real
-// aplica os tokens (OKLCH → sRGB) e o axe mede color-contrast de verdade — nas 4 combinações
-// marca × tema, nas 2 páginas pós-login.
+// axe ESTRUTURAL no DOM renderizado (ARIA, roles, labels, heading-order) — nas 4 combinações
+// marca × tema, nas telas de auth e pós-login. É o que o jsdom (axe.test.tsx) não exercita: o
+// fluxo real do app (dock + navegação) — foi aqui que apareceu o aria-controls inválido do <Tabs>.
+//
+// CONTRASTE fica DESLIGADO de propósito: o axe-core 4.12 converte OKLCH→sRGB de forma NÃO-confiável.
+// Provado por pixel de canvas (o que o navegador realmente pinta):
+//   oklch(0.505 0.19 258.68) → axe diz #2774d5 (4.46:1) | navegador pinta #045dce (5.81:1).
+// Ele gera falsos positivos perto do limiar (botão primário light, placeholder MarcaB-dark medem
+// >5.8 de verdade, mas o axe reprova). O contraste é validado com PRECISÃO (e fatal) em
+// build/check.mjs via culori, que bate com o pixel real em todos os casos testados.
 const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']
 
 type V = Awaited<ReturnType<AxeBuilder['analyze']>>['violations'][number]
 const fmt = (vs: V[]) => vs.map((v) => `[${v.impact}] ${v.id}: ${v.help} (${v.nodes.length}x)`).join('\n')
-const scan = (page: Parameters<typeof login>[0]) => new AxeBuilder({ page }).withTags(TAGS).analyze()
+const scan = (page: Parameters<typeof login>[0]) =>
+  new AxeBuilder({ page }).withTags(TAGS).disableRules(['color-contrast']).analyze()
 
 const BRANDS: Brand[] = ['crp', 'marca-b']
 const MODES: Mode[] = ['light', 'dark']
@@ -18,7 +26,26 @@ const TABS = [
   { tab: 'Componentes', label: 'Componentes' },
 ] as const
 
-test.describe('axe REAL — contraste renderizado', () => {
+test.describe('axe estrutural — telas de auth', () => {
+  for (const brand of BRANDS)
+    for (const mode of MODES) {
+      test(`Login · ${brand} · ${mode}`, async ({ page }) => {
+        await page.goto('/')
+        await setTheme(page, brand, mode)
+        const r = await scan(page)
+        expect(r.violations, fmt(r.violations)).toEqual([])
+      })
+
+      test(`Cadastro · ${brand} · ${mode}`, async ({ page }) => {
+        await gotoRegister(page)
+        await setTheme(page, brand, mode)
+        const r = await scan(page)
+        expect(r.violations, fmt(r.violations)).toEqual([])
+      })
+    }
+})
+
+test.describe('axe estrutural — app (pós-login)', () => {
   for (const brand of BRANDS)
     for (const mode of MODES)
       for (const { tab, label } of TABS) {
