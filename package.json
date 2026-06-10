@@ -26,6 +26,8 @@
   "scripts": {
     "build": "node build/build-tokens.mjs",
     "check": "node build/check.mjs",
+    "doctor": "node build/doctor.mjs",
+    "doctor:fix": "node build/doctor.mjs --fix",
     "audit:dark": "node build/audit-dark.mjs",
     "export:ts": "node build/export-token-studio.mjs",
     "export:figma": "node build/export-figma.mjs",

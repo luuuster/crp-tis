@@ -1,0 +1,11 @@
+#!/bin/sh
+# Gate anti-corrupção: bloqueia commit se houver arquivo com assinatura de truncamento/NUL no disco.
+# Instalação (uma vez, por máquina):  git config core.hooksPath .githooks
+# Contexto: docs/PROTECAO-CORRUPCAO.md
+node build/doctor.mjs || {
+  echo ""
+  echo "✖ COMMIT ABORTADO: ha arquivos corrompidos no disco (truncados/NUL)."
+  echo "  Commitar agora gravaria a versao quebrada por cima da boa no git."
+  echo "  Rode:  npm run doctor:fix   e tente o commit de novo."
+  exit 1
+}
