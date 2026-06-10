@@ -71,6 +71,13 @@ o mesmo eixo da cor. Como a `fontFamily` está **vinculada** à `brand-font-*`, 
 renderiza **Inter** num frame CRP e **Montserrat** num frame MarcaB. Editar uma Variable (tamanho,
 peso, família…) **propaga** para o Style.
 
+**Escopo da auditoria (intencional):** a auditoria compara **Variables a fundo** (valor por modo,
+aliases, tipo, drift) e **Styles por presença/vínculo** — propriedades internas de um Style editadas
+à mão no Figma (ex.: lineHeight de um Text Style) **não** acusam drift. Como os campos dos Styles são
+vinculados às Variables, drift real aparece nas Variables; o caso não coberto é alguém *desvincular*
+um campo e editá-lo. Se precisar de verificação total, rode `npm run verify:figma` no repo após
+exportar.
+
 ## Como usar
 
 1. Gere o bundle do Figma no repo:

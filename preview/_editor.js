@@ -106,6 +106,10 @@
   if (document.body) mount(); else addEventListener('DOMContentLoaded', mount);
 
   function wire() {
+    // Todos os listeners de document/window usam este signal — o "Fechar" aborta tudo de uma vez
+    // (sem ele, reinjetar o editor duplicaria handlers: undo duplo, seleção dupla).
+    const ac = new AbortController();
+    const SIG = { signal: ac.signal };
     const $ = (id) => panel.querySelector(id);
     const selInfo = $('#crp-sel'), roleSel = $('#crp-role');
     const wS = $('#crp-w'), wV = $('#crp-w-v'), mwS = $('#crp-mw'), mwV = $('#crp-mw-v');
@@ -187,8 +191,8 @@
       delBtn.disabled = false; elFields.forEach((s) => { s.disabled = false; });
       syncBox(el);
     }
-    document.addEventListener('mouseover', (e) => { if (!picking || panel.contains(e.target)) return; if (hovered) hovered.classList.remove('crp-hi'); hovered = e.target; hovered.classList.add('crp-hi'); });
-    document.addEventListener('click', (e) => { if (!picking || panel.contains(e.target)) return; e.preventDefault(); e.stopPropagation(); if (hovered) hovered.classList.remove('crp-hi'); select(e.target); setPick(false); }, true);
+    document.addEventListener('mouseover', (e) => { if (!picking || panel.contains(e.target)) return; if (hovered) hovered.classList.remove('crp-hi'); hovered = e.target; hovered.classList.add('crp-hi'); }, SIG);
+    document.addEventListener('click', (e) => { if (!picking || panel.contains(e.target)) return; e.preventDefault(); e.stopPropagation(); if (hovered) hovered.classList.remove('crp-hi'); select(e.target); setPick(false); }, { capture: true, signal: ac.signal });
 
     // ===== tipografia (inline via tokens; histórico) =====
     roleSel.addEventListener('change', () => {
@@ -287,8 +291,8 @@
         panel.style.left = r.left + 'px'; panel.style.top = r.top + 'px'; panel.style.right = 'auto'; panel.style.bottom = 'auto';
         document.body.style.userSelect = 'none'; e.preventDefault();
       });
-      document.addEventListener('mousemove', (e) => { if (!dragging) return; panel.style.left = Math.max(0, Math.min(e.clientX - ox, innerWidth - 44)) + 'px'; panel.style.top = Math.max(0, Math.min(e.clientY - oy, innerHeight - 28)) + 'px'; });
-      document.addEventListener('mouseup', () => { dragging = false; document.body.style.userSelect = ''; });
+      document.addEventListener('mousemove', (e) => { if (!dragging) return; panel.style.left = Math.max(0, Math.min(e.clientX - ox, innerWidth - 44)) + 'px'; panel.style.top = Math.max(0, Math.min(e.clientY - oy, innerHeight - 28)) + 'px'; }, SIG);
+      document.addEventListener('mouseup', () => { dragging = false; document.body.style.userSelect = ''; }, SIG);
     })();
 
     // ===== Ctrl+Z (não atrapalha campos de texto) =====
@@ -299,14 +303,14 @@
       const textEntry = !!t && ((t.tagName === 'INPUT' && /^(text|email|password|search|url|tel|number|)$/i.test(t.type) && !t.classList.contains('val')) || t.tagName === 'TEXTAREA' || t.isContentEditable);
       if (textEntry) return;
       e.preventDefault(); doUndo();
-    });
+    }, SIG);
 
     // ===== ações =====
     panel.addEventListener('click', (e) => {
       const a = e.target.closest('[data-a]'); if (!a) return;
       switch (a.dataset.a) {
         case 'min': panel.classList.toggle('min'); break;
-        case 'close': setText(false); setPick(false); panel.remove(); style.remove(); window.__crpEditor = false; break;
+        case 'close': setText(false); setPick(false); ac.abort(); panel.remove(); style.remove(); window.__crpEditor = false; break;
         case 'text': setText(!editing); break;
         case 'pick': setPick(!picking); break;
         case 'parent': if (selected && selected.parentElement && selected.parentElement.id !== 'crp-editor') select(selected.parentElement); break;

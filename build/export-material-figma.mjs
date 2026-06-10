@@ -54,6 +54,8 @@ function main() {
     const all = readdirSync(dir).sort();
 
     for (const v of VARIANTS) {
+      // Progresso por bundle (DX): cada um leva dezenas de segundos — sem isto parece travado.
+      process.stdout.write(`… material-${style}${v.suffix} (lendo/minificando SVGs)\n`);
       const icons = all.filter(v.pick).map((f) => {
         const name = v.name(f);
         let svg = minifySvg(readFileSync(join(dir, f), 'utf8'));
