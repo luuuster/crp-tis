@@ -25,20 +25,24 @@ tokens/                      # SSOT (sincronizado pelo Token Studio, formato DTC
     shadow.json              #   shadow, inset-shadow, drop-shadow, text-shadow (compostos → só CSS)
     effect.json              #   blur, perspective, aspect
     motion.json              #   ease (cubic-bezier), duration, animate (keyframes vêm do @import tailwindcss)
-  semantic/base.json         # CONSTANTES do contrato (radius, chart-*, opacity.{disabled,muted,overlay})
+    border.json              #   border-width (escala de espessuras; também liga a espessura dos ícones)
+    icon.json                #   icon (tamanhos de ícone; vira icon/* nas Figma Variables)
+  semantic/                  # tier 2 invariável (1 mode): constantes do contrato
+    {opacity,spacing,state,radius,typography,layer}.json
   brand/{crp,marca-b}.json   # contrato que varia por MARCA (primary, ring, sidebar-primary…)
   mode/{light,dark}.json     # contrato que varia por MODO (background, card, border…, elevation.* = sombra por modo)
-  components/                # tier 3 (opcional, ainda não ligado aos themes)
-build/
-  build-tokens.mjs           # Style Dictionary v4 + sd-transforms → dist/
-  check.mjs                  # valida refs, contrato e contraste WCAG
+  components/button.json     # tier 3 (ligado aos themes) — HOJE só consome tokens DIMENSIONAIS do botão
+                             #   (padding/altura/ícone/gap por tamanho); cor/estado ficam no semantic
+                             #   (state.json) + anatomia por intent no src/components/button.css — por design,
+                             #   p/ cor de componente nunca divergir do contrato da marca
 src/                         # FONTES autoradas da a11y de comportamento (SSOT desses CSS/JS)
-  a11y/base.css              #   foco global (--ring) + reduced-motion + forced-colors (@layer base)
+  a11y/base.css              #   foco global (--ring) + reduced-motion + forced-colors + prefers-contrast (@layer base)
   components/button.css      #   o componente .btn auditado (intents/estilos/tamanhos/estados, @layer components)
   components/button.js       #   guard de ativação p/ [aria-disabled="true"] (1 listener delegado, idempotente)
 build/
+  lib/{css,themes}.mjs       # compartilhados: parse/resolve/color-mix de CSS · marcas/temas derivados do $themes.json
   build-tokens.mjs           # Style Dictionary v4 + sd-transforms → dist/ (+ emite os fontes de src/ com header)
-  check.mjs                  # valida refs, contrato, contraste WCAG E presença dos artefatos a11y
+  check.mjs                  # valida refs, contrato, contraste WCAG (repouso E estados hover/active) e artefatos a11y
 dist/                        # GERADO — não editar à mão
   tokens.css                 # :root + .dark + [data-brand] (CSS custom properties)
   theme.css                  # Tailwind v4 @theme inline (importe isto no app)
@@ -132,6 +136,7 @@ import "@crp/design-tokens/components/button.js";    // guard de ativação p/ [
 - **Desabilitado** = **`aria-disabled="true"`** (NÃO o atributo nativo `disabled`): o botão segue **focável** e descobrível (o leitor anuncia "desabilitado"); a ativação por mouse/teclado fica inerte pelo **guard** de `button.js`.
 - **Loading** = **`aria-busy="true"` + `aria-disabled="true"`**, com o **nome acessível preservado** (use `opacity` no conteúdo, nunca `visibility:hidden`/`display:none`); o spinner é um `<span class="btn-spinner" data-crp-motion="essential" aria-hidden="true">` decorativo. O **`data-crp-motion="essential"`** é o que mantém o loader **girando (mais devagar) sob `prefers-reduced-motion`** em vez de congelar — sem ele, a base.css zera a animação e o anel fica parado.
 - **Foco** usa **`--ring`** (anel da marca) via `:focus-visible` — nunca o outline preto default.
+- **Tamanhos `xs`/`icon-xs` (24px)** atendem o **mínimo** do WCAG 2.5.8 (alvo ≥ 24px) **sem folga** — são "AA-only", para UI densa (toolbars, tabelas). Em superfícies touch ou ações primárias, prefira `sm`+ (a recomendação AAA/plataforma é ≥ 44px).
 
 ```html
 <!-- normal -->        <button type="button" class="btn solid intent-primary md"><span>Salvar</span></button>

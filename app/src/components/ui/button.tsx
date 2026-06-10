@@ -1,5 +1,6 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
+import { Loader2 } from "lucide-react"
 import { Slot } from "radix-ui"
 
 import { cn } from "@/lib/utils"
@@ -45,10 +46,16 @@ function Button({
   variant = "default",
   size = "default",
   asChild = false,
+  isLoading = false,
+  children,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean
+    /** Estado de carregamento acessível: liga aria-busy + aria-disabled (nome acessível
+     *  preservado — sem `disabled` nativo, o botão segue focável/anunciável) e mostra o
+     *  spinner com `motion-safe` (não congela quem pediu reduced-motion: some, sem girar). */
+    isLoading?: boolean
   }) {
   const Comp = asChild ? Slot.Root : "button"
 
@@ -57,9 +64,15 @@ function Button({
       data-slot="button"
       data-variant={variant}
       data-size={size}
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={cn(buttonVariants({ variant, size, className }), isLoading && "pointer-events-none opacity-70")}
       {...props}
-    />
+      aria-busy={isLoading || props["aria-busy"] || undefined}
+      aria-disabled={isLoading || props["aria-disabled"] || undefined}
+      onClick={isLoading ? (e) => e.preventDefault() : props.onClick}
+    >
+      {isLoading && !asChild && <Loader2 aria-hidden="true" className="motion-safe:animate-spin" />}
+      {children}
+    </Comp>
   )
 }
 
