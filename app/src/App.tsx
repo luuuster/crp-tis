@@ -7,12 +7,13 @@ import { Separator } from '@/components/ui/separator'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { Toaster } from '@/components/ui/sonner'
 import { LoginPage } from '@/pages/LoginPage'
+import { RegisterPage } from '@/pages/RegisterPage'
 import { Dashboard } from '@/pages/Dashboard'
 import { Showcase } from '@/pages/Showcase'
 
 type Brand = 'crp' | 'marca-b'
 type Mode = 'light' | 'dark'
-type View = 'login' | 'dashboard' | 'componentes'
+type View = 'login' | 'register' | 'dashboard' | 'componentes'
 
 export function App() {
   const [brand, setBrand] = useState<Brand>('crp')
@@ -32,7 +33,7 @@ export function App() {
     <TooltipProvider delayDuration={200}>
       {/* Controle flutuante: marca + tema sempre; navegação de views só DEPOIS de logado. */}
       <div className="fixed top-4 right-4 z-50 flex items-center gap-1.5 rounded-full border border-border/50 bg-card/70 p-1 shadow-xs backdrop-blur-md">
-        {view !== 'login' && (
+        {(view === 'dashboard' || view === 'componentes') && (
           <>
             <Tabs value={view} onValueChange={(v) => setView(v as View)}>
               <TabsList className="h-8">
@@ -64,7 +65,9 @@ export function App() {
       </div>
 
       {view === 'login' ? (
-        <LoginPage onLogin={() => setView('dashboard')} />
+        <LoginPage onLogin={() => setView('dashboard')} onCreateAccount={() => setView('register')} />
+      ) : view === 'register' ? (
+        <RegisterPage onBackToLogin={() => setView('login')} onRegistered={() => setView('login')} />
       ) : view === 'dashboard' ? (
         <Dashboard />
       ) : (

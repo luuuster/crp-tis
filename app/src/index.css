@@ -35,6 +35,9 @@
   --color-link: var(--link);
   --color-primary-text: var(--primary-text);
   --color-destructive-text: var(--destructive-text);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-text: var(--success-text);
 
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
@@ -90,4 +93,17 @@ body {
   font-family: var(--font-sans, system-ui, sans-serif);
   background: var(--background);
   color: var(--foreground);
+}
+
+/* Autofill do navegador: o Chrome/Edge pinta um fundo amarelo/azul que ATROPELA o tema.
+   Reforçamos com os tokens do contrato (--background/--foreground) — resolvem por tema/marca
+   automaticamente (.dark, [data-brand]), sem cor hardcoded. O box-shadow inset mascara o fundo;
+   a transition longa segura a cor de autofill. Sem !important pra não brigar com o anel de foco. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--foreground);
+  caret-color: var(--foreground);
+  -webkit-box-shadow: 0 0 0 1000px var(--background) inset;
+  transition: background-color 9999s ease-out 0s;
 }
