@@ -62,3 +62,24 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # App de demonstração: typecheck + build + testes (Vitest). Roda em paralelo ao job de tokens.
+  app:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # O app consome @crp/design-tokens via file:.. → instala e gera o dist na RAIZ primeiro.
+      - name: Tokens (dist consumido pelo app)
+        run: npm ci && npm run build
+
+      - name: App — instalar, build (tsc + vite) e testar
+        working-directory: app
+        run: |
+          npm ci
+          npm run build
+          npm test

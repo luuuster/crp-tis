@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { resolve } from 'node:path'
@@ -12,5 +12,13 @@ export default defineConfig({
   },
   server: {
     fs: { allow: [resolve(import.meta.dirname, '..')] },
+  },
+  // Testes (Vitest): jsdom + Testing Library. css:false não processa Tailwind nos testes
+  // (mais rápido e sem ruído) — os testes checam COMPORTAMENTO, não pixels.
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: ['./src/test/setup.ts'],
+    css: false,
   },
 })
