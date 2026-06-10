@@ -55,7 +55,7 @@ export function Dashboard() {
       {/* cabeçalho da página */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight" style={{ fontFamily: 'var(--font-heading)' }}>Painel de pessoas</h1>
+          <h1 className="font-heading text-2xl font-bold tracking-tight">Painel de pessoas</h1>
           <p className="text-sm text-muted-foreground">Visão geral da operação de RH · junho de 2026</p>
         </div>
         <Button variant="outline"><Download /> Exportar</Button>
@@ -67,7 +67,7 @@ export function Dashboard() {
           <Card key={label}>
             <CardHeader>
               <CardDescription>{label}</CardDescription>
-              <CardTitle className="text-3xl tabular-nums" style={{ fontFamily: 'var(--font-heading)' }}>{valor}</CardTitle>
+              <CardTitle className="font-heading text-3xl tabular-nums">{valor}</CardTitle>
               <div className="flex items-center gap-1 text-xs text-muted-foreground">
                 {up ? <TrendingUp className="size-3.5" /> : <TrendingDown className="size-3.5" />}
                 <span>{delta}</span> <span>vs. mês anterior</span>

@@ -181,8 +181,17 @@ do plugin; sync automático exigiria Pro/Enterprise).
 
 ## Publicação (GitHub Packages, privado/free)
 
-Ajuste o escopo `@crp` em `package.json` e `.npmrc` para o dono do repo no GitHub.
-O workflow `.github/workflows/build-tokens.yml` roda `build` + `check` e publica via changesets na `main`.
+**Estado atual (intencional):** o pacote está em `version: 0.0.0` e **`private: true`** — ainda **não**
+é publicado. O app consome os tokens via link local (`"@crp/design-tokens": "file:.."`), então publicar
+não é necessário para desenvolver. Com `private: true`, o passo de release do CI (`changeset publish`)
+vira um no-op e a `main` fica verde (em vez de falhar tentando publicar a 0.0.0).
+
+**Para publicar de verdade**, quando quiser distribuir o pacote:
+1. Alinhe o escopo `@crp` ao dono do repo no GitHub Packages (ex.: `@<owner>/design-tokens`) em
+   `package.json` + `.npmrc` — o registry exige que o escopo bata com o owner/org.
+2. Remova `private: true` do `package.json`.
+3. `npx changeset` (bump de versão) e merge na `main` — o workflow `build-tokens.yml` roda
+   `build` + `check` e publica via changesets.
 
 ## Etapas manuais (fora deste repo de código)
 

@@ -6,6 +6,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Separator } from '@/components/ui/separator'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { Toaster } from '@/components/ui/sonner'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { LoginPage } from '@/pages/LoginPage'
 import { RegisterPage } from '@/pages/RegisterPage'
 import { Dashboard } from '@/pages/Dashboard'
@@ -64,15 +65,17 @@ export function App() {
         </Button>
       </div>
 
-      {view === 'login' ? (
-        <LoginPage onLogin={() => setView('dashboard')} onCreateAccount={() => setView('register')} />
-      ) : view === 'register' ? (
-        <RegisterPage onBackToLogin={() => setView('login')} onRegistered={() => setView('login')} />
-      ) : view === 'dashboard' ? (
-        <Dashboard />
-      ) : (
-        <Showcase />
-      )}
+      <ErrorBoundary>
+        {view === 'login' ? (
+          <LoginPage onLogin={() => setView('dashboard')} onCreateAccount={() => setView('register')} />
+        ) : view === 'register' ? (
+          <RegisterPage onBackToLogin={() => setView('login')} onRegistered={() => setView('login')} />
+        ) : view === 'dashboard' ? (
+          <Dashboard />
+        ) : (
+          <Showcase />
+        )}
+      </ErrorBoundary>
 
       <Toaster theme={mode} />
     </TooltipProvider>

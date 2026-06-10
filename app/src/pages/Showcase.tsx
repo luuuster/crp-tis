@@ -52,7 +52,7 @@ export function Showcase() {
 
       <section className="space-y-3">
         <Badge variant="secondary">shadcn/ui × @crp/design-tokens</Badge>
-        <h1 className="text-3xl font-bold tracking-tight" style={{ fontFamily: 'var(--font-heading)' }}>
+        <h1 className="font-heading text-3xl font-bold tracking-tight">
           Componentes tematizados pelos seus tokens
         </h1>
         <p className="max-w-2xl text-muted-foreground">
