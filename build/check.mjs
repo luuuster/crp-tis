@@ -5,7 +5,8 @@
 //  - Contraste WCAG dos pares fg/bg (AA = 4.5). Falha o build em pares críticos.
 import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { parse, wcagContrast, formatHex, converter } from 'culori';
+import { parse, wcagContrast } from 'culori';
+import { scopesOf, makeResolve, tintOver, mixOklch } from './lib/css.mjs';
 
 const DIST = join(process.cwd(), 'dist');
 const TOKENS_CSS = join(DIST, 'tokens.css');
@@ -173,43 +174,11 @@ for (const dir of LINT_DIRS) {
   }
 }
 
-// Parse de blocos: { selector -> { name -> value } }
-function parseBlocks(text) {
-  const blocks = [];
-  const re = /([^{}\/]+)\{([^}]*)\}/g; // seletor { ...decls... }
-  for (const m of text.matchAll(re)) {
-    const selector = m[1].trim().split('\n').pop().trim();
-    const decls = {};
-    for (const d of m[2].matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)) decls[d[1]] = d[2].trim();
-    if (Object.keys(decls).length) blocks.push({ selector, decls });
-  }
-  return blocks;
-}
-
-const blocks = parseBlocks(css);
-const bySelector = {};
-for (const b of blocks) (bySelector[b.selector] ||= {}), Object.assign(bySelector[b.selector], b.decls);
-
+// Parsing/resolução/composição compartilhados (build/lib/css.mjs).
+const bySelector = scopesOf(css);
 const rootMap = bySelector[':root'] || {};
-
-function resolve(value, scope, depth = 0) {
-  if (depth > 10 || !value) return value;
-  const m = value.match(/^var\((--[\w-]+)\)$/);
-  if (!m) return value;
-  const next = scope[m[1]] ?? rootMap[m[1]];
-  return resolve(next, scope, depth + 1);
-}
-
-// Composita color-mix(in oklch, ACCENT P%, transparent) sobre uma SURFACE opaca.
-// transparent contribui só com alpha (0), então o canal de cor é o do accent e o alpha = P;
-// fazemos o "over" em sRGB p/ luminância fiel ao wcagContrast.
-const toRgb = converter('rgb');
-function softTintOver(accentValue, pct, surfaceValue) {
-  const a = toRgb(parse(accentValue)), s = toRgb(parse(surfaceValue));
-  if (!a || !s) return null;
-  const mix = (c1, c2) => c1 * pct + c2 * (1 - pct);
-  return formatHex({ mode: 'rgb', r: mix(a.r, s.r), g: mix(a.g, s.g), b: mix(a.b, s.b) });
-}
+const resolve = makeResolve(rootMap);
+const blockCount = Object.keys(bySelector).length;
 
 // Variantes SOFT do button: o TEXTO (accent-text) fica sobre uma tinta = color-mix(accent, transparent) sobre a superfície.
 // Validamos o resultado REAL contra bg E card (a card no dark é mais clara → pior caso). fatal.
@@ -267,7 +236,7 @@ for (const [label, sel] of Object.entries(EXPECTED_SELECTORS)) {
     const accent = resolve(scope[`--${textTok}`], scope);
     for (const surf of ['background', 'card']) {
       const surfV = resolve(scope[`--${surf}`], scope);
-      const tint = softTintOver(accent, softPct, surfV);
+      const tint = tintOver(accent, softPct, surfV);
       if (!tint) { warnings.push(`[${label}] soft: não consegui compor tinta p/ ${textTok} sobre ${surf}`); continue; }
       const ratio = wcagContrast(parse(accent), parse(tint));
       const ok = ratio >= AA;
@@ -294,7 +263,7 @@ for (const [label, sel] of Object.entries(EXPECTED_SELECTORS)) {
       const tint = resolve(scope[`--${tintTok}`], scope);
       for (const surf of ['background', 'card']) {
         const surfV = resolve(scope[`--${surf}`], scope);
-        const border = softTintOver(tint, borderPct, surfV); // mesma composição do soft (mix sobre opaca)
+        const border = tintOver(tint, borderPct, surfV); // mesma composição do soft (mix sobre opaca)
         if (!border) { warnings.push(`[${label}] outline: não consegui compor borda p/ ${tintTok} sobre ${surf}`); continue; }
         const ratio = wcagContrast(parse(border), parse(surfV));
         if (ratio < NONTEXT) errors.push(`NÃO-TEXTUAL [${label}] outline-border ${tintTok}/${surf} = ${ratio.toFixed(2)}:1 < ${NONTEXT} (1.4.11)`);
@@ -351,7 +320,7 @@ const LAYER_ORDER = ['layer-base', 'layer-raised', 'layer-dropdown', 'layer-stic
 // Mescla as falhas de presença a11y e de USO-DE-COR nas falhas gerais (mesma severidade).
 errors.push(...a11yErrors, ...usageErrors);
 
-console.log(`\nVerificação do Design System (${blocks.length} blocos, ${Object.keys(rootMap).length} declarações em :root)`);
+console.log(`\nVerificação do Design System (${blockCount} seletores, ${Object.keys(rootMap).length} declarações em :root)`);
 console.log(`A11y shippada: ${A11Y_ARTIFACTS.length} artefatos verificados (base.css, components/button.css, components/button.js)`);
 console.log(`Uso-de-cor (texto): ${LINT_DIRS.join(', ')} varridos — ${usageErrors.length} uso(s) de cor de preenchimento como texto`);
 if (warnings.length) { console.log('\n⚠ Avisos:'); warnings.forEach((w) => console.log('  - ' + w)); }

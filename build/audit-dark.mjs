@@ -9,7 +9,7 @@
 // use --strict no CI. O gate fatal equivalente sobre os tokens vive no check.mjs.
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { parse, wcagContrast } from 'culori';
+import { scopesOf, makeResolve, contrast } from './lib/css.mjs';
 
 const ROOT = process.cwd();
 const DIST = join(ROOT, 'dist');
@@ -22,28 +22,10 @@ const DARK = {
   'MarcaB-Dark': '[data-brand="marca-b"].dark',
 };
 
-// ---- parse de dist/tokens.css (mesma lógica do check.mjs) ----
-function parseBlocks(text) {
-  const blocks = [];
-  for (const m of text.matchAll(/([^{}\/]+)\{([^}]*)\}/g)) {
-    const selector = m[1].trim().split('\n').pop().trim();
-    const decls = {};
-    for (const d of m[2].matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)) decls[d[1]] = d[2].trim();
-    if (Object.keys(decls).length) blocks.push({ selector, decls });
-  }
-  return blocks;
-}
-const bySel = {};
-for (const b of parseBlocks(readFileSync(join(DIST, 'tokens.css'), 'utf8')))
-  (bySel[b.selector] ||= {}), Object.assign(bySel[b.selector], b.decls);
-const root = bySel[':root'] || {};
-function resolve(value, scope, depth = 0) {
-  if (depth > 10 || !value) return value;
-  const m = String(value).match(/^var\((--[\w-]+)\)$/);
-  if (!m) return value;
-  return resolve(scope[m[1]] ?? root[m[1]], scope, depth + 1);
-}
-const ratio = (a, b) => wcagContrast(parse(a), parse(b));
+// ---- parse de dist/tokens.css — compartilhado com check.mjs (build/lib/css.mjs) ----
+const bySel = scopesOf(readFileSync(join(DIST, 'tokens.css'), 'utf8'));
+const resolve = makeResolve(bySel[':root'] || {});
+const ratio = contrast;
 
 // ---- coleta os usos `color: var(--X)` dos previews, com a linha (p/ descobrir a superfície) ----
 const FILL = new Set(['destructive', 'warning', 'success', 'info', 'primary', 'secondary']);
