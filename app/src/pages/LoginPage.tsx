@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { AlertCircle, ArrowRight, Eye, EyeOff, Loader2 } from 'lucide-react'
+import { AlertCircle, ArrowRight, Eye, EyeOff } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { focusRing } from '@/lib/focus'
@@ -160,9 +160,11 @@ export function LoginPage({ onLogin, onCreateAccount }: { onLogin?: () => void; 
             </button>
           </div>
 
-          <Button type="submit" className="group w-full" disabled={isSubmitting}>
+          {/* isLoading (não disabled): mantém o botão focável e anuncia aria-busy/aria-disabled —
+              `disabled` tira da ordem de tab e fica mudo p/ leitor de tela durante o submit. */}
+          <Button type="submit" className="group w-full" isLoading={isSubmitting}>
             {isSubmitting ? (
-              <><Loader2 className="animate-spin" /> Entrando…</>
+              'Entrando…'
             ) : (
               <>Entrar <ArrowRight className="transition-transform group-hover:translate-x-0.5" /></>
             )}

@@ -9,7 +9,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Check, Eye, EyeOff, FileText, Loader2, Upload, UserPlus, X } from 'lucide-react'
+import { Check, Eye, EyeOff, FileText, Upload, UserPlus, X } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { cn } from '@/lib/utils'
@@ -356,9 +356,11 @@ export function RegisterPage({ onBackToLogin, onRegistered }: { onBackToLogin?: 
             )}
           />
 
-          <Button type="submit" className="group w-full" disabled={isSubmitting}>
+          {/* isLoading (não disabled): mantém o botão focável e anuncia aria-busy/aria-disabled —
+              `disabled` tira da ordem de tab e fica mudo p/ leitor de tela durante o submit. */}
+          <Button type="submit" className="group w-full" isLoading={isSubmitting}>
             {isSubmitting ? (
-              <><Loader2 className="animate-spin" /> Criando conta…</>
+              'Criando conta…'
             ) : (
               <><UserPlus /> Criar conta</>
             )}
