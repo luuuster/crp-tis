@@ -8,6 +8,7 @@ const src = readFileSync(new URL('./code.js', import.meta.url), 'utf8');
 const grab = (re, name) => { const m = src.match(re); if (!m) throw new Error('não achei ' + name + ' em code.js'); return m[0]; };
 const body = [
   grab(/const STYLE_KIND = [^;]+;/, 'STYLE_KIND'),
+  grab(/const COLLECTION_PREFIX = '[^']+';/, 'COLLECTION_PREFIX'),
   grab(/const MANAGED = \{[\s\S]*?\n\};/, 'MANAGED'),
   grab(/function relLum\(c\) \{[\s\S]*?\n\}/, 'relLum'),
   grab(/function contrastRatio\(a, b\) \{[\s\S]*?\n\}/, 'contrastRatio'),
@@ -19,8 +20,9 @@ const body = [
   grab(/async function computePlan\(doc, want, prune, registry, pre\) \{[\s\S]*?\n\}/, 'computePlan'),
   grab(/async function resolveConcrete\(variable, ctx, seen\) \{[\s\S]*?\n\}/, 'resolveConcrete'),
   grab(/async function varDrift\(def, fv, modeIdByName\) \{[\s\S]*?\n\}/, 'varDrift'),
+  grab(/function missingModes\(def, modeIdByName\) \{[\s\S]*?\n\}/, 'missingModes'),
   grab(/async function computeChanges\(doc, want, pre, cap\) \{[\s\S]*?\n\}/, 'computeChanges'),
-  'return { relLum, contrastRatio, colorClose, numClose, normalizeParts, validDoc, validateBundle, computePlan, resolveConcrete, varDrift, computeChanges };',
+  'return { relLum, contrastRatio, colorClose, numClose, normalizeParts, validDoc, validateBundle, computePlan, resolveConcrete, varDrift, missingModes, computeChanges };',
 ].join('\n');
 // Escopo isolado com as dependências de runtime INJETADAS (fake figma + helpers async stubados):
 // testa as funções REAIS do code.js — a lógica que decide criar/atualizar/REMOVER no arquivo Figma —
@@ -238,4 +240,20 @@ test('resolveConcrete: segue cadeia de alias entre collections e é imune a cicl
 test('resolveConcrete: sem mode no ctx usa o primeiro mode (fallback)', async () => {
   const v = { id: 'v9', variableCollectionId: 'C9', valuesByMode: { M1: 7 } };
   assert.equal(await F.resolveConcrete(v, {}), 7);
+});
+
+test('missingModes: modo do bundle ausente no Figma é detectado', () => {
+  // Figma só tem Light; bundle define Light+Dark → Dark está faltando
+  assert.deepEqual(F.missingModes({ values: { Light: { number: 1 }, Dark: { number: 2 } } }, { Light: 'L' }), ['Dark']);
+});
+test('missingModes: todos os modos presentes → vazio', () => {
+  assert.deepEqual(F.missingModes({ values: { Light: { number: 1 }, Dark: { number: 2 } } }, { Light: 'L', Dark: 'D' }), []);
+  assert.deepEqual(F.missingModes({ values: { Value: { number: 1 } } }, { Value: 'V' }), []);
+});
+test('missingModes: collection sem modos (Figma) → todos faltam', () => {
+  assert.deepEqual(F.missingModes({ values: { Light: {}, Dark: {} } }, {}).sort(), ['Dark', 'Light']);
+});
+test('missingModes: def sem values é seguro', () => {
+  assert.deepEqual(F.missingModes({}, { Light: 'L' }), []);
+  assert.deepEqual(F.missingModes(null, { Light: 'L' }), []);
 });

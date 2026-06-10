@@ -28,6 +28,10 @@ const log = (line) => ui({ type: 'log', line });
 
 // famílias de style ↔ "kind" das APIs getLocal*Styles / create*Style
 const STYLE_KIND = { text: 'Text', paint: 'Paint', effect: 'Effect', grid: 'Grid' };
+// Prefixo das collections do bundle (CRP/Primitives, CRP/Modes…). Usado no FILTRO de seleção
+// (want.coll, abaixo): se o prefixo das collections mudar, é AQUI que o filtro precisa acompanhar
+// — renomear o prefixo sem ajustar isto faria o filtro casar nada e importar sempre tudo (#17).
+const COLLECTION_PREFIX = 'CRP/';
 // namespaces que SÃO nossos (p/ o prune nunca tocar em styles do usuário). ∪ registro persistido.
 const MANAGED = {
   text: (n) => /^(Display|Heading|Body|Label|Link|Caption|Overline|Code)\//.test(n) || /^Text\//.test(n) || ['Display', 'Link', 'Caption', 'Overline', 'Code'].indexOf(n) >= 0,
@@ -109,7 +113,7 @@ async function sendPrefs() {
 // ---------------- seleção granular ----------------
 function normalizeParts(p) {
   return {
-    coll: (fullName) => (!p || !p.collections) ? true : p.collections[fullName.replace('CRP/', '')] !== false,
+    coll: (fullName) => (!p || !p.collections) ? true : p.collections[fullName.replace(COLLECTION_PREFIX, '')] !== false,
     style: (fam) => (!p || !p.styles) ? true : p.styles[fam] !== false,
   };
 }
@@ -282,7 +286,7 @@ async function runImport(doc, partsIn, prune, hidePrimitives) {
 
   const stats = {
     plan, collections: 0, variables: 0, aliases: 0, aliasMissing: 0, valueErrors: 0, nameCollisions: 0,
-    typeChanges: 0, renamed: 0,
+    typeChanges: 0, renamed: 0, codeSyntaxErrors: 0,
     textStyles: 0, textBound: 0, paintStyles: 0, paintBound: 0, effectStyles: 0, gridStyles: 0,
     removedVars: 0, removedStyles: 0, styleWarnings: 0, cancelled: false,
   };
@@ -364,7 +368,7 @@ async function runImport(doc, partsIn, prune, hidePrimitives) {
         if (isPrim) { try { v.hiddenFromPublishing = !!hidePrimitives; } catch (e) {} } // #13 oculta cada primitivo
         if (def.scopes) { try { v.scopes = def.scopes; } catch (e) {} }
         if (def.description) { try { v.description = def.description; } catch (e) {} }
-        if (def.code && typeof v.setVariableCodeSyntax === 'function') { try { v.setVariableCodeSyntax('WEB', 'var(' + def.code + ')'); } catch (e) {} }
+        if (def.code && typeof v.setVariableCodeSyntax === 'function') { try { v.setVariableCodeSyntax('WEB', 'var(' + def.code + ')'); } catch (e) { stats.codeSyntaxErrors++; } }
         created.push({ v, def, modeIds });
         stats.variables++;
       }
@@ -437,6 +441,7 @@ async function runImport(doc, partsIn, prune, hidePrimitives) {
   try { await figma.clientStorage.setAsync(BUNDLE_KEY, doc); } catch (e) {} // #10 lembrar último bundle (best-effort)
 
   stats.cancelled = CANCELLED;
+  if (stats.codeSyntaxErrors) log('  ⚠ ' + stats.codeSyntaxErrors + ' variável(is) sem code syntax no Dev Mode (setVariableCodeSyntax falhou).');
   log(CANCELLED ? 'Cancelado (parcial).' : 'Pronto.');
   ui({ type: 'done', stats });
   notify(CANCELLED ? 'Import cancelado (resultado parcial).' : '✓ ' + plan.totals.create + ' criados · ' + plan.totals.update + ' atualizados' + (stats.removedVars + stats.removedStyles ? ' · ' + (stats.removedVars + stats.removedStyles) + ' removidos' : ''));
@@ -465,7 +470,7 @@ async function runFix(doc, partsIn, report) {
     plan: { collections: {}, styles: {}, totals: { create: 0, update: 0, remove: 0 }, warnings: [] },
     collections: 0, variables: 0, aliases: 0, aliasMissing: 0, valueErrors: 0, nameCollisions: 0,
     textStyles: 0, textBound: 0, paintStyles: 0, paintBound: 0, effectStyles: 0, gridStyles: 0,
-    removedVars: 0, removedStyles: 0, styleWarnings: 0, cancelled: false, fixedVars: 0, fixedStyles: 0, typeChanges: 0, renamed: 0,
+    removedVars: 0, removedStyles: 0, styleWarnings: 0, cancelled: false, fixedVars: 0, fixedStyles: 0, typeChanges: 0, renamed: 0, codeSyntaxErrors: 0,
   };
 
   const byName = new Map();
@@ -489,7 +494,7 @@ async function runFix(doc, partsIn, report) {
       byName.set(def.name, v);
       if (def.scopes) { try { v.scopes = def.scopes; } catch (e) {} }
       if (def.description) { try { v.description = def.description; } catch (e) {} }
-      if (def.code && typeof v.setVariableCodeSyntax === 'function') { try { v.setVariableCodeSyntax('WEB', 'var(' + def.code + ')'); } catch (e) {} }
+      if (def.code && typeof v.setVariableCodeSyntax === 'function') { try { v.setVariableCodeSyntax('WEB', 'var(' + def.code + ')'); } catch (e) { stats.codeSyntaxErrors++; } }
       for (const mode of Object.keys(def.values)) {
         const modeId = modeIds[mode];
         if (modeId === undefined) continue;
@@ -517,6 +522,7 @@ async function runFix(doc, partsIn, report) {
     for (const fam of Object.keys(applied)) stats.fixedStyles += (applied[fam] || []).length;
   }
 
+  if (stats.codeSyntaxErrors) log('  ⚠ ' + stats.codeSyntaxErrors + ' variável(is) sem code syntax no Dev Mode (setVariableCodeSyntax falhou).');
   log('Sincronizado: ' + stats.fixedVars + ' variáveis · ' + stats.fixedStyles + ' styles.');
   notify('✓ Sincronizado: ' + (stats.fixedVars + stats.fixedStyles) + ' item(ns) atualizados.');
   await runAudit(doc, partsIn, false); // re-audita p/ o painel mostrar 0 divergem
@@ -622,6 +628,12 @@ async function varDrift(def, fv, modeIdByName) {
   }
   return null;
 }
+// modos que o bundle DEFINE mas a collection do Figma NÃO tem. varDrift pula `modeId === undefined`
+// (seleção parcial é legítima), então sem isto um modo INTEIRO ausente (ex.: Figma só tem Light e o
+// bundle exige Light+Dark) passaria como "ok" — a auditoria mentiria. Função PURA (testada). (#4)
+function missingModes(def, modeIdByName) {
+  return Object.keys((def && def.values) || {}).filter((m) => modeIdByName[m] === undefined);
+}
 // #7 diff detalhado p/ o PREVIEW: lista quais Variables EXISTENTES vão mudar de valor (cap p/ não inundar).
 async function computeChanges(doc, want, pre, cap) {
   cap = cap || 40;
@@ -674,7 +686,9 @@ async function runAudit(doc, partsIn, silent) {
       const fv = figColl && index.get(figColl.id + '::' + def.name);
       if (!fv) { report.vars.missing.push(def.name); continue; }
       const diverged = await varDrift(def, fv, modeIdByName);
+      const miss = missingModes(def, modeIdByName); // #4: modo do bundle ausente no Figma não é "ok"
       if (diverged) report.vars.diverge.push(Object.assign({ name: def.name }, diverged));
+      else if (miss.length) report.vars.diverge.push({ name: def.name, mode: miss.join('+'), figma: 'modo ausente', bundle: 'definido no bundle' });
       else report.vars.ok++;
     }
   }
