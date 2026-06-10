@@ -42,12 +42,21 @@ function main() {
   if (!existsSync(codePath)) { console.error(`✗ falta ${codePath}`); process.exit(1); }
   const code = readFileSync(codePath, 'utf8');
 
+  // Falha ALTO se algum bundle esperado faltar — senão gera code.bundled.js INCOMPLETO em silêncio.
+  // Escape p/ dev: --allow-partial (build parcial intencional).
+  const missing = SOURCES.filter((s) => !existsSync(join(DIR, s.file)));
+  if (missing.length && !process.argv.includes('--allow-partial')) {
+    console.error(`✗ bundles ausentes (${missing.length}/${SOURCES.length}): ${missing.map((s) => s.file).join(', ')}`);
+    console.error('  Rode "npm run export:icons" antes (ou passe --allow-partial p/ build parcial em dev).');
+    process.exit(1);
+  }
+
   const meta = {}, data = {};
   let totalJson = 0, totalB64 = 0, found = 0;
   for (const s of SOURCES) {
     const p = join(DIR, s.file);
     if (!existsSync(p)) {
-      console.warn(`· ${s.file} ausente — pulando (rode "npm run export:icons" p/ embutir tudo).`);
+      console.warn(`· ${s.file} ausente — pulando (--allow-partial).`);
       continue;
     }
     const bundle = slim(JSON.parse(readFileSync(p, 'utf8')));
@@ -65,7 +74,12 @@ function main() {
     'var __ICON_DATA__ = ' + JSON.stringify(data) + ';\n';
 
   const out = join(DIR, 'code.bundled.js');
-  writeFileSync(out, preamble + code);
+  try {
+    writeFileSync(out, preamble + code);
+  } catch (e) {
+    console.error(`✗ falha ao escrever ${out}: ${e.message}`);
+    process.exit(1);
+  }
   console.log(`✓ ${out}`);
   console.log(`  ${found} conjuntos · ${(totalJson / 1048576).toFixed(1)} MB JSON → ${(totalB64 / 1048576).toFixed(2)} MB embutidos (gzip+base64)`);
 }

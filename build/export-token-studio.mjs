@@ -68,6 +68,7 @@ for (const t of themes) {
 function listSets(dir) {
   const out = [];
   for (const name of readdirSync(dir)) {
+    if (name.startsWith('.')) continue; // ignora dot-dirs (ex.: backups .core-backup-* do seed)
     const full = join(dir, name);
     if (statSync(full).isDirectory()) out.push(...listSets(full));
     else if (name.endsWith('.json')) {
@@ -78,7 +79,8 @@ function listSets(dir) {
   return out;
 }
 for (const s of listSets(TOKENS)) {
-  if (!order.includes(s)) warnings.push(`Set "tokens/${s}.json" não está em $metadata.tokenSetOrder — não entra no bundle.`);
+  // Set no disco fora da ordem = seus tokens seriam SILENCIOSAMENTE excluídos do bundle (artefato incompleto). Fatal.
+  if (!order.includes(s)) errors.push(`Set "tokens/${s}.json" não está em $metadata.tokenSetOrder — seria EXCLUÍDO do bundle. Adicione-o à ordem (ou remova o arquivo).`);
 }
 
 // 2c) toda referência {...} resolve contra o mapa global
@@ -96,7 +98,12 @@ for (const t of types) if (!SUPPORTED_TYPES.has(t)) warnings.push(`$type "${t}" 
 // --- 3) Monta o single-file e grava ---
 const single = { ...bundle, $themes: themes, $metadata: metadata };
 if (!existsSync(OUT_DIR)) mkdirSync(OUT_DIR, { recursive: true });
-writeFileSync(OUT, JSON.stringify(single, null, 2) + '\n');
+try {
+  writeFileSync(OUT, JSON.stringify(single, null, 2) + '\n');
+} catch (e) {
+  console.error(`❌ falha ao escrever ${rel(OUT)}: ${e.message}`);
+  process.exit(1);
+}
 
 // --- 4) Resumo ---
 console.log(`Export Token Studio → ${rel(OUT)}`);

@@ -31,6 +31,10 @@ const REM = 16;
 
 const meta = JSON.parse(readFileSync(join(TOKENS, '$metadata.json'), 'utf8'));
 const order = meta.tokenSetOrder;
+if (!Array.isArray(order) || !order.length) {
+  console.error('❌ tokens/$metadata.json sem tokenSetOrder válido — não dá pra montar os temas.');
+  process.exit(1);
+}
 
 // Os 4 temas e suas fontes de marca/mode. Aplicamos os sets na ORDEM do $metadata
 // (core → semantic → brand → mode → components), então o mode sobrescreve a marca (dark vence).
@@ -517,7 +521,12 @@ const doc = {
 };
 
 if (!existsSync(OUT_DIR)) mkdirSync(OUT_DIR, { recursive: true });
-writeFileSync(OUT, JSON.stringify(doc, null, 2) + '\n');
+try {
+  writeFileSync(OUT, JSON.stringify(doc, null, 2) + '\n');
+} catch (e) {
+  console.error(`❌ falha ao escrever ${OUT}: ${e.message}`);
+  process.exit(1);
+}
 
 console.log('Export Figma Variables + Styles → figma-plugin/figma-variables.json');
 console.log(`  Primitives: ${stats.primitives} | Brand (CRP/MarcaB): ${stats.brand} | Modes (Light/Dark): ${stats.modes} | Base: ${stats.base} (typografia: ${stats.typography} papéis) | Components: ${stats.components}`);
