@@ -19,7 +19,7 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
-        link: "text-primary underline-offset-4 hover:underline",
+        link: "text-link underline-offset-4 hover:underline",
       },
       // Alturas/quadrados vêm do token de controle do DS (--button-height-*: sm 32 / md 40 / lg 44px)
       // como min-height (garante o alvo de toque AA). xs/icon-xs ficam fora da escala, p/ UI densa.
