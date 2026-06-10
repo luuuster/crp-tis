@@ -1,0 +1,35 @@
+# Normalização de fim de linha — o repositório guarda SEMPRE em LF.
+# Sem isto, máquinas com core.autocrlf convertem CRLF↔LF e poluem o git status
+# (ruído de EOL que já contaminou auditorias anteriores). text=auto deixa o git
+# detectar binários e normalizar só o que é texto.
+* text=auto
+
+# Scripts que precisam de LF mesmo no Windows (senão o shebang/execução quebra).
+*.sh   text eol=lf
+
+# Texto explícito (clareza; já coberto por text=auto).
+*.mjs  text
+*.js   text
+*.ts   text
+*.tsx  text
+*.json text
+*.css  text
+*.html text
+*.svg  text
+*.md   text
+*.yml  text
+*.yaml text
+
+# Binários — nunca normalizar (evita corrupção de imagens/fontes).
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.webp  binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.otf   binary
+*.eot   binary
+*.pdf   binary
