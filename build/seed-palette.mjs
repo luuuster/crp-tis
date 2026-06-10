@@ -9,7 +9,8 @@
 //
 // Tipos compostos (sombra/easing) são guardados com o $type que o sd-transforms preserva sem
 // "fazer conta" (boxShadow/cubicBezier) — ver probe; 'other' NÃO é seguro (resolveMath avalia).
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync, copyFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { oklch, clampChroma, formatHex } from 'culori';
 
 // Só o bloco @theme principal — ignora o bloco "/* Deprecated */" (ex.: --shadow-inner, --radius legado).
@@ -23,6 +24,28 @@ for (const m of theme.matchAll(/--([\w-]+):\s*([^;]+);/gs)) {
 const entriesMatching = (re) =>
   Object.entries(vars).map(([k, v]) => [k.match(re), v]).filter(([m]) => m);
 const write = (file, obj) => writeFileSync(`tokens/core/${file}`, JSON.stringify(obj, null, 2) + '\n');
+
+// SALVAGUARDA: sobrescrever tokens/core/ destrói edições feitas via Token Studio (a SSOT). Exige
+// --force e faz BACKUP automático antes de escrever. Sem --force (e com core/ já existente), recusa.
+const CORE_FILES = ['color', 'dimension', 'border', 'icon', 'typography', 'shadow', 'effect', 'motion']
+  .map((f) => `tokens/core/${f}.json`);
+const FORCE = process.argv.includes('--force');
+{
+  const existing = CORE_FILES.filter((f) => existsSync(f));
+  if (existing.length && !FORCE) {
+    console.error('⛔ seed-palette: tokens/core/ já existe e seria SOBRESCRITO — isto apaga edições feitas no Token Studio (a SSOT).');
+    console.error('   Rode com --force para confirmar (um backup é criado automaticamente antes).');
+    console.error('   Arquivos em risco:', existing.map((f) => f.split('/').pop()).join(', '));
+    process.exit(1);
+  }
+  if (existing.length) {
+    const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const dir = `tokens/.core-backup-${stamp}`;
+    mkdirSync(dir, { recursive: true });
+    for (const f of existing) copyFileSync(f, join(dir, f.split('/').pop()));
+    console.log(`📦 backup de tokens/core/ em ${dir}/ (${existing.length} arquivos) antes de sobrescrever`);
+  }
+}
 
 const r = (n, d = 3) => Math.round(n * 10 ** d) / 10 ** d;
 const fmt = (c) => { const k = clampChroma({ mode: 'oklch', l: c.l, c: c.c, h: c.h }, 'oklch', 'p3');

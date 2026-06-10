@@ -5,7 +5,8 @@
 // Este script varre todo `color: var(--X)` dos previews, descobre a SUPERFÍCIE onde o texto
 // pousa (se a mesma linha define background var(--X-foreground), pousa no foreground claro;
 // senão, sobre background/card) e mede o contraste WCAG real nos temas DARK, apontando o que
-// reprova AA (4.5) como TEXTO. RELATÓRIO (não falha o build); o gate fatal vive no check.mjs.
+// reprova AA (4.5) como TEXTO. RELATÓRIO por padrão; com --strict, FALHA (exit 1) se achar bug —
+// use --strict no CI. O gate fatal equivalente sobre os tokens vive no check.mjs.
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { parse, wcagContrast } from 'culori';
@@ -14,6 +15,7 @@ const ROOT = process.cwd();
 const DIST = join(ROOT, 'dist');
 const PREVIEW = join(ROOT, 'preview');
 const AA = 4.5;
+const STRICT = process.argv.includes('--strict');
 
 const DARK = {
   'CRP-Dark': '.dark',
@@ -88,3 +90,8 @@ for (const [theme, sel] of Object.entries(DARK)) {
 
 console.log(`\n${bugs ? '⛔' : '✅'} cor de PREENCHIMENTO como texto reprovando AA em superfície real (dark): ${bugs}`);
 console.log('   (relatório surface-aware; o gate fatal equivalente está em build/check.mjs)');
+
+if (STRICT && bugs) {
+  console.error(`\n⛔ --strict: ${bugs} bug(s) de cor reprovando AA — falhando o build (exit 1).`);
+  process.exit(1);
+}
