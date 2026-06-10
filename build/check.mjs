@@ -326,6 +326,28 @@ const LAYER_ORDER = ['layer-base', 'layer-raised', 'layer-dropdown', 'layer-stic
   }
 }
 
+// 8) Coerência marcas/temas — tokens/$themes.json (SSOT) deve concordar com EXPECTED_SELECTORS.
+//    Trava o bug clássico de adicionar uma marca e esquecer de mapear o seletor num arquivo de build.
+{
+  const $themes = JSON.parse(readFileSync(join(process.cwd(), 'tokens', '$themes.json'), 'utf8'));
+  const brands = [...new Set($themes.filter((t) => t.group === 'Brand').map((t) => t.name))];
+  const modes = [...new Set($themes.filter((t) => t.group === 'Mode').map((t) => t.name))];
+  const themeNameOf = (key) => key.replace(/\s*\(.*\)\s*$/, '').trim(); // tira o sufixo " (:root)"
+  const selectorThemeNames = Object.keys(EXPECTED_SELECTORS).map(themeNameOf);
+  // (a) todo brand×mode do $themes precisa de um seletor mapeado
+  for (const b of brands)
+    for (const m of modes)
+      if (!selectorThemeNames.includes(`${b}-${m}`))
+        errors.push(`COERÊNCIA: tema ${b}-${m} existe em tokens/$themes.json mas falta seletor em check/build (EXPECTED_SELECTORS).`);
+  // (b) nenhum seletor órfão (brand/mode sem correspondente no $themes)
+  for (const name of selectorThemeNames) {
+    const [brand, mode] = name.split('-');
+    if (!brands.includes(brand)) errors.push(`COERÊNCIA: seletor "${name}" não tem brand "${brand}" em tokens/$themes.json.`);
+    if (mode && !modes.includes(mode)) errors.push(`COERÊNCIA: seletor "${name}" não tem mode "${mode}" em tokens/$themes.json.`);
+  }
+  console.log(`Coerência marcas/temas: ${brands.length} marca(s) × ${modes.length} modo(s) vs ${selectorThemeNames.length} seletor(es)`);
+}
+
 // Mescla as falhas de presença a11y e de USO-DE-COR nas falhas gerais (mesma severidade).
 errors.push(...a11yErrors, ...usageErrors);
 
@@ -337,4 +359,4 @@ if (errors.length) {
   console.log('\n❌ Erros:'); errors.forEach((e) => console.log('  - ' + e));
   process.exit(1);
 }
-console.log('\n✅ check OK — contrato completo, refs resolvidas, contraste crítico AA, a11y de comportamento presente no dist.');
+console.log('\n✅ check OK — contrato completo, refs resolvidas, contraste crítico AA, coerência marcas/temas, a11y de comportamento presente no dist.');
