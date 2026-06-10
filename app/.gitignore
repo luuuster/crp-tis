@@ -7,3 +7,9 @@ dist-ssr
 # ferramentas locais de screenshot (usam playwright-core via --no-save) + artefatos
 scripts
 *.png
+
+# Playwright (e2e) — artefatos gerados (specs e config SÃO versionados)
+/test-results
+/playwright-report
+/e2e/__screenshots__
+/.playwright

@@ -20,5 +20,8 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
     css: false,
+    // Só os testes unitários em src/. e2e/*.spec.ts é Playwright (runner próprio) — sem isto,
+    // o glob padrão do Vitest os captura e quebra (importam '@playwright/test').
+    include: ['src/**/*.{test,spec}.{ts,tsx}'],
   },
 })
