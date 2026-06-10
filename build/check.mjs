@@ -113,6 +113,7 @@ const A11Y_ARTIFACTS = [
     [/@media\s*\(\s*prefers-reduced-motion:\s*reduce\s*\)/, 'prefers-reduced-motion: reduce'],
     [/\[data-crp-motion="essential"\]/, 'exceção de movimento ESSENCIAL (loader não congela)'],
     [/@media\s*\(\s*forced-colors:\s*active\s*\)/, 'forced-colors: active'],
+    [/@media\s*\(\s*prefers-contrast:\s*more\s*\)/, 'prefers-contrast: more'],
   ] },
   { file: 'components/button.css', label: 'botão', mustHave: [
     [/@layer\s+components/, '@layer components'],
@@ -130,6 +131,7 @@ const A11Y_ARTIFACTS = [
     [/\.btn-spinner\b/, 'spinner de loading'],
     [/@media\s*\(\s*prefers-reduced-motion:\s*reduce\s*\)/, 'prefers-reduced-motion: reduce'],
     [/@media\s*\(\s*forced-colors:\s*active\s*\)/, 'forced-colors: active'],
+    [/@media\s*\(\s*prefers-contrast:\s*more\s*\)/, 'prefers-contrast: more'],
   ] },
   { file: 'components/button.js', label: 'guard JS', mustHave: [
     [/\[aria-disabled="true"\]/, 'seletor aria-disabled'],

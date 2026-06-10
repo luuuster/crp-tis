@@ -57,6 +57,20 @@
   }
 
   /* ----------------------------------------------------------------
+     prefers-contrast: more ("aumentar contraste" do SO) — reforço para quem
+     pediu MAIS contraste sem entrar no forced-colors: anel de foco mais
+     grosso e colado no elemento (offset menor = menos "vazamento" sobre
+     fundos variados). Componentes trazem reforços próprios (button.css
+     engrossa bordas das variantes translúcidas).
+     ---------------------------------------------------------------- */
+  @media (prefers-contrast: more) {
+    :where(:focus-visible) {
+      outline-width: calc(var(--button-ring-width, 2px) + 1px);
+      outline-offset: 1px;
+    }
+  }
+
+  /* ----------------------------------------------------------------
      forced-colors (Alto Contraste do Windows) — WCAG 1.4.1 / 1.4.11.
      Defaults de segurança globais: garante que o anel de foco continue
      visível com as cores do sistema. Componentes (ex.: button.css) trazem
