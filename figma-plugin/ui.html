@@ -241,6 +241,8 @@
     var STY_KEYS = ['text', 'paint', 'effect', 'grid'];
     var STY_LABEL = { text: 'Text', paint: 'Paint (cor)', effect: 'Effect', grid: 'Grid' };
     var $ = function (id) { return document.getElementById(id); };
+    // Escapa texto antes de ir p/ innerHTML — nomes de Variables vêm do arquivo do usuário (externo).
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]; }); }
     var dropEl = $('drop'), runEl = $('run'), prevEl = $('preview'), logbox = $('logbox'), statusEl = $('status');
     var auditEl = $('audit'), cancelEl = $('cancel'), progressEl = $('progress'), progressBar = $('progressBar'), healthEl = $('health');
 
@@ -316,7 +318,7 @@
       var nVar = (parsed.collections || []).reduce(function (a, c) { return a + (c.variables ? c.variables.length : 0); }, 0);
       var nSty = STY_KEYS.reduce(function (a, k) { return a + present.styles[k]; }, 0);
       $('fileName').textContent = name;
-      $('fileMeta').innerHTML = nColl + ' collections · ' + nVar + ' variables · ' + nSty + ' styles' + (parsed.$schema ? ' · <code>' + parsed.$schema + '</code>' : '');
+      $('fileMeta').innerHTML = nColl + ' collections · ' + nVar + ' variables · ' + nSty + ' styles' + (parsed.$schema ? ' · <code>' + esc(parsed.$schema) + '</code>' : '');
       setAvailability(present);
       dropEl.classList.add('loaded');
       $('planPanel').classList.remove('on');
@@ -368,7 +370,7 @@
     document.querySelectorAll('[data-light]').forEach(function (b) { b.addEventListener('click', function () { parent.postMessage({ pluginMessage: { type: 'applyMode', brand: null, light: b.getAttribute('data-light') } }, '*'); setStatus('Aplicando modo…'); }); });
 
     function row(scope, d) {
-      return '<div class="prow"><span class="scope">' + scope + '</span><span class="nums"><b class="add">+' + d.create + '</b> <b class="upd">~' + d.update + '</b> <b class="rem">−' + d.remove + '</b></span></div>';
+      return '<div class="prow"><span class="scope">' + esc(scope) + '</span><span class="nums"><b class="add">+' + d.create + '</b> <b class="upd">~' + d.update + '</b> <b class="rem">−' + d.remove + '</b></span></div>';
     }
     function renderPlan(plan, isPreview) {
       $('planTitle').textContent = isPreview ? 'Plano (prévia) — +novos · ~atualizar · −remover' : 'Resultado — +criados · ~atualizados · −removidos';
@@ -376,7 +378,7 @@
       Object.keys(plan.collections || {}).forEach(function (k) { rows += row(k.replace('CRP/', ''), plan.collections[k]); (plan.collections[k].removeNames || []).forEach(function (n) { rem.push(k.replace('CRP/', '') + ' / ' + n); }); });
       Object.keys(plan.styles || {}).forEach(function (k) { rows += row(STY_LABEL[k] || k, plan.styles[k]); (plan.styles[k].removeNames || []).forEach(function (n) { rem.push(k + ' / ' + n); }); });
       $('planRows').innerHTML = rows || '<div class="prow"><span class="scope">nada selecionado</span></div>';
-      if (rem.length) { $('planRemovals').style.display = ''; $('planRemList').innerHTML = rem.map(function (n) { return '<li>' + n + '</li>'; }).join(''); }
+      if (rem.length) { $('planRemovals').style.display = ''; $('planRemList').innerHTML = rem.map(function (n) { return '<li>' + esc(n) + '</li>'; }).join(''); }
       else { $('planRemovals').style.display = 'none'; }
       return rem.length;
     }
@@ -385,20 +387,20 @@
       var w = (plan && plan.warnings) || [];
       if (!w.length) return '';
       return '<div class="note warn">⚠ Dependências faltando — esses vínculos ficarão vazios:</div>'
-        + w.map(function (x) { return '<div class="note warn">· ' + x + '</div>'; }).join('');
+        + w.map(function (x) { return '<div class="note warn">· ' + esc(x) + '</div>'; }).join('');
     }
     // #7 diff detalhado: quais Variables existentes mudam de valor
     function changesNotes(plan) {
       var ch = (plan && plan.changes) || [];
       if (!ch.length) return '';
       var head = '<div class="note">↻ ' + ch.length + (plan.changesMore ? '+' + plan.changesMore : '') + ' variável(is) mudam de valor:</div>';
-      return head + ch.slice(0, 12).map(function (c) { return '<div class="note" style="color:var(--tx-2)">· ' + c.scope + '/' + c.name + ' [' + c.mode + '] ' + c.from + ' → ' + c.to + '</div>'; }).join('');
+      return head + ch.slice(0, 12).map(function (c) { return '<div class="note" style="color:var(--tx-2)">· ' + esc(c.scope) + '/' + esc(c.name) + ' [' + esc(c.mode) + '] ' + esc(c.from) + ' → ' + esc(c.to) + '</div>'; }).join('');
     }
     // #5 problemas estruturais do bundle (validação estrita)
     function issueNotes(plan) {
       var is = (plan && plan.bundleIssues) || [];
       if (!is.length) return '';
-      return '<div class="note warn">⚠ Bundle com ' + is.length + ' problema(s) de estrutura:</div>' + is.slice(0, 8).map(function (x) { return '<div class="note warn">· ' + x + '</div>'; }).join('');
+      return '<div class="note warn">⚠ Bundle com ' + is.length + ' problema(s) de estrutura:</div>' + is.slice(0, 8).map(function (x) { return '<div class="note warn">· ' + esc(x) + '</div>'; }).join('');
     }
 
     function renderDone(s) {
