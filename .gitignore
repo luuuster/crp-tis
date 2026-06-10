@@ -10,6 +10,10 @@ figma-plugin-icons/material-outlined-fill.json
 figma-plugin-icons/material-rounded-fill.json
 figma-plugin-icons/material-sharp-fill.json
 figma-plugin-icons/code.bundled.js
+# variables do Figma gerado (regenerado por `npm run export:figma` e no CI)
+figma-plugin/figma-variables.json
+# backups automáticos do seed-palette (--force)
+tokens/.core-backup-*/
 .cursor/
 *.log
 .DS_Store

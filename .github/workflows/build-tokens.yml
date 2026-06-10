@@ -36,6 +36,16 @@ jobs:
       - name: Validar (refs, contrato, contraste WCAG)
         run: npm run check
 
+      - name: Exportar figma-variables.json (artefato gerado, não versionado)
+        run: npm run export:figma
+
+      - name: Publicar figma-variables.json (artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: figma-variables
+          path: figma-plugin/figma-variables.json
+          if-no-files-found: error
+
       - name: Gerar e embutir bundles de ícones (Lucide + Material)
         run: npm run icons   # export (lucide-static + @material-symbols) + embed -> *.json e code.bundled.js (testes leem os .json)
 

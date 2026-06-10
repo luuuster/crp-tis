@@ -19,6 +19,11 @@ São diferentes de propósito: o Figma precisa do contrato **já fundido por tem
 juntos) e dos compostos **decompostos** — coisas que o exportador do Figma faz e o do Token Studio
 não. Rode os dois de uma vez com `npm run export`.
 
+> ⚠️ **`figma-plugin/figma-variables.json` é um artefato GERADO — não vem no clone** (está no
+> `.gitignore`, como `dist/` e os bundles de ícones). Antes de rodar o plugin, gere-o com
+> `npm run export:figma` (na raiz do repo) **ou** baixe o artifact `figma-variables` da última
+> execução do workflow **tokens** no GitHub Actions.
+
 ## Estrutura criada (5 collections, **2 eixos**)
 
 | Collection | Modes | Conteúdo |
