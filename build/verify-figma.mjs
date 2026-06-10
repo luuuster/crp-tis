@@ -4,18 +4,18 @@
 // com o terminal do CSS daquele tema. Se baterem, está correto de fato. Relatório (sai != 0 se erro).
 import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { loadThemes } from './lib/themes.mjs';
 
 const ROOT = process.cwd();
 const DIST = join(ROOT, 'dist');
 const fig = JSON.parse(readFileSync(join(ROOT, 'figma-plugin', 'figma-variables.json'), 'utf8'));
 
+// Marcas/modos/temas derivados de tokens/$themes.json (build/lib/themes.mjs) — marca nova entra sozinha.
+const SSOT = loadThemes(ROOT);
+const BRAND_MODES = SSOT.brands.map((b) => b.name);   // modes do eixo CRP/Brand
+const LIGHT_MODES = SSOT.modes.map((m) => m.name);    // modes do eixo CRP/Modes
 // theme completo -> arquivo CSS + (brandMode, lightMode) dos eixos figma
-const FULL = [
-  ['CRP', 'Light', 'CRP-Light'],
-  ['CRP', 'Dark', 'CRP-Dark'],
-  ['MarcaB', 'Light', 'MarcaB-Light'],
-  ['MarcaB', 'Dark', 'MarcaB-Dark'],
-];
+const FULL = SSOT.themes.map((t) => [t.brand, t.mode, t.name]);
 const errors = [], warnings = [];
 
 // ---- figma ----
@@ -108,12 +108,12 @@ for (const [name, v] of figVars) for (const m of Object.keys(v.values)) {
 
 // ===== 2) completude dos eixos =====
 const brand = coll('CRP/Brand'), modes = coll('CRP/Modes');
-for (const v of brand.variables) for (const m of ['CRP', 'MarcaB']) if (!v.values[m]) errors.push(`BRAND incompleto: ${v.name} sem o mode ${m}`);
-for (const v of modes.variables) for (const m of ['Light', 'Dark']) if (!v.values[m]) errors.push(`MODES incompleto: ${v.name} sem o mode ${m}`);
+for (const v of brand.variables) for (const m of BRAND_MODES) if (!v.values[m]) errors.push(`BRAND incompleto: ${v.name} sem o mode ${m}`);
+for (const v of modes.variables) for (const m of LIGHT_MODES) if (!v.values[m]) errors.push(`MODES incompleto: ${v.name} sem o mode ${m}`);
 // Famílias tipográficas de marca (brand-font-*): cada marca resolve p/ uma família não-vazia.
 for (const v of brand.variables) {
   if (v.type !== 'STRING') continue;
-  for (const bm of ['CRP', 'MarcaB']) {
+  for (const bm of BRAND_MODES) {
     const r = resolveFig(v.name, bm, 'Light');
     if (!r || typeof r.string !== 'string' || !r.string) errors.push(`BRAND STRING "${v.name}"[${bm}] não resolve p/ uma família tipográfica`);
   }

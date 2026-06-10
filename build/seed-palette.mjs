@@ -101,6 +101,9 @@ for (const [name, shades] of Object.entries(palettes)) {
   for (const [s, val] of Object.entries(shades)) colorJson.color[name][s] = tok(val);
 }
 
+// DADO DE SEMENTE (bootstrap one-shot, protegido por --force) — não é estrutura derivável do
+// $themes.json: são os hex de ORIGEM das marcas, que só existem aqui. Os demais scripts de build
+// leem marcas/temas de tokens/$themes.json via build/lib/themes.mjs; este é o único hardcode legítimo.
 const BRANDS = {
   crp: { primary: '#036EF2', secondary: '#8e51ff' },
   'marca-b': { primary: '#B30631', secondary: '#2886F3' },

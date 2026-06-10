@@ -22,6 +22,7 @@
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { loadThemes } from './lib/themes.mjs';
 
 const ROOT = process.cwd();
 const TOKENS = join(ROOT, 'tokens');
@@ -36,14 +37,11 @@ if (!Array.isArray(order) || !order.length) {
   process.exit(1);
 }
 
-// Os 4 temas e suas fontes de marca/mode. Aplicamos os sets na ORDEM do $metadata
+// Temas (brand×mode) e suas fontes de marca/mode — DERIVADOS de tokens/$themes.json
+// (build/lib/themes.mjs). Aplicamos os sets na ORDEM do $metadata
 // (core → semantic → brand → mode → components), então o mode sobrescreve a marca (dark vence).
-const THEMES = {
-  'CRP-Light':    { brand: 'brand/crp',     mode: 'mode/light' },
-  'CRP-Dark':     { brand: 'brand/crp',     mode: 'mode/dark' },
-  'MarcaB-Light': { brand: 'brand/marca-b', mode: 'mode/light' },
-  'MarcaB-Dark':  { brand: 'brand/marca-b', mode: 'mode/dark' },
-};
+const SSOT = loadThemes(ROOT);
+const THEMES = Object.fromEntries(SSOT.themes.map((t) => [t.name, { brand: t.brandSet, mode: t.modeSet }]));
 const MODES = Object.keys(THEMES);
 
 const warnings = [];
@@ -249,9 +247,10 @@ function resolvedValue(path, map, ft) {
 }
 
 // Conjuntos de CAMADA p/ escolher o alias certo (Brand vs Primitives vs Modes).
-const brandAnchorPaths = new Set(setFlat['brand/crp'] ? [...setFlat['brand/crp'].keys()] : []);
+const defaultBrandSet = SSOT.brands.find((b) => b.isDefault).set;
+const brandAnchorPaths = new Set(setFlat[defaultBrandSet] ? [...setFlat[defaultBrandSet].keys()] : []);
 const modeColorKeys = new Set();
-for (const s of ['mode/light', 'mode/dark']) if (setFlat[s]) for (const [p, e] of setFlat[s]) if (e.type === 'color') modeColorKeys.add(p);
+for (const { set: s } of SSOT.modes) if (setFlat[s]) for (const [p, e] of setFlat[s]) if (e.type === 'color') modeColorKeys.add(p);
 // devolve o alias na CAMADA correta — NÃO resolve "através" da marca (é isso que mantém a troca de marca viva).
 function layerAlias(value) {
   const t = refTarget(value);
@@ -262,11 +261,11 @@ function layerAlias(value) {
   return null;
 }
 
-// 2a) BRAND (2 modes: CRP, MarcaB) — âncoras de marca → alias do primitivo de CADA marca.
-const BRANDS = [['CRP', 'brand/crp'], ['MarcaB', 'brand/marca-b']];
+// 2a) BRAND (1 mode por marca do $themes) — âncoras de marca → alias do primitivo de CADA marca.
+const BRANDS = SSOT.brands.map((b) => [b.name, b.set]);
 const brandVars = [];
 for (const key of brandAnchorPaths) {
-  const sample = (setFlat['brand/crp'] && setFlat['brand/crp'].get(key)) || (setFlat['brand/marca-b'] && setFlat['brand/marca-b'].get(key));
+  const sample = BRANDS.map(([, setName]) => setFlat[setName] && setFlat[setName].get(key)).find(Boolean);
   const ft = figmaType(sample ? sample.type : 'color'); // cor (brand-primary…) OU fontFamily (brand-font-*)
   if (!ft) { stats.skipped++; continue; }
   const values = {};
@@ -288,7 +287,7 @@ for (const key of brandAnchorPaths) {
 
 // 2b) MODES (2 modes: Light, Dark) — contrato de COR. Tokens de marca aliasam CRP/Brand;
 //     o resto aliasa CRP/Primitives; refs internas (ex.: link→primary) aliasam o próprio CRP/Modes.
-const MODE_SRC = [['Light', 'mode/light'], ['Dark', 'mode/dark']];
+const MODE_SRC = SSOT.modes.map((m) => [m.name, m.set]);
 const modesVars = [];
 for (const key of modeColorKeys) {
   const values = {};
@@ -436,7 +435,7 @@ for (const s of order) {
 // Famílias REAIS das marcas (heading/body de CRP e MarcaB) p/ o plugin PRÉ-CARREGAR — assim a família
 // vinculada renderiza em qualquer modo de marca. (mono não entra: é de sistema e não é vinculada.)
 const textFamilies = [];
-for (const setName of ['brand/crp', 'brand/marca-b']) {
+for (const { set: setName } of SSOT.brands) {
   for (const key of ['brand-font-heading', 'brand-font-body']) {
     const e = setFlat[setName] && setFlat[setName].get(key);
     if (!e) continue;
@@ -508,8 +507,8 @@ const doc = {
   generatedFrom: 'tokens/ (npm run export:figma) — NÃO editar à mão',
   collections: [
     { name: 'CRP/Primitives', modes: ['Value'], variables: primVars },
-    { name: 'CRP/Brand', modes: ['CRP', 'MarcaB'], variables: brandVars },
-    { name: 'CRP/Modes', modes: ['Light', 'Dark'], variables: modesVars },
+    { name: 'CRP/Brand', modes: SSOT.brands.map((b) => b.name), variables: brandVars },
+    { name: 'CRP/Modes', modes: SSOT.modes.map((m) => m.name), variables: modesVars },
     { name: 'CRP/Base', modes: ['Value'], variables: baseVars },
     { name: 'CRP/Components', modes: ['Value'], variables: compVars },
   ],

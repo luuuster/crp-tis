@@ -7,16 +7,18 @@ import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { parse, wcagContrast } from 'culori';
 import { scopesOf, makeResolve, tintOver, mixOklch } from './lib/css.mjs';
+import { loadThemes } from './lib/themes.mjs';
 
 const DIST = join(process.cwd(), 'dist');
 const TOKENS_CSS = join(DIST, 'tokens.css');
 
-const EXPECTED_SELECTORS = {
-  'CRP-Light (:root)': ':root',
-  'CRP-Dark': '.dark',
-  'MarcaB-Light': '[data-brand="marca-b"]',
-  'MarcaB-Dark': '[data-brand="marca-b"].dark',
-};
+// Temas/seletores DERIVADOS de tokens/$themes.json (build/lib/themes.mjs) — a mesma fonte
+// que o build usa. Coerência SSOT→dist por construção: marca nova no $themes aparece aqui
+// automaticamente e a seção 1 reprova se o dist não tiver o seletor correspondente.
+const SSOT = loadThemes();
+const EXPECTED_SELECTORS = Object.fromEntries(
+  SSOT.themes.map((t) => [t.selector === ':root' ? `${t.name} (:root)` : t.name, t.selector])
+);
 
 // Contrato shadcn que deve existir em TODO tema.
 const REQUIRED = [
@@ -355,27 +357,10 @@ const LAYER_ORDER = ['layer-base', 'layer-raised', 'layer-dropdown', 'layer-stic
   }
 }
 
-// 8) Coerência marcas/temas — tokens/$themes.json (SSOT) deve concordar com EXPECTED_SELECTORS.
-//    Trava o bug clássico de adicionar uma marca e esquecer de mapear o seletor num arquivo de build.
-{
-  const $themes = JSON.parse(readFileSync(join(process.cwd(), 'tokens', '$themes.json'), 'utf8'));
-  const brands = [...new Set($themes.filter((t) => t.group === 'Brand').map((t) => t.name))];
-  const modes = [...new Set($themes.filter((t) => t.group === 'Mode').map((t) => t.name))];
-  const themeNameOf = (key) => key.replace(/\s*\(.*\)\s*$/, '').trim(); // tira o sufixo " (:root)"
-  const selectorThemeNames = Object.keys(EXPECTED_SELECTORS).map(themeNameOf);
-  // (a) todo brand×mode do $themes precisa de um seletor mapeado
-  for (const b of brands)
-    for (const m of modes)
-      if (!selectorThemeNames.includes(`${b}-${m}`))
-        errors.push(`COERÊNCIA: tema ${b}-${m} existe em tokens/$themes.json mas falta seletor em check/build (EXPECTED_SELECTORS).`);
-  // (b) nenhum seletor órfão (brand/mode sem correspondente no $themes)
-  for (const name of selectorThemeNames) {
-    const [brand, mode] = name.split('-');
-    if (!brands.includes(brand)) errors.push(`COERÊNCIA: seletor "${name}" não tem brand "${brand}" em tokens/$themes.json.`);
-    if (mode && !modes.includes(mode)) errors.push(`COERÊNCIA: seletor "${name}" não tem mode "${mode}" em tokens/$themes.json.`);
-  }
-  console.log(`Coerência marcas/temas: ${brands.length} marca(s) × ${modes.length} modo(s) vs ${selectorThemeNames.length} seletor(es)`);
-}
+// 8) Coerência marcas/temas — agora POR CONSTRUÇÃO: build e check derivam os seletores da
+//    MESMA fonte (tokens/$themes.json via build/lib/themes.mjs); a seção 1 reprova se o dist
+//    não materializar qualquer tema do SSOT. Não há mais mapa hardcoded p/ divergir.
+console.log(`Coerência marcas/temas: ${SSOT.brands.length} marca(s) × ${SSOT.modes.length} modo(s) = ${SSOT.themes.length} tema(s), seletores derivados do $themes.json`);
 
 // Mescla as falhas de presença a11y e de USO-DE-COR nas falhas gerais (mesma severidade).
 errors.push(...a11yErrors, ...usageErrors);

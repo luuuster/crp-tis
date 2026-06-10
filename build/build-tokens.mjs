@@ -13,6 +13,7 @@ import StyleDictionary from 'style-dictionary';
 import { register, permutateThemes, expandTypesMap } from '@tokens-studio/sd-transforms';
 import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
+import { loadThemes } from './lib/themes.mjs';
 
 const ROOT = process.cwd();
 const TOKENS = join(ROOT, 'tokens');
@@ -22,14 +23,10 @@ const THEMES_DIR = join(DIST, 'themes');
 
 register(StyleDictionary);
 
-// Cada theme (brand×mode) do Token Studio -> um seletor CSS.
-// Dark via classe `.dark` (padrão shadcn/next-themes); marca via [data-brand]. Marca default (CRP) sem atributo.
-const SELECTOR = {
-  'CRP-Light':    ':root',
-  'CRP-Dark':     '.dark',
-  'MarcaB-Light': '[data-brand="marca-b"]',
-  'MarcaB-Dark':  '[data-brand="marca-b"].dark',
-};
+// Cada theme (brand×mode) do Token Studio -> um seletor CSS — DERIVADO de tokens/$themes.json
+// (build/lib/themes.mjs): dark via classe `.dark` (padrão shadcn/next-themes); marca via
+// [data-brand]; marca default (1ª do grupo Brand) sem atributo. Adicionar marca = editar SÓ o $themes.
+const SELECTOR = loadThemes(ROOT).selectorsByTheme;
 
 const isPrimitive = (token) => token.filePath.replaceAll('\\', '/').includes('/core/');
 

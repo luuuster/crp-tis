@@ -10,6 +10,7 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { scopesOf, makeResolve, contrast } from './lib/css.mjs';
+import { loadThemes } from './lib/themes.mjs';
 
 const ROOT = process.cwd();
 const DIST = join(ROOT, 'dist');
@@ -17,10 +18,10 @@ const PREVIEW = join(ROOT, 'preview');
 const AA = 4.5;
 const STRICT = process.argv.includes('--strict');
 
-const DARK = {
-  'CRP-Dark': '.dark',
-  'MarcaB-Dark': '[data-brand="marca-b"].dark',
-};
+// Temas dark derivados de tokens/$themes.json (build/lib/themes.mjs) — marca nova entra sozinha.
+const DARK = Object.fromEntries(
+  loadThemes(ROOT).themes.filter((t) => t.mode === 'Dark').map((t) => [t.name, t.selector])
+);
 
 // ---- parse de dist/tokens.css — compartilhado com check.mjs (build/lib/css.mjs) ----
 const bySel = scopesOf(readFileSync(join(DIST, 'tokens.css'), 'utf8'));
