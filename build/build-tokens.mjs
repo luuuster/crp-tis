@@ -144,6 +144,9 @@ async function main() {
   const tokensCss = header + stripComments(primitivesCss) + '\n\n' +
     Object.entries(stripped).map(([name, css]) => `/* theme: ${name} */\n${css}`).join('\n');
   writeFileSync(join(DIST, 'tokens.css'), tokensCss);
+  // primitives.css era só intermediário (os primitivos já estão embutidos em tokens.css acima);
+  // remove p/ não deixar artefato não-exportado/não-documentado no dist (achado #14).
+  rmSync(join(DIST, 'primitives.css'), { force: true });
 
   // 4b) theme.css = ponte para o Tailwind v4 / shadcn (@theme inline).
   const contractNames = [...declaredVarNames(stripped['CRP-Light'])].map((n) => n.slice(2)); // sem '--'

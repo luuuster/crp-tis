@@ -29,7 +29,14 @@ export function scopesOf(cssText) {
 // Resolve var(--x) até o literal, com fallback do escopo do tema para :root (cascata real).
 export function makeResolve(rootMap) {
   return function resolve(value, scope, depth = 0) {
-    if (depth > 10 || !value) return value;
+    if (!value) return value;
+    if (depth > 10) {
+      // Estouro do limite (ciclo ou cadeia >10 níveis): antes retornava o var() não resolvido
+      // em SILÊNCIO. Agora avisa — o check.mjs já reprova a ref não resolvida, mas o warn aponta
+      // ONDE travou. (Não é fatal aqui; deixa o gate downstream decidir.)
+      if (/^var\(/.test(String(value))) console.warn(`⚠ resolve: profundidade >10 em "${value}" — ciclo ou cadeia longa de var()?`);
+      return value;
+    }
     const m = String(value).match(/^var\((--[\w-]+)\)$/);
     if (!m) return value;
     return resolve(scope[m[1]] ?? rootMap[m[1]], scope, depth + 1);
