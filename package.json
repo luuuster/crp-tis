@@ -4,7 +4,7 @@
   "description": "CRP Design System — tokens gerados a partir do Token Studio (SSOT). Saída para Tailwind v4 / shadcn (CSS custom properties).",
   "type": "module",
   "license": "UNLICENSED",
-  "private": false,
+  "private": true,
   "files": [
     "dist"
   ],
