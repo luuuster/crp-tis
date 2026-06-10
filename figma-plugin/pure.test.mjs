@@ -11,7 +11,10 @@ const body = [
   grab(/function contrastRatio\(a, b\) \{[\s\S]*?\n\}/, 'contrastRatio'),
   grab(/const colorClose = [^;]+;/, 'colorClose'),
   grab(/const numClose = [\s\S]*?\+ 1\)\);/, 'numClose'),
-  'return { relLum, contrastRatio, colorClose, numClose };',
+  grab(/function normalizeParts\(p\) \{[\s\S]*?\n\}/, 'normalizeParts'),
+  grab(/function validDoc\(doc\) \{[^\n]*\}/, 'validDoc'),
+  grab(/function validateBundle\(doc\) \{[\s\S]*?\n\}/, 'validateBundle'),
+  'return { relLum, contrastRatio, colorClose, numClose, normalizeParts, validDoc, validateBundle };',
 ].join('\n');
 const F = new Function(body)();
 
@@ -35,4 +38,53 @@ test('numClose: ainda pega uma edição real', () => {
 test('colorClose: tolera Δ≤0.01 por canal, rejeita acima', () => {
   assert.equal(F.colorClose({ r: 0.5, g: 0.5, b: 0.5 }, { r: 0.505, g: 0.5, b: 0.5 }), true);
   assert.equal(F.colorClose({ r: 0.5, g: 0.5, b: 0.5 }, { r: 0.6, g: 0.5, b: 0.5 }), false);
+});
+
+test('validDoc: aceita collections[] ou styles, rejeita o resto', () => {
+  assert.equal(F.validDoc(null), false);
+  assert.equal(F.validDoc({}), false);
+  assert.equal(F.validDoc({ collections: [] }), true);
+  assert.equal(F.validDoc({ styles: {} }), true);
+});
+
+test('normalizeParts: sem seleção = tudo ligado; false desliga só o citado', () => {
+  const all = F.normalizeParts(null);
+  assert.equal(all.coll('CRP/Primitives'), true);
+  assert.equal(all.style('text'), true);
+  const sel = F.normalizeParts({ collections: { Primitives: false }, styles: { text: false } });
+  assert.equal(sel.coll('CRP/Primitives'), false); // desligado
+  assert.equal(sel.coll('CRP/Brand'), true);       // não citado → ligado
+  assert.equal(sel.style('text'), false);
+  assert.equal(sel.style('effect'), true);
+});
+
+test('validateBundle: bundle válido não gera issues', () => {
+  const doc = { collections: [{ name: 'CRP/X', modes: [{ name: 'Value' }], variables: [
+    { name: 'a', type: 'COLOR', values: { Value: { color: { r: 0, g: 0.5, b: 1 } } } },
+    { name: 'b', type: 'FLOAT', values: { Value: { number: 4 } } },
+    { name: 'c', type: 'COLOR', values: { Value: { alias: 'a' } } },
+  ] }] };
+  assert.deepEqual(F.validateBundle(doc), []);
+});
+
+test('validateBundle: acusa cor fora de 0..1, alias vazio e slot sem tipo', () => {
+  const doc = { collections: [{ name: 'CRP/X', modes: [], variables: [
+    { name: 'a', type: 'COLOR', values: { Value: { color: { r: 2, g: 0, b: 0 } } } },
+    { name: 'b', type: 'COLOR', values: { Value: { alias: '' } } },
+    { name: 'c', type: 'FLOAT', values: { Value: {} } },
+  ] }] };
+  const issues = F.validateBundle(doc);
+  assert.ok(issues.some((m) => /cor fora de 0\.\.1/.test(m)));
+  assert.ok(issues.some((m) => /alias inválido/.test(m)));
+  assert.ok(issues.some((m) => /sem color\/number\/alias\/string/.test(m)));
+});
+
+test('validateBundle: variável malformada e collection sem nome', () => {
+  const doc = { collections: [
+    { modes: [], variables: [] },                                  // collection sem name
+    { name: 'CRP/Y', modes: [], variables: [{ name: 'x' }] },       // variável sem type
+  ] };
+  const issues = F.validateBundle(doc);
+  assert.ok(issues.some((m) => /collection sem nome/.test(m)));
+  assert.ok(issues.some((m) => /variável malformada/.test(m)));
 });
