@@ -58,5 +58,8 @@
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
+  },
+  "overrides": {
+    "expr-eval-fork": "^3.0.3"
   }
 }
