@@ -36,6 +36,9 @@ jobs:
       - name: Validar (refs, contrato, contraste WCAG)
         run: npm run check
 
+      - name: Auditoria do dark mode (fail-loud)
+        run: npm run audit:dark -- --strict
+
       - name: Exportar figma-variables.json (artefato gerado, não versionado)
         run: npm run export:figma
 
