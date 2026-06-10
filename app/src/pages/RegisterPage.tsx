@@ -5,7 +5,7 @@
  * react-hook-form + zod; checklist de requisitos da senha AO VIVO (com anúncio conciso p/ leitor
  * de tela); upload de currículo acessível (clique + arrastar + teclado). "Cadastro" é simulado.
  */
-import { useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -81,6 +81,11 @@ export function RegisterPage({ onBackToLogin, onRegistered }: { onBackToLogin?: 
   })
   const { isSubmitting } = form.formState
 
+  // Guarda de montagem: o "cadastro" simulado resolve após ~1.2s; se desmontar nesse meio-tempo
+  // (o pai volta pro login), não disparamos toast/callback de um componente já desmontado.
+  const mountedRef = useRef(true)
+  useEffect(() => () => { mountedRef.current = false }, [])
+
   // Checklist ao vivo: 4 regras da senha + coincidência (atualiza enquanto digita).
   const pwd = form.watch('password') || ''
   const confirm = form.watch('confirmPassword') || ''
@@ -105,6 +110,7 @@ export function RegisterPage({ onBackToLogin, onRegistered }: { onBackToLogin?: 
       return
     }
     await new Promise((r) => setTimeout(r, 1200)) // simula a criação da conta
+    if (!mountedRef.current) return // desmontou durante o "await" → não dispara toast/callback
     toast.success('Conta criada com sucesso!', { description: `Bem-vindo(a), ${values.nome.split(' ')[0]}! Faça login para continuar.` })
     onRegistered?.()
   }

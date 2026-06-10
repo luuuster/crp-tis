@@ -4,7 +4,7 @@
  * O shell (split + painel da marca + logo + título) vem do <AuthLayout> compartilhado.
  * Validação com react-hook-form + zod; a "auth" é simulada (senha de demo: 123456).
  */
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -50,6 +50,11 @@ export function LoginPage({ onLogin, onCreateAccount }: { onLogin?: () => void; 
   })
   const { isSubmitting } = form.formState
 
+  // Guarda de montagem: a "auth" simulada resolve após ~1.1s; se o componente desmontar nesse
+  // meio-tempo (ex.: o pai troca de view), não tocamos em estado/foco de um componente morto.
+  const mountedRef = useRef(true)
+  useEffect(() => () => { mountedRef.current = false }, [])
+
   // Some o erro de credencial assim que o usuário edita qualquer campo.
   useEffect(() => {
     const sub = form.watch(() => setFormError(null))
@@ -59,6 +64,7 @@ export function LoginPage({ onLogin, onCreateAccount }: { onLogin?: () => void; 
   async function onSubmit(values: LoginValues) {
     setFormError(null)
     await new Promise((r) => setTimeout(r, 1100)) // simula a chamada de auth
+    if (!mountedRef.current) return // desmontou durante o "await" → não toca em estado/foco
     if (values.password !== DEMO_PASSWORD) {
       setFormError('E-mail ou senha incorretos. Verifique e tente de novo.')
       form.setFocus('password')
