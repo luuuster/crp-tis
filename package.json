@@ -41,7 +41,7 @@
     "export": "npm run export:ts && npm run export:figma",
     "verify:figma": "node build/verify-figma.mjs",
     "pretest": "node build/check-icon-bundles.mjs",
-    "test": "node --test figma-plugin/pure.test.mjs figma-plugin-icons/bundle.test.mjs figma-plugin-icons/run.test.mjs figma-plugin-icons/material.test.mjs figma-plugin-icons/embed.test.mjs",
+    "test": "node --test build/lib/color.test.mjs build/lib/css.test.mjs build/lib/themes.test.mjs figma-plugin/pure.test.mjs figma-plugin-icons/bundle.test.mjs figma-plugin-icons/run.test.mjs figma-plugin-icons/material.test.mjs figma-plugin-icons/embed.test.mjs",
     "preview": "npm run build && node -e \"console.log('Build OK. Abra preview/index.html no navegador.')\"",
     "release": "npm run build && changeset publish",
     "prepublishOnly": "npm run build && npm run check"
