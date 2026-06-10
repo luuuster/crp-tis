@@ -166,11 +166,11 @@ export function Showcase() {
         <CardContent className="grid gap-6 sm:grid-cols-2">
           <div className="space-y-2">
             <div className="flex justify-between text-sm"><span>Onboarding</span><span className="text-muted-foreground">66%</span></div>
-            <Progress value={66} />
+            <Progress value={66} aria-label="Onboarding: 66% concluído" />
           </div>
           <div className="space-y-2">
-            <Label>Volume</Label>
-            <Slider defaultValue={[40]} max={100} step={1} />
+            <Label id="volume-label">Volume</Label>
+            <Slider defaultValue={[40]} max={100} step={1} aria-labelledby="volume-label" />
           </div>
           <div className="flex items-center gap-3 sm:col-span-2">
             <Skeleton className="size-10 rounded-full" />
@@ -275,15 +275,15 @@ export function Showcase() {
 
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="1">
-              <AccordionTrigger>O tema troca em runtime?</AccordionTrigger>
+              <AccordionTrigger headingLevel={2}>O tema troca em runtime?</AccordionTrigger>
               <AccordionContent>Sim — alternando <code>[data-brand]</code> e <code>.dark</code> no <code>html</code>. Nenhum rebuild.</AccordionContent>
             </AccordionItem>
             <AccordionItem value="2">
-              <AccordionTrigger>De onde vêm as cores?</AccordionTrigger>
+              <AccordionTrigger headingLevel={2}>De onde vêm as cores?</AccordionTrigger>
               <AccordionContent>100% do contrato de <code>@crp/design-tokens</code> (OKLCH), mapeado pro Tailwind via <code>@theme inline</code>.</AccordionContent>
             </AccordionItem>
             <AccordionItem value="3">
-              <AccordionTrigger>É shadcn de verdade?</AccordionTrigger>
+              <AccordionTrigger headingLevel={2}>É shadcn de verdade?</AccordionTrigger>
               <AccordionContent>Sim — os componentes oficiais, adicionados pelo CLI. Só trocamos a fonte do tema.</AccordionContent>
             </AccordionItem>
           </Accordion>

@@ -113,7 +113,7 @@ export function Dashboard() {
                   <span>{t.nome}</span>
                   <span className="tabular-nums text-muted-foreground">{t.pct}%</span>
                 </div>
-                <Progress value={t.pct} />
+                <Progress value={t.pct} aria-label={`Participação do time ${t.nome}: ${t.pct}%`} />
               </div>
             ))}
           </CardContent>

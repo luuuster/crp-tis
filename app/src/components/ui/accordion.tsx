@@ -26,10 +26,16 @@ function AccordionItem({
 function AccordionTrigger({
   className,
   children,
+  headingLevel = 3,
   ...props
-}: React.ComponentProps<typeof AccordionPrimitive.Trigger>) {
+}: React.ComponentProps<typeof AccordionPrimitive.Trigger> & {
+  /** Nível do heading do item (a11y: deve seguir a hierarquia da página — ex.: 2 sob um h1). Default 3 = upstream Radix. */
+  headingLevel?: 2 | 3 | 4 | 5 | 6
+}) {
+  const Heading = `h${headingLevel}` as "h2" | "h3" | "h4" | "h5" | "h6"
   return (
-    <AccordionPrimitive.Header className="flex">
+    <AccordionPrimitive.Header asChild className="flex">
+      <Heading className="flex">
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
         className={cn(
@@ -40,7 +46,8 @@ function AccordionTrigger({
       >
         {children}
         <ChevronDownIcon className="pointer-events-none size-4 shrink-0 translate-y-0.5 text-muted-foreground transition-transform duration-200" />
-      </AccordionPrimitive.Trigger>
+        </AccordionPrimitive.Trigger>
+      </Heading>
     </AccordionPrimitive.Header>
   )
 }
