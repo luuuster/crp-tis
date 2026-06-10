@@ -5,6 +5,19 @@
 > estados compostos, série gráfica, mutação provada); axe permanente no teste; ESLint jsx-a11y;
 > Dependabot; doctor anti-corrupção. Este plano é evolução, não conserto.
 
+> ## ✅ Status (2026-06-10, execução)
+> Entregue no PR **#2** (branch `feat/figma-plugin-export-and-aa`, **CI verde nos 3 jobs**: build · app · e2e):
+> - **Fase 0.1** ✓ trabalho versionado em commits atômicos + PR #2.
+> - **Fase 0.2** ✓ `export:ts`/`export:figma` regenerados, `verify:figma` verde. *Pendente manual:* re-importar no Figma os 6 chart-* e mergear o PR.
+> - **Fase 0.3** ✓ investigado: a pasta **NÃO está sob OneDrive/sync** (sem reparse-point/placeholder). A "visão truncada" eram quirks de reconciliação do npm, não corrupção de disco — **mover é desnecessário**; o doctor segue de vigia.
+> - **Fase 1.1** ✓ já estava implementada (AuthLayout/BrandPanel/Logo, banner tablet, termos+Zod, requisitos sr-only, autofill).
+> - **Fase 1.2** ✓ Showcase virou catálogo navegável (índice + âncoras + chips de tokens por seção).
+> - **Fase 1.3** ✓ screenshots da vitrine (12) como artifact do PR (job `e2e`).
+> - **Fase 3.1** ✓ Playwright com axe REAL (contraste renderizado), 4 temas × 2 páginas — **achou e corrigiu 2 a11y reais** (Button link→`--link`; Tabs com painéis).
+> - **Fase 3.2** ✓ testes unitários de `build/lib` (color/css/themes), 75→108.
+>
+> **Resta:** Fase 2 (ciclo Token Studio + arquivo Figma — manual, na próxima sessão de Figma); Fase 3.3 (política de merge do Dependabot — rotina contínua); Fase 4 (só se o repo mudar de natureza).
+
 ## Fase 0 — Operacional (hoje, ~30 min)
 
 | # | Item | Por quê | Pronto quando |
