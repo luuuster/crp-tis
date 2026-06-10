@@ -96,9 +96,10 @@ jobs:
       - name: Tokens (dist consumido pelo app)
         run: npm ci && npm run build
 
-      - name: App — instalar, build (tsc + vite) e testar
+      - name: App — instalar, lint (bugs + a11y), build (tsc + vite) e testar (inclui axe)
         working-directory: app
         run: |
           npm ci
+          npm run lint
           npm run build
           npm test

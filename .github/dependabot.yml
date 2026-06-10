@@ -1,0 +1,30 @@
+# Dependabot: PRs automáticos para CVEs e atualizações de dependências.
+# O CVE do expr-eval-fork (rev. 4) foi achado por auditoria manual — isto automatiza a próxima.
+# Nota: o override de expr-eval-fork em package.json (raiz) pode ser removido quando o projeto
+# migrar para style-dictionary 5 + @tokens-studio/sd-transforms 2.x.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      build-toolchain:
+        patterns: ["style-dictionary", "@tokens-studio/*", "tailwindcss", "@tailwindcss/*"]
+
+  - package-ecosystem: npm
+    directory: "/app"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      react:
+        patterns: ["react", "react-dom", "@types/react*"]
+      radix:
+        patterns: ["radix-ui", "@radix-ui/*"]
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: monthly
