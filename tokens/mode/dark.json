@@ -21,10 +21,10 @@
   "info-foreground":       { "$type": "color", "$value": "{color.white}" },
 
   "primary":                    { "$type": "color", "$value": "{brand-primary-on-dark}", "$description": "Override dark: brand primary no shade 600 — mais visível no fundo escuro que o 700, com TEXTO BRANCO em AA." },
-  "primary-foreground":         { "$type": "color", "$value": "{color.white}", "$description": "Texto BRANCO sobre o primary (AA)." },
+  "primary-foreground":         { "$type": "color", "$value": "{color.white}", "$description": "EXCEÇÃO DELIBERADA: não usa {brand-primary-foreground} (neutral.50) como o Light — o primary do dark é mais claro e neutral.50 mede 4.44:1 < AA 4.5 (CRP-Dark, medido no check). Branco puro garante AA. Marca futura com foreground off-white: ajustar AQUI também (o check reprova se faltar)." },
   "ring":                       { "$type": "color", "$value": "{brand-primary-on-dark}" },
   "sidebar-primary":            { "$type": "color", "$value": "{brand-primary-on-dark}" },
-  "sidebar-primary-foreground": { "$type": "color", "$value": "{color.white}" },
+  "sidebar-primary-foreground": { "$type": "color", "$value": "{color.white}", "$description": "Mesma exceção do primary-foreground (AA no dark)." },
   "sidebar-ring":               { "$type": "color", "$value": "{brand-primary-on-dark}" },
   "link":                       { "$type": "color", "$value": "{brand-primary-on-dark-text}", "$description": "Link/texto interativo no dark — shade 400 (AA como TEXTO em fundo escuro; o primary 600 reprovava)." },
 

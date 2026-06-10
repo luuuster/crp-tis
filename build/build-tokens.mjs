@@ -193,6 +193,20 @@ ${colorMap}
   --text-lg: var(--font-size-lg);
   --text-xl: var(--font-size-xl);
   --text-2xl: var(--font-size-2xl);
+
+  /* motion — utilities ease-*/animate-* e a transição default seguem o DS, não os
+     defaults do Tailwind (hoje coincidem; se o DS divergir, as utilities acompanham).
+     Os nomes de keyframes (spin/ping/pulse/bounce) são os do Tailwind — keyframes built-in
+     continuam valendo; só os VALORES passam a vir dos tokens. */
+  --ease-in: var(--ease-in);
+  --ease-out: var(--ease-out);
+  --ease-in-out: var(--ease-in-out);
+  --default-transition-duration: var(--duration-default);
+  --default-transition-timing-function: var(--ease-default);
+  --animate-spin: var(--animate-spin);
+  --animate-ping: var(--animate-ping);
+  --animate-pulse: var(--animate-pulse);
+  --animate-bounce: var(--animate-bounce);
 }
 `;
   writeFileSync(join(DIST, 'theme.css'), themeCss);
