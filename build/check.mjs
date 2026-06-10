@@ -231,6 +231,23 @@ for (const [label, sel] of Object.entries(EXPECTED_SELECTORS)) {
     if (!ok && fatal) errors.push('CONTRASTE ' + msg);
     else if (!ok) warnings.push('contraste ' + msg);
   }
+
+  // 4b) SÉRIE GRÁFICA chart-1..12 como OBJETO GRÁFICO (linhas/barras/fatias) sobre as superfícies:
+  //     WCAG 1.4.11 exige ≥3:1 contra a cor adjacente. Os PAIRS acima cobrem o uso como BADGE
+  //     (texto sobre fill); este bloco cobre o uso como gráfico — foi exatamente o furo da
+  //     auditoria rev5 (chart-3/4/6/8/9/11 @500 mediam 1.96–2.83:1 no light). FATAL.
+  const GRAPHIC_MIN = 3.0; // 1.4.11 (mesmo valor de NONTEXT, declarada mais abaixo — TDZ impede usá-la aqui)
+  for (let i = 1; i <= 12; i++) {
+    const serie = resolve(scope[`--chart-${i}`], scope);
+    const cs = parse(serie);
+    if (!cs) { warnings.push(`[${label}] não consegui parsear --chart-${i} (${serie})`); continue; }
+    for (const surf of ['background', 'card']) {
+      const sv = parse(resolve(scope[`--${surf}`], scope));
+      if (!sv) continue;
+      const ratio = wcagContrast(cs, sv);
+      if (ratio < GRAPHIC_MIN) errors.push(`CONTRASTE-GRÁFICO [${label}] chart-${i}/${surf} = ${ratio.toFixed(2)}:1 < ${GRAPHIC_MIN} (série de gráfico precisa de 3:1 — WCAG 1.4.11)`);
+    }
+  }
 }
 
 // 5) Variantes SOFT do button — texto (accent-text) sobre a tinta real do MESMO accent.
