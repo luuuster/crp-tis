@@ -13,7 +13,7 @@
 > - **Fase 1.1** ✓ já estava implementada (AuthLayout/BrandPanel/Logo, banner tablet, termos+Zod, requisitos sr-only, autofill).
 > - **Fase 1.2** ✓ Showcase virou catálogo navegável (índice + âncoras + chips de tokens por seção).
 > - **Fase 1.3** ✓ screenshots da vitrine (12) como artifact do PR (job `e2e`).
-> - **Fase 3.1** ✓ Playwright com axe REAL (contraste renderizado), 4 temas × 2 páginas — **achou e corrigiu 2 a11y reais** (Button link→`--link`; Tabs com painéis).
+> - **Fase 3.1** ✓ Playwright com axe no DOM renderizado (estrutura/ARIA), 4 temas × auth+app — **achou e corrigiu 2 a11y reais** (Button link→`--link`, contraste dark 3.86→6.63 confirmado por canvas; Tabs com painéis p/ `aria-controls` válido). **Achado de tooling:** o axe-core 4.12 converte OKLCH→sRGB de forma não-confiável (falsos positivos perto do limiar, provado por pixel de canvas), então **contraste fica com o `check.mjs`/culori** (bate com o pixel real); o e2e cobre só estrutura.
 > - **Fase 3.2** ✓ testes unitários de `build/lib` (color/css/themes), 75→108.
 >
 > **Resta:** Fase 2 (ciclo Token Studio + arquivo Figma — manual, na próxima sessão de Figma); Fase 3.3 (política de merge do Dependabot — rotina contínua); Fase 4 (só se o repo mudar de natureza).
