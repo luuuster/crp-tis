@@ -7,6 +7,8 @@ import { readFileSync } from 'node:fs';
 const src = readFileSync(new URL('./code.js', import.meta.url), 'utf8');
 const grab = (re, name) => { const m = src.match(re); if (!m) throw new Error('não achei ' + name + ' em code.js'); return m[0]; };
 const body = [
+  grab(/const STYLE_KIND = [^;]+;/, 'STYLE_KIND'),
+  grab(/const MANAGED = \{[\s\S]*?\n\};/, 'MANAGED'),
   grab(/function relLum\(c\) \{[\s\S]*?\n\}/, 'relLum'),
   grab(/function contrastRatio\(a, b\) \{[\s\S]*?\n\}/, 'contrastRatio'),
   grab(/const colorClose = [^;]+;/, 'colorClose'),
@@ -14,9 +16,26 @@ const body = [
   grab(/function normalizeParts\(p\) \{[\s\S]*?\n\}/, 'normalizeParts'),
   grab(/function validDoc\(doc\) \{[^\n]*\}/, 'validDoc'),
   grab(/function validateBundle\(doc\) \{[\s\S]*?\n\}/, 'validateBundle'),
-  'return { relLum, contrastRatio, colorClose, numClose, normalizeParts, validDoc, validateBundle };',
+  grab(/async function computePlan\(doc, want, prune, registry, pre\) \{[\s\S]*?\n\}/, 'computePlan'),
+  grab(/async function resolveConcrete\(variable, ctx, seen\) \{[\s\S]*?\n\}/, 'resolveConcrete'),
+  grab(/async function varDrift\(def, fv, modeIdByName\) \{[\s\S]*?\n\}/, 'varDrift'),
+  grab(/async function computeChanges\(doc, want, pre, cap\) \{[\s\S]*?\n\}/, 'computeChanges'),
+  'return { relLum, contrastRatio, colorClose, numClose, normalizeParts, validDoc, validateBundle, computePlan, resolveConcrete, varDrift, computeChanges };',
 ].join('\n');
-const F = new Function(body)();
+// Escopo isolado com as dependências de runtime INJETADAS (fake figma + helpers async stubados):
+// testa as funções REAIS do code.js — a lógica que decide criar/atualizar/REMOVER no arquivo Figma —
+// sem precisar do Figma. varsById alimenta getVariableByIdAsync (resolução de alias).
+function makeF(stubs) {
+  stubs = stubs || {};
+  const fakeFigma = { variables: { getVariableByIdAsync: async (id) => (stubs.varsById && stubs.varsById[id]) || null } };
+  return new Function('figma', 'styleIndex', 'getCollections', 'getVariables', body)(
+    fakeFigma,
+    stubs.styleIndex || (async () => new Map()),
+    stubs.getCollections || (async () => []),
+    stubs.getVariables || (async () => []),
+  );
+}
+const F = makeF();
 
 test('contrastRatio: branco/preto = 21', () => {
   assert.ok(Math.abs(F.contrastRatio({ r: 1, g: 1, b: 1 }, { r: 0, g: 0, b: 0 }) - 21) < 0.01);
@@ -87,4 +106,136 @@ test('validateBundle: variável malformada e collection sem nome', () => {
   const issues = F.validateBundle(doc);
   assert.ok(issues.some((m) => /collection sem nome/.test(m)));
   assert.ok(issues.some((m) => /variável malformada/.test(m)));
+});
+
+// ---------------------------------------------------------------------------
+// Lógica de SYNC (a que pode corromper um arquivo Figma) — computePlan,
+// varDrift, computeChanges, resolveConcrete — testada com fake figma injetado.
+// ---------------------------------------------------------------------------
+
+// cenário base: 1 collection no Figma com 2 vars (a, velha); bundle traz a (igual) + b (nova)
+const FIG_COLLS = [{ id: 'C1', name: 'CRP/Modes', modes: [{ name: 'Light', modeId: 'L' }, { name: 'Dark', modeId: 'D' }] }];
+const FIG_VARS = [
+  { id: 'va', name: 'a', variableCollectionId: 'C1', valuesByMode: { L: 1, D: 2 } },
+  { id: 'vz', name: 'velha', variableCollectionId: 'C1', valuesByMode: { L: 9, D: 9 } },
+];
+const DOC = { collections: [{ name: 'CRP/Modes', modes: [{ name: 'Light' }, { name: 'Dark' }], variables: [
+  { name: 'a', type: 'FLOAT', values: { Light: { number: 1 }, Dark: { number: 2 } } },
+  { name: 'b', type: 'FLOAT', values: { Light: { number: 5 } } },
+] }] };
+
+test('computePlan: conta create/update e NÃO remove sem prune', async () => {
+  const want = F.normalizeParts(null);
+  const plan = await F.computePlan(DOC, want, false, {}, { colls: FIG_COLLS, vars: FIG_VARS });
+  const p = plan.collections['CRP/Modes'];
+  assert.equal(p.create, 1);            // b é nova
+  assert.equal(p.update, 1);            // a já existe
+  assert.deepEqual(p.removeNames, []);  // prune desligado → NUNCA remove
+  assert.equal(plan.totals.remove, 0);
+});
+
+test('computePlan: prune lista SÓ o que saiu do bundle (nunca o que está nele)', async () => {
+  const want = F.normalizeParts(null);
+  const plan = await F.computePlan(DOC, want, true, {}, { colls: FIG_COLLS, vars: FIG_VARS });
+  assert.deepEqual(plan.collections['CRP/Modes'].removeNames, ['velha']);
+});
+
+test('computePlan: collection desmarcada fica fora do plano', async () => {
+  const want = F.normalizeParts({ collections: { Modes: false }, styles: {} });
+  const plan = await F.computePlan(DOC, want, true, {}, { colls: FIG_COLLS, vars: FIG_VARS });
+  assert.equal(plan.collections['CRP/Modes'], undefined);
+  assert.equal(plan.totals.create + plan.totals.update + plan.totals.remove, 0);
+});
+
+test('computePlan: prune de styles respeita MANAGED ∪ registro (nunca toca style do usuário)', async () => {
+  const Fs = makeF({
+    styleIndex: async () => new Map([['Heading/H1', 's1'], ['Meu Estilo', 's2'], ['Custom Criado', 's3']]),
+  });
+  const doc = { collections: [], styles: { text: [{ name: 'Heading/H2' }] } };
+  const want = Fs.normalizeParts(null);
+  const plan = await Fs.computePlan(doc, want, true, { text: ['Custom Criado'] }, { colls: [], vars: [] });
+  // Heading/H1 é MANAGED (nosso namespace) e Custom Criado está no registro → removíveis;
+  // "Meu Estilo" é do USUÁRIO → intocável mesmo com prune.
+  assert.deepEqual(plan.styles.text.removeNames.sort(), ['Custom Criado', 'Heading/H1']);
+});
+
+test('computePlan: avisa dependência faltante de alias e sugere a collection', async () => {
+  const doc = { collections: [
+    { name: 'CRP/Primitives', modes: [{ name: 'Value' }], variables: [{ name: 'blue-500', type: 'COLOR', values: { Value: { color: { r: 0, g: 0, b: 1 } } } }] },
+    { name: 'CRP/Modes', modes: [{ name: 'Light' }], variables: [{ name: 'primary', type: 'COLOR', values: { Light: { alias: 'blue-500' } } }] },
+  ] };
+  // só Modes selecionada; o alvo do alias (blue-500) não está no Figma nem selecionado
+  const want = F.normalizeParts({ collections: { Primitives: false }, styles: {} });
+  const plan = await F.computePlan(doc, want, false, {}, { colls: [], vars: [] });
+  assert.ok(plan.warnings.length === 1 && /blue-500/.test(plan.warnings[0]));
+  assert.deepEqual(plan.depsToEnable.collections, ['Primitives']);
+});
+
+test('computePlan: alias resolvível (já no Figma) não gera aviso', async () => {
+  const doc = { collections: [
+    { name: 'CRP/Modes', modes: [{ name: 'Light' }], variables: [{ name: 'primary', type: 'COLOR', values: { Light: { alias: 'blue-500' } } }] },
+  ] };
+  const figVars = [{ id: 'v1', name: 'blue-500', variableCollectionId: 'CP', valuesByMode: {} }];
+  const plan = await F.computePlan(doc, F.normalizeParts(null), false, {}, { colls: [], vars: figVars });
+  assert.deepEqual(plan.warnings, []);
+});
+
+test('varDrift: em dia (número float32, alias certo) → null', async () => {
+  const Fd = makeF({ varsById: { tgt1: { id: 'tgt1', name: 'blue-500' } } });
+  const def = { values: { Light: { number: 4 / 3 }, Dark: { alias: 'blue-500' } } };
+  const fv = { valuesByMode: { L: Math.fround(4 / 3), D: { type: 'VARIABLE_ALIAS', id: 'tgt1' } } };
+  assert.equal(await Fd.varDrift(def, fv, { Light: 'L', Dark: 'D' }), null);
+});
+
+test('varDrift: detecta edição manual de número e alias trocado', async () => {
+  const Fd = makeF({ varsById: { tgt1: { id: 'tgt1', name: 'red-500' } } });
+  const num = await Fd.varDrift({ values: { Light: { number: 4 } } }, { valuesByMode: { L: 5 } }, { Light: 'L' });
+  assert.deepEqual(num, { mode: 'Light', figma: '5', bundle: '4' });
+  const ali = await Fd.varDrift({ values: { Light: { alias: 'blue-500' } } }, { valuesByMode: { L: { type: 'VARIABLE_ALIAS', id: 'tgt1' } } }, { Light: 'L' });
+  assert.deepEqual(ali, { mode: 'Light', figma: '→red-500', bundle: '→blue-500' });
+});
+
+test('varDrift: alias esperado mas valor cru no Figma → diverge', async () => {
+  const d = await F.varDrift({ values: { Light: { alias: 'blue-500' } } }, { valuesByMode: { L: { r: 0, g: 0, b: 1 } } }, { Light: 'L' });
+  assert.deepEqual(d, { mode: 'Light', figma: 'cru', bundle: '→blue-500' });
+});
+
+test('varDrift: mode que não existe no Figma é pulado (sem falso positivo)', async () => {
+  const d = await F.varDrift({ values: { Escuro: { number: 1 } } }, { valuesByMode: {} }, { Light: 'L' });
+  assert.equal(d, null);
+});
+
+test('computeChanges: lista só EXISTENTES que mudam; respeita o cap', async () => {
+  const doc = { collections: [{ name: 'CRP/Modes', variables: [
+    { name: 'a', type: 'FLOAT', values: { Light: { number: 10 } } },  // muda (1→10)
+    { name: 'velha', type: 'FLOAT', values: { Light: { number: 9 } } }, // em dia
+    { name: 'b', type: 'FLOAT', values: { Light: { number: 5 } } },   // nova → não é "mudança"
+  ] }] };
+  const r = await F.computeChanges(doc, F.normalizeParts(null), { colls: FIG_COLLS, vars: FIG_VARS });
+  assert.equal(r.changes.length, 1);
+  assert.deepEqual(r.changes[0], { scope: 'Modes', name: 'a', mode: 'Light', from: '1', to: '10' });
+  // cap: com 2 mudanças (a E velha) e cap=1, a 2ª vira "more" (cap=0 não existe: cap||40)
+  const doc2 = { collections: [{ name: 'CRP/Modes', variables: [
+    { name: 'a', type: 'FLOAT', values: { Light: { number: 10 } } },
+    { name: 'velha', type: 'FLOAT', values: { Light: { number: 99 } } },
+  ] }] };
+  const capped = await F.computeChanges(doc2, F.normalizeParts(null), { colls: FIG_COLLS, vars: FIG_VARS }, 1);
+  assert.equal(capped.changes.length, 1);
+  assert.equal(capped.more, 1);
+});
+
+test('resolveConcrete: segue cadeia de alias entre collections e é imune a ciclo', async () => {
+  const v1 = { id: 'v1', variableCollectionId: 'C1', valuesByMode: { L: { type: 'VARIABLE_ALIAS', id: 'v2' } } };
+  const v2 = { id: 'v2', variableCollectionId: 'C2', valuesByMode: { X: { r: 0, g: 0.5, b: 1 } } };
+  const Fr = makeF({ varsById: { v1, v2 } });
+  assert.deepEqual(await Fr.resolveConcrete(v1, { C1: 'L', C2: 'X' }), { r: 0, g: 0.5, b: 1 });
+  // ciclo: v3 → v3 (não pode travar nem estourar a pilha)
+  const v3 = { id: 'v3', variableCollectionId: 'C1', valuesByMode: { L: { type: 'VARIABLE_ALIAS', id: 'v3' } } };
+  const Fc = makeF({ varsById: { v3 } });
+  assert.equal(await Fc.resolveConcrete(v3, { C1: 'L' }), null);
+});
+
+test('resolveConcrete: sem mode no ctx usa o primeiro mode (fallback)', async () => {
+  const v = { id: 'v9', variableCollectionId: 'C9', valuesByMode: { M1: 7 } };
+  assert.equal(await F.resolveConcrete(v, {}), 7);
 });
