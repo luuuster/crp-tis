@@ -249,8 +249,20 @@
   var ESSENTIALS = ['arrow-up','arrow-down','arrow-left','arrow-right','arrow-up-right','chevron-up','chevron-down','chevron-left','chevron-right','chevrons-up-down','check','check-check','x','plus','minus','circle-plus','circle-minus','circle-check','circle-x','search','settings','settings-2','sliders-horizontal','funnel','menu','ellipsis','ellipsis-vertical','house','user','users','user-plus','circle-user','bell','bell-off','mail','mail-open','send','message-circle','message-square','phone','calendar','calendar-days','clock','alarm-clock','timer','heart','star','bookmark','flag','eye','eye-off','lock','lock-open','key','shield','shield-check','log-in','log-out','upload','download','share','share-2','link','link-2','external-link','copy','clipboard','clipboard-copy','scissors','trash','trash-2','pencil','square-pen','pen','save','file','file-text','file-plus','files','folder','folder-open','folder-plus','image','images','camera','video','music','mic','mic-off','volume','volume-1','volume-2','volume-x','play','pause','circle-stop','skip-back','skip-forward','rewind','fast-forward','refresh-cw','refresh-ccw','rotate-cw','rotate-ccw','loader','loader-circle','info','circle-alert','triangle-alert','circle-help','ban','circle','square','triangle','hexagon','sun','moon','cloud','cloud-rain','zap','wifi','wifi-off','bluetooth','battery','power','plug','globe','map','map-pin','navigation','compass','shopping-cart','shopping-bag','credit-card','dollar-sign','tag','tags','gift','package','truck','box','layers','layout-grid','layout-dashboard','grid-3x3','list','table','columns-3','panel-left','maximize','minimize','maximize-2','minimize-2','move','zoom-in','zoom-out','thumbs-up','thumbs-down','smile','frown','meh','sparkles','wand-sparkles','palette','paintbrush','type','bold','italic','underline','align-left','align-center','align-right','align-justify','code','terminal','git-branch','git-commit-horizontal','git-merge','github','database','server','hard-drive','cpu','monitor','smartphone','tablet','laptop','printer','mouse-pointer','hand','command','delete','filter'];
   var ESSENTIALS_SET = {}; ESSENTIALS.forEach(function (n) { ESSENTIALS_SET[n] = 1; });
   var $ = function (id) { return document.getElementById(id); };
-  // Escapa texto antes de ir p/ innerHTML (nomes de ícone, mensagens de erro).
-  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]; }); }
+  // Construção de DOM SEM innerHTML: strings viram TEXT NODE — dado externo (nomes de ícone,
+  // versão do bundle, mensagens de erro) nunca é interpretado como markup. innerHTML fica
+  // reservado ao SVG CONFIÁVEL do bundle (gerado pelo nosso export), em renderPreview().
+  function el(tag, cls, children) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    var kids = children == null ? [] : (Array.isArray(children) ? children : [children]);
+    kids.forEach(function (c) { if (c != null) n.appendChild(typeof c === 'object' ? c : document.createTextNode(String(c))); });
+    return n;
+  }
+  function setChildren(target, children) {
+    target.textContent = '';
+    (Array.isArray(children) ? children : [children]).forEach(function (c) { if (c != null) target.appendChild(typeof c === 'object' ? c : document.createTextNode(String(c))); });
+  }
   function show(el, on) { el.classList.toggle('hidden', !on); }
 
   // ---- Fonte/estilo/fill (Lucide x Google Material) ----
@@ -277,12 +289,12 @@
     show($('fillWrap'), mat);
     show($('strokeField'), !mat);
     show($('toggleRow'), !mat);
-    $('expectInfo').innerHTML = 'Arquivo esperado: <code>' + expectedFile() + '</code> (<code>npm run ' + (mat ? 'export:material' : 'export:lucide') + '</code>).';
+    setChildren($('expectInfo'), ['Arquivo esperado: ', el('code', null, expectedFile()), ' (', el('code', null, 'npm run ' + (mat ? 'export:material' : 'export:lucide')), ').']);
   }
 
   function showLoaded(src, sty, fl, n, fromSaved) {
-    $('loadInfo').innerHTML = '<span class="ok">✓</span> ' + Number(n).toLocaleString('pt-BR') + ' ícones · ' + srcLabel(src, sty, fl) +
-      (bundle && bundle.version ? ' v' + bundle.version : '') + (fromSaved ? ' <span class="muted">(salvo)</span>' : ' <span class="muted">(embutido)</span>');
+    setChildren($('loadInfo'), [el('span', 'ok', '✓'), ' ' + Number(n).toLocaleString('pt-BR') + ' ícones · ' + srcLabel(src, sty, fl) +
+      (bundle && bundle.version ? ' v' + bundle.version : '') + ' ', el('span', 'muted', fromSaved ? '(salvo)' : '(embutido)')]);
     show($('optCard'), true); show($('actCard'), true);
   }
 
@@ -302,7 +314,7 @@
     if (b) { bundle = b; showLoaded(src, sty, fl, b.icons.length); showFile(false); applyFilter(); return; }
     bundle = null; showFile(false); show($('optCard'), false); show($('actCard'), false); show($('previewCard'), false);
     var meta = embeddedMeta[keyOf(src, sty, fl)];
-    $('loadInfo').innerHTML = '<span class="muted">Carregando ' + srcLabel(src, sty, fl) + (meta ? ' (' + Number(meta.count).toLocaleString('pt-BR') + ')' : '') + '…</span>';
+    setChildren($('loadInfo'), el('span', 'muted', 'Carregando ' + srcLabel(src, sty, fl) + (meta ? ' (' + Number(meta.count).toLocaleString('pt-BR') + ')' : '') + '…'));
     parent.postMessage({ pluginMessage: { type: 'getBundle', source: src, style: sty, filled: fl } }, '*');
   }
   function switchActive() { requestActive(); }
@@ -321,7 +333,7 @@
   function defaultSize() { return Number($('defaultSize').value) || 20; }
 
   function populateColors(list, selectedId) {
-    var sel = $('colorVar'); sel.innerHTML = '';
+    var sel = $('colorVar'); sel.textContent = '';
     (list || []).forEach(function (v) { var o = document.createElement('option'); o.value = v.id; o.textContent = v.name; sel.appendChild(o); });
     var ed = document.createElement('option'); ed.value = ''; ed.textContent = '(cor editável — sem bind)'; sel.appendChild(ed);
     var want = selectedId || null;
@@ -350,9 +362,14 @@
   }
 
   function renderPreview() {
-    var list = filtered.slice(0, PREVIEW_CAP), html = '';
-    for (var i = 0; i < list.length; i++) html += '<div class="ic" title="' + esc(list[i].name) + '">' + list[i].svg + '</div>';
-    $('preview').innerHTML = html;
+    var list = filtered.slice(0, PREVIEW_CAP);
+    var boxes = list.map(function (it) {
+      var d = el('div', 'ic');
+      d.title = it.name;            // atributo via DOM — nome do ícone nunca vira markup
+      d.innerHTML = it.svg;         // ÚNICO innerHTML do plugin: SVG confiável do nosso bundle
+      return d;
+    });
+    setChildren($('preview'), boxes);
     $('previewCount').textContent = filtered.length > PREVIEW_CAP ? '(primeiros ' + PREVIEW_CAP + ' de ' + filtered.length.toLocaleString('pt-BR') + ')' : '(' + filtered.length + ')';
     show($('previewCard'), filtered.length > 0);
   }
@@ -366,7 +383,7 @@
     if (src === 'material') { if (sty) $('style').value = sty; $('filled').checked = fl; }
     onSourceUi();
     activeSource = src; activeStyle = sty; activeFilled = fl; bundle = data;
-    $('loadInfo').innerHTML = '<span class="ok">✓</span> ' + data.icons.length.toLocaleString('pt-BR') + ' ícones · ' + srcLabel(src, sty, fl) + (data.version ? ' v' + data.version : '') + (fromSaved ? ' <span class="muted">(salvo)</span>' : '');
+    setChildren($('loadInfo'), [el('span', 'ok', '✓'), ' ' + data.icons.length.toLocaleString('pt-BR') + ' ícones · ' + srcLabel(src, sty, fl) + (data.version ? ' v' + data.version : '')].concat(fromSaved ? [' ', el('span', 'muted', '(salvo)')] : []));
     show($('optCard'), true); show($('actCard'), true);
     showFile(false);
     updateClearLabel();
@@ -384,7 +401,7 @@
         parent.postMessage({ pluginMessage: { type: 'saveBundle', bundle: data, source: src, style: sty, filled: fl } }, '*'); // persiste p/ próxima vez
       } catch (err) {
         bundle = null;
-        $('loadInfo').innerHTML = '<span class="err">✗</span> ' + esc(err.message || err);
+        setChildren($('loadInfo'), [el('span', 'err', '✗'), ' ' + (err.message || err)]);
         showFile(true);
         show($('optCard'), false); show($('actCard'), false); show($('previewCard'), false);
       }
@@ -435,7 +452,7 @@
   $('cancel').addEventListener('click', function () { parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*'); $('cancel').disabled = true; });
 
   var clearArmed = false, clearTimer = null;
-  function updateClearLabel() { if (clearArmed) return; $('clear').innerHTML = 'Remover todos os <code>' + activePrefix() + '*</code> da página'; }
+  function updateClearLabel() { if (clearArmed) return; setChildren($('clear'), ['Remover todos os ', el('code', null, activePrefix() + '*'), ' da página']); }
   function resetClear() { clearArmed = false; if (clearTimer) { clearTimeout(clearTimer); clearTimer = null; } $('clear').classList.remove('err'); $('clear').disabled = false; updateClearLabel(); }
   $('clear').addEventListener('click', function () {
     if (running) return;
@@ -470,7 +487,7 @@
       var stillActive = function () { return curSource() === bsrc && (curStyle() || null) === (bsty || null) && curFilled() === bfl; };
       var apply = function (data) {
         if (!data || !Array.isArray(data.icons)) {
-          if (stillActive()) { bundle = null; $('loadInfo').innerHTML = '<span class="muted">Não embutido — carregue o arquivo abaixo.</span>'; showFile(true); show($('optCard'), false); show($('actCard'), false); show($('previewCard'), false); }
+          if (stillActive()) { bundle = null; setChildren($('loadInfo'), el('span', 'muted', 'Não embutido — carregue o arquivo abaixo.')); showFile(true); show($('optCard'), false); show($('actCard'), false); show($('previewCard'), false); }
           return;
         }
         bundles[bkey] = data;
@@ -481,14 +498,14 @@
       return;
     }
     if (m.type === 'saved') {
-      if (!m.ok && bundle) $('loadInfo').innerHTML += ' <span class="muted">(não persistiu — bundle grande; recarregue o arquivo na próxima)</span>';
+      if (!m.ok && bundle) { $('loadInfo').appendChild(document.createTextNode(' ')); $('loadInfo').appendChild(el('span', 'muted', '(não persistiu — bundle grande; recarregue o arquivo na próxima)')); }
       return;
     }
     if (m.type === 'syncPlan') {
       var parts = [m.willCreate + ' novos'];
       if (m.mode === 'sync') { parts.push(m.willUpdate + ' atualizados'); if (m.willRemoveOrphans) parts.push(m.willRemoveOrphans + ' órfãos a remover'); }
       else parts.push(m.willSkip + ' pulados');
-      $('planInfo').innerHTML = '<b>Prévia (' + (m.mode === 'sync' ? 'sincronizar' : 'pular') + '):</b> ' + parts.join(' · ') + '. <span class="muted">(' + m.existing + ' já no arquivo)</span>';
+      setChildren($('planInfo'), [el('b', null, 'Prévia (' + (m.mode === 'sync' ? 'sincronizar' : 'pular') + '):'), ' ' + parts.join(' · ') + '. ', el('span', 'muted', '(' + m.existing + ' já no arquivo)')]);
       return;
     }
 
@@ -501,28 +518,31 @@
       $('test').disabled = $('gen').disabled = false;
       show($('progCard'), false); show($('doneCard'), true); updateClearLabel();
       var t = m.elapsed != null ? ' em ' + m.elapsed + 's' : '';
-      var color = m.colorName ? (m.linked ? 'Cor: ligada à Variable <code>' + m.colorName + '</code>.' : '<span class="err">Cor não ligou</span> em <code>' + m.colorName + '</code> (cor fixa).') : 'Cor: fixa (editável, sem bind).';
+      var color = m.colorName
+        ? (m.linked ? ['Cor: ligada à Variable ', el('code', null, m.colorName), '.'] : [el('span', 'err', 'Cor não ligou'), ' em ', el('code', null, m.colorName), ' (cor fixa).'])
+        : ['Cor: fixa (editável, sem bind).'];
       var size;
       if (m.fill) size = m.boundSizes
-        ? 'Tamanho → <code>icon/*</code>. <span class="muted">(preenchido — sem espessura de traço)</span>'
-        : '<span class="err">Tamanho não ligado</span> — rode o plugin de Variables (CRP) antes (cria <code>icon/*</code>).';
-      else if (m.boundSizes && m.boundStroke) size = 'Tamanho → <code>icon/*</code> · espessura → <code>border-width/*</code> (CRP/Primitives).';
-      else if (m.boundSizes) size = 'Tamanho → <code>icon/*</code>. <span class="err">Espessura não ligada</span> (border-width ausente).';
-      else size = '<span class="err">Tamanho/espessura não ligados</span> — rode o plugin de Variables (CRP) antes (cria icon/* e border-width/*).';
-      var counts = m.created + ' criados' + (m.updated ? ', ' + m.updated + ' atualizados' : '') + (m.skipped ? ', ' + m.skipped + ' pulados' : '') + (m.orphans ? ', ' + m.orphans + ' órfãos removidos' : '') + (m.failed ? ', <span class="err">' + m.failed + ' falharam</span>' : '');
-      $('doneMsg').innerHTML = (m.type === 'cancelled' ? '⏹ Cancelado — ' : '<span class="ok">✓ Pronto</span> — ') + counts + t
-        + '.<br><span class="muted">Página: ' + (m.page || '?') + ' · busque <code>' + (m.prefix || 'lucide/') + '</code> no Assets · variante padrão <b>' + (m.defaultSize || 20) + 'px</b>.<br>' + color + '<br>' + size + '</span>';
+        ? ['Tamanho → ', el('code', null, 'icon/*'), '. ', el('span', 'muted', '(preenchido — sem espessura de traço)')]
+        : [el('span', 'err', 'Tamanho não ligado'), ' — rode o plugin de Variables (CRP) antes (cria ', el('code', null, 'icon/*'), ').'];
+      else if (m.boundSizes && m.boundStroke) size = ['Tamanho → ', el('code', null, 'icon/*'), ' · espessura → ', el('code', null, 'border-width/*'), ' (CRP/Primitives).'];
+      else if (m.boundSizes) size = ['Tamanho → ', el('code', null, 'icon/*'), '. ', el('span', 'err', 'Espessura não ligada'), ' (border-width ausente).'];
+      else size = [el('span', 'err', 'Tamanho/espessura não ligados'), ' — rode o plugin de Variables (CRP) antes (cria icon/* e border-width/*).'];
+      var counts = [m.created + ' criados' + (m.updated ? ', ' + m.updated + ' atualizados' : '') + (m.skipped ? ', ' + m.skipped + ' pulados' : '') + (m.orphans ? ', ' + m.orphans + ' órfãos removidos' : '')]
+        .concat(m.failed ? [', ', el('span', 'err', m.failed + ' falharam')] : []);
+      var detail = el('span', 'muted', ['Página: ' + (m.page || '?') + ' · busque ', el('code', null, m.prefix || 'lucide/'), ' no Assets · variante padrão ', el('b', null, (m.defaultSize || 20) + 'px'), '.', el('br')].concat(color, [el('br')], size));
+      setChildren($('doneMsg'), (m.type === 'cancelled' ? ['⏹ Cancelado — '] : [el('span', 'ok', '✓ Pronto'), ' — ']).concat(counts, [t + '.', el('br'), detail]));
     } else if (m.type === 'cleared') {
       resetClear();
       show($('doneCard'), true);
       var pfx = activePrefix();
-      $('doneMsg').innerHTML = m.removed
-        ? '<span class="ok">✓</span> ' + m.removed + ' <code>' + pfx + '*</code> removidos da página.'
-        : 'Nada para remover (nenhum <code>' + pfx + '*</code> na página <code>' + activePage() + '</code>).';
+      setChildren($('doneMsg'), m.removed
+        ? [el('span', 'ok', '✓'), ' ' + m.removed + ' ', el('code', null, pfx + '*'), ' removidos da página.']
+        : ['Nada para remover (nenhum ', el('code', null, pfx + '*'), ' na página ', el('code', null, activePage()), ').']);
     } else if (m.type === 'error') {
       running = false; $('test').disabled = $('gen').disabled = false; resetClear();
       show($('progCard'), false); show($('doneCard'), true);
-      $('doneMsg').innerHTML = '<span class="err">✗ Erro:</span> ' + esc(m.message);
+      setChildren($('doneMsg'), [el('span', 'err', '✗ Erro:'), ' ' + m.message]);
     }
   };
 </script>

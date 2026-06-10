@@ -241,8 +241,26 @@
     var STY_KEYS = ['text', 'paint', 'effect', 'grid'];
     var STY_LABEL = { text: 'Text', paint: 'Paint (cor)', effect: 'Effect', grid: 'Grid' };
     var $ = function (id) { return document.getElementById(id); };
-    // Escapa texto antes de ir p/ innerHTML — nomes de Variables vêm do arquivo do usuário (externo).
-    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]; }); }
+    // Construção de DOM SEM innerHTML: strings viram TEXT NODE — dado externo (nomes de
+    // Variables, mensagens) nunca é interpretado como markup. Substitui o antigo esc()+concat,
+    // que exigia lembrar do esc() a cada novo render (e um esquecimento = injeção).
+    function el(tag, cls, children) {
+      var n = document.createElement(tag);
+      if (cls) n.className = cls;
+      var kids = children == null ? [] : (Array.isArray(children) ? children : [children]);
+      kids.forEach(function (c) { if (c != null) n.appendChild(typeof c === 'object' ? c : document.createTextNode(String(c))); });
+      return n;
+    }
+    function setChildren(target, children) {
+      target.textContent = '';
+      (Array.isArray(children) ? children : [children]).forEach(function (c) { if (c != null) target.appendChild(typeof c === 'object' ? c : document.createTextNode(String(c))); });
+    }
+    // intercala " · " entre elementos (p/ linhas de resumo)
+    function joinDots(parts) {
+      var out = [];
+      parts.forEach(function (p, i) { if (i) out.push(' · '); out.push(p); });
+      return out;
+    }
     var dropEl = $('drop'), runEl = $('run'), prevEl = $('preview'), logbox = $('logbox'), statusEl = $('status');
     var auditEl = $('audit'), cancelEl = $('cancel'), progressEl = $('progress'), progressBar = $('progressBar'), healthEl = $('health');
 
@@ -253,12 +271,15 @@
 
     // monta os checkboxes
     (function build() {
-      $('colBoxes').innerHTML = COL_KEYS.map(function (k) {
-        return '<label class="chk" id="wrap-col-' + k + '"><input type="checkbox" id="col-' + k + '" checked /><span class="lbl">' + k + '</span> <span class="ct" id="ct-col-' + k + '"></span></label>';
-      }).join('');
-      $('styBoxes').innerHTML = STY_KEYS.map(function (k) {
-        return '<label class="chk" id="wrap-sty-' + k + '"><input type="checkbox" id="sty-' + k + '" checked /><span class="lbl">' + STY_LABEL[k] + '</span> <span class="ct" id="ct-sty-' + k + '"></span></label>';
-      }).join('');
+      function chk(g, k, label) {
+        var lab = el('label', 'chk'); lab.id = 'wrap-' + g + '-' + k;
+        var inp = document.createElement('input'); inp.type = 'checkbox'; inp.id = g + '-' + k; inp.checked = true;
+        var ct = el('span', 'ct'); ct.id = 'ct-' + g + '-' + k;
+        lab.appendChild(inp); lab.appendChild(el('span', 'lbl', label)); lab.appendChild(document.createTextNode(' ')); lab.appendChild(ct);
+        return lab;
+      }
+      setChildren($('colBoxes'), COL_KEYS.map(function (k) { return chk('col', k, k); }));
+      setChildren($('styBoxes'), STY_KEYS.map(function (k) { return chk('sty', k, STY_LABEL[k]); }));
     })();
 
     function eachBox(fn) { COL_KEYS.forEach(function (k) { fn($('col-' + k), 'col', k); }); STY_KEYS.forEach(function (k) { fn($('sty-' + k), 'sty', k); }); }
@@ -318,7 +339,7 @@
       var nVar = (parsed.collections || []).reduce(function (a, c) { return a + (c.variables ? c.variables.length : 0); }, 0);
       var nSty = STY_KEYS.reduce(function (a, k) { return a + present.styles[k]; }, 0);
       $('fileName').textContent = name;
-      $('fileMeta').innerHTML = nColl + ' collections · ' + nVar + ' variables · ' + nSty + ' styles' + (parsed.$schema ? ' · <code>' + esc(parsed.$schema) + '</code>' : '');
+      setChildren($('fileMeta'), [nColl + ' collections · ' + nVar + ' variables · ' + nSty + ' styles'].concat(parsed.$schema ? [' · ', el('code', null, parsed.$schema)] : []));
       setAvailability(present);
       dropEl.classList.add('loaded');
       $('planPanel').classList.remove('on');
@@ -342,7 +363,7 @@
     dropEl.addEventListener('drop', function (e) { if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); });
 
     function send(type) { parent.postMessage({ pluginMessage: { type: type, doc: bundle, parts: gatherParts(), prune: $('optPrune').checked, hidePrimitives: $('optHide').checked } }, '*'); }
-    function setBusy(label) { busy = true; updateRunState(); runEl.innerHTML = '<span class="spin"></span>' + label; setStatus(label); cancelEl.style.display = ''; setProgress(true, 0); }
+    function setBusy(label) { busy = true; updateRunState(); setChildren(runEl, [el('span', 'spin'), label]); setStatus(label); cancelEl.style.display = ''; setProgress(true, 0); }
     function clearBusy() { busy = false; runEl.textContent = 'Criar'; cancelEl.style.display = 'none'; setProgress(false); updateRunState(); }
 
     prevEl.addEventListener('click', function () { if (!bundle) return; resetLog(); append('Calculando o plano…'); setStatus('Pré-visualizando…'); send('preview'); });
@@ -370,37 +391,45 @@
     document.querySelectorAll('[data-light]').forEach(function (b) { b.addEventListener('click', function () { parent.postMessage({ pluginMessage: { type: 'applyMode', brand: null, light: b.getAttribute('data-light') } }, '*'); setStatus('Aplicando modo…'); }); });
 
     function row(scope, d) {
-      return '<div class="prow"><span class="scope">' + esc(scope) + '</span><span class="nums"><b class="add">+' + d.create + '</b> <b class="upd">~' + d.update + '</b> <b class="rem">−' + d.remove + '</b></span></div>';
+      return el('div', 'prow', [
+        el('span', 'scope', scope),
+        el('span', 'nums', [el('b', 'add', '+' + d.create), ' ', el('b', 'upd', '~' + d.update), ' ', el('b', 'rem', '−' + d.remove)]),
+      ]);
     }
     function renderPlan(plan, isPreview) {
       $('planTitle').textContent = isPreview ? 'Plano (prévia) — +novos · ~atualizar · −remover' : 'Resultado — +criados · ~atualizados · −removidos';
-      var rows = '', rem = [];
-      Object.keys(plan.collections || {}).forEach(function (k) { rows += row(k.replace('CRP/', ''), plan.collections[k]); (plan.collections[k].removeNames || []).forEach(function (n) { rem.push(k.replace('CRP/', '') + ' / ' + n); }); });
-      Object.keys(plan.styles || {}).forEach(function (k) { rows += row(STY_LABEL[k] || k, plan.styles[k]); (plan.styles[k].removeNames || []).forEach(function (n) { rem.push(k + ' / ' + n); }); });
-      $('planRows').innerHTML = rows || '<div class="prow"><span class="scope">nada selecionado</span></div>';
-      if (rem.length) { $('planRemovals').style.display = ''; $('planRemList').innerHTML = rem.map(function (n) { return '<li>' + esc(n) + '</li>'; }).join(''); }
+      var rows = [], rem = [];
+      Object.keys(plan.collections || {}).forEach(function (k) { rows.push(row(k.replace('CRP/', ''), plan.collections[k])); (plan.collections[k].removeNames || []).forEach(function (n) { rem.push(k.replace('CRP/', '') + ' / ' + n); }); });
+      Object.keys(plan.styles || {}).forEach(function (k) { rows.push(row(STY_LABEL[k] || k, plan.styles[k])); (plan.styles[k].removeNames || []).forEach(function (n) { rem.push(k + ' / ' + n); }); });
+      setChildren($('planRows'), rows.length ? rows : [el('div', 'prow', el('span', 'scope', 'nada selecionado'))]);
+      if (rem.length) { $('planRemovals').style.display = ''; setChildren($('planRemList'), rem.map(function (n) { return el('li', null, n); })); }
       else { $('planRemovals').style.display = 'none'; }
       return rem.length;
     }
     // #3: avisos de dependência faltante (alvos de alias/bind não selecionados nem presentes no arquivo)
     function warnNotes(plan) {
       var w = (plan && plan.warnings) || [];
-      if (!w.length) return '';
-      return '<div class="note warn">⚠ Dependências faltando — esses vínculos ficarão vazios:</div>'
-        + w.map(function (x) { return '<div class="note warn">· ' + esc(x) + '</div>'; }).join('');
+      if (!w.length) return [];
+      return [el('div', 'note warn', '⚠ Dependências faltando — esses vínculos ficarão vazios:')]
+        .concat(w.map(function (x) { return el('div', 'note warn', '· ' + x); }));
     }
     // #7 diff detalhado: quais Variables existentes mudam de valor
     function changesNotes(plan) {
       var ch = (plan && plan.changes) || [];
-      if (!ch.length) return '';
-      var head = '<div class="note">↻ ' + ch.length + (plan.changesMore ? '+' + plan.changesMore : '') + ' variável(is) mudam de valor:</div>';
-      return head + ch.slice(0, 12).map(function (c) { return '<div class="note" style="color:var(--tx-2)">· ' + esc(c.scope) + '/' + esc(c.name) + ' [' + esc(c.mode) + '] ' + esc(c.from) + ' → ' + esc(c.to) + '</div>'; }).join('');
+      if (!ch.length) return [];
+      var head = el('div', 'note', '↻ ' + ch.length + (plan.changesMore ? '+' + plan.changesMore : '') + ' variável(is) mudam de valor:');
+      return [head].concat(ch.slice(0, 12).map(function (c) {
+        var d = el('div', 'note', '· ' + c.scope + '/' + c.name + ' [' + c.mode + '] ' + c.from + ' → ' + c.to);
+        d.style.color = 'var(--tx-2)';
+        return d;
+      }));
     }
     // #5 problemas estruturais do bundle (validação estrita)
     function issueNotes(plan) {
       var is = (plan && plan.bundleIssues) || [];
-      if (!is.length) return '';
-      return '<div class="note warn">⚠ Bundle com ' + is.length + ' problema(s) de estrutura:</div>' + is.slice(0, 8).map(function (x) { return '<div class="note warn">· ' + esc(x) + '</div>'; }).join('');
+      if (!is.length) return [];
+      return [el('div', 'note warn', '⚠ Bundle com ' + is.length + ' problema(s) de estrutura:')]
+        .concat(is.slice(0, 8).map(function (x) { return el('div', 'note warn', '· ' + x); }));
     }
 
     function renderDone(s) {
@@ -416,7 +445,7 @@
       if (s.typeChanges) notes.push(['warn', '• ' + s.typeChanges + ' var(s) recriadas por troca de tipo (bindings externos podem orfanar)']);
       if (s.styleWarnings) notes.push(['warn', '• ' + s.styleWarnings + ' avisos (ver log)']);
       if (s.cancelled) notes.push(['warn', '• cancelado — resultado parcial']);
-      $('planNotes').innerHTML = notes.map(function (x) { return '<div class="note ' + x[0] + '">' + x[1] + '</div>'; }).join('') + warnNotes(s.plan);
+      setChildren($('planNotes'), notes.map(function (x) { return el('div', 'note ' + x[0], x[1]); }).concat(warnNotes(s.plan)));
       $('planPanel').classList.add('on');
     }
 
@@ -426,37 +455,44 @@
       var missing = r.vars.missing.length + r.styles.missing.length;
       var orphan = r.vars.orphan.length, contrast = r.contrast.fail.length;
       var parts = [];
-      if (!(diverge + missing + orphan + contrast)) parts.push('<span class="ok"><b>✓ Figma em dia</b> com o bundle</span>');
+      if (!(diverge + missing + orphan + contrast)) parts.push(el('span', 'ok', [el('b', null, '✓ Figma em dia'), ' com o bundle']));
       else {
-        if (diverge) parts.push('<span class="bad"><b>' + diverge + '</b> divergem</span>');
-        if (missing) parts.push('<span class="warn"><b>' + missing + '</b> faltando</span>');
-        if (orphan) parts.push('<span class="warn"><b>' + orphan + '</b> órfãos</span>');
-        if (contrast) parts.push('<span class="bad"><b>' + contrast + '</b> contraste</span>');
-        parts.push('<span style="color:var(--tx-3)">— clique “Auditar”</span>');
+        if (diverge) parts.push(el('span', 'bad', [el('b', null, diverge), ' divergem']));
+        if (missing) parts.push(el('span', 'warn', [el('b', null, missing), ' faltando']));
+        if (orphan) parts.push(el('span', 'warn', [el('b', null, orphan), ' órfãos']));
+        if (contrast) parts.push(el('span', 'bad', [el('b', null, contrast), ' contraste']));
+        var hint = el('span', null, '— clique “Auditar”'); hint.style.color = 'var(--tx-3)';
+        parts.push(hint);
       }
-      healthEl.innerHTML = parts.join(' · ');
+      setChildren(healthEl, joinDots(parts));
       healthEl.classList.add('on');
     }
+    // itens viram TEXT NODE — nomes vindos do arquivo Figma nunca são interpretados como markup
     function listGrp(title, items, cls) {
-      if (!items.length) return '';
-      return '<div class="audit-grp ' + (cls || '') + '"><div class="at">' + title + ' (' + items.length + ')</div><ul>' + items.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul></div>';
+      if (!items.length) return null;
+      return el('div', 'audit-grp ' + (cls || ''), [
+        el('div', 'at', title + ' (' + items.length + ')'),
+        el('ul', null, items.map(function (x) { return el('li', null, x); })),
+      ]);
     }
     function renderAudit(r) {
       $('planTitle').textContent = 'Auditoria — Figma vs bundle';
-      var prow = function (s, n, cls) { return '<div class="prow"><span class="scope">' + s + '</span><span class="nums"><b class="' + cls + '">' + n + '</b></span></div>'; };
-      $('planRows').innerHTML =
-        prow('em dia', r.vars.ok + r.styles.ok, 'add') +
-        prow('divergem (editados à mão)', r.vars.diverge.length + r.styles.diverge.length, 'rem') +
-        prow('faltando', r.vars.missing.length + r.styles.missing.length, 'upd') +
-        prow('órfãos', r.vars.orphan.length, 'rem') +
-        prow('contraste AA', r.contrast.fail.length ? (r.contrast.fail.length + ' reprova') : ('ok (' + r.contrast.checked + ')'), r.contrast.fail.length ? 'rem' : 'add');
+      var prow = function (s, n, cls) { return el('div', 'prow', [el('span', 'scope', s), el('span', 'nums', el('b', cls, n))]); };
+      setChildren($('planRows'), [
+        prow('em dia', r.vars.ok + r.styles.ok, 'add'),
+        prow('divergem (editados à mão)', r.vars.diverge.length + r.styles.diverge.length, 'rem'),
+        prow('faltando', r.vars.missing.length + r.styles.missing.length, 'upd'),
+        prow('órfãos', r.vars.orphan.length, 'rem'),
+        prow('contraste AA', r.contrast.fail.length ? (r.contrast.fail.length + ' reprova') : ('ok (' + r.contrast.checked + ')'), r.contrast.fail.length ? 'rem' : 'add'),
+      ]);
       $('planRemovals').style.display = 'none';
-      var notes = '';
-      notes += listGrp('Divergem', r.vars.diverge.map(function (d) { return d.name + ' [' + d.mode + '] figma ' + d.figma + ' ≠ ' + d.bundle; }).concat(r.styles.diverge.map(function (d) { return d.name + ' — ' + d.what; })), 'bad');
-      notes += listGrp('Faltando', r.vars.missing.concat(r.styles.missing), 'warn');
-      notes += listGrp('Órfãos', r.vars.orphan, 'warn');
-      notes += listGrp('Contraste < 4.5', r.contrast.fail.map(function (f) { return f.pair + ' (' + f.theme + ') ' + f.ratio + ':1'; }), 'bad');
-      $('planNotes').innerHTML = notes || '<div class="note ok">✓ tudo em dia com o bundle.</div>';
+      var notes = [
+        listGrp('Divergem', r.vars.diverge.map(function (d) { return d.name + ' [' + d.mode + '] figma ' + d.figma + ' ≠ ' + d.bundle; }).concat(r.styles.diverge.map(function (d) { return d.name + ' — ' + d.what; })), 'bad'),
+        listGrp('Faltando', r.vars.missing.concat(r.styles.missing), 'warn'),
+        listGrp('Órfãos', r.vars.orphan, 'warn'),
+        listGrp('Contraste < 4.5', r.contrast.fail.map(function (f) { return f.pair + ' (' + f.theme + ') ' + f.ratio + ':1'; }), 'bad'),
+      ].filter(Boolean);
+      setChildren($('planNotes'), notes.length ? notes : [el('div', 'note ok', '✓ tudo em dia com o bundle.')]);
       $('planPanel').classList.add('on');
     }
 
@@ -466,11 +502,16 @@
       else if (msg.type === 'error') { append(msg.line, 'err'); setStatus('Falhou'); clearBusy(); }
       else if (msg.type === 'previewResult') {
         renderPlan(msg.plan, true);
-        var pruneNote = msg.prune ? '<div class="note rem">Prune LIGADO — “Criar” vai remover os itens acima.</div>' : '<div class="note">Prune desligado — nada será removido.</div>';
+        var pruneNote = msg.prune ? el('div', 'note rem', 'Prune LIGADO — “Criar” vai remover os itens acima.') : el('div', 'note', 'Prune desligado — nada será removido.');
         var deps = (msg.plan.depsToEnable && msg.plan.depsToEnable.collections) || [];
-        var depsBtn = deps.length ? '<button class="copy" id="enableDeps" type="button" style="margin-top:4px">+ Incluir dependências (' + deps.join(', ') + ')</button>' : '';
-        $('planNotes').innerHTML = warnNotes(msg.plan) + depsBtn + issueNotes(msg.plan) + changesNotes(msg.plan) + pruneNote;
-        if (deps.length) { var eb = $('enableDeps'); if (eb) eb.addEventListener('click', function () { deps.forEach(function (k) { var b = $('col-' + k); if (b && !b.disabled) b.checked = true; }); syncMaster('col'); updateRunState(); append('Dependências incluídas: ' + deps.join(', ') + '. Pré-visualize de novo.', 'ok'); }); }
+        var notesEls = warnNotes(msg.plan);
+        if (deps.length) {
+          var depsBtn = el('button', 'copy', '+ Incluir dependências (' + deps.join(', ') + ')');
+          depsBtn.type = 'button'; depsBtn.style.marginTop = '4px';
+          depsBtn.addEventListener('click', function () { deps.forEach(function (k) { var b = $('col-' + k); if (b && !b.disabled) b.checked = true; }); syncMaster('col'); updateRunState(); append('Dependências incluídas: ' + deps.join(', ') + '. Pré-visualize de novo.', 'ok'); });
+          notesEls.push(depsBtn);
+        }
+        setChildren($('planNotes'), notesEls.concat(issueNotes(msg.plan), changesNotes(msg.plan), [pruneNote]));
         $('planPanel').classList.add('on'); setStatus('Plano pronto');
         var nW = (msg.plan && msg.plan.warnings || []).length;
         append(nW ? 'Plano calculado — ⚠ ' + nW + ' dependência(s) faltando.' : 'Plano calculado.', nW ? 'warn' : 'ok');
