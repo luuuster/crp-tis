@@ -84,7 +84,10 @@ export function RegisterPage({ onBackToLogin, onRegistered }: { onBackToLogin?: 
   // Guarda de montagem: o "cadastro" simulado resolve após ~1.2s; se desmontar nesse meio-tempo
   // (o pai volta pro login), não disparamos toast/callback de um componente já desmontado.
   const mountedRef = useRef(true)
-  useEffect(() => () => { mountedRef.current = false }, [])
+  useEffect(() => {
+    mountedRef.current = true
+    return () => { mountedRef.current = false }
+  }, [])
 
   // Checklist ao vivo: 4 regras da senha + coincidência (atualiza enquanto digita).
   const pwd = form.watch('password') || ''

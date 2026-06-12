@@ -15,10 +15,24 @@ import { RegisterPage } from '@/pages/RegisterPage'
 // corta o chunk inicial (aviso de >500 kB do vite build) sem mudar comportamento.
 const Dashboard = lazy(() => import('@/pages/Dashboard').then((m) => ({ default: m.Dashboard })))
 const Showcase = lazy(() => import('@/pages/Showcase').then((m) => ({ default: m.Showcase })))
+const JobGenerator = lazy(() => import('@/pages/JobGenerator').then((m) => ({ default: m.JobGenerator })))
 
 type Brand = 'crp' | 'marca-b'
 type Mode = 'light' | 'dark'
-type View = 'login' | 'register' | 'dashboard' | 'componentes'
+type View = 'login' | 'register' | 'dashboard' | 'componentes' | 'gerador'
+
+const VIEWS: View[] = ['login', 'register', 'dashboard', 'componentes', 'gerador']
+
+// Persistência leve em localStorage: um F5 não desloga nem reseta tema/marca — restaura a última
+// view (e brand/mode). Lê com guarda (valida contra a lista) e tolera storage indisponível.
+function readStored<T extends string>(key: string, allowed: readonly T[], fallback: T): T {
+  try {
+    const v = localStorage.getItem(key) as T | null
+    return v && allowed.includes(v) ? v : fallback
+  } catch {
+    return fallback
+  }
+}
 
 // Dock flutuante (marca + tema sempre; navegação só depois de logado).
 const DOCK =
@@ -31,9 +45,9 @@ const PageFallback = () => (
 )
 
 export function App() {
-  const [brand, setBrand] = useState<Brand>('crp')
-  const [mode, setMode] = useState<Mode>('light')
-  const [view, setView] = useState<View>('login')
+  const [brand, setBrand] = useState<Brand>(() => readStored('crp.brand', ['crp', 'marca-b'], 'crp'))
+  const [mode, setMode] = useState<Mode>(() => readStored('crp.mode', ['light', 'dark'], 'light'))
+  const [view, setView] = useState<View>(() => readStored('crp.view', VIEWS, 'login'))
 
   // Re-tematiza tudo: classe .dark + atributo [data-brand] no <html>.
   // Os tokens do CRP (importados em main.tsx) cuidam do resto — zero cor escrita à mão.
@@ -44,7 +58,18 @@ export function App() {
     else root.removeAttribute('data-brand')
   }, [brand, mode])
 
-  const loggedIn = view === 'dashboard' || view === 'componentes'
+  // Persiste a sessão da demo (view + tema/marca) para sobreviver ao refresh.
+  useEffect(() => {
+    try {
+      localStorage.setItem('crp.view', view)
+      localStorage.setItem('crp.brand', brand)
+      localStorage.setItem('crp.mode', mode)
+    } catch {
+      /* storage indisponível (modo privado/quota) — segue sem persistir */
+    }
+  }, [view, brand, mode])
+
+  const loggedIn = view === 'dashboard' || view === 'componentes' || view === 'gerador'
 
   const themeToggles = (
     <>
@@ -74,19 +99,35 @@ export function App() {
         // forceMount mantém ambos no DOM (o inativo fica hidden) — o gatilho nunca aponta p/ um painel
         // ausente. className="contents" deixa o layout (dock fixa + página) intacto.
         <Tabs value={view} onValueChange={(v) => setView(v as View)} className="contents">
-          <div className={DOCK}>
-            <TabsList className="h-8">
-              <TabsTrigger value="dashboard" className="text-xs">Dashboard</TabsTrigger>
-              <TabsTrigger value="componentes" className="text-xs">Componentes</TabsTrigger>
-            </TabsList>
-            <Button variant="ghost" size="icon-sm" aria-label="Sair" onClick={() => setView('login')}><LogOut /></Button>
-            <Separator orientation="vertical" className="h-5" />
-            {themeToggles}
-          </div>
+          {/* O Gerador tem o próprio shell (topbar com tema/marca/conta), então o dock flutuante
+              é escondido nele p/ não duplicar/conflitar — as funções vão via props p/ a página. */}
+          {view !== 'gerador' && (
+            <div className={DOCK}>
+              <TabsList className="h-8">
+                <TabsTrigger value="dashboard" className="text-xs">Dashboard</TabsTrigger>
+                <TabsTrigger value="gerador" className="text-xs">Gerador</TabsTrigger>
+                <TabsTrigger value="componentes" className="text-xs">Componentes</TabsTrigger>
+              </TabsList>
+              <Button variant="ghost" size="icon-sm" aria-label="Sair" onClick={() => setView('login')}><LogOut /></Button>
+              <Separator orientation="vertical" className="h-5" />
+              {themeToggles}
+            </div>
+          )}
 
           <ErrorBoundary>
             <TabsContent value="dashboard" forceMount className="m-0 outline-none data-[state=inactive]:hidden">
               <Suspense fallback={<PageFallback />}><Dashboard /></Suspense>
+            </TabsContent>
+            <TabsContent value="gerador" forceMount className="m-0 outline-none data-[state=inactive]:hidden">
+              <Suspense fallback={<PageFallback />}>
+                <JobGenerator
+                  onNavigate={(v) => setView(v as View)}
+                  brand={brand}
+                  mode={mode}
+                  onCycleBrand={() => setBrand((b) => (b === 'crp' ? 'marca-b' : 'crp'))}
+                  onToggleMode={() => setMode((m) => (m === 'dark' ? 'light' : 'dark'))}
+                />
+              </Suspense>
             </TabsContent>
             <TabsContent value="componentes" forceMount className="m-0 outline-none data-[state=inactive]:hidden">
               <Suspense fallback={<PageFallback />}><Showcase /></Suspense>

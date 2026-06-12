@@ -26,12 +26,16 @@ export function BrandPanel({
     return (
       <div
         className={cn(
-          'flex items-center gap-4 overflow-hidden bg-primary px-6 py-5 text-primary-foreground',
+          'flex items-baseline gap-3 overflow-hidden bg-primary px-6 py-5 text-primary-foreground',
           className,
         )}
       >
+        {/* items-baseline: o baseline da <img> (borda inferior) casa com o baseline do wordmark "TIS",
+            então a frase senta na MESMA linha do "TIS" (o símbolo é alto e centralizado; alinhar pelo
+            centro da caixa deixaria a frase flutuando acima do texto). */}
         <Logo variant="onBrand" className="h-9 shrink-0" />
-        <p className="ty-body font-medium text-balance">{headline}</p>
+        {/* < sm: só o logo (o dock de tema fixo no canto cobriria a frase); ≥ sm há espaço antes do dock. */}
+        <p className="ty-body hidden font-medium text-balance sm:block">{headline}</p>
       </div>
     )
   }

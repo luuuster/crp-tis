@@ -23,6 +23,7 @@ const BRANDS: Brand[] = ['crp', 'marca-b']
 const MODES: Mode[] = ['light', 'dark']
 const TABS = [
   { tab: 'Dashboard', label: 'Dashboard' },
+  { tab: 'Gerador', label: 'Gerador' },
   { tab: 'Componentes', label: 'Componentes' },
 ] as const
 
@@ -58,4 +59,38 @@ test.describe('axe estrutural — app (pós-login)', () => {
           expect(r.violations, fmt(r.violations)).toEqual([])
         })
       }
+})
+
+// O drawer do copiloto Charlie (overlay com sugestões + conversa + composer) também precisa passar.
+test.describe('axe estrutural — Gerador + Charlie aberto', () => {
+  for (const brand of BRANDS)
+    for (const mode of MODES) {
+      test(`Charlie · ${brand} · ${mode}`, async ({ page }) => {
+        await login(page)
+        await setTheme(page, brand, mode)
+        await page.getByRole('tab', { name: 'Gerador' }).click()
+        await page.getByRole('button', { name: /Falar com Charlie/i }).click()
+        await page.waitForTimeout(300)
+        const r = await scan(page)
+        expect(r.violations, fmt(r.violations)).toEqual([])
+      })
+    }
+})
+
+// A MODAL flutuante de "+ adicionar" dos chips (busca + checkboxes, arrastável, sem overlay): título
+// acessível, foco no campo de busca, e cada item é um checkbox real (estado anunciado). Deve passar.
+test.describe('axe estrutural — modal de chips (Benefícios)', () => {
+  for (const brand of BRANDS)
+    for (const mode of MODES) {
+      test(`Modal chips · ${brand} · ${mode}`, async ({ page }) => {
+        await login(page)
+        await setTheme(page, brand, mode)
+        await page.getByRole('tab', { name: 'Gerador' }).click()
+        await page.getByRole('button', { name: 'Adicionar benefício' }).click()
+        await expect(page.getByRole('dialog', { name: /Adicionar benefício/ })).toBeVisible()
+        await page.waitForTimeout(200)
+        const r = await scan(page)
+        expect(r.violations, fmt(r.violations)).toEqual([])
+      })
+    }
 })

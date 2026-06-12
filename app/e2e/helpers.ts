@@ -3,11 +3,11 @@ import { type Page, expect } from '@playwright/test'
 export type Brand = 'crp' | 'marca-b'
 export type Mode = 'light' | 'dark'
 
-// "auth" simulada: qualquer e-mail válido + a senha de demo entram.
+// "auth" simulada: só o par de demo (recrutador@talentai.com / talentai123) entra.
 export async function login(page: Page) {
   await page.goto('/')
-  await page.getByLabel('E-mail').fill('demo@empresa.com')
-  await page.getByLabel('Senha', { exact: true }).fill('123456')
+  await page.getByLabel('E-mail').fill('recrutador@talentai.com')
+  await page.getByLabel('Senha', { exact: true }).fill('talentai123')
   await page.getByRole('button', { name: 'Entrar' }).click()
   // as tabs Dashboard/Componentes só existem DEPOIS de logado — sinal de que a view trocou.
   await expect(page.getByRole('tab', { name: 'Componentes' })).toBeVisible()

@@ -2,7 +2,7 @@
  * Tela de login (demo, sem backend). 100% token-driven — cor, tipografia (.ty-*), espaçamento e
  * altura vêm do contrato CRP — multi-marca (TIS/Marca B), claro/escuro e WCAG 2.2 AA.
  * O shell (split + painel da marca + logo + título) vem do <AuthLayout> compartilhado.
- * Validação com react-hook-form + zod; a "auth" é simulada (senha de demo: 123456).
+ * Validação com react-hook-form + zod; a "auth" é simulada (demo: recrutador@talentai.com / talentai123).
  */
 import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -26,8 +26,9 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 
-// Senha de demonstração — qualquer e-mail válido entra com ela; senha diferente cai no erro de credencial.
-const DEMO_PASSWORD = '123456'
+// Credenciais de demonstração — só este par entra; qualquer outro cai no erro de credencial.
+const DEMO_EMAIL = 'recrutador@talentai.com'
+const DEMO_PASSWORD = 'talentai123'
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 const loginSchema = z.object({
@@ -52,8 +53,13 @@ export function LoginPage({ onLogin, onCreateAccount }: { onLogin?: () => void; 
 
   // Guarda de montagem: a "auth" simulada resolve após ~1.1s; se o componente desmontar nesse
   // meio-tempo (ex.: o pai troca de view), não tocamos em estado/foco de um componente morto.
+  // Seta true no mount (NÃO só no init do ref): sob StrictMode em dev o React faz mount→cleanup→mount,
+  // e o cleanup zeraria mountedRef p/ false permanentemente — aí o onSubmit abortaria sempre.
   const mountedRef = useRef(true)
-  useEffect(() => () => { mountedRef.current = false }, [])
+  useEffect(() => {
+    mountedRef.current = true
+    return () => { mountedRef.current = false }
+  }, [])
 
   // Some o erro de credencial assim que o usuário edita qualquer campo.
   useEffect(() => {
@@ -65,7 +71,7 @@ export function LoginPage({ onLogin, onCreateAccount }: { onLogin?: () => void; 
     setFormError(null)
     await new Promise((r) => setTimeout(r, 1100)) // simula a chamada de auth
     if (!mountedRef.current) return // desmontou durante o "await" → não toca em estado/foco
-    if (values.password !== DEMO_PASSWORD) {
+    if (values.email.trim().toLowerCase() !== DEMO_EMAIL || values.password !== DEMO_PASSWORD) {
       setFormError('E-mail ou senha incorretos. Verifique e tente de novo.')
       form.setFocus('password')
       return
@@ -110,7 +116,7 @@ export function LoginPage({ onLogin, onCreateAccount }: { onLogin?: () => void; 
               <FormItem>
                 <FormLabel>E-mail</FormLabel>
                 <FormControl>
-                  <Input type="email" inputMode="email" placeholder="voce@empresa.com" autoComplete="email" {...field} />
+                  <Input type="email" inputMode="email" placeholder="recrutador@talentai.com" autoComplete="email" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
