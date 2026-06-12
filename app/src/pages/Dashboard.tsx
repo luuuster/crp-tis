@@ -74,7 +74,7 @@ export function Dashboard() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="flex size-9 items-center justify-center rounded-md bg-primary/10 text-primary">
+              <div className="flex size-9 items-center justify-center rounded-md bg-primary/10 text-primary-text">
                 <Icon className="size-4.5" />
               </div>
             </CardContent>

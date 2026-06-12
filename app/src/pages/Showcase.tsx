@@ -57,7 +57,7 @@ function TokenChips({ tokens }: { tokens: readonly string[] }) {
     <ul className="flex flex-wrap gap-1.5" aria-label="Tokens usados nesta seção">
       {tokens.map((t) => (
         <li key={t}>
-          <code className="inline-block rounded-md border px-2 py-0.5 font-mono text-[0.7rem] leading-5 text-muted-foreground">
+          <code className="inline-block rounded-md border px-2 py-0.5 font-mono text-xs leading-5 text-muted-foreground">
             {t}
           </code>
         </li>
@@ -331,7 +331,7 @@ export function Showcase() {
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="outline" className="gap-2">
-                        <Avatar className="size-5"><AvatarFallback className="text-[0.6rem]">MA</AvatarFallback></Avatar>
+                        <Avatar className="size-5"><AvatarFallback className="text-xs">MA</AvatarFallback></Avatar>
                         Conta <ChevronDown className="size-4 text-muted-foreground" />
                       </Button>
                     </DropdownMenuTrigger>
@@ -341,7 +341,7 @@ export function Showcase() {
                       <DropdownMenuItem><User /> Perfil</DropdownMenuItem>
                       <DropdownMenuItem><Settings /> Configurações</DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem className="text-destructive focus:text-destructive"><LogOut /> Sair</DropdownMenuItem>
+                      <DropdownMenuItem className="text-destructive-text focus:text-destructive-text"><LogOut /> Sair</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
 

@@ -6,15 +6,21 @@ import { Slot } from "radix-ui"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  // Foco = utilitário `focus-ring` (outline, fonte única em index.css) — nunca colide com `ring` de
+  // repouso nem é cortado por overflow. aria-invalid (estado de erro) segue ring, à parte.
+  "inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:focus-ring disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-primary/90",
         destructive:
-          "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40",
+          "bg-destructive text-white hover:bg-destructive/90 dark:bg-destructive/60",
         outline:
           "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
+        // Outline destrutivo: borda E texto na MESMA cor (--destructive-text, AA nos 4 temas),
+        // hover com tinta destrutiva sutil. Substitui o className inline hand-rolled do "Cancelar".
+        "destructive-outline":
+          "border border-destructive-text bg-background text-destructive-text shadow-xs hover:bg-destructive/10 hover:text-destructive-text dark:border-destructive-text dark:bg-input/30",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost:
@@ -70,8 +76,16 @@ function Button({
       aria-disabled={isLoading || props["aria-disabled"] || undefined}
       onClick={isLoading ? (e) => e.preventDefault() : props.onClick}
     >
-      {isLoading && !asChild && <Loader2 aria-hidden="true" className="motion-safe:animate-spin" />}
-      {children}
+      {/* asChild: o Slot exige UM único filho — passar `children` direto (sem o spinner, que viraria
+          um segundo nó e quebra o Slot). Sem asChild: mostra o spinner de loading antes do conteúdo. */}
+      {asChild ? (
+        children
+      ) : (
+        <>
+          {isLoading && <Loader2 aria-hidden="true" className="motion-safe:animate-spin" />}
+          {children}
+        </>
+      )}
     </Comp>
   )
 }

@@ -5,6 +5,11 @@
   "brand-primary-on-dark":      { "$type": "color", "$value": "{color.brand.crp.primary.600}", "$description": "Âncora: primary p/ o modo DARK (shade 600 → mais visível no fundo escuro que o 700, mantendo TEXTO BRANCO em AA). Consumido por mode/dark." },
   "brand-primary-on-dark-text": { "$type": "color", "$value": "{color.brand.crp.primary.400}", "$description": "Âncora: brand primary p/ TEXTO/links em superfície escura (shade 400 → AA como texto no card escuro). Consumido por mode/dark (link/primary-text)." },
 
+  "brand-secondary":            { "$type": "color", "$value": "{color.brand.crp.secondary.700}", "$description": "Âncora de marca: secondary em superfície CLARA (Light) — o ROXO da marca CRP (shade 700). Consumido por mode/light (secondary). Espelha brand-primary." },
+  "brand-secondary-foreground": { "$type": "color", "$value": "{color.neutral.50}", "$description": "Âncora: texto/ícone sobre o secondary no Light." },
+  "brand-secondary-on-dark":    { "$type": "color", "$value": "{color.brand.crp.secondary.700}", "$description": "Âncora: secondary p/ o modo DARK (shade 700 — o roxo .600 dava 4.39:1 < AA com texto branco; .700 garante AA). Consumido por mode/dark." },
+  "brand-secondary-on-dark-text": { "$type": "color", "$value": "{color.brand.crp.secondary.400}", "$description": "Âncora: secondary p/ TEXTO/acento em superfície escura (shade 400 → AA no dark). Consumido por mode/dark (secondary-text)." },
+
   "brand-font-heading": { "$type": "fontFamily", "$value": "{font.family.inter}", "$description": "Âncora tipográfica de MARCA: família de títulos da CRP — Inter. Consumida por semantic font.heading. Troque aqui p/ reskin de headings desta marca." },
   "brand-font-body":    { "$type": "fontFamily", "$value": "{font.family.source-sans-3}", "$description": "Âncora tipográfica de MARCA: família de corpo da CRP — Source Sans 3. Consumida por semantic font.body (e --font-sans)." },
   "brand-font-mono":    { "$type": "fontFamily", "$value": "{font.family.mono}", "$description": "Âncora tipográfica de MARCA: monoespaçada da CRP (stack de sistema). Consumida por semantic font.mono." }

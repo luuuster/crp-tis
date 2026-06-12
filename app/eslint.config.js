@@ -5,6 +5,7 @@ import tseslint from 'typescript-eslint'
 import jsxA11y from 'eslint-plugin-jsx-a11y'
 import reactHooks from 'eslint-plugin-react-hooks'
 import globals from 'globals'
+import crp from './eslint-rules/crp-tokens.js'
 
 export default tseslint.config(
   { ignores: ['dist/**', 'node_modules/**', 'scripts/**'] },
@@ -13,7 +14,7 @@ export default tseslint.config(
   jsxA11y.flatConfigs.recommended,
   {
     files: ['src/**/*.{ts,tsx}'],
-    plugins: { 'react-hooks': reactHooks },
+    plugins: { 'react-hooks': reactHooks, crp },
     languageOptions: { globals: { ...globals.browser } },
     rules: {
       ...reactHooks.configs.recommended.rules,
@@ -21,6 +22,8 @@ export default tseslint.config(
       '@typescript-eslint/no-unused-vars': 'off',
       // padrão shadcn: interfaces vazias p/ extensão futura
       '@typescript-eslint/no-empty-object-type': 'off',
+      // GUARDA do DS: fill como texto / cor chumbada / tipografia < 14px = erro (build reprova).
+      'crp/design-tokens': 'error',
     },
   },
   {

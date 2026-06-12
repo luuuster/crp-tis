@@ -4,6 +4,18 @@
 /* dark por CLASSE .dark no html (combina com o toggle de tema do CRP). */
 @custom-variant dark (&:is(.dark *));
 
+/* Tailwind v4 mudou o padrão da cor de borda para `currentColor` — qualquer `border`/`border-b`
+   SEM cor vira PRETO (ex.: o divisor do CommandInput). Restaura o comportamento esperado do shadcn:
+   borda crua usa o token --border (cinza suave, multi-marca/tema). Utilities com cor explícita
+   (border-border/40, border-input, border-transparent…) continuam vencendo por estarem fora do base. */
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--border);
+  }
+}
+
 /* Mapeia o contrato CRP para o tema do Tailwind v4 (shadcn usa bg-*, text-*, border-*, ring-*).
    inline mantem o var() em runtime: trocar marca/tema re-tematiza tudo sem rebuild.
    radius/shadow entram naturais porque os nomes do CRP sobrescrevem os do Tailwind.
@@ -29,11 +41,16 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  /* anel hairline DECORATIVO de superfície elevada (card/popover/menu flutuante) — token do DS,
+     por tema (preto-azulado ~4% no light / branco ~10% no dark). Use `ring-surface-ring` no lugar
+     do antigo `ring-black/[0.04] dark:ring-white/10` chumbado. */
+  --color-surface-ring: var(--surface-ring);
 
   /* acentos como TEXTO (variantes -text/link): AA sobre background/card nos 4 temas — use
      estes p/ texto/ícone colorido, nunca o token de FILL (primary/destructive) que é p/ sólido. */
   --color-link: var(--link);
   --color-primary-text: var(--primary-text);
+  --color-secondary-text: var(--secondary-text);
   --color-destructive-text: var(--destructive-text);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
@@ -71,6 +88,33 @@
   /* espacamento: amarra a base do Tailwind ao token CRP (--space-1 = 0.25rem; a escala e
      4px-linear, entao p-*, m-*, gap-*, size-* passam a derivar literalmente do contrato). */
   --spacing: var(--space-1);
+
+  /* sombra de ELEVAÇÃO de painel lateral (direcional) — tokens do DS. Substituem os
+     `shadow-[6px_0_24px_-18px_rgba(...)]` chumbados. `shadow-panel-l` ancora à esquerda (sidebar,
+     projeta p/ direita); `shadow-panel-r` à direita (trilho do Charlie, projeta p/ esquerda). */
+  --shadow-panel-l: var(--elevation-panel-l);
+  --shadow-panel-r: var(--elevation-panel-r);
+}
+
+/* ===== Anel de foco — FONTE ÚNICA (todo elemento interativo usa `focus-visible:focus-ring`) =====
+   É `outline` (não `ring`/box-shadow) DE PROPÓSITO: outline está numa PROPRIEDADE separada, então
+   nunca empata/colide com um anel de repouso (`ring-1`, `ring-surface-ring`…) — foi uma colisão
+   dessas que apagou o foco do stepper no dark. Outline também não é cortado por `overflow`.
+   Usa o SHORTHAND `outline:` (define style=solid junto), então sobrepõe qualquer `outline-none` de
+   base SEM precisar removê-lo (e sem o gotcha do --tw-outline-style:none zerar o foco). Cor = token
+   --ring da marca (≥3:1 não-texto garantido pelo build/check.mjs do DS); em forced-colors o sistema
+   troca pela cor de realce automaticamente. Validado por e2e/focus-visible.spec.ts nos 4 temas. */
+@utility focus-ring {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Foco em SUPERFÍCIE COLORIDA (ex.: sidebar bg-primary): o --ring (azul da marca) some sobre o
+   próprio azul. Aqui o anel usa --primary-foreground (claro), que é AA sobre o primary (garantido
+   pelo check.mjs do DS). Use `focus-visible:focus-ring-on-primary` em focáveis sobre bg-primary. */
+@utility focus-ring-on-primary {
+  outline: 2px solid var(--primary-foreground);
+  outline-offset: 2px;
 }
 
 /* Type styles semanticos do CRP (display/h1../body/label/overline). Consomem as vars
@@ -88,6 +132,17 @@
 .ty-label-sm { font-family: var(--text-label-sm-font-family); font-weight: var(--text-label-sm-font-weight); font-size: var(--text-label-sm-font-size); line-height: var(--text-label-sm-line-height); letter-spacing: var(--text-label-sm-letter-spacing); }
 .ty-caption  { font-family: var(--text-caption-font-family);  font-weight: var(--text-caption-font-weight);  font-size: var(--text-caption-font-size);  line-height: var(--text-caption-line-height);  letter-spacing: var(--text-caption-letter-spacing); }
 .ty-overline { font-family: var(--text-overline-font-family); font-weight: var(--text-overline-font-weight); font-size: var(--text-overline-font-size); line-height: var(--text-overline-line-height); letter-spacing: var(--text-overline-letter-spacing); text-transform: uppercase; }
+
+/* Experimento de tipografia (escopo da tela Gerador): sobe a escala um degrau — os papeis
+   "pequenos" passam a renderizar maiores, deixando 16px como corpo padrao e 14px como piso
+   (some o 12px). So remapeia as VARS de papel do contrato (font-size/line-height) — nada de px
+   hardcoded, 100% token-driven e reversivel (basta tirar a classe .ty-scale-16 da raiz da tela). */
+.ty-scale-16 {
+  --text-body-sm-font-size: var(--font-size-base);    /* 14 -> 16: SÓ o corpo/leitura sobe */
+  --text-body-sm-line-height: var(--font-line-height-base);
+  /* Caption (12px) e overline (12px) ficam no tamanho semantico — caption É 12px.
+     Labels (ty-label-sm) e conteudo dos inputs ficam em 14px. */
+}
 
 body {
   font-family: var(--font-sans, system-ui, sans-serif);

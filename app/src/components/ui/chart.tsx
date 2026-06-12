@@ -63,6 +63,10 @@ function ChartContainer({
         data-slot="chart"
         data-chart={chartId}
         className={cn(
+          // Os #ccc/#fff abaixo são SELETORES (atributos do SVG interno do Recharts) usados p/
+          // SOBRESCREVER as cores nativas dele por tokens (stroke-border etc.) — não são cores
+          // aplicadas. Exceção legítima à regra de cor chumbada.
+          // eslint-disable-next-line crp/design-tokens
           "flex aspect-video justify-center text-xs [&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-hidden [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border [&_.recharts-sector]:outline-hidden [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-surface]:outline-hidden",
           className
         )}

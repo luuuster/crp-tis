@@ -25,9 +25,10 @@ const REQUIRED = [
   'background','foreground','card','card-foreground','popover','popover-foreground',
   'primary','primary-foreground','secondary','secondary-foreground','muted','muted-foreground',
   'accent','accent-foreground','destructive','destructive-foreground','border','input','ring',
+  'surface-ring',
   'warning','warning-foreground','success','success-foreground','info','info-foreground',
   'link',
-  'primary-text','destructive-text','warning-text','success-text','info-text',
+  'primary-text','secondary-text','destructive-text','warning-text','success-text','info-text',
   'radius',
   'chart-1','chart-2','chart-3','chart-4','chart-5','chart-6',
   'chart-7','chart-8','chart-9','chart-10','chart-11','chart-12',
@@ -56,9 +57,9 @@ const PAIRS = [
   ['success-text','card', true],
   ['info-text','background', true],
   ['info-text','card', true],
-  // Secondary não-sólido usa secondary-foreground como acento de texto (sobre bg/card).
-  ['secondary-foreground','background', true],
-  ['secondary-foreground','card', true],
+  // Secondary não-sólido (outline/ghost/soft) usa secondary-text (roxo) como acento — AA sobre bg E card.
+  ['secondary-text','background', true],
+  ['secondary-text','card', true],
   ['warning-foreground','warning', true],
   ['success-foreground','success', true],
   ['info-foreground','info', true],
@@ -196,7 +197,7 @@ const SOFT_INTENTS = [
   ['warning-text', 'warning-text'],
   ['success-text', 'success-text'],
   ['info-text', 'info-text'],
-  ['secondary-foreground', 'secondary-foreground'],
+  ['secondary-text', 'secondary-text'],
 ];
 
 // 1) Seletores presentes
@@ -333,7 +334,7 @@ for (const [label, sel] of Object.entries(EXPECTED_SELECTORS)) {
 //    Os tints do outline são os MESMOS accents de texto por intent.
 const NONTEXT = 3.0;
 // (intent -> token de tint usado como borda do outline; espelha o mapa --_tint no button.html)
-const OUTLINE_TINTS = ['primary-text', 'secondary-foreground', 'destructive-text', 'warning-text', 'success-text', 'info-text'];
+const OUTLINE_TINTS = ['primary-text', 'secondary-text', 'destructive-text', 'warning-text', 'success-text', 'info-text'];
 for (const [label, sel] of Object.entries(EXPECTED_SELECTORS)) {
   const scope = bySelector[sel];
   if (!scope) continue;

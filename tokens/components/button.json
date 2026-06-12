@@ -3,7 +3,7 @@
     "radius": { "$type": "dimension", "$value": "{radius}" },
     "font-weight": { "$type": "fontWeight", "$value": "{font.weight.medium}" },
     "border-width": { "$type": "dimension", "$value": "{borderWidth.1}" },
-    "ring-width": { "$type": "dimension", "$value": "{borderWidth.2}" },
+    "ring-width": { "$type": "dimension", "$value": "{borderWidth.3}" },
     "ring-offset": { "$type": "dimension", "$value": "{borderWidth.2}" },
 
     "gap": {

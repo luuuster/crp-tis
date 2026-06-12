@@ -5,8 +5,8 @@
   "card-foreground":       { "$type": "color", "$value": "{color.neutral.50}" },
   "popover":               { "$type": "color", "$value": "{color.neutral.900}" },
   "popover-foreground":    { "$type": "color", "$value": "{color.neutral.50}" },
-  "secondary":             { "$type": "color", "$value": "{color.neutral.800}" },
-  "secondary-foreground":  { "$type": "color", "$value": "{color.neutral.50}" },
+  "secondary":             { "$type": "color", "$value": "{brand-secondary-on-dark}", "$description": "Dark: secondary da marca no shade 600 (roxo). Espelha o primary do dark." },
+  "secondary-foreground":  { "$type": "color", "$value": "{color.white}", "$description": "Branco puro p/ garantir AA sobre o secondary roxo no dark (mesma exceção do primary-foreground)." },
   "muted":                 { "$type": "color", "$value": "{color.neutral.800}" },
   "muted-foreground":      { "$type": "color", "$value": "{color.neutral.400}" },
   "accent":                { "$type": "color", "$value": "{color.neutral.800}" },
@@ -29,6 +29,7 @@
   "link":                       { "$type": "color", "$value": "{brand-primary-on-dark-text}", "$description": "Link/texto interativo no dark — shade 400 (AA como TEXTO em fundo escuro; o primary 600 reprovava)." },
 
   "primary-text":               { "$type": "color", "$value": "{brand-primary-on-dark-text}", "$description": "Acento PRIMARY como TEXTO nas variantes não-sólidas no dark — shade 400 (AA sobre card/background escuros e sobre a tinta soft; o primary 600 reprovava ~3.4)." },
+  "secondary-text":             { "$type": "color", "$value": "{brand-secondary-on-dark-text}", "$description": "Acento SECONDARY (roxo) como TEXTO nas variantes não-sólidas no dark — shade 400 (AA sobre escuro e soft). Espelha primary-text." },
   "destructive-text":           { "$type": "color", "$value": "{color.red.400}", "$description": "Acento DESTRUCTIVE como TEXTO no dark — red.400 (AA sobre superfície escura e soft; red.600 reprovava)." },
   "warning-text":               { "$type": "color", "$value": "{color.amber.600}", "$description": "Acento WARNING como TEXTO no dark — amber.600 (AA sobre escuro e soft). O warning sólido no dark usa amber.400." },
   "success-text":               { "$type": "color", "$value": "{color.green.600}", "$description": "Acento SUCCESS como TEXTO no dark — green.600 (AA sobre escuro e soft; green.700 reprovava)." },
@@ -101,6 +102,8 @@
   "sidebar-accent-foreground": { "$type": "color", "$value": "{color.neutral.50}" },
   "sidebar-border":        { "$type": "color", "$value": "{color.neutral.800}" },
 
+  "surface-ring": { "$type": "color", "$value": "#ffffff1a", "$description": "Fio hairline de 1px (ring-1) em superfícies elevadas no dark. DECORATIVO (espelha o light): NÃO é contorno funcional, então NÃO se aplica o mínimo 3:1 não-textual (WCAG 1.4.11). near-white a 10% (no escuro o highlight branco lê melhor que um cinza escuro; mesmo papel do ring-white/10 chumbado hoje). Brand-agnóstico." },
+
   "elevation": {
     "$type": "boxShadow",
     "xs": { "$value": "{shadow.sm}" },
@@ -108,5 +111,8 @@
     "md": { "$value": "{shadow.lg}" },
     "lg": { "$value": "{shadow.xl}" },
     "xl": { "$value": "{shadow.2xl}" }
-  }
+  },
+
+  "elevation-panel-l": { "$type": "boxShadow", "$value": "6px 0 24px -18px rgb(0 0 0 / 0.60)", "$description": "Elevação DIRECIONAL de painel à ESQUERDA no dark — mesma geometria do light (offset-x +6px, projeta p/ direita, spread -18px) com alpha MAIOR (60% vs 45%): a sombra precisa de mais força p/ separar do fundo escuro, espelhando como a escala elevation sobe um passo no dark. Black puro (no dark a sombra é sobre superfície escura)." },
+  "elevation-panel-r": { "$type": "boxShadow", "$value": "-16px 0 40px -24px rgb(0 0 0 / 0.45)", "$description": "Elevação DIRECIONAL de painel à DIREITA no dark — mesma geometria do light (offset-x -16px, projeta p/ esquerda, spread -24px) com alpha MAIOR (45% vs 25%) p/ ler sobre o fundo escuro. Black puro." }
 }

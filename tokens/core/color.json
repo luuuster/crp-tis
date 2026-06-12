@@ -931,48 +931,48 @@
     },
     "neutral": {
       "50": {
-        "$value": "oklch(98.5% 0 0)",
-        "$description": "#fafafa"
+        "$value": "oklch(98.5% 0.003 247.858)",
+        "$description": "#f8fafc"
       },
       "100": {
-        "$value": "oklch(97% 0 0)",
-        "$description": "#f5f5f5"
+        "$value": "oklch(97% 0.007 247.896)",
+        "$description": "#f2f6fa"
       },
       "200": {
-        "$value": "oklch(92.2% 0 0)",
-        "$description": "#e5e5e5"
+        "$value": "oklch(92.2% 0.013 255.508)",
+        "$description": "#e0e6ee"
       },
       "300": {
-        "$value": "oklch(87% 0 0)",
-        "$description": "#d4d4d4"
+        "$value": "oklch(87% 0.022 252.894)",
+        "$description": "#cad5e3"
       },
       "400": {
-        "$value": "oklch(70.8% 0 0)",
-        "$description": "#a1a1a1"
+        "$value": "oklch(70.8% 0.04 256.788)",
+        "$description": "#91a2ba"
       },
       "500": {
-        "$value": "oklch(55.6% 0 0)",
-        "$description": "#737373"
+        "$value": "oklch(55.6% 0.046 257.417)",
+        "$description": "#62758f"
       },
       "600": {
-        "$value": "oklch(43.9% 0 0)",
-        "$description": "#525252"
+        "$value": "oklch(43.9% 0.02 257.281)",
+        "$description": "#4b535d"
       },
       "700": {
-        "$value": "oklch(37.1% 0 0)",
-        "$description": "#404040"
+        "$value": "oklch(37.1% 0.016 257.287)",
+        "$description": "#3b4049"
       },
       "800": {
-        "$value": "oklch(26.9% 0 0)",
-        "$description": "#262626"
+        "$value": "oklch(26.9% 0.014 260.031)",
+        "$description": "#22262d"
       },
       "900": {
-        "$value": "oklch(20.5% 0 0)",
-        "$description": "#171717"
+        "$value": "oklch(20.5% 0.012 265.755)",
+        "$description": "#15171d"
       },
       "950": {
-        "$value": "oklch(14.5% 0 0)",
-        "$description": "#0a0a0a"
+        "$value": "oklch(14.5% 0.011 264.695)",
+        "$description": "#080a0f"
       }
     },
     "stone": {

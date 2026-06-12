@@ -104,8 +104,8 @@ jobs:
           npm run build
           npm test
 
-  # E2E: a única dimensão que o jsdom NÃO vê — contraste RENDERIZADO (axe real, 4 temas × 2 páginas)
-  # + screenshots da vitrine publicados como artifact do PR. Em paralelo aos demais jobs.
+  # E2E: a dimensão que o jsdom NÃO vê — no render real, 4 temas × telas: axe ESTRUTURAL +
+  # CONTRASTE por pixel (culori) + FOCO visível ≥3:1. Em paralelo aos demais jobs.
   e2e:
     runs-on: ubuntu-latest
     steps:

@@ -60,7 +60,7 @@
 
   /* intents — sólido (--_bg/--_fg) + acento de TEXTO mode-aware (--_text/--_tint) p/ não-sólidas */
   .btn.intent-primary   { --_bg: var(--primary);     --_fg: var(--primary-foreground);     --_text: var(--primary-text);        --_tint: var(--primary-text); }
-  .btn.intent-secondary { --_bg: var(--secondary);   --_fg: var(--secondary-foreground);   --_text: var(--secondary-foreground); --_tint: var(--secondary-foreground); }
+  .btn.intent-secondary { --_bg: var(--secondary);   --_fg: var(--secondary-foreground);   --_text: var(--secondary-text);      --_tint: var(--secondary-text); }
   .btn.intent-danger    { --_bg: var(--destructive); --_fg: var(--destructive-foreground); --_text: var(--destructive-text);    --_tint: var(--destructive-text); }
   .btn.intent-warning   { --_bg: var(--warning);     --_fg: var(--warning-foreground);     --_text: var(--warning-text);        --_tint: var(--warning-text); --_veil: var(--state-veil-lighten); /* fg escuro → véu clareia */ }
   .btn.intent-success   { --_bg: var(--success);     --_fg: var(--success-foreground);     --_text: var(--success-text);        --_tint: var(--success-text); }

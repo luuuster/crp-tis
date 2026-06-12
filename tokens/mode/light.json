@@ -13,8 +13,8 @@
   "sidebar-primary-foreground": { "$type": "color", "$value": "{brand-primary-foreground}" },
   "sidebar-ring":               { "$type": "color", "$value": "{brand-ring}" },
 
-  "secondary":             { "$type": "color", "$value": "{color.neutral.100}" },
-  "secondary-foreground":  { "$type": "color", "$value": "{color.neutral.900}" },
+  "secondary":             { "$type": "color", "$value": "{brand-secondary}", "$description": "Light: secondary da marca (âncora brand-secondary = roxo CRP shade 700). Espelha o primary; segue a marca (CRP roxo, MarcaB azul)." },
+  "secondary-foreground":  { "$type": "color", "$value": "{brand-secondary-foreground}" },
   "muted":                 { "$type": "color", "$value": "{color.neutral.100}" },
   "muted-foreground":      { "$type": "color", "$value": "{color.neutral.600}", "$description": "Texto secundário/muted. neutral.600 (não 500) p/ passar AA 4.5 SOBRE a superfície muted (neutral.100): 500 dava 4.35. Contrato compartilhado → vale p/ CRP e MarcaB no Light." },
   "accent":                { "$type": "color", "$value": "{color.neutral.100}" },
@@ -98,10 +98,13 @@
   "link":                  { "$type": "color", "$value": "{primary}", "$description": "Cor de link/texto interativo. Light = primary (legível em superfície clara)." },
 
   "primary-text":          { "$type": "color", "$value": "{primary}", "$description": "Acento PRIMARY usado como TEXTO/ícone nas variantes não-sólidas (outline/ghost/soft/link). Light = primary (shade 700, AA sobre branco e sobre a tinta soft). Padrão mode-aware análogo a link." },
+  "secondary-text":        { "$type": "color", "$value": "{secondary}", "$description": "Acento SECONDARY (roxo) como TEXTO/ícone nas variantes não-sólidas. Light = secondary (shade 700, AA sobre branco e soft). Espelha primary-text — antes a intent-secondary reusava secondary-foreground (era cinza)." },
   "destructive-text":      { "$type": "color", "$value": "{color.red.700}", "$description": "Acento DESTRUCTIVE como TEXTO nas variantes não-sólidas. red.700 p/ passar AA sobre branco E sobre a tinta soft (red.600 reprovava na soft)." },
   "warning-text":          { "$type": "color", "$value": "{color.amber.800}", "$description": "Acento WARNING como TEXTO nas variantes não-sólidas. amber é muito claro: precisa shade 800 p/ AA sobre branco e soft (o warning sólido continua amber.500)." },
   "success-text":          { "$type": "color", "$value": "{color.green.800}", "$description": "Acento SUCCESS como TEXTO nas variantes não-sólidas. green.800 p/ AA sobre branco e sobre a tinta soft (green.700 reprovava na soft)." },
   "info-text":             { "$type": "color", "$value": "{color.sky.700}", "$description": "Acento INFO como TEXTO nas variantes não-sólidas. sky.700 (AA sobre branco e soft)." },
+
+  "surface-ring": { "$type": "color", "$value": "#080a0f0a", "$description": "Fio hairline de 1px (ring-1) em superfícies elevadas (card, popover, menu flutuante). DECORATIVO: separa a superfície do fundo só visualmente — NÃO é um contorno funcional, então NÃO se aplica o mínimo 3:1 não-textual (WCAG 1.4.11); fica de propósito abaixo do limiar (~4% no light). Cor = neutral.950 (cinza azulado #080a0f) a 4% — casa com a paleta neutra, não preto puro. Espelhado no dark (near-white a 10%). Brand-agnóstico." },
 
   "elevation": {
     "$type": "boxShadow",
@@ -110,5 +113,8 @@
     "md": { "$value": "{shadow.md}" },
     "lg": { "$value": "{shadow.lg}" },
     "xl": { "$value": "{shadow.xl}" }
-  }
+  },
+
+  "elevation-panel-l": { "$type": "boxShadow", "$value": "6px 0 24px -18px rgb(8 10 15 / 0.45)", "$description": "Elevação DIRECIONAL de painel vertical ancorado à ESQUERDA (sidebar) — projeta a sombra para a DIREITA (offset-x positivo). Spread negativo (-18px) mantém o halo só na borda direita, sem vazar em cima/baixo. Constante (não varia por marca); o near-black a 45% lê bem em light e dark (no dark o painel é mais claro/colorido que o fundo, então a sombra ainda separa). Par com elevation-panel-r." },
+  "elevation-panel-r": { "$type": "boxShadow", "$value": "-16px 0 40px -24px rgb(8 10 15 / 0.25)", "$description": "Elevação DIRECIONAL de painel vertical ancorado à DIREITA (trilho do copiloto) — projeta a sombra para a ESQUERDA (offset-x negativo). Spread negativo (-24px) confina o halo à borda esquerda. Constante (não varia por marca); near-black a 25%. Par com elevation-panel-l." }
 }
