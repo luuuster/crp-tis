@@ -12,6 +12,12 @@ figma-plugin-icons/material-sharp-fill.json
 figma-plugin-icons/code.bundled.js
 # variables do Figma gerado (regenerado por `npm run export:figma` e no CI)
 figma-plugin/figma-variables.json
+# specs dos plugins de componentes/telas (regenerados por `npm run export:components` / `export:screens`)
+figma-plugin-components/figma-components.json
+figma-plugin-screens/figma-screens.json
+# referência de tokens do CRP Inspector (regenerada por `npm run export:ext`)
+crp-editor-extension/tokens.json
+crp-editor-extension/tokens.js
 # backups automáticos do seed-palette (--force)
 tokens/.core-backup-*/
 .cursor/

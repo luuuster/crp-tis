@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "CRP Inspector",
+  "version": "0.1.0",
+  "description": "Inspeciona telas reais, mostra onde os tokens do CRP estão (ou não) sendo usados, edita em tokens e gera redline pro front/IA — sem passar pelo Figma.",
+  "action": { "default_title": "CRP Inspector — ligar/desligar (clique)" },
+  "permissions": ["scripting", "activeTab"],
+  "background": { "service_worker": "background.js" },
+  "icons": { "48": "icon.png", "128": "icon.png" }
+}

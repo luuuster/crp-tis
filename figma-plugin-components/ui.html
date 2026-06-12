@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><style>
+  :root { --bg:#1b1b1f; --bg2:#232329; --bd:#34343a; --tx:#e8e8ea; --tx2:#9a9aa2; --acc:#4f8df7; --err:#f87171; --ok:#34d399; }
+  * { box-sizing:border-box; } body { margin:0; font:12px/1.5 ui-sans-serif,system-ui; background:var(--bg); color:var(--tx); padding:14px; }
+  h1 { font-size:13px; margin:0 0 4px; } .sub { color:var(--tx2); font-size:11px; margin:0 0 12px; }
+  .drop { border:1px dashed var(--bd); border-radius:8px; padding:12px; text-align:center; color:var(--tx2); cursor:pointer; }
+  .drop.ok { border-color:var(--ok); color:var(--tx); }
+  input[type=file] { display:none; }
+  .meta { margin:8px 0; color:var(--tx2); font-size:11px; min-height:16px; }
+  .row { display:flex; align-items:center; gap:8px; margin-top:6px; }
+  .row label { color:var(--tx2); font-size:11px; white-space:nowrap; }
+  select { flex:1; background:var(--bg2); color:var(--tx); border:1px solid var(--bd); border-radius:7px; padding:8px; font-size:12px; cursor:pointer; }
+  button.go { width:100%; margin-top:10px; background:var(--acc); border:0; color:#fff; font-weight:600; border-radius:8px; padding:10px; cursor:pointer; }
+  button.go:disabled { opacity:.4; cursor:default; }
+  button.cancel { width:100%; margin-top:6px; background:transparent; border:1px solid var(--bd); color:var(--tx2); border-radius:8px; padding:7px; cursor:pointer; }
+  .hint { color:var(--tx2); font-size:11px; margin-top:8px; line-height:1.5; }
+  #log { margin-top:10px; background:#15151a; border:1px solid #2c2c33; border-radius:8px; padding:8px; height:160px; overflow:auto; font:11px ui-monospace,monospace; white-space:pre-wrap; }
+  .err { color:var(--err); } .ok { color:var(--ok); }
+</style></head>
+<body>
+  <h1>CRP DS — Components</h1>
+  <p class="sub">Cria os ComponentSets shadcn bindados nas Variables/Styles.</p>
+
+  <label class="drop" id="dropC">Escolher <b>figma-components.json</b><input type="file" id="fileC" accept=".json"></label>
+  <div class="meta" id="metaC"></div>
+  <div class="row" id="selRow" style="display:none"><label for="compSel">Componente</label><select id="compSel"></select></div>
+  <button class="go" id="goC" disabled>Criar / atualizar componente</button>
+  <p class="hint">Pré-requisito: as Variables/Styles do plugin <b>CRP DS — Tokens</b> já importadas neste arquivo. O set anterior é preservado com sufixo "antigo". Para montar telas com estes componentes, use o plugin <b>CRP DS — Screens</b>.</p>
+
+  <button class="cancel" id="btnCancel">Cancelar operação</button>
+  <div id="log"></div>
+
+<script>
+  'use strict';
+  var specC = null;
+  var $ = function (id) { return document.getElementById(id); };
+  function logLine(t, cls) { var d = document.createElement('div'); if (cls) d.className = cls; d.textContent = t; $('log').appendChild(d); $('log').scrollTop = 1e9; }
+
+  $('dropC').addEventListener('click', function () { $('fileC').click(); });
+  $('fileC').addEventListener('change', function (ev) {
+    var f = ev.target.files && ev.target.files[0]; if (!f) return;
+    var r = new FileReader();
+    r.onload = function () {
+      try {
+        var j = JSON.parse(String(r.result));
+        if (j.$schema !== 'crp-components-figma/3') { $('metaC').textContent = 'arquivo errado: esperado crp-components-figma/3'; $('metaC').className = 'meta err'; return; }
+        specC = j;
+        var n = j.components.reduce(function (a, c) { return a + c.variants.length; }, 0);
+        $('metaC').textContent = f.name + ' · ' + j.components.length + ' componente(s) · ' + n + ' variantes' + (j.full ? ' (FULL)' : '');
+        // popula o select com os componentes do spec (começa no Button) + opção "Todos"
+        var sel = $('compSel'); sel.replaceChildren();
+        j.components.forEach(function (c) { var o = document.createElement('option'); o.value = c.name; o.textContent = c.name + ' (' + c.variants.length + ' variantes)'; sel.appendChild(o); });
+        if (j.components.length > 1) { var all = document.createElement('option'); all.value = '__all__'; all.textContent = 'Todos os componentes (' + j.components.length + ')'; sel.appendChild(all); }
+        if (j.components.some(function (c) { return c.name === 'Button'; })) sel.value = 'Button';
+        $('selRow').style.display = 'flex';
+        $('dropC').classList.add('ok'); $('metaC').className = 'meta'; $('goC').disabled = false;
+      } catch (e) { $('metaC').textContent = 'JSON inválido: ' + e.message; $('metaC').className = 'meta err'; }
+    };
+    r.readAsText(f);
+  });
+
+  $('goC').onclick = function () {
+    var only = $('compSel').value || '__all__';
+    $('log').textContent = ''; logLine('criando ' + (only === '__all__' ? 'todos os componentes' : only) + '…');
+    parent.postMessage({ pluginMessage: { type: 'create-components', spec: specC, only: only } }, '*');
+  };
+  $('btnCancel').onclick = function () { parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*'); };
+
+  window.onmessage = function (ev) {
+    var m = ev.data && ev.data.pluginMessage; if (!m) return;
+    if (m.type === 'log' || m.type === 'progress') logLine(m.m);
+    else if (m.type === 'done') logLine(m.m, 'ok');
+    else if (m.type === 'error') logLine('✖ ' + m.m, 'err');
+    else if (m.type === 'deps-missing') { logLine('✖ dependências ausentes — rode o plugin CRP DS — Tokens antes:', 'err'); m.list.forEach(function (x) { logLine('  • ' + x, 'err'); }); }
+  };
+</script>
+</body>
+</html>

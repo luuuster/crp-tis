@@ -39,9 +39,12 @@
     "verify:lucide": "node build/export-lucide-figma.mjs && node --test figma-plugin-icons/bundle.test.mjs figma-plugin-icons/run.test.mjs",
     "verify:material": "node build/export-material-figma.mjs && node --test figma-plugin-icons/material.test.mjs figma-plugin-icons/run.test.mjs",
     "export": "npm run export:ts && npm run export:figma",
+    "export:components": "node build/export-components.mjs",
+    "export:screens": "node build/export-components.mjs && node build/export-screens.mjs",
+    "export:ext": "node build/export-extension-tokens.mjs",
     "verify:figma": "node build/verify-figma.mjs",
     "pretest": "node build/check-icon-bundles.mjs",
-    "test": "node --test build/lib/color.test.mjs build/lib/css.test.mjs build/lib/themes.test.mjs figma-plugin/pure.test.mjs figma-plugin-icons/bundle.test.mjs figma-plugin-icons/run.test.mjs figma-plugin-icons/material.test.mjs figma-plugin-icons/embed.test.mjs",
+    "test": "node --test build/lib/color.test.mjs build/lib/css.test.mjs build/lib/themes.test.mjs crp-editor-extension/match.test.mjs figma-plugin/pure.test.mjs figma-plugin-components/pure.test.mjs figma-plugin-screens/pure.test.mjs figma-plugin-icons/bundle.test.mjs figma-plugin-icons/run.test.mjs figma-plugin-icons/material.test.mjs figma-plugin-icons/embed.test.mjs",
     "preview": "npm run build && node -e \"console.log('Build OK. Abra preview/index.html no navegador.')\"",
     "release": "npm run build && changeset publish",
     "prepublishOnly": "npm run build && npm run check"

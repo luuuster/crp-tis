@@ -357,6 +357,33 @@ for (const s of order) {
   }
 }
 
+// 5) STATES — cores de ESTADO (hover/focus/…): a cor de contrato COM alpha embutido. É a tradução
+//    p/ Figma de bg-primary/90, ring/50, bg-input/30… — o Tailwind aplica o alpha sobre a cor; aqui
+//    isso vira UMA Variable de cor com alpha (RGBA), p/ o kit BINDAR e o Figma compor sobre o fundo
+//    (igual o navegador). VÃO DENTRO de CRP/Modes (mesmos modos Light/Dark): assim UM seletor de modo
+//    controla base E estados juntos — em collection separada os modos dessincronizariam (hover na cor
+//    errada). MARCA = default (limitação do Figma: não há "alias com alpha", então o valor é resolvido).
+//    Conjunto = opacidades que aparecem em app/src/components/ui/button.tsx.
+// hover = /90,/80 (fiel ao shadcn); active = um tom mais forte (/80,/70 — extensão, shadcn não tem :active);
+// /60 (destructive dark base), /50 (ring, accent dark, input dark hover), /30 (input dark base).
+const STATE_ALPHAS = { primary: [90, 80], secondary: [80, 70], destructive: [90, 80, 60], accent: [50], input: [30, 50], ring: [50] };
+const STATE_MODES = [['Light', 'CRP-Light'], ['Dark', 'CRP-Dark']];
+const stateNames = new Set(); // p/ excluir das Paint Styles (são cor de USO do kit, não contrato publicável)
+for (const [color, alphas] of Object.entries(STATE_ALPHAS)) {
+  for (const a of alphas) {
+    const values = {};
+    for (const [modeName, themeName] of STATE_MODES) {
+      const term = resolveTerminal(color, themeMaps[themeName]);
+      const rgb = term ? tokenToRgb(term.token) : null;
+      if (rgb) values[modeName] = { color: { r: rgb.r, g: rgb.g, b: rgb.b, a: a / 100 } };
+      else warnings.push(`state ${color}-${a} sem cor @ ${modeName}`);
+    }
+    // entra em modesVars (= collection CRP/Modes). sem `code`: não há var(--…) no CSS (alpha é do Tailwind).
+    if (Object.keys(values).length) { const nm = `${color}-${a}`; modesVars.push({ name: nm, type: 'COLOR', scopes: ['ALL_FILLS', 'STROKE_COLOR'], values }); stateNames.add(nm); }
+  }
+}
+stats.states = stateNames.size;
+
 // ===================== STYLES (compostos — não viram Variable) =====================
 // O Figma só guarda escalares em Variables; tipografia, sombra e grid são STYLES. Aqui os
 // resolvemos prontos para o plugin criar (Text/Effect/Paint/Grid). Paint Styles são LIGADOS
@@ -443,6 +470,7 @@ for (const [label, themeName] of [['Light', 'CRP-Light'], ['Dark', 'CRP-Dark']])
 // 3) PAINT — contrato de cor de CRP/Modes; cada Paint Style LIGADO à sua Variable (segue Brand×Modes).
 const paintStyles = [];
 for (const v of modesVars) {
+  if (stateNames.has(v.name)) continue; // states (primary-90…) não viram Paint Style — cor de uso do kit
   const term = resolveTerminal(v.name, themeMaps['CRP-Light']); // nomes de Modes são single-seg (path == nome)
   const fb = term ? tokenToRgb(term.token) : null;
   paintStyles.push({
@@ -522,7 +550,7 @@ for (const [, e] of coreEntries) {
 }
 
 console.log('Export Figma Variables + Styles → figma-plugin/figma-variables.json');
-console.log(`  Primitives: ${stats.primitives} | Brand (CRP/MarcaB): ${stats.brand} | Modes (Light/Dark): ${stats.modes} | Base: ${stats.base} (typografia: ${stats.typography} papéis) | Components: ${stats.components}`);
+console.log(`  Primitives: ${stats.primitives} | Brand (CRP/MarcaB): ${stats.brand} | Modes (Light/Dark): ${stats.modes} | Base: ${stats.base} (typografia: ${stats.typography} papéis) | Components: ${stats.components} | States (alpha): ${stats.states}`);
 console.log(`  Gamut: ${gamutOut}/${gamutTotal} cores OKLCH fora do sRGB → clampadas p/ as Variables (browser usa P3; ver README)`);
 console.log(`  Styles → text: ${styleStats.text} | effect: ${styleStats.effect} | paint (ligados a Modes): ${styleStats.paint} | grid: ${styleStats.grid}`);
 console.log(`  ignorados (composto/sem valor): ${stats.skipped}`);

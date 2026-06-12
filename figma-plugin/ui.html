@@ -454,11 +454,16 @@
       var diverge = r.vars.diverge.length + r.styles.diverge.length;
       var missing = r.vars.missing.length + r.styles.missing.length;
       var orphan = r.vars.orphan.length, contrast = r.contrast.fail.length;
+      var ok = r.vars.ok + r.styles.ok;
       var parts = [];
-      if (!(diverge + missing + orphan + contrast)) parts.push(el('span', 'ok', [el('b', null, '✓ Figma em dia'), ' com o bundle']));
-      else {
+      if (!(diverge + missing + orphan + contrast)) {
+        parts.push(el('span', 'ok', [el('b', null, '✓ Figma em dia'), ' com o bundle']));
+      } else if (missing && !ok && !diverge && !orphan && !contrast) {
+        // primeira importação: nada existe ainda — NÃO é erro, é só clicar “Criar”.
+        parts.push(el('span', 'ok', [el('b', null, missing), ' tokens prontos — clique “Criar” para importar']));
+      } else {
         if (diverge) parts.push(el('span', 'bad', [el('b', null, diverge), ' divergem']));
-        if (missing) parts.push(el('span', 'warn', [el('b', null, missing), ' faltando']));
+        if (missing) parts.push(el('span', 'warn', [el('b', null, missing), ' a criar']));
         if (orphan) parts.push(el('span', 'warn', [el('b', null, orphan), ' órfãos']));
         if (contrast) parts.push(el('span', 'bad', [el('b', null, contrast), ' contraste']));
         var hint = el('span', null, '— clique “Auditar”'); hint.style.color = 'var(--tx-3)';
@@ -478,17 +483,22 @@
     function renderAudit(r) {
       $('planTitle').textContent = 'Auditoria — Figma vs bundle';
       var prow = function (s, n, cls) { return el('div', 'prow', [el('span', 'scope', s), el('span', 'nums', el('b', cls, n))]); };
+      var okCount = r.vars.ok + r.styles.ok;
+      var missCount = r.vars.missing.length + r.styles.missing.length;
       setChildren($('planRows'), [
-        prow('em dia', r.vars.ok + r.styles.ok, 'add'),
+        prow('em dia', okCount, 'add'),
         prow('divergem (editados à mão)', r.vars.diverge.length + r.styles.diverge.length, 'rem'),
-        prow('faltando', r.vars.missing.length + r.styles.missing.length, 'upd'),
+        prow('a criar', missCount, 'upd'),
         prow('órfãos', r.vars.orphan.length, 'rem'),
         prow('contraste AA', r.contrast.fail.length ? (r.contrast.fail.length + ' reprova') : ('ok (' + r.contrast.checked + ')'), r.contrast.fail.length ? 'rem' : 'add'),
       ]);
       $('planRemovals').style.display = 'none';
+      // primeira importação: nada criado ainda e sem drift/órfãos — explica que “a criar” é o esperado, não erro.
+      var firstImport = okCount === 0 && missCount > 0 && !r.vars.diverge.length && !r.styles.diverge.length && !r.vars.orphan.length;
       var notes = [
+        firstImport ? el('div', 'note ok', 'Primeira importação — nada foi criado ainda. Marque os grupos em “2 · O que criar” e clique “Criar”. (isto não é um erro)') : null,
         listGrp('Divergem', r.vars.diverge.map(function (d) { return d.name + ' [' + d.mode + '] figma ' + d.figma + ' ≠ ' + d.bundle; }).concat(r.styles.diverge.map(function (d) { return d.name + ' — ' + d.what; })), 'bad'),
-        listGrp('Faltando', r.vars.missing.concat(r.styles.missing), 'warn'),
+        listGrp('A criar', r.vars.missing.concat(r.styles.missing), 'warn'),
         listGrp('Órfãos', r.vars.orphan, 'warn'),
         listGrp('Contraste < 4.5', r.contrast.fail.map(function (f) { return f.pair + ' (' + f.theme + ') ' + f.ratio + ':1'; }), 'bad'),
       ].filter(Boolean);

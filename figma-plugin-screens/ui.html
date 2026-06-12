@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><style>
+  :root { --bg:#1b1b1f; --bg2:#232329; --bd:#34343a; --tx:#e8e8ea; --tx2:#9a9aa2; --acc:#4f8df7; --err:#f87171; --ok:#34d399; }
+  * { box-sizing:border-box; } body { margin:0; font:12px/1.5 ui-sans-serif,system-ui; background:var(--bg); color:var(--tx); padding:14px; }
+  h1 { font-size:13px; margin:0 0 4px; } .sub { color:var(--tx2); font-size:11px; margin:0 0 12px; }
+  .drop { border:1px dashed var(--bd); border-radius:8px; padding:12px; text-align:center; color:var(--tx2); cursor:pointer; }
+  .drop.ok { border-color:var(--ok); color:var(--tx); }
+  input[type=file] { display:none; }
+  .meta { margin:8px 0; color:var(--tx2); font-size:11px; min-height:16px; }
+  button.go { width:100%; margin-top:10px; background:var(--acc); border:0; color:#fff; font-weight:600; border-radius:8px; padding:10px; cursor:pointer; }
+  button.go:disabled { opacity:.4; cursor:default; }
+  button.cancel { width:100%; margin-top:6px; background:transparent; border:1px solid var(--bd); color:var(--tx2); border-radius:8px; padding:7px; cursor:pointer; }
+  .hint { color:var(--tx2); font-size:11px; margin-top:8px; line-height:1.5; }
+  #log { margin-top:10px; background:#15151a; border:1px solid #2c2c33; border-radius:8px; padding:8px; height:160px; overflow:auto; font:11px ui-monospace,monospace; white-space:pre-wrap; }
+  .err { color:var(--err); } .ok { color:var(--ok); }
+</style></head>
+<body>
+  <h1>CRP DS — Screens</h1>
+  <p class="sub">Monta telas com as instâncias dos componentes já criados.</p>
+
+  <label class="drop" id="dropS">Escolher <b>figma-screens.json</b><input type="file" id="fileS" accept=".json"></label>
+  <div class="meta" id="metaS"></div>
+  <button class="go" id="goS" disabled>Criar telas</button>
+  <p class="hint">Pré-requisito: rode o plugin <b>CRP DS — Components</b> antes (as telas instanciam os ComponentSets da página <b>CRP Components</b>). Frames novos têm sufixo de data — nada é sobrescrito.</p>
+
+  <button class="cancel" id="btnCancel">Cancelar operação</button>
+  <div id="log"></div>
+
+<script>
+  'use strict';
+  var specS = null;
+  var $ = function (id) { return document.getElementById(id); };
+  function logLine(t, cls) { var d = document.createElement('div'); if (cls) d.className = cls; d.textContent = t; $('log').appendChild(d); $('log').scrollTop = 1e9; }
+
+  $('dropS').addEventListener('click', function () { $('fileS').click(); });
+  $('fileS').addEventListener('change', function (ev) {
+    var f = ev.target.files && ev.target.files[0]; if (!f) return;
+    var r = new FileReader();
+    r.onload = function () {
+      try {
+        var j = JSON.parse(String(r.result));
+        if (j.$schema !== 'crp-screens-figma/1') { $('metaS').textContent = 'arquivo errado: esperado crp-screens-figma/1'; $('metaS').className = 'meta err'; return; }
+        specS = j;
+        $('metaS').textContent = f.name + ' · ' + j.screens.length + ' tela(s): ' + j.screens.map(function (s) { return s.name; }).join(', ');
+        $('dropS').classList.add('ok'); $('metaS').className = 'meta'; $('goS').disabled = false;
+      } catch (e) { $('metaS').textContent = 'JSON inválido: ' + e.message; $('metaS').className = 'meta err'; }
+    };
+    r.readAsText(f);
+  });
+
+  $('goS').onclick = function () { $('log').textContent = ''; logLine('criando telas…'); parent.postMessage({ pluginMessage: { type: 'create-screens', spec: specS } }, '*'); };
+  $('btnCancel').onclick = function () { parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*'); };
+
+  window.onmessage = function (ev) {
+    var m = ev.data && ev.data.pluginMessage; if (!m) return;
+    if (m.type === 'log' || m.type === 'progress') logLine(m.m);
+    else if (m.type === 'done') logLine(m.m, 'ok');
+    else if (m.type === 'error') logLine('✖ ' + m.m, 'err');
+    else if (m.type === 'deps-missing') { logLine('✖ dependências ausentes — rode o plugin CRP DS — Tokens / CRP DS — Components antes:', 'err'); m.list.forEach(function (x) { logLine('  • ' + x, 'err'); }); }
+  };
+</script>
+</body>
+</html>

@@ -117,12 +117,13 @@ Ao carregar o arquivo, um **selo de saúde** mostra na hora se o Figma está **e
 divergências/órfãos. O botão **Auditar** (read-only, não escreve) detalha:
 - **divergem** — Variables/Styles **editados à mão** no Figma cujo valor não bate mais com o bundle
   (cor trocada, alias mexido, fontSize alterado);
-- **faltando** — itens do bundle ainda não criados; **órfãos** — nossos itens que sumiram do bundle;
+- **a criar** — itens do bundle ainda não criados no Figma (na 1ª importação são *todos* — clique **Criar**;
+  o selo fica verde "prontos para importar", não é erro); **órfãos** — nossos itens que sumiram do bundle;
 - **contraste AA** — recalcula WCAG dos pares fg/bg do contrato (`audit.contrastPairs`, emitido pelo
   export) sobre os valores **atuais** nas **2 marcas × Light/Dark** (4 temas: CRP-Light/Dark e
   MarcaB-Light/Dark). Cada reprova mostra o tema. Só reprova se houve drift (o build já garante AA).
 
-**Sincronizar (corrigir drift em 1 clique):** quando a auditoria acha **divergem/faltando**, aparece o botão
+**Sincronizar (corrigir drift em 1 clique):** quando a auditoria acha **divergem/a criar**, aparece o botão
 **Sincronizar** — ele **reaplica só esses itens** do bundle (Variables e Styles), sem rodar o **Criar** inteiro,
 e **re-audita** no fim (o painel volta a "em dia"). Fecha o loop Auditar → corrigir.
 

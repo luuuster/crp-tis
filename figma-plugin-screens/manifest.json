@@ -1,0 +1,13 @@
+{
+  "name": "CRP DS — Screens",
+  "id": "crp-ds-screens",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "documentAccess": "dynamic-page",
+  "editorType": ["figma"],
+  "networkAccess": {
+    "allowedDomains": ["none"],
+    "reasoning": "Lê 1 JSON local gerado pelo repo (figma-screens.json) e monta telas instanciando os ComponentSets já criados pelo plugin CRP DS — Components. Não acessa a rede."
+  }
+}

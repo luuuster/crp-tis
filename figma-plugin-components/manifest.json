@@ -1,0 +1,13 @@
+{
+  "name": "CRP DS — Components",
+  "id": "crp-ds-components",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "documentAccess": "dynamic-page",
+  "editorType": ["figma"],
+  "networkAccess": {
+    "allowedDomains": ["none"],
+    "reasoning": "Lê 2 JSONs locais gerados pelo repo (componentes e telas) e cria nodes bindados nas Variables/Styles existentes. Não acessa a rede."
+  }
+}
