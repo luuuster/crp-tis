@@ -1,7 +1,7 @@
 # Dependabot: PRs automáticos para CVEs e atualizações de dependências.
-# O CVE do expr-eval-fork (rev. 4) foi achado por auditoria manual — isto automatiza a próxima.
-# Nota: o override de expr-eval-fork em package.json (raiz) pode ser removido quando o projeto
-# migrar para style-dictionary 5 + @tokens-studio/sd-transforms 2.x.
+# Histórico: havia um override de expr-eval-fork (CVE) preso à migração do style-dictionary.
+# Migrado para style-dictionary 5 + @tokens-studio/sd-transforms 2.x → override removido
+# (o sd-transforms 2 já resolve expr-eval-fork@3.0.3 seguro; npm audit = 0).
 version: 2
 updates:
   - package-ecosystem: npm
