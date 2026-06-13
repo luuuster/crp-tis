@@ -23,8 +23,19 @@ updates:
         patterns: ["react", "react-dom", "@types/react*"]
       radix:
         patterns: ["radix-ui", "@radix-ui/*"]
+      # Famílias acopladas por PEER DEPENDENCY: precisam subir JUNTAS senão o PR
+      # quebra o `npm ci` (ex.: @eslint/js sem eslint+typescript-eslint; vite sem @vitejs/plugin-react).
+      eslint:
+        patterns: ["eslint", "@eslint/*", "typescript-eslint", "eslint-plugin-*", "globals"]
+      vite:
+        patterns: ["vite", "@vitejs/*", "vitest", "@vitest/*"]
+      testing:
+        patterns: ["@testing-library/*", "@playwright/*", "playwright*", "@axe-core/*", "jsdom"]
 
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
       interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]
