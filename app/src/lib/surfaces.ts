@@ -8,7 +8,7 @@
  *  Estado de ERRO: `aria-invalid` pinta a borda de destructive (mesmo padrão do Input shadcn) — usado
  *  pela validação soft do formulário (campo obrigatório em branco ao tentar avançar). */
 export const FIELD =
-  'rounded-lg border-border/70 bg-muted/50 shadow-none transition-colors hover:border-border hover:bg-muted/70 focus-visible:border-ring focus-visible:bg-background aria-invalid:border-destructive'
+  'rounded-lg border-border/70 bg-muted/50 text-base md:text-base shadow-none transition-colors hover:border-border hover:bg-muted/70 focus-visible:border-ring focus-visible:bg-background aria-invalid:border-destructive'
 
 /** Popover/menu flutuante "clean": sem borda, definido por sombra + anel hairline do DS. */
 export const FLOAT = 'border-0 shadow-xl ring-1 ring-surface-ring'
