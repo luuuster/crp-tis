@@ -62,7 +62,7 @@ test.describe('auditoria de FOCO — Gerador', () => {
       test(`foco visível ${brand} · ${mode}`, async ({ page }) => {
         await login(page)
         await setTheme(page, brand, mode)
-        await page.getByRole('tab', { name: 'Gerador' }).click()
+        await page.getByRole('tab', { name: 'Vagas' }).click()
         await page.waitForTimeout(200)
         await page.addStyleTag({ content: NO_MOTION })
 

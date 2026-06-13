@@ -23,7 +23,7 @@ const BRANDS: Brand[] = ['crp', 'marca-b']
 const MODES: Mode[] = ['light', 'dark']
 const TABS = [
   { tab: 'Dashboard', label: 'Dashboard' },
-  { tab: 'Gerador', label: 'Gerador' },
+  { tab: 'Vagas', label: 'Vagas' },
   { tab: 'Componentes', label: 'Componentes' },
 ] as const
 
@@ -68,7 +68,7 @@ test.describe('axe estrutural — Gerador + Charlie aberto', () => {
       test(`Charlie · ${brand} · ${mode}`, async ({ page }) => {
         await login(page)
         await setTheme(page, brand, mode)
-        await page.getByRole('tab', { name: 'Gerador' }).click()
+        await page.getByRole('tab', { name: 'Vagas' }).click()
         await page.getByRole('button', { name: /Falar com Charlie/i }).click()
         await page.waitForTimeout(300)
         const r = await scan(page)
@@ -85,7 +85,7 @@ test.describe('axe estrutural — modal de chips (Benefícios)', () => {
       test(`Modal chips · ${brand} · ${mode}`, async ({ page }) => {
         await login(page)
         await setTheme(page, brand, mode)
-        await page.getByRole('tab', { name: 'Gerador' }).click()
+        await page.getByRole('tab', { name: 'Vagas' }).click()
         await page.getByRole('button', { name: 'Adicionar benefício' }).click()
         await expect(page.getByRole('dialog', { name: /Adicionar benefício/ })).toBeVisible()
         await page.waitForTimeout(200)

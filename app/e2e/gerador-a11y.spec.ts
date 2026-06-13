@@ -21,7 +21,7 @@ test.describe('a11y Gerador (best-practice)', () => {
       test(`Passo 1 — Briefing · ${brand} · ${mode}`, async ({ page }) => {
         await login(page)
         await setTheme(page, brand, mode)
-        await page.getByRole('tab', { name: 'Gerador' }).click()
+        await page.getByRole('tab', { name: 'Vagas' }).click()
         await page.waitForTimeout(300)
         const r = await scan(page)
         expect(r.violations, fmt(r.violations)).toEqual([])

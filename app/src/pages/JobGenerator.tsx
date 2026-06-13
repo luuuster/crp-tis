@@ -12,7 +12,7 @@
  * Ambos os pares são AA garantidos pelo check.mjs e auditáveis por pixel. Demo sem backend: Charlie e
  * as ações apenas simulam; algumas sugestões do Charlie preenchem campos de verdade.
  */
-import { cloneElement, isValidElement, useEffect, useRef, useState, type ComponentType, type PointerEvent as ReactPointerEvent, type ReactElement, type ReactNode } from 'react'
+import { cloneElement, isValidElement, useEffect, useId, useRef, useState, type ComponentType, type PointerEvent as ReactPointerEvent, type ReactElement, type ReactNode } from 'react'
 import { toast } from 'sonner'
 import {
   AlertTriangle,
@@ -25,6 +25,7 @@ import {
   Check,
   CheckCircle2,
   ChevronDown,
+  ChevronUp,
   ChevronLeft,
   ClipboardList,
   Code2,
@@ -99,7 +100,7 @@ function useIsMobile(query = '(max-width: 767px)') {
 const NAV_GROUPS = [
   { label: 'Workspace', items: [
     { key: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { key: 'gerador', label: 'Gerador de Vagas', icon: ClipboardList },
+    { key: 'gerador', label: 'Vagas', icon: ClipboardList },
     { key: 'candidatos', label: 'Candidatos', icon: UserRound },
   ] },
   { label: 'Pipeline', items: [
@@ -124,11 +125,12 @@ const MOTIVOS = ['Aumento do quadro', 'Substituição', 'Novo projeto', 'Backfil
 const MODALIDADES = ['CLT', 'PJ', 'Estágio', 'Temporário', 'Cooperado']
 const QUANTIDADES = Array.from({ length: 20 }, (_, i) => String(i + 1))
 const BENEFICIOS_POOL = ['Vale-refeição', 'Vale-transporte', 'Plano de saúde', 'Plano odontológico', 'Auxílio home-office', 'Day-off aniversário', 'Gympass', 'Bônus anual', 'Stock options', 'Auxílio creche', 'Seguro de vida', 'Horário flexível']
+const PROCESSO_POOL = ['Triagem de currículo', 'Entrevista com RH', 'Entrevista comportamental', 'Teste técnico / Case', 'Entrevista técnica', 'Entrevista com gestor', 'Entrevista com liderança', 'Dinâmica de grupo', 'Verificação de referências', 'Proposta']
 
 type Briefing = {
   cargo: string; nivel: string; modelo: string; cliente: string; gestor: string
   local: string; horario: string; carga: string; motivo: string; quantidade: number
-  budget: string; modalidade: string; beneficios: string[]
+  budget: string; modalidade: string; beneficios: string[]; processoSeletivo: string[]
 }
 type SetBriefing = <K extends keyof Briefing>(k: K, v: Briefing[K]) => void
 
@@ -137,6 +139,7 @@ const BRIEFING_INICIAL: Briefing = {
   cliente: 'TIS Talent AI Platform', gestor: 'Carlos Mendes',
   local: 'São Paulo — SP', horario: '', carga: '', motivo: 'Aumento do quadro', quantidade: 1,
   budget: '', modalidade: 'CLT', beneficios: ['Vale-refeição', 'Plano de saúde', 'Auxílio home-office', 'Day-off aniversário'],
+  processoSeletivo: ['Entrevista comportamental', 'Entrevista técnica', 'Entrevista com RH'],
 }
 
 /* seções do briefing: ícone + campos (p/ status reativo conforme o usuário preenche) */
@@ -144,6 +147,7 @@ const SECTIONS = [
   { icon: Building2, title: 'Identidade da vaga', desc: 'Como essa posição se posiciona dentro da organização.', fields: ['cargo', 'nivel', 'modelo', 'cliente', 'gestor'] as (keyof Briefing)[] },
   { icon: CalendarClock, title: 'Operação & rotina', desc: 'Onde, quando e em que ritmo essa pessoa vai trabalhar.', fields: ['local', 'horario', 'carga', 'motivo', 'quantidade'] as (keyof Briefing)[] },
   { icon: Wallet, title: 'Investimento', desc: 'A faixa salarial e benefícios que tornam essa vaga competitiva.', fields: ['budget', 'modalidade', 'beneficios'] as (keyof Briefing)[] },
+  { icon: ListChecks, title: 'Processo seletivo', desc: 'As etapas da seleção, na ordem — o que quem se candidata vai enfrentar.', fields: ['processoSeletivo'] as (keyof Briefing)[] },
 ] as const
 
 const isFilledVal = (v: unknown) =>
@@ -161,26 +165,28 @@ const HABILIDADES_POOL = ['Comunicação clara', 'Trabalho em equipe', 'Pensamen
 const EXIGENCIAS = ['Ensino superior obrigatório', 'Comprovação de experiência', 'Certificações profissionais'] as const
 
 type Perfil = {
-  formacao: string; exigencias: string[]; stackObrigatoria: string[]
-  conhecimentosDesejaveis: string[]; responsabilidades: string; habilidades: string[]
+  formacao: string; experiencia: string; exigencias: string[]; stackObrigatoria: string[]
+  conhecimentosDesejaveis: string[]; responsabilidades: string; habilidades: string[]; justificativa: string
 }
 type SetPerfil = <K extends keyof Perfil>(k: K, v: Perfil[K]) => void
 
 const PERFIL_INICIAL: Perfil = {
   formacao: 'Superior completo em Ciência da Computação, Engenharia de Software, Sistemas de Informação ou áreas correlatas.',
+  experiencia: 'Mínimo 3 anos em desenvolvimento backend, com experiência comprovada em APIs RESTful, bancos de dados relacionais e ambientes em produção.',
   exigencias: ['Ensino superior obrigatório'],
   stackObrigatoria: ['Python 3.10+', 'FastAPI', 'PostgreSQL', 'Docker', 'Git', 'APIs RESTful', 'Testes automatizados'],
   conhecimentosDesejaveis: ['Kubernetes', 'Redis', 'Kafka', 'GraphQL', 'Cloud (AWS/Azure/GCP)', 'Observabilidade'],
   responsabilidades: 'Desenvolver e manter APIs RESTful de alta performance; projetar soluções técnicas escaláveis; realizar code reviews; mentorar desenvolvedores júnior; garantir qualidade através de testes automatizados.',
   habilidades: ['Comunicação clara', 'Trabalho em equipe', 'Pensamento analítico', 'Proatividade', 'Mentoria'],
+  justificativa: 'Expansão da equipe para suportar o crescimento do produto e reduzir o tempo de entrega das squads de backend.',
 }
 
 // `optional` = seção que NÃO entra no readiness (Diferenciais) — mostra "Opcional" no StatusPill.
 type PerfilSection = { icon: ComponentType<{ className?: string }>; title: string; desc: string; fields: (keyof Perfil)[]; optional?: boolean }
 const PERFIL_SECTIONS: PerfilSection[] = [
-  { icon: Code2, title: 'Requisitos técnicos', desc: 'O que essa pessoa precisa dominar logo de cara.', fields: ['formacao', 'stackObrigatoria'] },
+  { icon: Code2, title: 'Requisitos técnicos', desc: 'O que essa pessoa precisa dominar logo de cara.', fields: ['formacao', 'experiencia', 'stackObrigatoria'] },
   { icon: Star, title: 'Diferenciais', desc: 'Conhecimentos que pesam positivamente, mas não são bloqueantes.', fields: ['conhecimentosDesejaveis'], optional: true },
-  { icon: AlignLeft, title: 'Responsabilidades & perfil', desc: 'O dia a dia da posição e o tipo de pessoa que você procura.', fields: ['responsabilidades'] },
+  { icon: AlignLeft, title: 'Responsabilidades & perfil', desc: 'O dia a dia da posição e o tipo de pessoa que você procura.', fields: ['responsabilidades', 'justificativa'] },
 ]
 
 /* ───────── etapa 3 · descrição gerada por IA ───────── */
@@ -194,13 +200,14 @@ function buildDesc(d: Briefing, p: Perfil, tom: Tom): GeneratedDesc {
     Descontraído: `Bora construir junto? Procuramos uma pessoa ${d.cargo} ${d.nivel} pra somar com o time do ${d.cliente} em ${d.local} — modelo ${d.modelo}, sem burocracia.`,
     Formal: `A organização seleciona profissional para a posição de ${d.cargo} ${d.nivel}, em regime ${d.modelo}, com base em ${d.local}, vinculado(a) ao projeto ${d.cliente} sob gestão de ${d.gestor}.`,
   }[tom]
-  const resp = p.responsabilidades.split(/[.;\n]+/).map((s) => s.trim()).filter(Boolean)
+  const resp = p.responsabilidades.split(/[.;\n]+/).map((s) => s.trim()).filter(Boolean).map((s) => s.charAt(0).toUpperCase() + s.slice(1))
   return {
     titulo: `${d.cargo} ${d.nivel} · ${d.modelo}`,
     resumo,
     responsabilidades: resp.length ? resp : ['Atuar nas entregas do time conforme o briefing.'],
     requisitos: [
       ...(p.formacao.trim() ? [`Formação: ${p.formacao.trim()}`] : []),
+      ...(p.experiencia.trim() ? [`Experiência: ${p.experiencia.trim()}`] : []),
       ...(p.exigencias.length ? [`Exigências: ${p.exigencias.join(' · ')}`] : []),
       ...(p.stackObrigatoria.length ? [`Stack obrigatória: ${p.stackObrigatoria.join(', ')}`] : []),
       ...(p.conhecimentosDesejaveis.length ? [`Desejável: ${p.conhecimentosDesejaveis.join(', ')}`] : []),
@@ -221,6 +228,29 @@ const PUBLISH_INICIAL: Publish = { canais: ['Página de carreiras TIS', 'LinkedI
 // Tudo obrigatório: o readiness checa TODOS os campos de cada seção.
 const requiredBriefingOk = (d: Briefing) => SECTIONS.flatMap((s) => s.fields).every((k) => isFilledVal(d[k]))
 const requiredPerfilOk = (p: Perfil) => PERFIL_SECTIONS.filter((s) => !s.optional).flatMap((s) => s.fields).every((k) => isFilledVal(p[k]))
+
+// Campos obrigatórios → rótulo legível (lista "Faltando completar" da Visão da vaga no passo 3).
+const REQ_LABELS: Partial<Record<keyof Briefing | keyof Perfil, string>> = {
+  cargo: 'Cargo', nivel: 'Nível', modelo: 'Modelo de atuação', cliente: 'Cliente/Projeto', gestor: 'Gestor imediato',
+  local: 'Local de trabalho', horario: 'Horário', carga: 'Carga horária', motivo: 'Motivo de abertura', quantidade: 'Quantidade de vagas',
+  budget: 'Budget', modalidade: 'Modalidade', beneficios: 'Benefícios', processoSeletivo: 'Processo seletivo',
+  formacao: 'Formação', experiencia: 'Experiência obrigatória', stackObrigatoria: 'Stack técnica obrigatória', responsabilidades: 'Responsabilidades', justificativa: 'Justificativa da contratação',
+}
+type MissingField = { scope: 'Briefing' | 'Perfil'; label: string; hint: string }
+function missingRequired(d: Briefing, p: Perfil) {
+  const briefFields = SECTIONS.flatMap((s) => s.fields)
+  const perfFields = PERFIL_SECTIONS.filter((s) => !s.optional).flatMap((s) => s.fields)
+  const hint = (label: string, k: string) => (k === 'quantidade' ? 'Deve ser maior que zero.' : `Informe ${label.toLowerCase()}.`)
+  const mk = (scope: 'Briefing' | 'Perfil') => (k: keyof Briefing | keyof Perfil): MissingField => {
+    const label = REQ_LABELS[k] || String(k)
+    return { scope, label, hint: hint(label, String(k)) }
+  }
+  return {
+    brief: briefFields.filter((k) => !isFilledVal(d[k])).map(mk('Briefing')),
+    perf: perfFields.filter((k) => !isFilledVal(p[k])).map(mk('Perfil')),
+    briefTotal: briefFields.length, perfTotal: perfFields.length,
+  }
+}
 
 /* ────────────────────────────── Charlie: sugestões por etapa ────────────────────────────── */
 
@@ -404,7 +434,7 @@ function FormSelect({ id, value, onChange, options, placeholder, "aria-invalid":
           <button
             id={id} type="button" role="combobox" aria-expanded={open} aria-controls={open ? `${id}-list` : undefined}
             aria-invalid={ariaInvalid} aria-describedby={ariaDescribedby} aria-required={ariaRequired}
-            className={cn('flex min-h-[var(--button-height-md)] w-full items-center justify-between gap-2 border px-3 text-sm outline-none', FIELD, 'focus-visible:focus-ring dark:bg-input/30 dark:hover:bg-input/50', !value && 'text-muted-foreground')}
+            className={cn('flex min-h-[var(--button-height-lg)] w-full items-center justify-between gap-2 border px-3 outline-none', FIELD, 'focus-visible:focus-ring dark:bg-input/30 dark:hover:bg-input/50', !value && 'text-muted-foreground')}
           >
             <span className="line-clamp-1 text-left">{value || placeholder}</span>
             <ChevronDown className="size-4 shrink-0 text-muted-foreground opacity-60" aria-hidden />
@@ -424,7 +454,7 @@ function FormSelect({ id, value, onChange, options, placeholder, "aria-invalid":
         aria-describedby={ariaDescribedby}
         aria-required={ariaRequired}
         className={cn(
-          'flex min-h-[var(--button-height-md)] w-full items-center justify-between gap-2 border px-3 text-sm outline-none', FIELD,
+          'flex min-h-[var(--button-height-lg)] w-full items-center justify-between gap-2 border px-3 outline-none', FIELD,
           'focus-visible:focus-ring',
           'data-[placeholder]:text-muted-foreground dark:bg-input/30 dark:hover:bg-input/50 [&>span]:line-clamp-1 [&>span]:text-left',
         )}
@@ -468,7 +498,7 @@ function SearchSelect({ id, value, onChange, options, placeholder, searchPlaceho
       id={id} type="button" role="combobox" aria-expanded={open} aria-controls={open ? `${id}-list` : undefined}
       aria-invalid={ariaInvalid} aria-describedby={ariaDescribedby} aria-required={ariaRequired}
       className={cn(
-        'flex min-h-[var(--button-height-md)] w-full items-center justify-between gap-2 border px-3 text-sm outline-none', FIELD,
+        'flex min-h-[var(--button-height-lg)] w-full items-center justify-between gap-2 border px-3 outline-none', FIELD,
         'focus-visible:focus-ring dark:bg-input/30 dark:hover:bg-input/50',
         !value && 'text-muted-foreground',
       )}
@@ -726,18 +756,43 @@ function Stepper({ step, onPick, complete }: { step: number; onPick: (n: number)
         // etapa já visitada mas deixada com obrigatórios em branco (validação soft não trava) → aviso.
         const incomplete = done && complete ? !complete(s.n) : false
         const status = active ? 'Em andamento' : incomplete ? 'Incompleta' : done ? 'Concluída' : 'Próxima'
+        // Só as etapas JÁ PASSADAS viram botão (dá p/ voltar e revisar). A atual é onde você está; as
+        // futuras ficam TRAVADAS até você chegar nelas — não são clicáveis (sem hover/foco/cursor).
+        const navigable = done
+        const card = cn(
+          'flex w-full flex-col gap-3 rounded-xl p-4 text-left transition',
+          active ? 'bg-primary/[0.05] shadow-sm ring-2 ring-primary/50'
+            : incomplete ? 'bg-card shadow-sm ring-1 ring-destructive/40'
+            : done ? 'bg-card shadow-sm ring-1 ring-foreground/[0.08]'
+            : 'bg-muted/30 ring-1 ring-foreground/[0.06]', // futura: recuada/travada, sem sombra
+        )
+        const inner = (
+          <>
+            <span className={cn('flex size-8 items-center justify-center rounded-full ty-label-sm font-semibold tabular-nums', incomplete ? 'bg-destructive text-destructive-foreground' : done ? 'bg-success text-success-foreground' : active ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground')} aria-hidden>
+              {incomplete ? <AlertTriangle className="size-4" /> : done ? <CheckCircle2 className="size-4" /> : s.n}
+            </span>
+            <span className="space-y-0.5">
+              {/* sr-only: o badge com o número é aria-hidden; aqui o leitor de tela recebe "Etapa N" e,
+                  na atual, um "Você está aqui" explícito (reforça o aria-current="step" da div). */}
+              <span className="sr-only">{active ? `Etapa ${s.n}, você está aqui: ` : `Etapa ${s.n}: `}</span>
+              <span className="block ty-body-sm font-semibold text-foreground">{s.title}</span>
+              <span className={cn('block ty-caption font-medium', active ? 'text-primary-text' : incomplete ? 'text-destructive-text' : done ? 'text-success-text' : 'text-muted-foreground')}>{status}</span>
+            </span>
+          </>
+        )
         return (
           <li key={s.n}>
-            <button type="button" aria-current={active ? 'step' : undefined} onClick={() => onPick(s.n)}
-              className={cn('flex w-full flex-col gap-3 rounded-xl p-4 text-left shadow-sm transition', focusRing, active ? 'bg-primary/[0.05] ring-2 ring-primary/50' : incomplete ? 'bg-card ring-1 ring-destructive/40 hover:bg-accent/40' : 'bg-card ring-1 ring-foreground/[0.08] hover:bg-accent/40')}>
-              <span className={cn('flex size-8 items-center justify-center rounded-full ty-label-sm font-semibold tabular-nums', incomplete ? 'bg-destructive text-destructive-foreground' : done ? 'bg-success text-success-foreground' : active ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground')} aria-hidden>
-                {incomplete ? <AlertTriangle className="size-4" /> : done ? <CheckCircle2 className="size-4" /> : s.n}
-              </span>
-              <span className="space-y-0.5">
-                <span className="block ty-body-sm font-semibold text-foreground">{s.title}</span>
-                <span className={cn('block ty-caption font-medium', active ? 'text-primary-text' : incomplete ? 'text-destructive-text' : done ? 'text-success-text' : 'text-muted-foreground')}>{status}</span>
-              </span>
-            </button>
+            {navigable ? (
+              // focusRing traz `rounded-sm` e, por vir depois do card no cn(), o twMerge anularia o
+              // rounded-xl do card (→ 4px). Reforço rounded-xl por último p/ o card manter os 12px.
+              <button type="button" onClick={() => onPick(s.n)} className={cn(card, 'cursor-pointer hover:bg-accent/40', focusRing, 'rounded-xl')}>
+                {inner}
+              </button>
+            ) : (
+              <div aria-current={active ? 'step' : undefined} className={card}>
+                {inner}
+              </div>
+            )}
           </li>
         )
       })}
@@ -756,8 +811,9 @@ function SectionBlock({ meta, status, children }: { meta: SectionMeta; status: S
         <div className="flex items-center gap-3">
           <span className={cn('flex size-9 shrink-0 items-center justify-center rounded-xl', toneBadge.primary)}><Icon className="size-4.5" aria-hidden /></span>
           <div className="min-w-0">
-            <h2 className="ty-body-lg font-bold text-foreground">{meta.title}</h2>
-            <p className="ty-caption text-muted-foreground">{meta.desc}</p>
+            {/* ty-body-lg é unlayered e anula o utilitário font-bold → forço o peso pelo token (inline vence). */}
+            <h2 className="ty-body-lg text-foreground" style={{ fontWeight: 'var(--font-weight-bold)' }}>{meta.title}</h2>
+            <p className="ty-label-sm text-muted-foreground">{meta.desc}</p>
           </div>
         </div>
         <StatusPill status={status} />
@@ -767,8 +823,8 @@ function SectionBlock({ meta, status, children }: { meta: SectionMeta; status: S
   )
 }
 
-function Chips({ value, onChange, pool, addLabel = 'adicionar', emptyHint, searchPlaceholder = 'Buscar…', "aria-invalid": ariaInvalid, "aria-describedby": ariaDescribedby, "aria-labelledby": ariaLabelledby }: {
-  value: string[]; onChange: (v: string[]) => void; pool: readonly string[]; addLabel?: string; emptyHint?: string; searchPlaceholder?: string
+function Chips({ value, onChange, pool, addLabel = 'adicionar', emptyHint, searchPlaceholder = 'Buscar…', ordered, "aria-invalid": ariaInvalid, "aria-describedby": ariaDescribedby, "aria-labelledby": ariaLabelledby }: {
+  value: string[]; onChange: (v: string[]) => void; pool: readonly string[]; addLabel?: string; emptyHint?: string; searchPlaceholder?: string; ordered?: boolean
   "aria-invalid"?: boolean; "aria-describedby"?: string; "aria-labelledby"?: string
 }) {
   // Desktop: "+ adicionar" abre uma MODAL flutuante (SEM overlay), ARRASTÁVEL pela alça do topo.
@@ -782,6 +838,16 @@ function Chips({ value, onChange, pool, addLabel = 'adicionar', emptyHint, searc
   const drag = useRef<{ ox: number; oy: number; el: HTMLElement } | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const toggle = (b: string) => onChange(value.includes(b) ? value.filter((x) => x !== b) : [...value, b])
+  // modo ORDENADO: troca o item i com o vizinho (cima/baixo) — a ORDEM do array É a sequência.
+  const move = (i: number, dir: -1 | 1) => {
+    const j = i + dir
+    if (j < 0 || j >= value.length) return
+    const next = value.slice()
+    const tmp = next[i]
+    next[i] = next[j]
+    next[j] = tmp
+    onChange(next)
+  }
   // A lista SEMPRE inclui o que já está selecionado (mesmo fora do pool) — senão um item pré-marcado
   // não apareceria na busca p/ desmarcar/remarcar. Protege todos os campos de chips contra esse descompasso.
   const options = [...pool, ...value.filter((v) => !pool.includes(v))]
@@ -809,18 +875,34 @@ function Chips({ value, onChange, pool, addLabel = 'adicionar', emptyHint, searc
   }
 
   const addTrigger = (
-    <button type="button" aria-label={`Adicionar ${addLabel}`} className={cn('inline-flex items-center gap-1 rounded-full px-2.5 py-1 ty-body-sm font-medium text-primary-text transition-colors hover:bg-primary/10', focusRing)}><Plus className="size-3.5" aria-hidden /> {addLabel}</button>
+    <button type="button" aria-label={`Adicionar ${addLabel}`} className={cn('inline-flex items-center gap-1 rounded-full px-2.5 py-1 ty-body-sm font-medium text-primary-text transition-colors hover:bg-primary/10', focusRing)}><Plus className="size-3.5" aria-hidden /> adicionar mais</button>
   )
 
   return (
-    <div role="group" aria-labelledby={ariaLabelledby} data-invalid={ariaInvalid ? '' : undefined} aria-describedby={ariaDescribedby} className="flex flex-wrap items-center gap-2 rounded-lg border border-border/70 bg-muted/50 p-2 data-[invalid]:border-destructive">
-      {value.length === 0 && emptyHint && <span className="px-1.5 py-1 ty-body-sm text-muted-foreground">{emptyHint}</span>}
-      {value.map((b) => (
-        <span key={b} className="inline-flex items-center gap-1.5 rounded-full bg-background py-1 pr-1.5 pl-2.5 ty-body-sm text-foreground shadow-sm ring-1 ring-surface-ring">
-          {b}
-          <button type="button" aria-label={`Remover ${b}`} onClick={() => onChange(value.filter((x) => x !== b))} className={cn('-mr-1 flex size-6 items-center justify-center rounded-full text-muted-foreground hover:bg-accent hover:text-foreground', focusRing)}><X className="size-3.5" aria-hidden /></button>
-        </span>
-      ))}
+    <div role="group" aria-labelledby={ariaLabelledby} data-invalid={ariaInvalid ? '' : undefined} aria-describedby={ariaDescribedby} className={ordered ? 'space-y-2' : 'flex flex-wrap items-center gap-2 rounded-lg border border-border/70 bg-muted/50 p-2 data-[invalid]:border-destructive'}>
+      {value.length === 0 && emptyHint && <span className={ordered ? 'block ty-body-sm text-muted-foreground' : 'px-1.5 py-1 ty-body-sm text-muted-foreground'}>{emptyHint}</span>}
+      {ordered
+        ? value.length > 0 && (
+            <ol className="space-y-2">
+              {value.map((b, i) => (
+                <li key={b} className="flex items-center gap-2.5 rounded-lg border border-border/70 bg-muted/50 px-2.5 py-2">
+                  <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/10 ty-label-sm font-semibold text-primary-text tabular-nums" aria-hidden>{i + 1}</span>
+                  <span className="min-w-0 flex-1 ty-body-sm text-foreground"><span className="sr-only">Etapa {i + 1}: </span>{b}</span>
+                  <div className="flex shrink-0 items-center gap-0.5">
+                    <button type="button" aria-label={`Mover ${b} para cima`} disabled={i === 0} onClick={() => move(i, -1)} className={cn('flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:pointer-events-none disabled:opacity-30', focusRing)}><ChevronUp className="size-4" aria-hidden /></button>
+                    <button type="button" aria-label={`Mover ${b} para baixo`} disabled={i === value.length - 1} onClick={() => move(i, 1)} className={cn('flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:pointer-events-none disabled:opacity-30', focusRing)}><ChevronDown className="size-4" aria-hidden /></button>
+                    <button type="button" aria-label={`Remover ${b}`} onClick={() => onChange(value.filter((x) => x !== b))} className={cn('flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground', focusRing)}><X className="size-4" aria-hidden /></button>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          )
+        : value.map((b) => (
+            <span key={b} className="inline-flex items-center gap-1.5 rounded-full bg-background py-1 pr-1.5 pl-2.5 ty-body-sm text-foreground shadow-sm ring-1 ring-surface-ring">
+              {b}
+              <button type="button" aria-label={`Remover ${b}`} onClick={() => onChange(value.filter((x) => x !== b))} className={cn('-mr-1 flex size-6 items-center justify-center rounded-full text-muted-foreground hover:bg-accent hover:text-foreground', focusRing)}><X className="size-3.5" aria-hidden /></button>
+            </span>
+          ))}
       {isMobile ? (
         /* Mobile: bottom sheet (padrão de mobile) com busca + checkboxes. */
         <MobileSheet
@@ -875,8 +957,9 @@ function Chips({ value, onChange, pool, addLabel = 'adicionar', emptyHint, searc
               <Search className="size-4 shrink-0 text-muted-foreground" aria-hidden />
               <input ref={inputRef} type="text" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={searchPlaceholder} aria-label={searchPlaceholder} className="h-10 w-full bg-transparent ty-body-sm text-foreground outline-none placeholder:text-muted-foreground" />
             </div>
-            {/* lista de checkboxes (estado anunciado nativamente; Tab + Espaço) */}
-            <div role="group" aria-label={`Opções de ${addLabel}`} className="min-h-0 flex-1 space-y-0.5 overflow-y-auto p-1.5">
+            {/* lista de checkboxes (estado anunciado nativamente; Tab + Espaço). max-h-80 ≈ 8 itens
+                visíveis; o resto entra por scroll, deixando a modal compacta. */}
+            <div role="group" aria-label={`Opções de ${addLabel}`} className="min-h-0 max-h-80 space-y-0.5 overflow-y-auto p-1.5">
               {filtered.length === 0
                 ? <p className="px-2.5 py-6 text-center ty-body-sm text-muted-foreground">Nada encontrado.</p>
                 : filtered.map((b) => (
@@ -913,8 +996,8 @@ function BriefingForm({ data, set, showErrors }: { data: Briefing; set: SetBrief
             <Field id="modelo" label="Modelo" required invalid={inv('modelo')}><FormSelect id="modelo" value={data.modelo} onChange={(v) => set('modelo', v)} options={MODELOS} placeholder="Selecione o modelo" /></Field>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
-            <Field id="cliente" label="Cliente / Projeto" required hint="Cliente ou projeto interno ao qual a vaga pertence." invalid={inv('cliente')}><Input id="cliente" value={data.cliente} onChange={(e) => set('cliente', e.target.value)} placeholder="Nome do cliente" className={FIELD} /></Field>
-            <Field id="gestor" label="Gestor imediato" required hint="Pessoa a quem a vaga se reporta." invalid={inv('gestor')}><Input id="gestor" value={data.gestor} onChange={(e) => set('gestor', e.target.value)} placeholder="Nome do gestor" className={FIELD} /></Field>
+            <Field id="cliente" label="Cliente / Projeto" required hint="Cliente ou projeto interno ao qual a vaga pertence." invalid={inv('cliente')}><Input id="cliente" value={data.cliente} onChange={(e) => set('cliente', e.target.value)} placeholder="Nome do cliente" className={cn(FIELD, 'min-h-[var(--button-height-lg)]')} /></Field>
+            <Field id="gestor" label="Gestor imediato" required hint="Pessoa a quem a vaga se reporta." invalid={inv('gestor')}><Input id="gestor" value={data.gestor} onChange={(e) => set('gestor', e.target.value)} placeholder="Nome do gestor" className={cn(FIELD, 'min-h-[var(--button-height-lg)]')} /></Field>
           </div>
         </div>
       </SectionBlock>
@@ -922,7 +1005,7 @@ function BriefingForm({ data, set, showErrors }: { data: Briefing; set: SetBrief
       <SectionBlock meta={SECTIONS[1]} status={fieldsStatus(data, SECTIONS[1].fields)}>
         <div className="space-y-5">
           <div className="grid gap-4 sm:grid-cols-3">
-            <Field id="local" label="Local de trabalho" required hint="Cidade/UF base (mesmo em remoto/híbrido)." invalid={inv('local')}><Input id="local" value={data.local} onChange={(e) => set('local', e.target.value)} placeholder="Cidade — UF" className={FIELD} /></Field>
+            <Field id="local" label="Local de trabalho" required hint="Cidade/UF base (mesmo em remoto/híbrido)." invalid={inv('local')}><Input id="local" value={data.local} onChange={(e) => set('local', e.target.value)} placeholder="Cidade — UF" className={cn(FIELD, 'min-h-[var(--button-height-lg)]')} /></Field>
             <Field id="horario" label="Horário" required invalid={inv('horario')}><FormSelect id="horario" value={data.horario} onChange={(v) => set('horario', v)} options={HORARIOS} placeholder="Selecione um horário" /></Field>
             <Field id="carga" label="Carga semanal" required invalid={inv('carga')}><FormSelect id="carga" value={data.carga} onChange={(v) => set('carga', v)} options={CARGAS} placeholder="Selecione uma carga semanal" /></Field>
           </div>
@@ -936,11 +1019,17 @@ function BriefingForm({ data, set, showErrors }: { data: Briefing; set: SetBrief
       <SectionBlock meta={SECTIONS[2]} status={fieldsStatus(data, SECTIONS[2].fields)}>
         <div className="space-y-5">
           <div className="grid gap-4 sm:grid-cols-2">
-            <Field id="budget" label="Budget" required hint="Faixa salarial prevista." invalid={inv('budget')}><Input id="budget" value={data.budget} onChange={(e) => set('budget', e.target.value)} placeholder="R$ 8.000 — 10.000" className={FIELD} /></Field>
+            <Field id="budget" label="Budget" required hint="Faixa salarial prevista." invalid={inv('budget')}><Input id="budget" value={data.budget} onChange={(e) => set('budget', e.target.value)} placeholder="R$ 8.000 — 10.000" className={cn(FIELD, 'min-h-[var(--button-height-lg)]')} /></Field>
             <Field id="modalidade" label="Modalidade contratual" required invalid={inv('modalidade')}><FormSelect id="modalidade" value={data.modalidade} onChange={(v) => set('modalidade', v)} options={MODALIDADES} placeholder="Selecione a modalidade" /></Field>
           </div>
           <Field id="beneficios" label="Benefícios" required invalid={inv('beneficios')}><Chips value={data.beneficios} onChange={(v) => set('beneficios', v)} pool={BENEFICIOS_POOL} addLabel="benefício" searchPlaceholder="Buscar benefício…" emptyHint="Nenhum benefício adicionado." /></Field>
         </div>
+      </SectionBlock>
+
+      <SectionBlock meta={SECTIONS[3]} status={fieldsStatus(data, SECTIONS[3].fields)}>
+        <Field id="processo" label="Etapas do processo" required hint="Selecione as etapas e ordene a sequência com as setas." invalid={inv('processoSeletivo')}>
+          <Chips ordered value={data.processoSeletivo} onChange={(v) => set('processoSeletivo', v)} pool={PROCESSO_POOL} addLabel="etapa" searchPlaceholder="Buscar etapa…" emptyHint="Nenhuma etapa adicionada." />
+        </Field>
       </SectionBlock>
     </div>
   )
@@ -975,7 +1064,10 @@ function PerfilForm({ perfil, set, showErrors }: { perfil: Perfil; set: SetPerfi
               </div>
             </fieldset>
             <Field id="formacao" label="Formação / Escolaridade" required hint="Nível e áreas de formação aceitos." invalid={inv('formacao')}>
-              <Textarea id="formacao" value={perfil.formacao} onChange={(e) => set('formacao', e.target.value)} placeholder="Ex: Superior completo em Ciência da Computação ou áreas correlatas." className={cn('min-h-24 resize-y', FIELD)} />
+              <Textarea id="formacao" value={perfil.formacao} onChange={(e) => set('formacao', e.target.value)} placeholder="Ex: Superior completo em Ciência da Computação ou áreas correlatas." style={{ lineHeight: 1.65 }} className={cn('min-h-24 resize-y', FIELD)} />
+            </Field>
+            <Field id="experiencia" label="Experiência obrigatória" required hint="Tempo e tipo de experiência mínima exigida." invalid={inv('experiencia')}>
+              <Textarea id="experiencia" value={perfil.experiencia} onChange={(e) => set('experiencia', e.target.value)} placeholder="Ex: Mínimo 3 anos em desenvolvimento backend com Python e APIs RESTful." style={{ lineHeight: 1.65 }} className={cn('min-h-24 resize-y', FIELD)} />
             </Field>
             <Field id="stack-obr" label="Stack técnica obrigatória" required hint="Sem isso, o perfil não avança na triagem." invalid={inv('stackObrigatoria')}>
               <Chips value={perfil.stackObrigatoria} onChange={(v) => set('stackObrigatoria', v)} pool={STACK_POOL} addLabel="tecnologia" searchPlaceholder="Buscar tecnologia…" emptyHint="Nenhuma tecnologia — adicione ou peça ao Charlie." />
@@ -994,10 +1086,13 @@ function PerfilForm({ perfil, set, showErrors }: { perfil: Perfil; set: SetPerfi
         <SectionBlock meta={PERFIL_SECTIONS[2]} status={fieldsStatus(perfil, PERFIL_SECTIONS[2].fields)}>
           <div className="space-y-5">
             <Field id="responsabilidades" label="Atribuições e responsabilidades" required hint="Uma por frase — viram bullets na descrição gerada." invalid={inv('responsabilidades')}>
-              <Textarea id="responsabilidades" value={perfil.responsabilidades} onChange={(e) => set('responsabilidades', e.target.value)} placeholder="Ex: Desenvolver e manter APIs RESTful. Realizar code reviews. Mentorar pessoas." className={cn('min-h-28 resize-y', FIELD)} />
+              <Textarea id="responsabilidades" value={perfil.responsabilidades} onChange={(e) => set('responsabilidades', e.target.value)} placeholder="Ex: Desenvolver e manter APIs RESTful. Realizar code reviews. Mentorar pessoas." style={{ lineHeight: 1.65 }} className={cn('min-h-28 resize-y', FIELD)} />
             </Field>
             <Field id="habilidades" label="Habilidades comportamentais" hint="O tipo de pessoa que você procura (opcional).">
               <Chips value={perfil.habilidades} onChange={(v) => set('habilidades', v)} pool={HABILIDADES_POOL} addLabel="habilidade" searchPlaceholder="Buscar habilidade…" emptyHint="Adicione as soft skills desejadas." />
+            </Field>
+            <Field id="justificativa" label="Justificativa da contratação" required hint="Por que essa vaga existe — contexto livre para a aprovação." invalid={inv('justificativa')}>
+              <Textarea id="justificativa" value={perfil.justificativa} onChange={(e) => set('justificativa', e.target.value)} placeholder="Ex: Expansão do produto X para novo cliente — necessidade de reforço técnico no time de backend." style={{ lineHeight: 1.65 }} className={cn('min-h-24 resize-y', FIELD)} />
             </Field>
           </div>
         </SectionBlock>
@@ -1025,20 +1120,75 @@ function PreviewStep({ data, perfil, desc, gerando, tom, onTom, onGerar }: {
   }
 
   if (!desc) {
+    const localDesc = buildDesc(data, perfil, tom)
+    const previewLen = (localDesc.titulo + localDesc.resumo + localDesc.responsabilidades.join('') + localDesc.requisitos.join('') + localDesc.beneficios.join('') + data.processoSeletivo.join('')).length
+    const { brief, perf, briefTotal, perfTotal } = missingRequired(data, perfil)
+    const resumo = ([['Cargo', data.cargo], ['Senioridade', data.nivel], ['Modelo', data.modelo], ['Budget', data.budget], ['Stack obrigatória', perfil.stackObrigatoria.join(', ')]] as [string, string][]).filter(([, v]) => isFilledVal(v))
+    const ideal = previewLen <= 2000
+    const faltando = [...brief, ...perf]
     return (
-      <div className={cn(CARD, 'p-8')}>
-        <div className="mx-auto flex max-w-md flex-col items-center gap-5 text-center">
-          <span className="flex size-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-sm"><Wand2 className="size-5" aria-hidden /></span>
-          <div className="space-y-1.5">
-            <h2 className="ty-h4 text-foreground">Gere a descrição com IA</h2>
-            <p className="ty-body-sm text-muted-foreground">O Charlie monta título, resumo, responsabilidades, requisitos e benefícios a partir do que você preencheu — em segundos.</p>
+      <div className="space-y-6">
+        {/* barra de tom + ação — a que você curtiu, agora também no pré-geração (topo) */}
+        <div className="flex flex-col gap-3 rounded-xl bg-primary/[0.05] px-4 py-3 ring-1 ring-primary/15 sm:flex-row sm:items-center sm:justify-between">
+          <p className="flex items-center gap-2 ty-body-sm font-medium text-primary-text"><Sparkles className="size-4 shrink-0" aria-hidden /> Escolha o tom e gere o post com o Charlie.</p>
+          <div className="flex items-center gap-2 max-sm:justify-between">
+            <div role="group" aria-label="Tom da descrição" className="inline-flex rounded-lg bg-muted/60 p-0.5">
+              {TONS.map((t) => (
+                <button key={t} type="button" aria-pressed={tom === t} onClick={() => onTom(t)}
+                  className={cn('rounded-md px-2.5 py-1 ty-caption font-medium transition-colors', focusRing, tom === t ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground')}>{t}</button>
+              ))}
+            </div>
+            <Button onClick={onGerar}><Sparkles /> Gerar com IA</Button>
           </div>
-          <ul className="grid w-full gap-2 rounded-xl bg-muted/40 p-4 text-left ty-body-sm text-muted-foreground">
-            <li className="flex items-center gap-2"><CheckCircle2 className="size-4 shrink-0 text-success-text" aria-hidden /> Briefing: {data.cargo} {data.nivel} · {data.modelo}</li>
-            <li className="flex items-center gap-2"><CheckCircle2 className="size-4 shrink-0 text-success-text" aria-hidden /> Perfil: {perfil.stackObrigatoria.length} tecnologias · {perfil.conhecimentosDesejaveis.length} diferenciais</li>
-            <li className="flex items-center gap-2"><CheckCircle2 className="size-4 shrink-0 text-success-text" aria-hidden /> Benefícios: {data.beneficios.length} itens</li>
-          </ul>
-          <Button size="lg" onClick={onGerar}><Sparkles /> Gerar descrição com IA</Button>
+        </div>
+
+        {/* visão da vaga — PRIMEIRO (status/pendências antes de rolar o preview) */}
+        <section aria-labelledby="visao-vaga" className="space-y-4">
+          <h2 id="visao-vaga" className="ty-h4 text-foreground">Visão da vaga</h2>
+          <div className="grid gap-2.5 sm:grid-cols-2">
+            <StatusRow label="Briefing" missing={brief.length} total={briefTotal} />
+            <StatusRow label="Perfil" missing={perf.length} total={perfTotal} />
+          </div>
+          <div className="grid gap-4 lg:grid-cols-2">
+            {faltando.length > 0 && (
+              <div className={cn('space-y-3 p-5', CARD)}>
+                <h3 className="flex items-baseline gap-2 ty-label text-foreground" style={{ fontWeight: 'var(--font-weight-semibold)' }}>Faltando completar<span className="ty-caption tabular-nums text-muted-foreground">{faltando.length}</span></h3>
+                <ul className="space-y-2.5">
+                  {faltando.map((m, i) => (
+                    <li key={i} className="flex gap-2.5 ty-body-sm">
+                      <AlertTriangle className="mt-0.5 size-4 shrink-0 text-warning-text" aria-hidden />
+                      <span className="text-foreground"><span className="text-muted-foreground">[{m.scope}]</span> {m.label}: <span className="text-muted-foreground">{m.hint}</span></span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            <div className={cn('space-y-3 p-5', faltando.length === 0 && 'lg:col-span-2', CARD)}>
+              <h3 className="ty-label text-foreground" style={{ fontWeight: 'var(--font-weight-semibold)' }}>Resumo atual</h3>
+              {resumo.length > 0 ? (
+                <dl className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
+                  {resumo.map(([k, v]) => (
+                    <div key={k} className="min-w-0 space-y-0.5">
+                      <dt className="ty-label-sm text-muted-foreground">{k}</dt>
+                      <dd className="ty-body-sm leading-snug text-foreground">{v}</dd>
+                    </div>
+                  ))}
+                </dl>
+              ) : <p className="ty-body-sm text-muted-foreground">Preencha o briefing para ver o resumo.</p>}
+            </div>
+          </div>
+        </section>
+
+        {/* preview — MESMO layout da descrição gerada (título + seções + chips), montado LOCAL */}
+        <div className="space-y-2.5">
+          <p className="flex flex-wrap items-center gap-x-3 gap-y-1 ty-label-sm text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5"><FileText className="size-3.5 shrink-0" aria-hidden /> Preview local — clique em Gerar com IA para o Charlie enriquecer</span>
+            <span className={cn('inline-flex items-center gap-1.5', ideal ? 'text-success-text' : 'text-warning-text')}>
+              <span className={cn('size-1.5 shrink-0 rounded-full', ideal ? 'bg-success' : 'bg-warning')} aria-hidden />
+              {previewLen.toLocaleString('pt-BR')} caracteres
+            </span>
+          </p>
+          <JobDocArticle desc={localDesc} data={data} perfil={perfil} />
         </div>
       </div>
     )
@@ -1059,32 +1209,75 @@ function PreviewStep({ data, perfil, desc, gerando, tom, onTom, onGerar }: {
         </div>
       </div>
 
-      <article className={cn('space-y-6 p-6 sm:p-8', CARD)}>
-        <header className="space-y-2 border-b border-border/50 pb-5">
-          <span className="flex items-center gap-1.5 ty-overline text-muted-foreground"><FileText className="size-3.5" aria-hidden /> Descrição da vaga</span>
-          <h2 className="ty-h3 text-foreground">{desc.titulo}</h2>
-          <p className="ty-body text-muted-foreground">{desc.resumo}</p>
-        </header>
-        <DocSection title="Responsabilidades" items={desc.responsabilidades} />
-        <DocSection title="Requisitos" items={desc.requisitos} />
-        <section className="space-y-2.5">
-          <h3 className="ty-label font-semibold text-foreground">Benefícios</h3>
-          <div className="flex flex-wrap gap-2">
-            {desc.beneficios.map((b) => <span key={b} className="rounded-full bg-muted px-3 py-1 ty-body-sm text-foreground">{b}</span>)}
-          </div>
-        </section>
-      </article>
+      <JobDocArticle desc={desc} data={data} perfil={perfil} />
+    </div>
+  )
+}
+
+// Documento da vaga — o preview LOCAL e a descrição GERADA usam o MESMO layout (cabeçalho + seções
+// com bullets + benefícios em chips). Inclui "Operação & condições" e "Processo seletivo" p/ cobrir
+// TODO o briefing/perfil — nada dos passos 1 e 2 fica de fora.
+function JobDocArticle({ desc, data, perfil }: { desc: GeneratedDesc; data: Briefing; perfil: Perfil }) {
+  const titleId = useId()
+  const benefId = useId()
+  const operacao = [
+    `Modelo & jornada: ${[data.modelo, data.horario, data.carga].filter(Boolean).join(' · ') || '—'}`,
+    `Local: ${data.local || '—'}`,
+    `Cliente / projeto: ${data.cliente || '—'}`,
+    `Reporta a: ${data.gestor || '—'}`,
+    `Vagas & modalidade: ${data.quantidade} vaga(s)${data.modalidade ? ` · ${data.modalidade}` : ''}`,
+    ...(data.budget ? [`Remuneração: ${data.budget}`] : []),
+    ...(data.motivo ? [`Motivo de abertura: ${data.motivo}`] : []),
+    ...(perfil.justificativa.trim() ? [`Justificativa da contratação: ${perfil.justificativa.trim()}`] : []),
+  ]
+  return (
+    <article aria-labelledby={titleId} className={cn('space-y-7 p-6 sm:p-8', CARD)}>
+      <header className="space-y-2 border-b border-border/50 pb-5">
+        <span className="flex items-center gap-1.5 ty-label-sm uppercase text-muted-foreground"><FileText className="size-3.5" aria-hidden /> Descrição da vaga</span>
+        <h2 id={titleId} className="ty-h4 text-foreground">{desc.titulo}</h2>
+        <p className="ty-body text-muted-foreground">{desc.resumo}</p>
+      </header>
+      <DocSection title="Responsabilidades" items={desc.responsabilidades} />
+      <DocSection title="Requisitos" items={desc.requisitos} />
+      <DocSection title="Operação & condições" items={operacao} />
+      {data.processoSeletivo.length > 0 && <DocSection title="Processo seletivo" items={data.processoSeletivo} />}
+      {/* Benefícios — chips, último bloco; fio sutil separa do resto. */}
+      <section aria-labelledby={benefId} className="space-y-3 border-t border-border/50 pt-6">
+        {/* ty-label é unlayered (peso 500) e anula font-semibold → forço o 600 pelo token (inline vence). */}
+        <h3 id={benefId} className="flex items-baseline gap-2 ty-label text-foreground" style={{ fontWeight: 'var(--font-weight-semibold)' }}>Benefícios<span className="ty-caption tabular-nums text-muted-foreground">{desc.beneficios.length}</span></h3>
+        <ul className="flex flex-wrap gap-2">
+          {desc.beneficios.map((b) => <li key={b} className="rounded-full bg-muted px-3 py-1 ty-body-sm text-foreground">{b}</li>)}
+        </ul>
+      </section>
+    </article>
+  )
+}
+
+// Linha de prontidão (Visão da vaga): verde "completo" ou âmbar "faltando X de N".
+function StatusRow({ label, missing, total }: { label: string; missing: number; total: number }) {
+  const ok = missing === 0
+  return (
+    <div className={cn('flex items-center justify-between gap-2 rounded-lg px-3 py-2 ty-body-sm', ok ? 'bg-success/10 text-success-text' : 'bg-warning/10 text-warning-text')}>
+      <span className="flex items-center gap-2">
+        {ok ? <CheckCircle2 className="size-4 shrink-0" aria-hidden /> : <AlertTriangle className="size-4 shrink-0" aria-hidden />}
+        {label}
+      </span>
+      <span className="tabular-nums">{ok ? 'completo' : `faltando ${missing} de ${total}`}</span>
     </div>
   )
 }
 
 function DocSection({ title, items }: { title: string; items: string[] }) {
+  const hid = useId()
   return (
-    <section className="space-y-2.5">
-      <h3 className="ty-label font-semibold text-foreground">{title}</h3>
-      <ul className="space-y-2">
+    <section aria-labelledby={hid} className="space-y-3">
+      {/* ty-label é unlayered (peso 500) e anula font-semibold → forço o 600 pelo token (inline vence). */}
+      <h3 id={hid} className="flex items-baseline gap-2 ty-label text-foreground" style={{ fontWeight: 'var(--font-weight-semibold)' }}>
+        {title}<span className="ty-caption tabular-nums text-muted-foreground">{items.length}</span>
+      </h3>
+      <ul className="space-y-2.5">
         {items.map((t, i) => (
-          <li key={i} className="flex gap-2.5 ty-body-sm text-foreground"><span className="mt-2 size-1.5 shrink-0 rounded-full bg-primary" aria-hidden /><span>{t}</span></li>
+          <li key={i} className="flex gap-3 ty-body-sm text-foreground"><span className="mt-2 size-1.5 shrink-0 rounded-full bg-primary" aria-hidden /><span className="leading-relaxed">{t}</span></li>
         ))}
       </ul>
     </section>
@@ -1411,14 +1604,16 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
       <Sidebar expanded={leftExpanded} onNavigate={onNavigate} />
       <MobileNav open={navOpen} onOpenChange={setMobileNavOpen} onNavigate={onNavigate} />
 
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         <TopBar onToggleMenu={toggleMenu} menuExpanded={isMobile ? mobileNavOpen : leftExpanded} isMobile={isMobile} onCharlie={toggleCharlie} charlieOpen={charlieOpen} onLogout={() => onNavigate?.('login')} brand={brand} mode={mode} onCycleBrand={onCycleBrand} onToggleMode={onToggleMode} />
 
-        <main className="flex-1 overflow-y-auto">
+        {/* relative: ancora os filhos `sr-only` (position:absolute) AQUI, senão eles escapam p/ o <html>
+            e esticam o documento (espaço em branco rolável abaixo do app). */}
+        <main className="relative min-h-0 flex-1 overflow-y-auto">
           <div className="mx-auto max-w-5xl space-y-7 px-5 py-8 lg:px-8">
             <header className="space-y-3">
               <p className="ty-overline text-muted-foreground">Etapa {String(step).padStart(2, '0')} — {STEPS[step - 1].eyebrow}</p>
-              <h1 className="font-heading text-3xl font-bold tracking-tight">Gerador de vagas</h1>
+              <h1 className="font-heading text-3xl font-bold tracking-tight">Nova vaga</h1>
               <p className="max-w-2xl ty-body text-muted-foreground">Estruture o briefing com calma. Quando precisar, abra o Charlie — ele dá sugestões e refina os campos com você.</p>
             </header>
 

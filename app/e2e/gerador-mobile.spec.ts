@@ -18,7 +18,7 @@ test.describe('a11y mobile — Gerador (390px)', () => {
   test('Passo 1 — Briefing', async ({ page }) => {
     await login(page)
     await setTheme(page, 'crp', 'light')
-    await page.getByRole('tab', { name: 'Gerador' }).click()
+    await page.getByRole('tab', { name: 'Vagas' }).click()
     await page.waitForTimeout(300)
     const r = await scan(page)
     expect(r.violations, fmt(r.violations)).toEqual([])
@@ -27,7 +27,7 @@ test.describe('a11y mobile — Gerador (390px)', () => {
   test('Menu em tela cheia', async ({ page }) => {
     await login(page)
     await setTheme(page, 'crp', 'light')
-    await page.getByRole('tab', { name: 'Gerador' }).click()
+    await page.getByRole('tab', { name: 'Vagas' }).click()
     await page.getByRole('button', { name: 'Abrir menu' }).click()
     await expect(page.getByRole('dialog', { name: 'Navegação principal' })).toBeVisible()
     await page.waitForTimeout(200)
@@ -39,7 +39,7 @@ test.describe('a11y mobile — Gerador (390px)', () => {
   test('Charlie em tela cheia (modal)', async ({ page }) => {
     await login(page)
     await setTheme(page, 'crp', 'dark')
-    await page.getByRole('tab', { name: 'Gerador' }).click()
+    await page.getByRole('tab', { name: 'Vagas' }).click()
     await page.getByRole('button', { name: 'Falar com Charlie' }).click()
     await expect(page.getByRole('dialog', { name: /Charlie/ })).toBeVisible()
     await page.waitForTimeout(200)
@@ -52,7 +52,7 @@ test.describe('a11y mobile — Gerador (390px)', () => {
   test('Charlie modal — foco entra e volta ao gatilho', async ({ page }) => {
     await login(page)
     await setTheme(page, 'crp', 'light')
-    await page.getByRole('tab', { name: 'Gerador' }).click()
+    await page.getByRole('tab', { name: 'Vagas' }).click()
     const trigger = page.getByRole('button', { name: 'Falar com Charlie' })
     await trigger.click()
     const dialog = page.getByRole('dialog', { name: /Charlie/ })
@@ -67,7 +67,7 @@ test.describe('a11y mobile — Gerador (390px)', () => {
   test('Select (bottom sheet)', async ({ page }) => {
     await login(page)
     await setTheme(page, 'crp', 'light')
-    await page.getByRole('tab', { name: 'Gerador' }).click()
+    await page.getByRole('tab', { name: 'Vagas' }).click()
     await page.getByRole('combobox', { name: /Senioridade/ }).click()
     await expect(page.getByRole('dialog', { name: 'Selecione' })).toBeVisible()
     await page.waitForTimeout(200)
@@ -79,7 +79,7 @@ test.describe('a11y mobile — Gerador (390px)', () => {
   test('Benefícios (bottom sheet)', async ({ page }) => {
     await login(page)
     await setTheme(page, 'marca-b', 'dark')
-    await page.getByRole('tab', { name: 'Gerador' }).click()
+    await page.getByRole('tab', { name: 'Vagas' }).click()
     await page.getByRole('button', { name: 'Adicionar benefício' }).click()
     await expect(page.getByRole('dialog', { name: 'Adicionar benefício' })).toBeVisible()
     await page.waitForTimeout(200)

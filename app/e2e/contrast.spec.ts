@@ -16,19 +16,22 @@ const SURFACES: { name: string; go: (p: Page, b: Brand, m: Mode) => Promise<void
   { name: 'Login', go: async (p, b, m) => { await p.goto('/'); await setTheme(p, b, m) } },
   { name: 'Cadastro', go: async (p, b, m) => { await gotoRegister(p); await setTheme(p, b, m) } },
   { name: 'Dashboard', go: async (p, b, m) => { await login(p); await setTheme(p, b, m); await p.getByRole('tab', { name: 'Dashboard' }).click() } },
-  { name: 'Gerador', go: async (p, b, m) => { await login(p); await setTheme(p, b, m); await p.getByRole('tab', { name: 'Gerador' }).click() } },
-  // Passo 2 (Perfil e Requisitos): o card do Stepper pula direto, sem disparar a validação.
+  { name: 'Vagas', go: async (p, b, m) => { await login(p); await setTheme(p, b, m); await p.getByRole('tab', { name: 'Vagas' }).click() } },
+  // Passo 2 (Perfil e Requisitos): avança pelo RODAPÉ — os cards FUTUROS do Stepper não são mais
+  // clicáveis (só os já visitados). Obrigatórios em branco → confirma no aviso "Avançar assim mesmo".
   { name: 'Gerador-Perfil', go: async (p, b, m) => {
     await login(p); await setTheme(p, b, m)
-    await p.getByRole('tab', { name: 'Gerador' }).click()
-    await p.getByRole('button', { name: /Perfil e Requisitos/ }).click()
+    await p.getByRole('tab', { name: 'Vagas' }).click()
+    await p.getByRole('button', { name: /Avançar para/ }).click()
+    const soft = p.getByRole('button', { name: 'Avançar assim mesmo' })
+    await soft.waitFor({ state: 'visible', timeout: 1500 }).then(() => soft.click()).catch(() => {})
     await expect(p.getByText('Template aplicado automaticamente.')).toBeVisible()
   } },
   { name: 'Componentes', go: async (p, b, m) => { await login(p); await setTheme(p, b, m); await p.getByRole('tab', { name: 'Componentes' }).click() } },
   // Charlie é um painel-irmão (flex, não overlay): abri-lo audita o Gerador + o drawer juntos.
   { name: 'Charlie', go: async (p, b, m) => {
     await login(p); await setTheme(p, b, m)
-    await p.getByRole('tab', { name: 'Gerador' }).click()
+    await p.getByRole('tab', { name: 'Vagas' }).click()
     await p.getByRole('button', { name: /Falar com Charlie/ }).click()
     await expect(p.getByRole('complementary', { name: 'Copiloto Charlie' })).toBeVisible()
   } },

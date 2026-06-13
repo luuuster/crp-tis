@@ -26,3 +26,8 @@ tokens/.core-backup-*/
 .DS_Store
 .env
 .env.*
+# artefatos de teste do Playwright (e2e)
+test-results/
+playwright-report/
+app/test-results/
+app/playwright-report/

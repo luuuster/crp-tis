@@ -105,7 +105,7 @@ export function App() {
             <div className={DOCK}>
               <TabsList className="h-8">
                 <TabsTrigger value="dashboard" className="text-xs">Dashboard</TabsTrigger>
-                <TabsTrigger value="gerador" className="text-xs">Gerador</TabsTrigger>
+                <TabsTrigger value="gerador" className="text-xs">Vagas</TabsTrigger>
                 <TabsTrigger value="componentes" className="text-xs">Componentes</TabsTrigger>
               </TabsList>
               <Button variant="ghost" size="icon-sm" aria-label="Sair" onClick={() => setView('login')}><LogOut /></Button>
