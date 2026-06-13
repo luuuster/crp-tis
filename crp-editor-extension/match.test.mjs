@@ -47,6 +47,11 @@ describe('raio', () => {
   it('5px → empata perto de sm(4)/md(6); pega o mais próximo', () => {
     assert.ok(['sm', 'md'].includes(M.nearestRadius(5, RADII).name));
   });
+  it('raio gigante (rounded-full ≈ 33554400px) → full EXATO, não desvio', () => {
+    const r = M.nearestRadius(33554400, RADII);
+    assert.equal(r.name, 'full');
+    assert.equal(r.exact, true);
+  });
 });
 
 describe('tipografia', () => {
@@ -81,5 +86,16 @@ describe('redline', () => {
   });
   it('vazio → mensagem clara', () => {
     assert.match(M.buildRedline([]).markdown, /Nenhuma altera/);
+  });
+  it('com localização da fiber: componente + origem + identidade', () => {
+    const c = [{ components: ['Stepper', 'JobGenerator'], source: 'pages/JobGenerator.tsx:759', tag: 'button',
+      text: 'Briefing da Vaga', selector: 'button.flex.w-full', kind: 'raio', prop: 'border-radius',
+      from: '4px', to: '12px', token: 'var(--radius-xl)' }];
+    const { markdown, ai } = M.buildRedline(c);
+    assert.match(markdown, /<Stepper> › <JobGenerator>/);
+    assert.match(markdown, /JobGenerator\.tsx:759/);
+    assert.match(ai, /COMPONENTE: <Stepper> › <JobGenerator>/);
+    assert.match(ai, /ONDE: pages\/JobGenerator\.tsx:759/);
+    assert.match(ai, /var\(--radius-xl\)/);
   });
 });

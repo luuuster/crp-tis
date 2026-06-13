@@ -27,7 +27,12 @@
     const A = srgbToOklab(hexToRgb(hexA)), B = srgbToOklab(hexToRgb(hexB));
     return Math.hypot(A.L - B.L, A.a - B.a, A.b - B.b);
   }
-  const EXACT = 0.012; // tolerância de "é o mesmo token" (arredondamento de hex/rgb)
+  // Tolerância de "é o MESMO token" (arredondamento hex/rgb). Mantido APERTADO (0.012): vários tokens
+  // DISTINTOS do DS ficam perto demais — no dark `secondary-text`≈`chart-2` (ΔE 0.0036); no light
+  // `primary-foreground`≈`muted` (0.0133). Um limiar maior (ex. 0.02) passaria a marcar como "exato"
+  // cores quase-token CHUMBADAS (falso "no contrato"). Uso real de um token sempre casa nele (dist ~0
+  // vence o vizinho); quem cai ENTRE dois tokens quase-iguais é cor visualmente idêntica de qualquer jeito.
+  const EXACT = 0.012;
 
   // Casa um hex contra { nome: hex }. Retorna { name, hex, dist, exact }.
   function nearestColor(hex, colorMap) {
@@ -42,6 +47,9 @@
 
   // raio em px contra { nome: px }. Exato se diferença < 0.5px.
   function nearestRadius(px, radiiMap) {
+    // 'rounded-full' resolve p/ um px gigante (Tailwind v4: calc(infinity*1px) ≈ 33554400px). É
+    // semanticamente o token `full` — qualquer raio "absurdo" casa EXATO com full (não é desvio).
+    if (px >= 1000 && radiiMap.full != null) return { name: 'full', px: radiiMap.full, dist: 0, exact: true };
     let best = null;
     for (const name in radiiMap) {
       const d = Math.abs(px - radiiMap[name]);
@@ -66,36 +74,64 @@
   }
 
   // ---- redline: lista de mudanças → Markdown (pro front) + bloco pra IA ----
-  // changes: [{ selector, kind: 'cor'|'raio'|'tipografia'|'espaço', prop, from, to, token }]
+  // Cada change carrega a LOCALIZAÇÃO capturada via fiber do React pelo content script:
+  //   { components[], source 'arquivo:linha', componentProps{}, tag, role, ariaLabel, text, selector,
+  //     kind, prop, from, to, token }
+  // Assim o redline diz COMPONENTE / ONDE / O QUÊ — não um seletor CSS frágil. (Campos são opcionais:
+  // degrada pro selector se a fiber/origem não estiver disponível.)
   function buildRedline(changes, ctx) {
     ctx = ctx || {};
     const url = ctx.url ? ` (${ctx.url})` : '';
     if (!changes || !changes.length) return { markdown: '_Nenhuma alteração._', ai: 'Nenhuma alteração.' };
 
-    const byEl = new Map();
+    const keyOf = (c) => c.source || c.selector || (c.components && c.components.join('>')) || c.text || '?';
+    const groups = new Map();
     for (const c of changes) {
-      if (!byEl.has(c.selector)) byEl.set(c.selector, []);
-      byEl.get(c.selector).push(c);
+      const k = keyOf(c);
+      if (!groups.has(k)) groups.set(k, { meta: c, items: [] });
+      groups.get(k).items.push(c);
     }
+    const compStr = (cs) => (cs && cs.length) ? cs.map((c) => `<${c}>`).join(' › ') : null;
+    const idBits = (c) => {
+      const b = [];
+      if (c.tag) b.push(`tag=${c.tag}`);
+      if (c.role) b.push(`role=${c.role}`);
+      if (c.ariaLabel) b.push(`aria-label="${c.ariaLabel}"`);
+      if (c.componentProps) for (const [k, v] of Object.entries(c.componentProps)) b.push(`${k}="${v}"`);
+      if (c.text) b.push(`texto="${c.text}"`);
+      if (c.selector && c.components && c.components.length) b.push(`seletor=${c.selector}`);
+      return b;
+    };
     const line = (c) => `${c.prop}: \`${c.from}\` → \`${c.token || c.to}\``;
 
     const md = [`# Redline CRP${url}`, '', 'Aplique usando os **tokens do design system** (não valores crus):', ''];
-    for (const [sel, cs] of byEl) {
-      md.push(`### \`${sel}\``);
-      for (const c of cs) md.push(`- ${line(c)}`);
+    for (const { meta, items } of groups.values()) {
+      const comp = compStr(meta.components);
+      const title = comp ? `\`${comp}\`` : (meta.selector ? `\`${meta.selector}\`` : '(elemento)');
+      md.push(`### ${title}${meta.source ? ` — \`${meta.source}\`` : ''}`);
+      const id = idBits(meta);
+      if (id.length) md.push(id.join(' · '));
+      for (const c of items) md.push(`- ${line(c)}`);
       md.push('');
     }
 
     const ai = [
       `Você é um dev front-end no design system CRP. Aplique EXATAMENTE estas mudanças na tela${url},`,
-      `usando os tokens do CRP (CSS custom properties / classes ty-*), nunca valores hardcoded:`,
+      `usando os tokens do CRP (CSS custom properties / classes ty-*), nunca valores hardcoded.`,
+      `Cada item diz o COMPONENTE, ONDE (arquivo:linha quando disponível) e O QUÊ muda:`,
       '',
-      ...[...byEl].flatMap(([sel, cs]) => [
-        `Elemento ${sel}:`,
-        ...cs.map((c) => `  - ${c.prop}: usar ${c.token || c.to} (estava ${c.from})`),
-      ]),
-      '',
-      'Se um valor não tiver token exato, use o token mais próximo indicado e comente o porquê.',
+      ...[...groups.values()].flatMap(({ meta, items }) => {
+        const comp = compStr(meta.components) || meta.selector || '(elemento)';
+        const id = idBits(meta);
+        return [
+          `COMPONENTE: ${comp}`,
+          meta.source ? `  ONDE: ${meta.source}` : null,
+          id.length ? `  ${id.join(' · ')}` : null,
+          ...items.map((c) => `  MUDAR ${c.prop}: usar ${c.token || c.to} (estava ${c.from})`),
+          '',
+        ].filter((x) => x !== null);
+      }),
+      'Se um valor não tiver token exato, use o mais próximo indicado e comente o porquê.',
     ].join('\n');
 
     return { markdown: md.join('\n'), ai };
