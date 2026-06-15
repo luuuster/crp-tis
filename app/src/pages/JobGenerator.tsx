@@ -29,22 +29,21 @@ import {
   ChevronLeft,
   ClipboardList,
   Code2,
+  Copy,
   DollarSign,
   FileText,
   GripHorizontal,
   HelpCircle,
   LayoutDashboard,
   ListChecks,
-  Loader2,
   LogOut,
-  Megaphone,
   Menu,
   Mic,
   Moon,
   Palette,
   Paperclip,
+  Pencil,
   Plus,
-  RefreshCw,
   Rocket,
   Save,
   Search,
@@ -112,8 +111,7 @@ const NAV_GROUPS = [
 const STEPS = [
   { n: 1, title: 'Briefing da Vaga', eyebrow: 'Briefing', desc: 'Dados institucionais e operacionais' },
   { n: 2, title: 'Perfil e Requisitos', eyebrow: 'Perfil', desc: 'Skills, experiência e formação' },
-  { n: 3, title: 'Preview & Gerar com IA', eyebrow: 'Preview', desc: 'Revise e gere a descrição' },
-  { n: 4, title: 'Revisar & Publicar', eyebrow: 'Revisão', desc: 'Ajustes finais antes de publicar' },
+  { n: 3, title: 'Revisar & Publicar', eyebrow: 'Revisão', desc: 'Revise, edite e publique a vaga' },
 ] as const
 
 const CARGOS = ['Desenvolvedor Backend', 'Desenvolvedor Frontend', 'Desenvolvedor Fullstack', 'Product Manager', 'Designer UX/UI', 'Analista de Dados', 'Engenheiro DevOps', 'Analista de QA']
@@ -129,6 +127,7 @@ const PROCESSO_POOL = ['Triagem de currículo', 'Entrevista com RH', 'Entrevista
 
 type Briefing = {
   cargo: string; nivel: string; modelo: string; cliente: string; gestor: string
+  desafio: string; objetivo: string
   local: string; horario: string; carga: string; motivo: string; quantidade: number
   budget: string; modalidade: string; beneficios: string[]; processoSeletivo: string[]
 }
@@ -137,6 +136,8 @@ type SetBriefing = <K extends keyof Briefing>(k: K, v: Briefing[K]) => void
 const BRIEFING_INICIAL: Briefing = {
   cargo: 'Desenvolvedor Backend', nivel: 'Pleno', modelo: 'Híbrido',
   cliente: 'TIS Talent AI Platform', gestor: 'Carlos Mendes',
+  desafio: 'Estamos expandindo o time de engenharia do TIS Talent AI Platform para sustentar o crescimento da plataforma.',
+  objetivo: 'Ampliar a capacidade de entrega de soluções backend de alta performance, garantindo escalabilidade e qualidade nas integrações da plataforma.',
   local: 'São Paulo — SP', horario: '', carga: '', motivo: 'Aumento do quadro', quantidade: 1,
   budget: '', modalidade: 'CLT', beneficios: ['Vale-refeição', 'Plano de saúde', 'Auxílio home-office', 'Day-off aniversário'],
   processoSeletivo: ['Entrevista comportamental', 'Entrevista técnica', 'Entrevista com RH'],
@@ -145,6 +146,7 @@ const BRIEFING_INICIAL: Briefing = {
 /* seções do briefing: ícone + campos (p/ status reativo conforme o usuário preenche) */
 const SECTIONS = [
   { icon: Building2, title: 'Identidade da vaga', desc: 'Como essa posição se posiciona dentro da organização.', fields: ['cargo', 'nivel', 'modelo', 'cliente', 'gestor'] as (keyof Briefing)[] },
+  { icon: Rocket, title: 'Sobre a vaga', desc: 'O contexto do desafio e o objetivo da contratação — a abertura da descrição.', fields: ['desafio', 'objetivo'] as (keyof Briefing)[] },
   { icon: CalendarClock, title: 'Operação & rotina', desc: 'Onde, quando e em que ritmo essa pessoa vai trabalhar.', fields: ['local', 'horario', 'carga', 'motivo', 'quantidade'] as (keyof Briefing)[] },
   { icon: Wallet, title: 'Investimento', desc: 'A faixa salarial e benefícios que tornam essa vaga competitiva.', fields: ['budget', 'modalidade', 'beneficios'] as (keyof Briefing)[] },
   { icon: ListChecks, title: 'Processo seletivo', desc: 'As etapas da seleção, na ordem — o que quem se candidata vai enfrentar.', fields: ['processoSeletivo'] as (keyof Briefing)[] },
@@ -176,7 +178,7 @@ const PERFIL_INICIAL: Perfil = {
   exigencias: ['Ensino superior obrigatório'],
   stackObrigatoria: ['Python 3.10+', 'FastAPI', 'PostgreSQL', 'Docker', 'Git', 'APIs RESTful', 'Testes automatizados'],
   conhecimentosDesejaveis: ['Kubernetes', 'Redis', 'Kafka', 'GraphQL', 'Cloud (AWS/Azure/GCP)', 'Observabilidade'],
-  responsabilidades: 'Desenvolver e manter APIs RESTful de alta performance; projetar soluções técnicas escaláveis; realizar code reviews; mentorar desenvolvedores júnior; garantir qualidade através de testes automatizados.',
+  responsabilidades: 'Desenvolver e manter APIs RESTful de alta performance utilizando Python e FastAPI. Projetar soluções técnicas que atendam aos requisitos de escalabilidade e segurança. Realizar code reviews, assegurando boas práticas e consistência de código. Atuar como mentor de desenvolvedores júnior, promovendo aprendizado e crescimento da equipe. Garantir a qualidade do código por meio de testes automatizados e integração contínua.',
   habilidades: ['Comunicação clara', 'Trabalho em equipe', 'Pensamento analítico', 'Proatividade', 'Mentoria'],
   justificativa: 'Expansão da equipe para suportar o crescimento do produto e reduzir o tempo de entrega das squads de backend.',
 }
@@ -217,13 +219,20 @@ function buildDesc(d: Briefing, p: Perfil, tom: Tom): GeneratedDesc {
   }
 }
 
-/* ───────── etapa 4 · publicação ───────── */
-type Publish = { canais: string[]; visibilidade: string; prazo: string }
-type SetPublish = <K extends keyof Publish>(k: K, v: Publish[K]) => void
-const CANAIS = ['Página de carreiras TIS', 'LinkedIn', 'Banco de talentos interno', 'Indicação de colaboradores'] as const
-const VISIBILIDADES = ['Pública', 'Interna', 'Confidencial']
-const PRAZOS = ['15 dias', '30 dias', '60 dias', '90 dias', 'Sem prazo']
-const PUBLISH_INICIAL: Publish = { canais: ['Página de carreiras TIS', 'LinkedIn'], visibilidade: 'Pública', prazo: '30 dias' }
+/* ───────── etapa 3 · "Melhorar com IA" (demo) ─────────
+ * Aprimora os 3 blocos NARRATIVOS da descrição (resumo + desafio + objetivo) com uma redação mais
+ * envolvente, derivada do briefing/perfil. É simulado (sem backend) — o mesmo espírito do Charlie. */
+function melhorarResumo(d: Briefing, p: Perfil): string {
+  const foco = p.stackObrigatoria.slice(0, 3).join(', ')
+  return `Procuramos uma pessoa ${d.cargo} ${d.nivel} para integrar o time do ${d.cliente}, em ${d.local} (modelo ${d.modelo}), reportando-se a ${d.gestor}. Você vai conduzir entregas técnicas de alto impacto${foco ? `, com foco em ${foco}` : ''}, num ambiente que valoriza autonomia, qualidade e crescimento contínuo.`
+}
+function melhorarDesafio(d: Briefing): string {
+  return `O ${d.cliente} está em plena expansão e busca reforço técnico para sustentar o próximo ciclo de crescimento. É a chance de construir junto: novas integrações, mais escala e decisões de arquitetura que vão moldar a evolução da plataforma.`
+}
+function melhorarObjetivo(_d: Briefing, p: Perfil): string {
+  return `Elevar a capacidade de entrega de soluções backend${p.stackObrigatoria[0] ? ` em ${p.stackObrigatoria[0]}` : ''}, garantindo escalabilidade, segurança e alta performance — com impacto direto na qualidade das integrações e na experiência de quem usa a plataforma.`
+}
+
 
 // Tudo obrigatório: o readiness checa TODOS os campos de cada seção.
 const requiredBriefingOk = (d: Briefing) => SECTIONS.flatMap((s) => s.fields).every((k) => isFilledVal(d[k]))
@@ -232,6 +241,7 @@ const requiredPerfilOk = (p: Perfil) => PERFIL_SECTIONS.filter((s) => !s.optiona
 // Campos obrigatórios → rótulo legível (lista "Faltando completar" da Visão da vaga no passo 3).
 const REQ_LABELS: Partial<Record<keyof Briefing | keyof Perfil, string>> = {
   cargo: 'Cargo', nivel: 'Nível', modelo: 'Modelo de atuação', cliente: 'Cliente/Projeto', gestor: 'Gestor imediato',
+  desafio: 'Sobre o desafio', objetivo: 'Objetivo da vaga',
   local: 'Local de trabalho', horario: 'Horário', carga: 'Carga horária', motivo: 'Motivo de abertura', quantidade: 'Quantidade de vagas',
   budget: 'Budget', modalidade: 'Modalidade', beneficios: 'Benefícios', processoSeletivo: 'Processo seletivo',
   formacao: 'Formação', experiencia: 'Experiência obrigatória', stackObrigatoria: 'Stack técnica obrigatória', responsabilidades: 'Responsabilidades', justificativa: 'Justificativa da contratação',
@@ -254,7 +264,7 @@ function missingRequired(d: Briefing, p: Perfil) {
 
 /* ────────────────────────────── Charlie: sugestões por etapa ────────────────────────────── */
 
-type SugCtx = { data: Briefing; set: SetBriefing; perfil: Perfil; setPerfil: SetPerfil; gerar: () => void }
+type SugCtx = { data: Briefing; set: SetBriefing; perfil: Perfil; setPerfil: SetPerfil }
 type Suggestion = { icon: ComponentType<{ className?: string }>; label: string; run: (c: SugCtx) => string }
 
 function suggestionsFor(step: number): Suggestion[] {
@@ -302,7 +312,6 @@ function suggestionsFor(step: number): Suggestion[] {
       ]
     case 3:
       return [
-        { icon: Wand2, label: 'Gerar descrição completa', run: ({ gerar }) => { gerar(); return 'Beleza! Estou montando a descrição com base no briefing e no perfil — aparece aqui na etapa em instantes.' } },
         { icon: AlignLeft, label: 'Resumir em um parágrafo', run: ({ data }) => `Resumo: vaga de ${data.cargo} ${data.nivel}, modelo ${data.modelo}, em ${data.local}, com foco em entregar valor ao projeto ${data.cliente}.` },
         { icon: Smile, label: 'Ajustar o tom da vaga', run: () => 'Use os botões Equilibrado / Descontraído / Formal acima da descrição — eu reescrevo o texto no tom escolhido na hora.' },
       ]
@@ -749,7 +758,7 @@ function TopBar({ onToggleMenu, menuExpanded, isMobile, onCharlie, charlieOpen, 
 
 function Stepper({ step, onPick, complete }: { step: number; onPick: (n: number) => void; complete?: (n: number) => boolean }) {
   return (
-    <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-label={`Progresso: etapa ${step} de ${STEPS.length}`}>
+    <ol className="grid gap-3 sm:grid-cols-3" aria-label={`Progresso: etapa ${step} de ${STEPS.length}`}>
       {STEPS.map((s) => {
         const active = s.n === step
         const done = s.n < step
@@ -1004,6 +1013,17 @@ function BriefingForm({ data, set, showErrors }: { data: Briefing; set: SetBrief
 
       <SectionBlock meta={SECTIONS[1]} status={fieldsStatus(data, SECTIONS[1].fields)}>
         <div className="space-y-5">
+          <Field id="desafio" label="Sobre o desafio" required hint="O cenário em que a vaga nasce — o time/projeto e o momento." invalid={inv('desafio')}>
+            <Textarea id="desafio" value={data.desafio} onChange={(e) => set('desafio', e.target.value)} placeholder="Ex: Estamos expandindo o time de engenharia do TIS Talent AI Platform para sustentar o crescimento da plataforma." style={{ lineHeight: 1.65 }} className={cn('min-h-24 resize-y', FIELD)} />
+          </Field>
+          <Field id="objetivo" label="Objetivo da vaga" required hint="O que essa contratação precisa alcançar." invalid={inv('objetivo')}>
+            <Textarea id="objetivo" value={data.objetivo} onChange={(e) => set('objetivo', e.target.value)} placeholder="Ex: Ampliar a capacidade de entrega de soluções backend de alta performance, garantindo escalabilidade e qualidade nas integrações da plataforma." style={{ lineHeight: 1.65 }} className={cn('min-h-24 resize-y', FIELD)} />
+          </Field>
+        </div>
+      </SectionBlock>
+
+      <SectionBlock meta={SECTIONS[2]} status={fieldsStatus(data, SECTIONS[2].fields)}>
+        <div className="space-y-5">
           <div className="grid gap-4 sm:grid-cols-3">
             <Field id="local" label="Local de trabalho" required hint="Cidade/UF base (mesmo em remoto/híbrido)." invalid={inv('local')}><Input id="local" value={data.local} onChange={(e) => set('local', e.target.value)} placeholder="Cidade — UF" className={cn(FIELD, 'min-h-[var(--button-height-lg)]')} /></Field>
             <Field id="horario" label="Horário" required invalid={inv('horario')}><FormSelect id="horario" value={data.horario} onChange={(v) => set('horario', v)} options={HORARIOS} placeholder="Selecione um horário" /></Field>
@@ -1016,7 +1036,7 @@ function BriefingForm({ data, set, showErrors }: { data: Briefing; set: SetBrief
         </div>
       </SectionBlock>
 
-      <SectionBlock meta={SECTIONS[2]} status={fieldsStatus(data, SECTIONS[2].fields)}>
+      <SectionBlock meta={SECTIONS[3]} status={fieldsStatus(data, SECTIONS[3].fields)}>
         <div className="space-y-5">
           <div className="grid gap-4 sm:grid-cols-2">
             <Field id="budget" label="Budget" required hint="Faixa salarial prevista." invalid={inv('budget')}><Input id="budget" value={data.budget} onChange={(e) => set('budget', e.target.value)} placeholder="R$ 8.000 — 10.000" className={cn(FIELD, 'min-h-[var(--button-height-lg)]')} /></Field>
@@ -1026,7 +1046,7 @@ function BriefingForm({ data, set, showErrors }: { data: Briefing; set: SetBrief
         </div>
       </SectionBlock>
 
-      <SectionBlock meta={SECTIONS[3]} status={fieldsStatus(data, SECTIONS[3].fields)}>
+      <SectionBlock meta={SECTIONS[4]} status={fieldsStatus(data, SECTIONS[4].fields)}>
         <Field id="processo" label="Etapas do processo" required hint="Selecione as etapas e ordene a sequência com as setas." invalid={inv('processoSeletivo')}>
           <Chips ordered value={data.processoSeletivo} onChange={(v) => set('processoSeletivo', v)} pool={PROCESSO_POOL} addLabel="etapa" searchPlaceholder="Buscar etapa…" emptyHint="Nenhuma etapa adicionada." />
         </Field>
@@ -1101,125 +1121,63 @@ function PerfilForm({ perfil, set, showErrors }: { perfil: Perfil; set: SetPerfi
   )
 }
 
-/* ────────────────────────────── etapa 3 · Preview & Gerar com IA ────────────────────────────── */
-
-function PreviewStep({ data, perfil, desc, gerando, tom, onTom, onGerar }: {
-  data: Briefing; perfil: Perfil; desc: GeneratedDesc | null; gerando: boolean
-  tom: Tom; onTom: (t: Tom) => void; onGerar: () => void
+// Bloco de PROSA editável inline: mostra o texto + "editar"; ao clicar, vira textarea com Salvar/Cancelar.
+// Usado nos 3 blocos narrativos da descrição (resumo, desafio, objetivo). O botão fica SEMPRE visível
+// (toque + teclado), só ganha ênfase no hover/foco. Esc cancela; Ctrl/Cmd+Enter salva.
+function EditableProse({ value, onSave, label, placeholder, textClassName }: {
+  value: string; onSave: (v: string) => void; label: string; placeholder?: string; textClassName?: string
 }) {
-  if (gerando) {
+  const [editing, setEditing] = useState(false)
+  const [draft, setDraft] = useState(value)
+  const ref = useRef<HTMLTextAreaElement>(null)
+  // Foca o textarea ao entrar em edição. O rascunho é (re)inicializado no clique de "editar" — não por
+  // efeito — então um "Melhorar com IA" externo não dispara render em cascata e a edição parte do texto atual.
+  useEffect(() => { if (editing) ref.current?.focus() }, [editing])
+  const startEdit = () => { setDraft(value); setEditing(true) }
+  const save = () => { onSave(draft.trim()); setEditing(false) }
+  const cancel = () => setEditing(false)
+
+  if (editing) {
     return (
-      <div className={cn('flex min-h-80 flex-col items-center justify-center gap-4 p-8 text-center', CARD)} role="status" aria-live="polite">
-        <span className={cn('flex size-12 items-center justify-center rounded-full', toneBadge.primary)}><Loader2 className="size-6 animate-spin" aria-hidden /></span>
-        <div className="space-y-1">
-          <p className="ty-body font-semibold text-foreground">Charlie está escrevendo a descrição…</p>
-          <p className="ty-body-sm text-muted-foreground">Combinando briefing, perfil e o tom selecionado.</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (!desc) {
-    const localDesc = buildDesc(data, perfil, tom)
-    const previewLen = (localDesc.titulo + localDesc.resumo + localDesc.responsabilidades.join('') + localDesc.requisitos.join('') + localDesc.beneficios.join('') + data.processoSeletivo.join('')).length
-    const { brief, perf, briefTotal, perfTotal } = missingRequired(data, perfil)
-    const resumo = ([['Cargo', data.cargo], ['Senioridade', data.nivel], ['Modelo', data.modelo], ['Budget', data.budget], ['Stack obrigatória', perfil.stackObrigatoria.join(', ')]] as [string, string][]).filter(([, v]) => isFilledVal(v))
-    const ideal = previewLen <= 2000
-    const faltando = [...brief, ...perf]
-    return (
-      <div className="space-y-6">
-        {/* barra de tom + ação — a que você curtiu, agora também no pré-geração (topo) */}
-        <div className="flex flex-col gap-3 rounded-xl bg-primary/[0.05] px-4 py-3 ring-1 ring-primary/15 sm:flex-row sm:items-center sm:justify-between">
-          <p className="flex items-center gap-2 ty-body-sm font-medium text-primary-text"><Sparkles className="size-4 shrink-0" aria-hidden /> Escolha o tom e gere o post com o Charlie.</p>
-          <div className="flex items-center gap-2 max-sm:justify-between">
-            <div role="group" aria-label="Tom da descrição" className="inline-flex rounded-lg bg-muted/60 p-0.5">
-              {TONS.map((t) => (
-                <button key={t} type="button" aria-pressed={tom === t} onClick={() => onTom(t)}
-                  className={cn('rounded-md px-2.5 py-1 ty-caption font-medium transition-colors', focusRing, tom === t ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground')}>{t}</button>
-              ))}
-            </div>
-            <Button onClick={onGerar}><Sparkles /> Gerar com IA</Button>
-          </div>
-        </div>
-
-        {/* visão da vaga — PRIMEIRO (status/pendências antes de rolar o preview) */}
-        <section aria-labelledby="visao-vaga" className="space-y-4">
-          <h2 id="visao-vaga" className="ty-h4 text-foreground">Visão da vaga</h2>
-          <div className="grid gap-2.5 sm:grid-cols-2">
-            <StatusRow label="Briefing" missing={brief.length} total={briefTotal} />
-            <StatusRow label="Perfil" missing={perf.length} total={perfTotal} />
-          </div>
-          <div className="grid gap-4 lg:grid-cols-2">
-            {faltando.length > 0 && (
-              <div className={cn('space-y-3 p-5', CARD)}>
-                <h3 className="flex items-baseline gap-2 ty-label text-foreground" style={{ fontWeight: 'var(--font-weight-semibold)' }}>Faltando completar<span className="ty-caption tabular-nums text-muted-foreground">{faltando.length}</span></h3>
-                <ul className="space-y-2.5">
-                  {faltando.map((m, i) => (
-                    <li key={i} className="flex gap-2.5 ty-body-sm">
-                      <AlertTriangle className="mt-0.5 size-4 shrink-0 text-warning-text" aria-hidden />
-                      <span className="text-foreground"><span className="text-muted-foreground">[{m.scope}]</span> {m.label}: <span className="text-muted-foreground">{m.hint}</span></span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            <div className={cn('space-y-3 p-5', faltando.length === 0 && 'lg:col-span-2', CARD)}>
-              <h3 className="ty-label text-foreground" style={{ fontWeight: 'var(--font-weight-semibold)' }}>Resumo atual</h3>
-              {resumo.length > 0 ? (
-                <dl className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
-                  {resumo.map(([k, v]) => (
-                    <div key={k} className="min-w-0 space-y-0.5">
-                      <dt className="ty-label-sm text-muted-foreground">{k}</dt>
-                      <dd className="ty-body-sm leading-snug text-foreground">{v}</dd>
-                    </div>
-                  ))}
-                </dl>
-              ) : <p className="ty-body-sm text-muted-foreground">Preencha o briefing para ver o resumo.</p>}
-            </div>
-          </div>
-        </section>
-
-        {/* preview — MESMO layout da descrição gerada (título + seções + chips), montado LOCAL */}
-        <div className="space-y-2.5">
-          <p className="flex flex-wrap items-center gap-x-3 gap-y-1 ty-label-sm text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5"><FileText className="size-3.5 shrink-0" aria-hidden /> Preview local — clique em Gerar com IA para o Charlie enriquecer</span>
-            <span className={cn('inline-flex items-center gap-1.5', ideal ? 'text-success-text' : 'text-warning-text')}>
-              <span className={cn('size-1.5 shrink-0 rounded-full', ideal ? 'bg-success' : 'bg-warning')} aria-hidden />
-              {previewLen.toLocaleString('pt-BR')} caracteres
-            </span>
-          </p>
-          <JobDocArticle desc={localDesc} data={data} perfil={perfil} />
-        </div>
-      </div>
-    )
-  }
-
-  return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-primary/[0.05] px-4 py-3 ring-1 ring-primary/15">
-        <p className="flex items-center gap-2 ty-body-sm font-medium text-primary-text"><Sparkles className="size-4 shrink-0" aria-hidden /> Gerado por IA — revise antes de publicar.</p>
+      <div className="space-y-2">
+        <Textarea
+          ref={ref} value={draft} onChange={(e) => setDraft(e.target.value)} aria-label={`Editar ${label}`}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') { e.preventDefault(); cancel() }
+            else if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); save() }
+          }}
+          style={{ lineHeight: 1.65 }} className={cn('min-h-24 resize-y', FIELD)}
+        />
         <div className="flex items-center gap-2">
-          <div role="group" aria-label="Tom da descrição" className="inline-flex rounded-lg bg-muted/60 p-0.5">
-            {TONS.map((t) => (
-              <button key={t} type="button" aria-pressed={tom === t} onClick={() => onTom(t)}
-                className={cn('rounded-md px-2.5 py-1 ty-caption font-medium transition-colors', focusRing, tom === t ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground')}>{t}</button>
-            ))}
-          </div>
-          <Button variant="outline" onClick={onGerar}><RefreshCw /> Regenerar</Button>
+          <Button size="sm" onClick={save}><Check className="size-3.5" aria-hidden /> Salvar</Button>
+          <Button size="sm" variant="ghost" onClick={cancel}>Cancelar</Button>
         </div>
       </div>
-
-      <JobDocArticle desc={desc} data={data} perfil={perfil} />
+    )
+  }
+  return (
+    <div className="group/edit space-y-1">
+      <p className={cn(textClassName, !value.trim() && 'text-muted-foreground/60 italic')}>{value.trim() ? value : (placeholder || 'Sem conteúdo.')}</p>
+      <button
+        type="button" onClick={startEdit} aria-label={`Editar ${label}`}
+        className={cn('inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 ty-caption font-medium text-muted-foreground/70 transition-colors hover:text-primary-text group-hover/edit:text-muted-foreground', focusRing)}
+      >
+        <Pencil className="size-3" aria-hidden /> editar
+      </button>
     </div>
   )
 }
 
-// Documento da vaga — o preview LOCAL e a descrição GERADA usam o MESMO layout (cabeçalho + seções
-// com bullets + benefícios em chips). Inclui "Operação & condições" e "Processo seletivo" p/ cobrir
-// TODO o briefing/perfil — nada dos passos 1 e 2 fica de fora.
-function JobDocArticle({ desc, data, perfil }: { desc: GeneratedDesc; data: Briefing; perfil: Perfil }) {
+// Documento da vaga — layout do preview (cabeçalho + blocos narrativos + seções com bullets + benefícios
+// em chips). Inclui "Operação & condições" e "Processo seletivo" p/ cobrir TODO o briefing/perfil. Quando
+// recebe os handlers onEdit*, os 3 blocos narrativos (resumo, desafio, objetivo) viram editáveis inline.
+function JobDocArticle({ desc, data, perfil, resumo, onEditResumo, onEditDesafio, onEditObjetivo }: {
+  desc: GeneratedDesc; data: Briefing; perfil: Perfil; resumo?: string
+  onEditResumo?: (v: string) => void; onEditDesafio?: (v: string) => void; onEditObjetivo?: (v: string) => void
+}) {
   const titleId = useId()
   const benefId = useId()
+  const resumoText = resumo ?? desc.resumo
   const operacao = [
     `Modelo & jornada: ${[data.modelo, data.horario, data.carga].filter(Boolean).join(' · ') || '—'}`,
     `Local: ${data.local || '—'}`,
@@ -1235,8 +1193,30 @@ function JobDocArticle({ desc, data, perfil }: { desc: GeneratedDesc; data: Brie
       <header className="space-y-2 border-b border-border/50 pb-5">
         <span className="flex items-center gap-1.5 ty-label-sm uppercase text-muted-foreground"><FileText className="size-3.5" aria-hidden /> Descrição da vaga</span>
         <h2 id={titleId} className="ty-h4 text-foreground">{desc.titulo}</h2>
-        <p className="ty-body text-muted-foreground">{desc.resumo}</p>
+        {onEditResumo
+          ? <EditableProse value={resumoText} onSave={onEditResumo} label="resumo" placeholder="Escreva um resumo da vaga." textClassName="ty-body text-muted-foreground" />
+          : <p className="ty-body text-muted-foreground">{resumoText}</p>}
       </header>
+      {(onEditDesafio || onEditObjetivo || data.desafio?.trim() || data.objetivo?.trim()) && (
+        <section className="space-y-5">
+          {(onEditDesafio || data.desafio?.trim()) && (
+            <div className="space-y-2">
+              <h3 className="ty-label text-foreground" style={{ fontWeight: 'var(--font-weight-semibold)' }}>Sobre o desafio</h3>
+              {onEditDesafio
+                ? <EditableProse value={data.desafio || ''} onSave={onEditDesafio} label="Sobre o desafio" placeholder="Descreva o contexto do desafio." textClassName="ty-body-sm leading-relaxed text-muted-foreground" />
+                : <p className="ty-body-sm leading-relaxed text-muted-foreground">{data.desafio?.trim()}</p>}
+            </div>
+          )}
+          {(onEditObjetivo || data.objetivo?.trim()) && (
+            <div className="space-y-2">
+              <h3 className="ty-label text-foreground" style={{ fontWeight: 'var(--font-weight-semibold)' }}>Objetivo</h3>
+              {onEditObjetivo
+                ? <EditableProse value={data.objetivo || ''} onSave={onEditObjetivo} label="Objetivo" placeholder="Descreva o objetivo da contratação." textClassName="ty-body-sm leading-relaxed text-muted-foreground" />
+                : <p className="ty-body-sm leading-relaxed text-muted-foreground">{data.objetivo?.trim()}</p>}
+            </div>
+          )}
+        </section>
+      )}
       <DocSection title="Responsabilidades" items={desc.responsabilidades} />
       <DocSection title="Requisitos" items={desc.requisitos} />
       <DocSection title="Operação & condições" items={operacao} />
@@ -1250,20 +1230,6 @@ function JobDocArticle({ desc, data, perfil }: { desc: GeneratedDesc; data: Brie
         </ul>
       </section>
     </article>
-  )
-}
-
-// Linha de prontidão (Visão da vaga): verde "completo" ou âmbar "faltando X de N".
-function StatusRow({ label, missing, total }: { label: string; missing: number; total: number }) {
-  const ok = missing === 0
-  return (
-    <div className={cn('flex items-center justify-between gap-2 rounded-lg px-3 py-2 ty-body-sm', ok ? 'bg-success/10 text-success-text' : 'bg-warning/10 text-warning-text')}>
-      <span className="flex items-center gap-2">
-        {ok ? <CheckCircle2 className="size-4 shrink-0" aria-hidden /> : <AlertTriangle className="size-4 shrink-0" aria-hidden />}
-        {label}
-      </span>
-      <span className="tabular-nums">{ok ? 'completo' : `faltando ${missing} de ${total}`}</span>
-    </div>
   )
 }
 
@@ -1286,87 +1252,196 @@ function DocSection({ title, items }: { title: string; items: string[] }) {
 
 /* ────────────────────────────── etapa 4 · Revisar & Publicar ────────────────────────────── */
 
-function PublishStep({ data, perfil, desc, publish, set, onGoto, showErrors }: {
-  data: Briefing; perfil: Perfil; desc: GeneratedDesc | null
-  publish: Publish; set: SetPublish; onGoto: (n: number) => void; showErrors?: boolean
-}) {
-  const invCanais = !!showErrors && publish.canais.length === 0
-  const checks = [
-    { ok: requiredBriefingOk(data), label: 'Briefing com campos obrigatórios', fail: 'Faltam campos obrigatórios.', goto: 1 },
-    { ok: requiredPerfilOk(perfil), label: 'Perfil com campos obrigatórios', fail: 'Complete o perfil.', goto: 2 },
-    { ok: !!desc, label: 'Descrição gerada pela IA', fail: 'Gere a descrição.', goto: 3 },
-  ]
-  const recap: [string, string][] = [
-    ['Cargo', `${data.cargo} · ${data.nivel}`],
-    ['Modelo', data.modelo],
-    ['Local', data.local],
-    ['Modalidade', data.modalidade],
-    ['Budget', data.budget || '—'],
-    ['Vagas', String(data.quantidade)],
-    ['Formação', perfil.formacao || '—'],
-    ['Stack', perfil.stackObrigatoria.join(', ') || '—'],
-    ['Comportamental', perfil.habilidades.join(', ') || '—'],
-  ]
-  const toggleCanal = (c: string, on: boolean) => set('canais', on ? [...publish.canais, c] : publish.canais.filter((x) => x !== c))
+const CANDIDATE_LINK = 'https://talentos.tst.tis.apps.fabricacrp.com.br/candidate-application-frontend/?vaga=b64d36cb-c623-48f8-b614-ba67f4e6cf78'
 
+// Versão TEXTO do post (p/ "Copiar texto do post" e publicação manual) — derivada do mesmo briefing/perfil.
+function buildPostText(d: Briefing, p: Perfil, desc: GeneratedDesc): string {
+  const L: string[] = []
+  L.push(`VAGA: ${d.cargo} ${d.nivel}`.trim(), '')
+  L.push(`MODELO DE ATUAÇÃO: ${[d.modelo, d.horario].filter(Boolean).join(' · ') || '—'}`)
+  L.push(`LOCAL: ${d.local || '—'}`)
+  L.push(`NÍVEL: ${d.nivel || '—'}`, '')
+  L.push('🚀 SOBRE O DESAFIO')
+  if (d.desafio?.trim()) L.push(d.desafio.trim())
+  if (d.objetivo?.trim()) L.push(`OBJETIVO: ${d.objetivo.trim()}`)
+  L.push('', '— O QUE VOCÊ VAI FAZER', ...desc.responsabilidades.map((r) => `• ${r}`))
+  L.push('', '— O QUE BUSCAMOS')
+  if (p.formacao.trim()) L.push(`✅ FORMAÇÃO: ${p.formacao.trim()}`)
+  if (p.experiencia.trim()) L.push(`✅ EXPERIÊNCIA: ${p.experiencia.trim()}`)
+  if (p.stackObrigatoria.length) L.push(`✅ STACK TÉCNICA: ${p.stackObrigatoria.join(', ')}`)
+  if (p.conhecimentosDesejaveis.length) L.push('', '— DIFERENCIAIS', p.conhecimentosDesejaveis.join(', '))
+  if (p.habilidades.length) L.push('', '— PERFIL COMPORTAMENTAL', `Buscamos alguém com ${p.habilidades.join(', ')}.`)
+  L.push('', '— REMUNERAÇÃO E CONDIÇÕES')
+  if (d.budget) L.push(`Orçamento: ${d.budget}`)
+  if (d.carga) L.push(`Regime: ${d.carga}`)
+  if (d.processoSeletivo.length) L.push('', '— PROCESSO SELETIVO', d.processoSeletivo.map((e, i) => `${i + 1}. ${e}`).join('; '))
+  L.push('', 'Link:', CANDIDATE_LINK)
+  return L.join('\n')
+}
+
+// Selo de contagem de caracteres (verde = ideal p/ engajamento; âmbar = acima do limite).
+function CharBadge({ len, limit = 2000 }: { len: number; limit?: number }) {
+  const ok = len <= limit
   return (
-    <div className="space-y-5">
-      <div className={cn(CARD, 'p-6')}>
-        <h2 className="flex items-center gap-2 ty-body font-semibold text-foreground"><ListChecks className="size-4.5 text-primary-text" aria-hidden /> Prontidão para publicar</h2>
-        <ul className="mt-4 space-y-2.5">
-          {checks.map((c) => (
-            <li key={c.label} className="flex flex-col items-start gap-1.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
-              <span className="flex items-center gap-2.5 ty-body-sm">
-                {c.ok
-                  ? <CheckCircle2 className="size-4.5 shrink-0 text-success-text" aria-hidden />
-                  : <AlertTriangle className="size-4.5 shrink-0 text-destructive-text" aria-hidden />}
-                <span className={c.ok ? 'text-foreground' : 'text-muted-foreground'}>{c.label}</span>
-              </span>
-              {!c.ok && (
-                <Button variant="ghost" className="h-auto min-h-10 max-w-full shrink-0 py-1.5 text-left whitespace-normal text-primary-text hover:bg-primary/10 hover:text-primary-text" onClick={() => onGoto(c.goto)}>{c.fail} Resolver</Button>
-              )}
-            </li>
-          ))}
-        </ul>
-      </div>
+    <div className={cn('flex flex-wrap items-center gap-x-1.5 gap-y-0.5 rounded-lg px-3 py-2 ty-body-sm', ok ? 'bg-success/10 text-success-text' : 'bg-warning/10 text-warning-text')}>
+      <span className={cn('size-1.5 shrink-0 rounded-full', ok ? 'bg-success' : 'bg-warning')} aria-hidden />
+      <span className="tabular-nums">{len.toLocaleString('pt-BR')} caracteres</span>
+      <span className="text-muted-foreground">— {ok ? `Ideal para engajamento (≤ ${limit.toLocaleString('pt-BR')})` : `Acima do ideal (> ${limit.toLocaleString('pt-BR')})`}</span>
+    </div>
+  )
+}
 
-      <div className={cn(CARD, 'p-6')}>
-        <h2 className="flex items-center gap-2 ty-body font-semibold text-foreground"><ClipboardList className="size-4.5 text-primary-text" aria-hidden /> Resumo da vaga</h2>
-        <dl className="mt-4 grid gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
-          {recap.map(([k, v]) => (
-            <div key={k} className="min-w-0">
-              <dt className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">{k}</dt>
-              <dd className="truncate ty-body-sm text-foreground" title={v}>{v}</dd>
-            </div>
-          ))}
-        </dl>
-      </div>
+// Botão de copiar reutilizável (estado "copiado" + toast) — usado no topo do post e no bloco recolhível.
+function CopyButton({ text, label = 'Copiar texto', className }: { text: string; label?: string; className?: string }) {
+  const [copied, setCopied] = useState(false)
+  const copy = async () => {
+    try { await navigator.clipboard.writeText(text); setCopied(true); toast.success('Texto do post copiado!'); window.setTimeout(() => setCopied(false), 2000) }
+    catch { toast.error('Não foi possível copiar — selecione e copie manualmente.') }
+  }
+  return (
+    <Button size="sm" variant="outline" onClick={copy} className={cn('shrink-0', className)}>
+      {copied ? <Check className="size-3.5" aria-hidden /> : <Copy className="size-3.5" aria-hidden />} {copied ? 'Copiado' : label}
+    </Button>
+  )
+}
 
-      <div className={cn(CARD, 'p-6')}>
-        <h2 className="flex items-center gap-2 ty-body font-semibold text-foreground"><Megaphone className="size-4.5 text-primary-text" aria-hidden /> Configuração de publicação</h2>
-        <div className="mt-4 space-y-5">
-          <fieldset id="canais-group" data-invalid={invCanais ? '' : undefined} aria-describedby={invCanais ? 'canais-error' : undefined} className="space-y-2 scroll-mt-24">
-            <legend className={cn('ty-label-sm', invCanais ? 'text-destructive-text' : 'text-muted-foreground')}>Canais de divulgação<span className="text-destructive-text"> *</span></legend>
-            <div className="grid gap-2 sm:grid-cols-2">
-              {CANAIS.map((c) => (
-                <label key={c} className={cn('flex cursor-pointer items-center gap-2.5 rounded-lg border border-border/70 bg-muted/40 px-3 py-2.5 ty-body-sm transition-colors hover:border-border hover:bg-muted/60', focusRing)}>
-                  <Checkbox checked={publish.canais.includes(c)} onCheckedChange={(v) => toggleCanal(c, v === true)} />
-                  {c}
-                </label>
-              ))}
+// "Copiar texto do post" — bloco recolhível (altura animada via grid-rows) com o texto mono + copiar.
+function CopyPostBlock({ text }: { text: string }) {
+  const [open, setOpen] = useState(false)
+  const bodyId = useId()
+  return (
+    <div className={cn(CARD, 'overflow-hidden')}>
+      <button
+        type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls={bodyId}
+        className={cn('flex w-full items-center gap-2 px-4 py-3 text-left ty-label-sm font-medium text-foreground transition-colors hover:bg-accent/40', focusRing)}
+      >
+        <ChevronDown className={cn('size-4 shrink-0 text-muted-foreground transition-transform duration-200', open && 'rotate-180')} aria-hidden />
+        <Copy className="size-4 shrink-0 text-muted-foreground" aria-hidden /> Copiar texto do post
+      </button>
+      <div id={bodyId} className={cn('grid motion-safe:transition-all motion-safe:duration-300', open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]')}>
+        <div className="overflow-hidden">
+          <div className="space-y-3 border-t border-border/50 px-4 py-4">
+            <p className="ty-caption text-muted-foreground">Use este conteúdo ao publicar manualmente.</p>
+            <pre className="max-h-96 overflow-auto rounded-lg bg-muted/60 p-4 font-mono text-sm leading-relaxed whitespace-pre-wrap text-foreground">{text}</pre>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <CharBadge len={text.length} />
+              <CopyButton text={text} label="Copiar" />
             </div>
-            {invCanais && (
-              <p id="canais-error" className="flex items-center gap-1 ty-caption font-medium text-destructive-text">
-                <AlertTriangle className="size-3.5 shrink-0" aria-hidden /> Selecione ao menos um canal
-              </p>
-            )}
-          </fieldset>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field id="visibilidade" label="Visibilidade" required invalid={!!showErrors && !isFilledVal(publish.visibilidade)}><FormSelect id="visibilidade" value={publish.visibilidade} onChange={(v) => set('visibilidade', v)} options={VISIBILIDADES} placeholder="Selecione a visibilidade" /></Field>
-            <Field id="prazo" label="Prazo de exibição" required invalid={!!showErrors && !isFilledVal(publish.prazo)}><FormSelect id="prazo" value={publish.prazo} onChange={(v) => set('prazo', v)} options={PRAZOS} placeholder="Selecione o prazo" /></Field>
           </div>
         </div>
       </div>
+    </div>
+  )
+}
+
+function ReviewStep({ data, perfil, tom, onTom, set, resumoOverride, onResumoChange, onResolve, onPublish, onNova }: {
+  data: Briefing; perfil: Perfil; tom: Tom; onTom: (t: Tom) => void
+  set: SetBriefing; resumoOverride: string | null; onResumoChange: (v: string | null) => void
+  onResolve: (n: number) => void; onPublish: () => void; onNova: () => void
+}) {
+  const desc = buildDesc(data, perfil, tom)
+  const resumoFinal = resumoOverride ?? desc.resumo
+  const [melhorando, setMelhorando] = useState(false)
+  // "Melhorar com IA" (demo): aprimora os 3 blocos narrativos de uma vez — dá pra editar à mão depois.
+  const melhorar = () => {
+    setMelhorando(true)
+    window.setTimeout(() => {
+      onResumoChange(melhorarResumo(data, perfil))
+      set('desafio', melhorarDesafio(data))
+      set('objetivo', melhorarObjetivo(data, perfil))
+      setMelhorando(false)
+      toast.success('Charlie aprimorou a descrição. Ajuste à mão se quiser.')
+    }, 850)
+  }
+  const previewLen = (desc.titulo + resumoFinal + (data.desafio || '') + (data.objetivo || '') + desc.responsabilidades.join('') + desc.requisitos.join('') + desc.beneficios.join('') + data.processoSeletivo.join('')).length
+  const postText = buildPostText(data, perfil, desc)
+  const { brief, perf, briefTotal, perfTotal } = missingRequired(data, perfil)
+  const missingCount = brief.length + perf.length
+  const totalReq = briefTotal + perfTotal
+  const charOk = previewLen <= 2000
+  const score = Math.max(0, (totalReq ? (totalReq - missingCount) / totalReq : 1) * 100 - (charOk ? 0 : 8))
+  const aprovado = missingCount === 0 && charOk
+  const pendencias = [
+    ...(requiredBriefingOk(data) ? [] : [{ label: 'Briefing incompleto', goto: 1 }]),
+    ...(requiredPerfilOk(perfil) ? [] : [{ label: 'Perfil incompleto', goto: 2 }]),
+    ...(charOk ? [] : [{ label: 'Texto acima de 2.000 caracteres', goto: 3 }]),
+  ]
+
+  return (
+    <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+      {/* ───── coluna principal · editar + tom + IA (no mobile vem PRIMEIRO; Publicar fica no rodapé fixo) ───── */}
+      <div className="min-w-0 space-y-4">
+        {/* barra de tom — reescreve o resumo automático ao vivo */}
+        <div className="flex flex-col gap-3 rounded-xl bg-primary/[0.05] px-4 py-3 ring-1 ring-primary/15 sm:flex-row sm:items-center sm:justify-between">
+          <p className="flex items-center gap-2 ty-body-sm font-medium text-primary-text"><Sparkles className="size-4 shrink-0" aria-hidden /> Escolha o tom da descrição.</p>
+          <div role="group" aria-label="Tom da descrição" className="inline-flex rounded-lg bg-muted/60 p-0.5">
+            {TONS.map((t) => (
+              <button key={t} type="button" aria-pressed={tom === t} onClick={() => onTom(t)}
+                className={cn('rounded-md px-2.5 py-1 ty-caption font-medium transition-colors', focusRing, tom === t ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground')}>{t}</button>
+            ))}
+          </div>
+        </div>
+        {/* título da descrição + ações de IA/cópia */}
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+          <h2 className="flex items-center gap-1.5 ty-label-sm font-medium text-foreground"><FileText className="size-3.5 shrink-0 text-muted-foreground" aria-hidden /> Descrição da vaga</h2>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm" isLoading={melhorando} onClick={melhorar} className="bg-secondary/10 text-secondary-text hover:bg-secondary/15 hover:text-secondary-text">
+              {!melhorando && <Wand2 className="size-3.5" aria-hidden />}
+              {melhorando ? 'Aprimorando…' : 'Melhorar com IA'}
+            </Button>
+            <CopyButton text={postText} />
+          </div>
+        </div>
+        <JobDocArticle
+          desc={desc} data={data} perfil={perfil} resumo={resumoFinal}
+          onEditResumo={(v) => onResumoChange(v.trim() ? v : null)}
+          onEditDesafio={(v) => set('desafio', v)}
+          onEditObjetivo={(v) => set('objetivo', v)}
+        />
+        <CharBadge len={previewLen} />
+        <CopyPostBlock text={postText} />
+      </div>
+
+      {/* ───── coluna lateral · Ações (desktop: à direita, sticky; mobile: abaixo do post) ───── */}
+      <aside className="space-y-4 lg:sticky lg:top-4" aria-label="Ações">
+        <h2 className="ty-overline text-muted-foreground">Ações</h2>
+
+        {/* Score de qualidade — número + barra de progresso (derivado da completude + tamanho do post). */}
+        <div className={cn(CARD, 'space-y-3 p-4', aprovado ? 'bg-success/5' : 'bg-warning/5')}>
+          <div className="flex items-center justify-between gap-2">
+            <span className="ty-label-sm text-muted-foreground">Score de qualidade</span>
+            <span className={cn('inline-flex items-center gap-1.5 ty-label-sm font-semibold', aprovado ? 'text-success-text' : 'text-warning-text')}>
+              {aprovado ? <CheckCircle2 className="size-4 shrink-0" aria-hidden /> : <AlertTriangle className="size-4 shrink-0" aria-hidden />}
+              {aprovado ? 'Aprovado' : 'Em revisão'}
+            </span>
+          </div>
+          <div className="flex items-end gap-1.5">
+            <span className="ty-h3 tabular-nums text-foreground" style={{ fontWeight: 'var(--font-weight-bold)' }}>{score.toFixed(0)}</span>
+            <span className="pb-1 ty-body-sm text-muted-foreground">/ 100</span>
+          </div>
+          <div className="h-2 w-full overflow-hidden rounded-full bg-muted" role="progressbar" aria-valuenow={Math.round(score)} aria-valuemin={0} aria-valuemax={100} aria-label="Score de qualidade">
+            <div className={cn('h-full rounded-full motion-safe:transition-[width] motion-safe:duration-500', aprovado ? 'bg-success' : 'bg-warning')} style={{ width: `${score}%` }} />
+          </div>
+          <p className="ty-body-sm text-muted-foreground">{aprovado ? 'Vaga pronta para publicação.' : 'Resolva as pendências para aprovar a vaga.'}</p>
+          {pendencias.length > 0 && (
+            <ul className="space-y-1.5 pt-1">
+              {pendencias.map((item) => (
+                <li key={item.label}>
+                  <button type="button" onClick={() => onResolve(item.goto)} className={cn('inline-flex items-center gap-1.5 rounded-md ty-body-sm text-primary-text transition-colors hover:underline', focusRing)}>
+                    <AlertTriangle className="size-3.5 shrink-0 text-warning-text" aria-hidden /> {item.label} · resolver
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {/* Ações principais. No mobile o "Publicar" vai pro rodapé fixo (sempre alcançável). */}
+        <div className="space-y-2">
+          <Button className="w-full max-lg:hidden" onClick={onPublish}><Rocket aria-hidden /> Publicar vaga</Button>
+          <Button variant="outline" className="w-full" onClick={onNova}><Plus aria-hidden /> Nova vaga</Button>
+        </div>
+      </aside>
     </div>
   )
 }
@@ -1498,10 +1573,9 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
   const [step, setStep] = useState(1)
   const [data, setData] = useState<Briefing>(BRIEFING_INICIAL)
   const [perfil, setPerfil] = useState<Perfil>(PERFIL_INICIAL)
-  const [desc, setDesc] = useState<GeneratedDesc | null>(null)
-  const [gerando, setGerando] = useState(false)
   const [tom, setTom] = useState<Tom>('Equilibrado')
-  const [publish, setPublish] = useState<Publish>(PUBLISH_INICIAL)
+  // Resumo PERSONALIZADO (edição manual ou "Melhorar com IA"). null = usa o texto automático do tom.
+  const [resumoOverride, setResumoOverride] = useState<string | null>(null)
   const [leftExpanded, setLeftExpanded] = useState(true)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [charlieOpen, setCharlieOpen] = useState(false)
@@ -1514,18 +1588,14 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
 
   const set: SetBriefing = (k, v) => setData((d) => ({ ...d, [k]: v }))
   const setPerf: SetPerfil = (k, v) => setPerfil((p) => ({ ...p, [k]: v }))
-  const setPub: SetPublish = (k, v) => setPublish((p) => ({ ...p, [k]: v }))
 
-  // "Gerar com IA" (demo): sintetiza a descrição do briefing + perfil após um pequeno atraso.
-  const gerar = () => {
-    setGerando(true)
-    window.setTimeout(() => { setDesc(buildDesc(data, perfil, tom)); setGerando(false); toast.success('Descrição gerada (demo).') }, 1400)
-  }
-  // Trocar o tom reescreve na hora (sem novo "loading") quando já existe descrição.
-  const onTom = (t: Tom) => { setTom(t); if (desc) setDesc(buildDesc(data, perfil, t)) }
+  // O tom reescreve o RESUMO automático; escolher um tom descarta o resumo personalizado (volta ao automático).
+  const onTom = (t: Tom) => { setTom(t); setResumoOverride(null) }
   const voltar = () => setStep((s) => Math.max(1, s - 1))
   // Cancelar a criação só executa após a confirmação na modal (zera tudo e volta ao começo).
-  const resetAll = () => { setData(BRIEFING_INICIAL); setPerfil(PERFIL_INICIAL); setDesc(null); setPublish(PUBLISH_INICIAL); setStep(1); toast.info('Criação cancelada (demo).') }
+  const resetAll = () => { setData(BRIEFING_INICIAL); setPerfil(PERFIL_INICIAL); setResumoOverride(null); setTom('Equilibrado'); setShowErrors({}); setStep(1); toast.info('Criação cancelada (demo).') }
+  // "Nova vaga": recomeça do zero, sem o tom de "cancelamento".
+  const novaVaga = () => { setData(BRIEFING_INICIAL); setPerfil(PERFIL_INICIAL); setResumoOverride(null); setTom('Equilibrado'); setShowErrors({}); setStep(1); toast.success('Nova vaga iniciada (demo).') }
 
   // mutuamente exclusivos: expandir o menu fecha o Charlie; abrir o Charlie recolhe o menu.
   const setLeft = (v: boolean) => { setLeftExpanded(v); if (v) setCharlieOpen(false) }
@@ -1551,18 +1621,16 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
     setMsgs((m) => [...m, { id: t, role: 'user', text: userText, at: t }, { id: t + 1, role: 'assistant', text: assistantText, at: t }])
   }
   const onSend = (text: string) => pushPair(text, 'Recebido! Nesta demo eu não preencho de verdade, mas é aqui que eu distribuiria o que reconhecesse nos campos.')
-  const onSuggestion = (s: Suggestion) => pushPair(s.label, s.run({ data, set, perfil, setPerfil: setPerf, gerar }))
+  const onSuggestion = (s: Suggestion) => pushPair(s.label, s.run({ data, set, perfil, setPerfil: setPerf }))
 
-  // etapa "completa" = todos os obrigatórios preenchidos (3 = descrição gerada).
+  // etapa "completa" = obrigatórios preenchidos. A etapa 3 (descrição) está pronta quando 1 e 2 estão.
   const stepComplete = (n: number) =>
     n === 1 ? requiredBriefingOk(data)
     : n === 2 ? requiredPerfilOk(perfil)
-    : n === 3 ? !!desc
-    : publish.canais.length > 0 && isFilledVal(publish.visibilidade) && isFilledVal(publish.prazo)
+    : requiredBriefingOk(data) && requiredPerfilOk(perfil)
   const countMissing = (n: number) =>
     n === 1 ? SECTIONS.flatMap((s) => s.fields).filter((k) => !isFilledVal(data[k])).length
     : n === 2 ? PERFIL_SECTIONS.flatMap((s) => s.fields).filter((k) => !isFilledVal(perfil[k])).length
-    : n === 4 ? [isFilledVal(publish.visibilidade), isFilledVal(publish.prazo), publish.canais.length > 0].filter((ok) => !ok).length
     : 0
   // Rola/foca o 1º campo destacado (qualquer controle com aria-invalid), após o render do destaque.
   const focusFirstInvalid = () => window.setTimeout(() => {
@@ -1570,22 +1638,13 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
     if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.focus?.() }
   }, 0)
 
+  // "Resolver" (pendência do passo 4): vai ao passo, LIGA o destaque dos obrigatórios e rola até o 1º.
+  const onResolve = (n: number) => { setStep(n); setShowErrors((p) => ({ ...p, [n]: true })); focusFirstInvalid() }
+
   // Validação SOFT: ao tentar avançar com obrigatórios em branco, DESTACA + avisa (com ação "avançar
   // assim mesmo") + foca o 1º, mas NÃO trava — um 2º clique (ou a ação do aviso) prossegue.
   const avancar = () => {
-    if (step >= STEPS.length) {
-      if (!desc) { toast.error('Gere a descrição na etapa 3 antes de publicar.'); setStep(3); return }
-      if (!stepComplete(4) && !showErrors[4]) {
-        setShowErrors((p) => ({ ...p, 4: true }))
-        toast.warning(`${countMissing(4)} campo(s) de publicação em branco — destaquei em vermelho.`, {
-          action: { label: 'Publicar assim mesmo', onClick: () => setPublishOpen(true) },
-        })
-        focusFirstInvalid()
-        return
-      }
-      setPublishOpen(true)
-      return
-    }
+    if (step >= STEPS.length) { setPublishOpen(true); return }
     if ((step === 1 || step === 2) && !stepComplete(step) && !showErrors[step]) {
       setShowErrors((p) => ({ ...p, [step]: true }))
       toast.warning(`${countMissing(step)} campo(s) obrigatório(s) em branco — destaquei em vermelho.`, {
@@ -1623,8 +1682,7 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
 
             {step === 1 && <BriefingForm data={data} set={set} showErrors={!!showErrors[1]} />}
             {step === 2 && <PerfilForm perfil={perfil} set={setPerf} showErrors={!!showErrors[2]} />}
-            {step === 3 && <PreviewStep data={data} perfil={perfil} desc={desc} gerando={gerando} tom={tom} onTom={onTom} onGerar={gerar} />}
-            {step === 4 && <PublishStep data={data} perfil={perfil} desc={desc} publish={publish} set={setPub} onGoto={setStep} showErrors={!!showErrors[4]} />}
+            {step === 3 && <ReviewStep data={data} perfil={perfil} tom={tom} onTom={onTom} set={set} resumoOverride={resumoOverride} onResumoChange={setResumoOverride} onResolve={onResolve} onPublish={avancar} onNova={novaVaga} />}
           </div>
         </main>
 
@@ -1649,7 +1707,9 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
             </div>
             <div className="flex items-center gap-2">
               {step > 1 && <Button variant="ghost" onClick={voltar} className="max-sm:flex-1"><ChevronLeft /> Voltar</Button>}
-              <Button onClick={avancar} className="max-sm:flex-1">{nextLabel} {step >= STEPS.length ? <Rocket /> : <ArrowRight />}</Button>
+              {/* Último passo: publicar vive na coluna de Ações (desktop); no mobile fica AQUI no rodapé fixo. */}
+              {step < STEPS.length && <Button onClick={avancar} className="max-sm:flex-1">{nextLabel} <ArrowRight /></Button>}
+              {step === STEPS.length && <Button onClick={avancar} className="max-sm:flex-1 lg:hidden"><Rocket /> Publicar vaga</Button>}
             </div>
           </div>
         </footer>
@@ -1659,7 +1719,7 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
           open={publishOpen} onOpenChange={setPublishOpen}
           icon={Rocket} tone="primary"
           title="Publicar esta vaga?"
-          description="A vaga ficará visível nos canais selecionados e passará a receber candidaturas."
+          description="A vaga será publicada e passará a receber candidaturas."
           cancelLabel="Revisar antes" confirmLabel="Publicar vaga" confirmVariant="default" onConfirm={() => toast.success('Vaga publicada! (demo)')}
         />
       </div>
