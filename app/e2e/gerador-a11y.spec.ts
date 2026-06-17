@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
-import { login, setTheme, type Brand, type Mode } from './helpers'
+import { login, setTheme, gotoMenu, abrirVaga, type Brand, type Mode } from './helpers'
 
 // A11y do Gerador com BEST-PRACTICE além do WCAG (pega landmark/região, que as tags WCAG puras não
 // pegam — foi assim que apareceu o <main> faltando). color-contrast fica desligado (o axe erra OKLCH;
@@ -21,7 +21,8 @@ test.describe('a11y Gerador (best-practice)', () => {
       test(`Passo 1 — Briefing · ${brand} · ${mode}`, async ({ page }) => {
         await login(page)
         await setTheme(page, brand, mode)
-        await page.getByRole('tab', { name: 'Vagas' }).click()
+        await gotoMenu(page, 'Vagas')
+        await abrirVaga(page)
         await page.waitForTimeout(300)
         const r = await scan(page)
         expect(r.violations, fmt(r.violations)).toEqual([])

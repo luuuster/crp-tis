@@ -15,6 +15,9 @@ const buttonVariants = cva(
         default: "bg-primary text-primary-foreground hover:bg-primary/90",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90 dark:bg-destructive/60",
+        // Ação de CAUTELA (não destrutiva) — ex.: "fechar vaga". Par warning/warning-foreground é AA.
+        warning:
+          "bg-warning text-warning-foreground hover:bg-warning/90",
         outline:
           "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
         // Outline destrutivo: borda E texto na MESMA cor (--destructive-text, AA nos 4 temas),

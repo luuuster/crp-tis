@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
-import { login, gotoRegister, setTheme, type Brand, type Mode } from './helpers'
+import { login, gotoRegister, setTheme, gotoMenu, abrirVaga, type Brand, type Mode } from './helpers'
 
 // axe ESTRUTURAL no DOM renderizado (ARIA, roles, labels, heading-order) — nas 4 combinações
 // marca × tema, nas telas de auth e pós-login. É o que o jsdom (axe.test.tsx) não exercita: o
@@ -21,11 +21,12 @@ const scan = (page: Parameters<typeof login>[0]) =>
 
 const BRANDS: Brand[] = ['crp', 'marca-b']
 const MODES: Mode[] = ['light', 'dark']
-const TABS = [
-  { tab: 'Dashboard', label: 'Dashboard' },
-  { tab: 'Vagas', label: 'Vagas' },
-  { tab: 'Componentes', label: 'Componentes' },
-] as const
+// Login cai na Dashboard (AppShell); as demais telas vêm pelo MENU (sidebar), não pelo dock de abas.
+const TABS: { label: string; go: (p: Parameters<typeof login>[0]) => Promise<void> }[] = [
+  { label: 'Dashboard', go: async () => {} },
+  { label: 'Vagas', go: async (p) => { await gotoMenu(p, 'Vagas') } },
+  { label: 'Componentes', go: async (p) => { await gotoMenu(p, 'Componentes') } },
+]
 
 test.describe('axe estrutural — telas de auth', () => {
   for (const brand of BRANDS)
@@ -49,11 +50,11 @@ test.describe('axe estrutural — telas de auth', () => {
 test.describe('axe estrutural — app (pós-login)', () => {
   for (const brand of BRANDS)
     for (const mode of MODES)
-      for (const { tab, label } of TABS) {
+      for (const { label, go } of TABS) {
         test(`${label} · ${brand} · ${mode}`, async ({ page }) => {
           await login(page)
           await setTheme(page, brand, mode)
-          await page.getByRole('tab', { name: tab }).click()
+          await go(page)
           await page.waitForTimeout(300)
           const r = await scan(page)
           expect(r.violations, fmt(r.violations)).toEqual([])
@@ -68,7 +69,8 @@ test.describe('axe estrutural — Gerador + Charlie aberto', () => {
       test(`Charlie · ${brand} · ${mode}`, async ({ page }) => {
         await login(page)
         await setTheme(page, brand, mode)
-        await page.getByRole('tab', { name: 'Vagas' }).click()
+        await gotoMenu(page, 'Vagas')
+        await abrirVaga(page)
         await page.getByRole('button', { name: /Falar com Charlie/i }).click()
         await page.waitForTimeout(300)
         const r = await scan(page)
@@ -85,7 +87,8 @@ test.describe('axe estrutural — modal de chips (Benefícios)', () => {
       test(`Modal chips · ${brand} · ${mode}`, async ({ page }) => {
         await login(page)
         await setTheme(page, brand, mode)
-        await page.getByRole('tab', { name: 'Vagas' }).click()
+        await gotoMenu(page, 'Vagas')
+        await abrirVaga(page)
         await page.getByRole('button', { name: 'Adicionar benefício' }).click()
         await expect(page.getByRole('dialog', { name: /Adicionar benefício/ })).toBeVisible()
         await page.waitForTimeout(200)

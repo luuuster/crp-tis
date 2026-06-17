@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, type Page } from '@playwright/test'
 import { contrastOnStack } from './wcag'
-import { login, setTheme, type Brand, type Mode } from './helpers'
+import { login, setTheme, gotoMenu, abrirVaga, type Brand, type Mode } from './helpers'
 
 // AUDITORIA DE FOCO (WCAG 2.4.7 / 1.4.11): todo elemento na ordem de tabulação precisa de um
 // indicador de foco VISÍVEL (outline ≥2px sólido OU um ring de box-shadow) e com contraste ≥3:1
@@ -56,33 +56,49 @@ async function collectFocusStops(page: import('@playwright/test').Page): Promise
   return out
 }
 
-test.describe('auditoria de FOCO — Gerador', () => {
+// Rotas: o Gerador (wizard, com o stepper que tinha o bug do foco no dark) + as telas internas que o
+// gate antes não cobria. O Sheet de cadastro de Usuários prende o foco — tabulamos os campos do form.
+const ROUTES: { name: string; go: (p: Page) => Promise<void> }[] = [
+  { name: 'Gerador (wizard)', go: async (p) => { await gotoMenu(p, 'Vagas'); await abrirVaga(p) } },
+  { name: 'Dashboard', go: async () => {} },
+  { name: 'Banco de talentos', go: async (p) => { await gotoMenu(p, 'Banco de talentos') } },
+  { name: 'Usuários (cadastro)', go: async (p) => {
+    await gotoMenu(p, 'Usuários')
+    await p.getByRole('button', { name: 'Cadastro de usuário' }).click()
+    await expect(p.getByRole('dialog')).toBeVisible()
+  } },
+]
+
+test.describe('auditoria de FOCO', () => {
   for (const brand of BRANDS)
-    for (const mode of MODES) {
-      test(`foco visível ${brand} · ${mode}`, async ({ page }) => {
-        await login(page)
-        await setTheme(page, brand, mode)
-        await page.getByRole('tab', { name: 'Vagas' }).click()
-        await page.waitForTimeout(200)
-        await page.addStyleTag({ content: NO_MOTION })
+    for (const mode of MODES)
+      for (const route of ROUTES) {
+        test(`${route.name} · ${brand} · ${mode}`, async ({ page }) => {
+          await login(page)
+          await setTheme(page, brand, mode)
+          await route.go(page)
+          await page.waitForTimeout(200)
+          await page.addStyleTag({ content: NO_MOTION })
 
-        const stops = await collectFocusStops(page)
-        expect(stops.length, 'esperava elementos focáveis no Gerador').toBeGreaterThan(8)
+          const stops = await collectFocusStops(page)
+          // Piso de sanidade (confirma que o sweep achou controles). O cerne do teste é o loop abaixo:
+          // TODO stop precisa de indicador de foco visível (outline ≥2px ou ring) com contraste ≥3:1.
+          expect(stops.length, `esperava elementos focáveis em ${route.name}`).toBeGreaterThan(4)
 
-        const fails: string[] = []
-        for (const s of stops) {
-          const hasOutline = s.outlineStyle !== 'none' && s.outlineWidth >= 2
-          const hasRing = s.ring && s.ring !== 'none' // fallback p/ componentes ainda em ring
-          if (!hasOutline && !hasRing) {
-            fails.push(`SEM indicador: <${s.tag}> "${s.label}"`)
-            continue
+          const fails: string[] = []
+          for (const s of stops) {
+            const hasOutline = s.outlineStyle !== 'none' && s.outlineWidth >= 2
+            const hasRing = s.ring && s.ring !== 'none' // fallback p/ componentes ainda em ring
+            if (!hasOutline && !hasRing) {
+              fails.push(`SEM indicador: <${s.tag}> "${s.label}"`)
+              continue
+            }
+            if (hasOutline) {
+              const ratio = contrastOnStack(s.outlineColor, s.bgStack)
+              if (ratio < 3) fails.push(`indicador fraco (${ratio.toFixed(2)}:1 < 3): <${s.tag}> "${s.label}"`)
+            }
           }
-          if (hasOutline) {
-            const ratio = contrastOnStack(s.outlineColor, s.bgStack)
-            if (ratio < 3) fails.push(`indicador fraco (${ratio.toFixed(2)}:1 < 3): <${s.tag}> "${s.label}"`)
-          }
-        }
-        expect(fails, `${brand}·${mode} — foco:\n${fails.join('\n')}`).toEqual([])
-      })
-    }
+          expect(fails, `${route.name}·${brand}·${mode} — foco:\n${fails.join('\n')}`).toEqual([])
+        })
+      }
 })

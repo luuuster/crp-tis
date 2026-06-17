@@ -31,6 +31,20 @@ um anel de repouso e não é cortado por `overflow`. **Não** crie anel de foco 
 Base **16px**, piso **14px**. **12px é raríssimo** e só via `.ty-caption`/`.ty-overline` ou `text-xs`.
 Nada de `text-[13px]`/`text-[0.8rem]` arbitrário.
 
+## Layout — UM padrão por tipo de tela
+Os primitivos de layout vivem em [src/components/page.tsx](src/components/page.tsx). **Use-os** — não
+recrie container/cabeçalho/cartão/KPI à mão (era o que vinha divergindo entre as páginas).
+
+| Quero… | Use | Padrão embutido |
+|---|---|---|
+| Página de **lista** (Dashboard, Vagas, Candidatos…) | `PageContainer` + `PageHeader` | `max-w-6xl`, `space-y-7`, `px-5 py-8 lg:px-8`; header com ícone `size-7 text-primary-text` (ou greeting sem ícone) + `desc` + slot `actions` |
+| Tela de **detalhe** | `DetailScreen` | `width="5xl"` (1 coluna) / `width="6xl"` (2 colunas); `space-y-6`, `py-6`; rodapé fixo **com a mesma largura** (passe `footer`); `crumb` opcional |
+| **Cartão de seção** | `Panel` | `CARD` + `p-6`; cabeçalho ícone-à-esquerda opcional + `h2`; `bodyClassName` p/ `space-y-*` |
+| **KPI / indicador** | `StatCard` | `CARD` + `p-5`; chip de ícone tonal + valor; slot `delta` p/ a variação |
+
+**Escala de padding:** seção `p-6` · KPI `p-5` · tile interno `bg-muted/30` `p-3`/`p-4`. Nunca aninhe
+`CARD` dentro de `CARD` — para hierarquia interna use **tiles** `bg-muted/30 rounded-lg/xl`.
+
 ## O que a máquina cobra (`npm run verify`)
 - **`npm run lint`** → regra local `crp/design-tokens`: reprova fill-como-texto, cor chumbada (hex/rgb/
   oklch) e tipografia < 14px. (Exceções legítimas: `// eslint-disable-next-line crp/design-tokens` **com

@@ -25,5 +25,6 @@ export const toneBadge = {
   secondary: 'bg-secondary/10 text-secondary-text',
   destructive: 'bg-destructive/10 text-destructive-text',
   success: 'bg-success/10 text-success-text',
+  warning: 'bg-warning/10 text-warning-text',
 } as const
 export type Tone = keyof typeof toneBadge

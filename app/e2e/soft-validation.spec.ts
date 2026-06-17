@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { login } from './helpers'
+import { login, gotoMenu, abrirVaga } from './helpers'
 
 // Validação SOFT do wizard (Gerador): ao tentar avançar com obrigatório em branco, o campo é
 // DESTACADO (aria-invalid + mensagem) — mas o fluxo NÃO TRAVA (um 2º clique prossegue). É o que o
@@ -10,7 +10,8 @@ import { login } from './helpers'
 test.describe('validação SOFT — Gerador (mostra faltantes, não trava)', () => {
   test('1º clique destaca o campo vazio e não pula; 2º clique avança mesmo assim', async ({ page }) => {
     await login(page)
-    await page.getByRole('tab', { name: 'Vagas' }).click()
+    await gotoMenu(page, 'Vagas')
+    await abrirVaga(page)
 
     const budget = page.locator('#budget')
     await expect(budget).toBeVisible()
@@ -33,7 +34,8 @@ test.describe('validação SOFT — Gerador (mostra faltantes, não trava)', () 
 
   test('preencher o campo remove o destaque na hora (reativo)', async ({ page }) => {
     await login(page)
-    await page.getByRole('tab', { name: 'Vagas' }).click()
+    await gotoMenu(page, 'Vagas')
+    await abrirVaga(page)
     await page.getByRole('button', { name: /Avançar para/ }).click()
 
     const budget = page.locator('#budget')
