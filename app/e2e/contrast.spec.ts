@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
 import { contrastOnStack, aaThreshold } from './wcag'
-import { login, gotoRegister, setTheme, type Brand, type Mode } from './helpers'
+import { login, gotoRegister, setTheme, gotoMenu, abrirVaga, type Brand, type Mode } from './helpers'
 
 // AUDITORIA DE CONTRASTE por PIXEL REAL (WCAG 1.4.3): para cada texto VISÍVEL, mede a cor renderizada
 // vs o fundo composto (camada a camada, com alpha) e exige AA (4.5:1 normal / 3:1 grande). Usa culori
@@ -15,25 +15,63 @@ const MODES: Mode[] = ['light', 'dark']
 const SURFACES: { name: string; go: (p: Page, b: Brand, m: Mode) => Promise<void> }[] = [
   { name: 'Login', go: async (p, b, m) => { await p.goto('/'); await setTheme(p, b, m) } },
   { name: 'Cadastro', go: async (p, b, m) => { await gotoRegister(p); await setTheme(p, b, m) } },
-  { name: 'Dashboard', go: async (p, b, m) => { await login(p); await setTheme(p, b, m); await p.getByRole('tab', { name: 'Dashboard' }).click() } },
-  { name: 'Vagas', go: async (p, b, m) => { await login(p); await setTheme(p, b, m); await p.getByRole('tab', { name: 'Vagas' }).click() } },
-  // Passo 2 (Perfil e Requisitos): avança pelo RODAPÉ — os cards FUTUROS do Stepper não são mais
-  // clicáveis (só os já visitados). Obrigatórios em branco → confirma no aviso "Avançar assim mesmo".
+  // Login já cai na Dashboard (AppShell); navegação das telas internas é pelo MENU (sidebar), não pelo dock.
+  { name: 'Dashboard', go: async (p, b, m) => { await login(p); await setTheme(p, b, m) } },
+  { name: 'Vagas', go: async (p, b, m) => { await login(p); await setTheme(p, b, m); await gotoMenu(p, 'Vagas') } },
+  // Passo 2 (Perfil e Requisitos): entra no wizard pela lista ("Abrir vaga") e avança pelo RODAPÉ.
+  // Obrigatórios em branco → confirma no aviso "Avançar assim mesmo".
   { name: 'Gerador-Perfil', go: async (p, b, m) => {
-    await login(p); await setTheme(p, b, m)
-    await p.getByRole('tab', { name: 'Vagas' }).click()
+    await login(p); await setTheme(p, b, m); await gotoMenu(p, 'Vagas'); await abrirVaga(p)
     await p.getByRole('button', { name: /Avançar para/ }).click()
     const soft = p.getByRole('button', { name: 'Avançar assim mesmo' })
     await soft.waitFor({ state: 'visible', timeout: 1500 }).then(() => soft.click()).catch(() => {})
     await expect(p.getByText('Template aplicado automaticamente.')).toBeVisible()
   } },
-  { name: 'Componentes', go: async (p, b, m) => { await login(p); await setTheme(p, b, m); await p.getByRole('tab', { name: 'Componentes' }).click() } },
-  // Charlie é um painel-irmão (flex, não overlay): abri-lo audita o Gerador + o drawer juntos.
-  { name: 'Charlie', go: async (p, b, m) => {
-    await login(p); await setTheme(p, b, m)
-    await p.getByRole('tab', { name: 'Vagas' }).click()
+  { name: 'Componentes', go: async (p, b, m) => { await login(p); await setTheme(p, b, m); await gotoMenu(p, 'Componentes') } },
+  // Charlie do Gerador é um painel-irmão (flex, não overlay): abri-lo audita o wizard + o drawer juntos.
+  { name: 'Charlie-Gerador', go: async (p, b, m) => {
+    await login(p); await setTheme(p, b, m); await gotoMenu(p, 'Vagas'); await abrirVaga(p)
     await p.getByRole('button', { name: /Falar com Charlie/ }).click()
     await expect(p.getByRole('complementary', { name: 'Copiloto Charlie' })).toBeVisible()
+  } },
+  // ── Telas de dados (antes descobertas pelo e2e de contraste) ──────────────────────────────────
+  { name: 'Candidatos', go: async (p, b, m) => { await login(p); await setTheme(p, b, m); await gotoMenu(p, 'Banco de talentos') } },
+  // Perfil do candidato: HERÓI AZUL (bg-primary) com badge de etapa — alvo da classe "texto colorido
+  // sobre fill sólido". Abre o 1º candidato (Mariana Lopes = Contratado).
+  { name: 'Candidatos-Perfil', go: async (p, b, m) => {
+    await login(p); await setTheme(p, b, m); await gotoMenu(p, 'Banco de talentos')
+    await p.getByRole('button', { name: 'Mariana Lopes' }).click()
+    await expect(p.getByText('Perfil do candidato')).toBeVisible()
+  } },
+  // Charlie do Banco: Sheet lateral (roxo/secondary).
+  { name: 'Charlie-Banco', go: async (p, b, m) => {
+    await login(p); await setTheme(p, b, m); await gotoMenu(p, 'Banco de talentos')
+    await p.getByRole('button', { name: 'Falar com Charlie' }).click()
+    await expect(p.getByRole('dialog')).toBeVisible()
+  } },
+  { name: 'Usuarios', go: async (p, b, m) => { await login(p); await setTheme(p, b, m); await gotoMenu(p, 'Usuários') } },
+  // Sheet de cadastro: form portaled (collectText varre o document.body, então mede o Sheet aberto).
+  { name: 'Usuarios-Cadastro', go: async (p, b, m) => {
+    await login(p); await setTheme(p, b, m); await gotoMenu(p, 'Usuários')
+    await p.getByRole('button', { name: 'Cadastro de usuário' }).click()
+    await expect(p.getByRole('dialog')).toBeVisible()
+  } },
+  { name: 'Entrevistas', go: async (p, b, m) => { await login(p); await setTheme(p, b, m); await gotoMenu(p, 'Calendário de entrevistas') } },
+  { name: 'EntrevistasIA', go: async (p, b, m) => { await login(p); await setTheme(p, b, m); await gotoMenu(p, 'Entrevistas IA') } },
+  // Detalhe da IA: também tem HERÓI AZUL (mesmo padrão do perfil) — abre o 1º candidato.
+  { name: 'EntrevistasIA-Detalhe', go: async (p, b, m) => {
+    await login(p); await setTheme(p, b, m); await gotoMenu(p, 'Entrevistas IA')
+    await p.getByRole('button', { name: 'Diego Teste 2' }).click()
+    await expect(p.getByText('Detalhes do candidato')).toBeVisible()
+  } },
+  // Sheet de agendar (Teams): abre, preenche a data → renderiza os slots de disponibilidade
+  // (livre=success / selecionado=primary / ocupado=disabled) p/ medir o contraste deles.
+  { name: 'Agendar-Teams', go: async (p, b, m) => {
+    await login(p); await setTheme(p, b, m); await gotoMenu(p, 'Calendário de entrevistas')
+    await p.getByRole('button', { name: 'Agendar' }).first().click()
+    await expect(p.getByRole('dialog')).toBeVisible()
+    await p.locator('#ag-data').fill('22/06/2026')
+    await p.waitForTimeout(150)
   } },
 ]
 

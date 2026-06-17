@@ -55,6 +55,11 @@
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
   --color-success-text: var(--success-text);
+  /* warning (âmbar) — existe no contrato do DS mas faltava ser exposto como utilitário aqui. Par
+     warning/warning-foreground é AA (validado pelo check.mjs); -text é AA sobre background/card. */
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning-text: var(--warning-text);
 
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
@@ -142,6 +147,17 @@
   --text-body-sm-line-height: var(--font-line-height-base);
   /* Caption (12px) e overline (12px) ficam no tamanho semantico — caption É 12px.
      Labels (ty-label-sm) e conteudo dos inputs ficam em 14px. */
+}
+
+/* color-scheme casa os CONTROLES NATIVOS do navegador (indicador de calendário do
+   <input type="date">, scrollbars, spinners) com o tema. Sem isto o Chrome desenha o ícone
+   do date-picker escuro — invisível no fundo escuro ("apagado"). É herdado pela raiz, então
+   alcança até inputs portaled (Sheets). .dark fica no <html>; :root.dark vence o :root base. */
+:root {
+  color-scheme: light;
+}
+:root.dark {
+  color-scheme: dark;
 }
 
 body {

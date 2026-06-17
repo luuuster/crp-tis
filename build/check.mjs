@@ -154,6 +154,23 @@ for (const { file, label, mustHave } of A11Y_ARTIFACTS) {
 }
 
 // ----------------------------------------------------------------
+// AUTO-DESCOBERTA DE COMPONENTES — fecha o ponto-cego do A11Y_ARTIFACTS hardcoded.
+// Todo dist/components/*.css emitido pelo build DEVE ter uma entrada em A11Y_ARTIFACTS (que
+// exige foco/reduced-motion/forced-colors + header GERADO). Um componente novo sem contrato
+// reprova AQUI — nunca passa em silêncio (a11y-bar: WCAG AA fatal no check).
+// ----------------------------------------------------------------
+const COMPONENTS_DIR = join(DIST, 'components');
+const A11Y_COVERED = new Set(A11Y_ARTIFACTS.map(({ file }) => file)); // ex.: 'components/button.css'
+if (existsSync(COMPONENTS_DIR)) {
+  for (const f of readdirSync(COMPONENTS_DIR)) {
+    if (!f.endsWith('.css')) continue; // só os CSS de componente (o .js tem sua própria entrada)
+    const rel = `components/${f}`;
+    if (!A11Y_COVERED.has(rel))
+      a11yErrors.push(`A11Y dist/${rel}: componente novo SEM contrato em A11Y_ARTIFACTS (check.mjs). Adicione foco/reduced-motion/forced-colors + par de contraste antes de shippar.`);
+  }
+}
+
+// ----------------------------------------------------------------
 // USO-DE-COR (texto) — varredura das FONTES (preview/ + src/).
 // Um TOKEN de PREENCHIMENTO (primary/secondary/destructive/warning/success/info) NÃO pode
 // ser usado como `color:` de TEXTO: no dark ele é um shade escuro e reprova AA como texto
