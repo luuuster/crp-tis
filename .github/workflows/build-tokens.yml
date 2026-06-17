@@ -40,11 +40,17 @@ jobs:
       - name: Build dos tokens
         run: npm run build          # primitives + themes/* + tokens.css + theme.css
 
+      - name: Doctor (corrupção do working tree — diagnóstico, sem --fix)
+        run: npm run doctor         # cinto-e-suspensório: pega arquivo commitado já truncado/corrompido
+
       - name: Validar (refs, contrato, contraste WCAG)
         run: npm run check
 
       - name: Auditoria do dark mode (fail-loud)
         run: npm run audit:dark -- --strict
+
+      - name: Audit de segurança (falha só em high+; os moderate do changesets são devDep de release)
+        run: npm audit --audit-level=high
 
       - name: Exportar figma-variables.json (artefato gerado, não versionado)
         run: npm run export:figma
