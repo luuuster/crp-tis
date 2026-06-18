@@ -23,7 +23,8 @@ import { tintFor } from '@/lib/avatar'
 import { usePagination } from '@/lib/usePagination'
 import { exportCsv } from '@/lib/exportCsv'
 import { AppShell } from '@/components/shell/AppShell'
-import { PageContainer, PageHeader, Panel, StatCard, DetailScreen, Paginacao, badgeTone, type BadgeTone } from '@/components/page'
+import { PageContainer, PageHeader, Panel, StatCard, DetailScreen, Paginacao, EmptyState, TableSkeleton, ErrorState, badgeTone, type BadgeTone } from '@/components/page'
+import { useMockData } from '@/lib/useMockData'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import { ExportButton } from '@/components/ExportButton'
 import { Button } from '@/components/ui/button'
@@ -533,7 +534,7 @@ export function EntrevistasIA({ onNavigate, brand, mode, onCycleBrand, onToggleM
 }) {
   const { t } = useTranslation('entrevistas-ia')
   const { t: tc } = useTranslation('common')
-  const [cands, setCands] = useState<Candidato[]>(CANDIDATOS_INICIAL)
+  const { data: cands, setData: setCands, loading, error, retry } = useMockData<Candidato[]>('entrevistas-ia', () => CANDIDATOS_INICIAL, [])
   const [statusF, setStatusF] = useState<(typeof STATUS_FILTROS)[number]>('Todos')
   const [vagaF, setVagaF] = useState('Todas')
   const [q, setQ] = useState('')
@@ -556,6 +557,10 @@ export function EntrevistasIA({ onNavigate, brand, mode, onCycleBrand, onToggleM
 
   const { page, setPage, pageItems, total, inicio, totalItems } = usePagination(filtrados, PER_PAGE)
   const resetPage = () => setPage(1)
+
+  // Estado vazio: "Limpar filtros" quando há filtro/busca ativos (zera status/vaga/busca e volta à 1ª página).
+  const filtrosAtivos = statusF !== 'Todos' || vagaF !== 'Todas' || q !== ''
+  const limparFiltros = () => { setStatusF('Todos'); setVagaF('Todas'); setQ(''); resetPage() }
 
   const pageActionableIds = pageItems.filter((c) => acionavel(c.status)).map((c) => c.id)
   const allPageSelected = pageActionableIds.length > 0 && pageActionableIds.every((id) => sel.has(id))
@@ -631,11 +636,11 @@ export function EntrevistasIA({ onNavigate, brand, mode, onCycleBrand, onToggleM
           />
 
           {/* KPIs — números reais derivados da lista */}
-          <section aria-label="Indicadores" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <StatCard icon={Users} label={t('kpi.total')} value={cands.length} />
-            <StatCard icon={Clock} label={t('kpi.pendente')} value={pendentes} />
-            <StatCard icon={Bot} label={t('kpi.aprovadoBot')} value={aprovadosBot} />
-            <StatCard icon={CheckCircle2} label={t('kpi.aprovadoRH')} value={aprovadosRH} />
+          <section aria-label={t('kpi.regiao')} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <StatCard icon={Users} label={t('kpi.total')} value={cands.length} loading={loading} />
+            <StatCard icon={Clock} label={t('kpi.pendente')} value={pendentes} loading={loading} />
+            <StatCard icon={Bot} label={t('kpi.aprovadoBot')} value={aprovadosBot} loading={loading} />
+            <StatCard icon={CheckCircle2} label={t('kpi.aprovadoRH')} value={aprovadosRH} loading={loading} />
           </section>
 
           {/* Lista de triagem — filtros DENTRO do card */}
@@ -703,9 +708,22 @@ export function EntrevistasIA({ onNavigate, brand, mode, onCycleBrand, onToggleM
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtrados.length === 0 ? (
+                {loading ? (
+                  <TableSkeleton cols={6} />
+                ) : error ? (
                   <TableRow className="hover:bg-transparent">
-                    <TableCell colSpan={6} className="py-14 text-center ty-body-sm text-muted-foreground">{t('lista.vazio')}</TableCell>
+                    <TableCell colSpan={6} className="p-0"><ErrorState onRetry={retry} /></TableCell>
+                  </TableRow>
+                ) : filtrados.length === 0 ? (
+                  <TableRow className="hover:bg-transparent">
+                    <TableCell colSpan={6} className="p-0">
+                      <EmptyState
+                        icon={Search}
+                        title={t('lista.vazio')}
+                        description={tc('vazio.descricaoFiltro')}
+                        action={filtrosAtivos ? <Button variant="outline" size="sm" onClick={limparFiltros}>{tc('acao.limparFiltros')}</Button> : undefined}
+                      />
+                    </TableCell>
                   </TableRow>
                 ) : (
                   pageItems.map((c) => (

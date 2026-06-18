@@ -18,7 +18,8 @@ import { exportCsv } from '@/lib/exportCsv'
 import { usePagination } from '@/lib/usePagination'
 import { AppShell } from '@/components/shell/AppShell'
 import { ExportButton } from '@/components/ExportButton'
-import { PageContainer, PageHeader, StatCard, StatusBadge, Paginacao, type BadgeTone } from '@/components/page'
+import { PageContainer, PageHeader, StatCard, StatusBadge, Paginacao, EmptyState, TableSkeleton, ErrorState, type BadgeTone } from '@/components/page'
+import { useMockData } from '@/lib/useMockData'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -135,7 +136,7 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
   const labelFiltroFuncao = (v: string) => (v === 'Todas' ? tc('filtro.todas') : labelFuncao(v as Funcao))
   const labelFiltroStatus = (v: string) => (v === 'Todos' ? tc('filtro.todos') : labelStatus(v as StatusU))
 
-  const [usuarios, setUsuarios] = useState<Usuario[]>(USUARIOS_INICIAL)
+  const { data: usuarios, setData: setUsuarios, loading, error, retry } = useMockData<Usuario[]>('usuarios', () => USUARIOS_INICIAL, [])
   const [funcaoF, setFuncaoF] = useState<(typeof FUNCAO_FILTROS)[number]>('Todas')
   const [statusF, setStatusF] = useState<(typeof STATUS_FILTROS)[number]>('Todos')
   const [q, setQ] = useState('')
@@ -161,6 +162,10 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
 
   const { page, setPage, pageItems, total: totalPages, inicio } = usePagination(filtrados, PER_PAGE)
   const resetPage = () => setPage(1)
+
+  // Estado vazio: "Limpar filtros" quando há filtro/busca ativos (zera função/status/busca e volta à 1ª página).
+  const filtrosAtivos = funcaoF !== 'Todas' || statusF !== 'Todos' || q !== ''
+  const limparFiltros = () => { setFuncaoF('Todas'); setStatusF('Todos'); setQ(''); resetPage() }
 
   const abrirConvite = () => { setEditing(null); setForm({ nome: '', email: '', telefone: '', cpf: '', tipoPessoa: 'Pessoa Física', nascimento: '', funcao: 'Recrutador' }); setDialogOpen(true) }
   const abrirEdicao = (u: Usuario) => { setEditing(u); setForm({ nome: u.nome, email: u.email, telefone: u.telefone ?? '', cpf: u.cpf ?? '', tipoPessoa: u.tipoPessoa ?? 'Pessoa Física', nascimento: u.nascimento ?? '', funcao: u.funcao }); setDialogOpen(true) }
@@ -223,10 +228,10 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
 
         {/* KPIs — números reais derivados da lista */}
         <section aria-label={t('lista.indicadores')} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatCard icon={Users} label={t('kpi.total')} value={usuarios.length} />
-          <StatCard icon={UserCheck} label={t('kpi.ativos')} value={ativos} />
-          <StatCard icon={MailCheck} label={t('kpi.pendentes')} value={pendentes} />
-          <StatCard icon={ShieldCheck} label={t('kpi.admins')} value={admins} />
+          <StatCard icon={Users} label={t('kpi.total')} value={usuarios.length} loading={loading} />
+          <StatCard icon={UserCheck} label={t('kpi.ativos')} value={ativos} loading={loading} />
+          <StatCard icon={MailCheck} label={t('kpi.pendentes')} value={pendentes} loading={loading} />
+          <StatCard icon={ShieldCheck} label={t('kpi.admins')} value={admins} loading={loading} />
         </section>
 
         {/* Lista — filtros DENTRO do card, na barra de ferramentas da tabela */}
@@ -264,9 +269,22 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtrados.length === 0 ? (
+              {loading ? (
+                <TableSkeleton cols={5} />
+              ) : error ? (
                 <TableRow className="hover:bg-transparent">
-                  <TableCell colSpan={5} className="py-14 text-center ty-body-sm text-muted-foreground">{t('lista.vazio')}</TableCell>
+                  <TableCell colSpan={5} className="p-0"><ErrorState onRetry={retry} /></TableCell>
+                </TableRow>
+              ) : filtrados.length === 0 ? (
+                <TableRow className="hover:bg-transparent">
+                  <TableCell colSpan={5} className="p-0">
+                    <EmptyState
+                      icon={Search}
+                      title={t('lista.vazio')}
+                      description={tc('vazio.descricaoFiltro')}
+                      action={filtrosAtivos ? <Button variant="outline" size="sm" onClick={limparFiltros}>{tc('acao.limparFiltros')}</Button> : undefined}
+                    />
+                  </TableCell>
                 </TableRow>
               ) : (
                 pageItems.map((u) => (

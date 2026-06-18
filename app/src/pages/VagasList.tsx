@@ -14,7 +14,8 @@ import { Trans, useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { CARD } from '@/lib/surfaces'
 import { usePagination } from '@/lib/usePagination'
-import { PageContainer, PageHeader, StatCard, Paginacao, StatusBadge, type BadgeTone } from '@/components/page'
+import { PageContainer, PageHeader, StatCard, Paginacao, StatusBadge, EmptyState, TableSkeleton, ErrorState, type BadgeTone } from '@/components/page'
+import { useMockData } from '@/lib/useMockData'
 import { ExportButton } from '@/components/ExportButton'
 import { exportCsv, type CsvColumn } from '@/lib/exportCsv'
 import { VagaDocumento } from '@/lib/vaga'
@@ -261,7 +262,7 @@ export function VagaDetalhe({ vaga }: { vaga: Vaga }) {
 export function VagasList({ onAbrirVaga, onEditVaga, onVerVaga }: { onAbrirVaga: () => void; onEditVaga: (vaga: Vaga) => void; onVerVaga: (vaga: Vaga) => void }) {
   const { t } = useTranslation('vagas')
   const { t: tc } = useTranslation('common')
-  const [vagas, setVagas] = useState<Vaga[]>(VAGAS_INICIAL)
+  const { data: vagas, setData: setVagas, loading, error, retry } = useMockData<Vaga[]>('vagas', () => VAGAS_INICIAL, [])
   const [status, setStatus] = useState<(typeof STATUS_FILTROS)[number]>('Todos')
   const [q, setQ] = useState('')
   const [dataF, setDataF] = useState('Todas')
@@ -293,6 +294,10 @@ export function VagasList({ onAbrirVaga, onEditVaga, onVerVaga }: { onAbrirVaga:
   const { page, setPage, pageItems, total: totalPages, inicio, totalItems } = usePagination(filtradas, PER_PAGE)
   // Mudar qualquer filtro volta para a 1ª página (some o risco de ficar "preso" numa página vazia).
   const resetPage = () => setPage(1)
+
+  // Estado vazio: oferece "Limpar filtros" quando há filtro/busca ativos (zera tudo e volta à 1ª página).
+  const filtrosAtivos = status !== 'Todos' || q !== '' || dataF !== 'Todas' || senioridadeF !== 'Todas' || modeloF !== 'Todos'
+  const limparFiltros = () => { setStatus('Todos'); setQ(''); setDataF('Todas'); setSenioridadeF('Todas'); setModeloF('Todos'); resetPage() }
 
   // Fechar a vaga = mudar o status para "Fechada" (NÃO remove da lista; ela continua visível, encerrada).
   const fecharVaga = () => {
@@ -333,10 +338,10 @@ export function VagasList({ onAbrirVaga, onEditVaga, onVerVaga }: { onAbrirVaga:
 
       {/* KPIs — números reais derivados da lista */}
       <section aria-label={t('kpi.regiao')} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard icon={Briefcase} label={t('kpi.abertas')} value={abertas} />
-        <StatCard icon={Users} label={t('kpi.inscritos')} value={inscritos} />
-        <StatCard icon={CheckCircle2} label={t('kpi.aprovados')} value={aprovados} />
-        <StatCard icon={Clock} label={t('kpi.emProcesso')} value={emProcesso} />
+        <StatCard icon={Briefcase} label={t('kpi.abertas')} value={abertas} loading={loading} />
+        <StatCard icon={Users} label={t('kpi.inscritos')} value={inscritos} loading={loading} />
+        <StatCard icon={CheckCircle2} label={t('kpi.aprovados')} value={aprovados} loading={loading} />
+        <StatCard icon={Clock} label={t('kpi.emProcesso')} value={emProcesso} loading={loading} />
       </section>
 
       {/* Lista — filtros DENTRO do card, na barra de ferramentas da tabela */}
@@ -383,9 +388,22 @@ export function VagasList({ onAbrirVaga, onEditVaga, onVerVaga }: { onAbrirVaga:
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filtradas.length === 0 ? (
+            {loading ? (
+              <TableSkeleton cols={8} />
+            ) : error ? (
               <TableRow className="hover:bg-transparent">
-                <TableCell colSpan={8} className="py-14 text-center ty-body-sm text-muted-foreground">{t('lista.vazio')}</TableCell>
+                <TableCell colSpan={8} className="p-0"><ErrorState onRetry={retry} /></TableCell>
+              </TableRow>
+            ) : filtradas.length === 0 ? (
+              <TableRow className="hover:bg-transparent">
+                <TableCell colSpan={8} className="p-0">
+                  <EmptyState
+                    icon={Search}
+                    title={t('lista.vazio')}
+                    description={tc('vazio.descricaoFiltro')}
+                    action={filtrosAtivos ? <Button variant="outline" size="sm" onClick={limparFiltros}>{tc('acao.limparFiltros')}</Button> : undefined}
+                  />
+                </TableCell>
               </TableRow>
             ) : (
               pageItems.map((v) => (

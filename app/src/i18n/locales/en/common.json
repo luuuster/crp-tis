@@ -11,9 +11,11 @@
     "voltar": "Back",
     "fechar": "Close",
     "editar": "Edit",
-    "limpar": "Clear"
+    "limpar": "Clear",
+    "limparFiltros": "Clear filters"
   },
   "filtro": { "todas": "All", "todos": "All" },
+  "vazio": { "descricaoFiltro": "Adjust the search or filters to see more results." },
   "tema": { "claro": "Light theme", "escuro": "Dark theme" },
   "marca": "Switch brand (current: {{marca}})",
   "erro": {

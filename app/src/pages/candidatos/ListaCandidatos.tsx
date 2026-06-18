@@ -12,7 +12,8 @@ import { iniciais } from '@/lib/format'
 import { tintFor } from '@/lib/avatar'
 import { exportCsv } from '@/lib/exportCsv'
 import { ExportButton } from '@/components/ExportButton'
-import { PageContainer, PageHeader, StatCard, Paginacao } from '@/components/page'
+import { PageContainer, PageHeader, StatCard, Paginacao, EmptyState, TableSkeleton, ErrorState } from '@/components/page'
+import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -31,7 +32,7 @@ function ColFilter({ value, onChange, options, label, renderLabel }: { value: st
 }
 
 export function ListaCandidatos({
-  cands, filtrados, pageItems,
+  cands, loading, error, onRetry, filtrados, pageItems,
   etapaF, vagaF, senioridadeF, q,
   vagas, senioridades, etapaFiltros,
   page, total, inicio, totalItems,
@@ -39,7 +40,7 @@ export function ListaCandidatos({
   onEtapaF, onVagaF, onSenioridadeF, onBusca,
   onPage, onAbrir,
 }: {
-  cands: Candidato[]; filtrados: Candidato[]; pageItems: Candidato[]
+  cands: Candidato[]; loading: boolean; error: boolean; onRetry: () => void; filtrados: Candidato[]; pageItems: Candidato[]
   etapaF: string; vagaF: string; senioridadeF: string; q: string
   vagas: string[]; senioridades: string[]; etapaFiltros: typeof ETAPA_FILTROS
   page: number; total: number; inicio: number; totalItems: number
@@ -54,6 +55,10 @@ export function ListaCandidatos({
   const etapaLabel = (v: string) => (v === 'Todas' ? tc('filtro.todas') : t(`etapa.${v}` as 'etapa.Triagem'))
   const senFiltroLabel = (v: string) => (v === 'Todas' ? tc('filtro.todas') : senLabel(v))
   const vagaLabel = (v: string) => (v === 'Todas' ? tc('filtro.todas') : v)
+
+  // Estado vazio: se há filtro/busca ativos, oferece "Limpar filtros" (zera tudo via os setters do orquestrador).
+  const filtrosAtivos = q !== '' || etapaF !== 'Todas' || vagaF !== 'Todas' || senioridadeF !== 'Todas'
+  const limparFiltros = () => { onBusca(''); onEtapaF('Todas'); onVagaF('Todas'); onSenioridadeF('Todas') }
 
   // Exporta a lista FILTRADA (não só a página) — colunas traduzidas; valores de etapa/senioridade
   // exportados pelo rótulo traduzido (display), nome/e-mail/vaga ficam como estão (dados).
@@ -78,10 +83,10 @@ export function ListaCandidatos({
 
       {/* KPIs */}
       <section aria-label={t('aria.indicadores')} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard icon={Users} label={t('kpi.total')} value={cands.length} />
-        <StatCard icon={Video} label={t('kpi.emEntrevista')} value={emEntrevista} />
-        <StatCard icon={ClipboardCheck} label={t('kpi.entrevistados')} value={entrevistados} />
-        <StatCard icon={UserCheck} label={t('kpi.contratados')} value={contratados} />
+        <StatCard icon={Users} label={t('kpi.total')} value={cands.length} loading={loading} />
+        <StatCard icon={Video} label={t('kpi.emEntrevista')} value={emEntrevista} loading={loading} />
+        <StatCard icon={ClipboardCheck} label={t('kpi.entrevistados')} value={entrevistados} loading={loading} />
+        <StatCard icon={UserCheck} label={t('kpi.contratados')} value={contratados} loading={loading} />
       </section>
 
       {/* Banco — filtros DENTRO do card */}
@@ -119,9 +124,22 @@ export function ListaCandidatos({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filtrados.length === 0 ? (
+            {loading ? (
+              <TableSkeleton cols={6} />
+            ) : error ? (
               <TableRow className="hover:bg-transparent">
-                <TableCell colSpan={6} className="py-14 text-center ty-body-sm text-muted-foreground">{t('vazio')}</TableCell>
+                <TableCell colSpan={6} className="p-0"><ErrorState onRetry={onRetry} /></TableCell>
+              </TableRow>
+            ) : filtrados.length === 0 ? (
+              <TableRow className="hover:bg-transparent">
+                <TableCell colSpan={6} className="p-0">
+                  <EmptyState
+                    icon={Search}
+                    title={t('vazio')}
+                    description={tc('vazio.descricaoFiltro')}
+                    action={filtrosAtivos ? <Button variant="outline" size="sm" onClick={limparFiltros}>{tc('acao.limparFiltros')}</Button> : undefined}
+                  />
+                </TableCell>
               </TableRow>
             ) : (
               pageItems.map((c) => (

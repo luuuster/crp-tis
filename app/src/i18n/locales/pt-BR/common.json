@@ -11,9 +11,11 @@
     "voltar": "Voltar",
     "fechar": "Fechar",
     "editar": "Editar",
-    "limpar": "Limpar"
+    "limpar": "Limpar",
+    "limparFiltros": "Limpar filtros"
   },
   "filtro": { "todas": "Todas", "todos": "Todos" },
+  "vazio": { "descricaoFiltro": "Ajuste a busca ou os filtros para ver mais resultados." },
   "tema": { "claro": "Tema claro", "escuro": "Tema escuro" },
   "marca": "Trocar marca (atual: {{marca}})",
   "erro": {

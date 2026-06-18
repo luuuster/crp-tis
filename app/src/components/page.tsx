@@ -17,6 +17,9 @@ import { cn } from '@/lib/utils'
 import { CARD, toneBadge, type Tone } from '@/lib/surfaces'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
+import { Skeleton } from '@/components/ui/skeleton'
+import { TableCell, TableRow } from '@/components/ui/table'
 
 type IconType = ComponentType<{ className?: string }>
 
@@ -28,7 +31,7 @@ export function PageContainer({ width = 'max-w-6xl', className, children }: { wi
 // Cabeçalho de lista. `title` é ReactNode → cobre "ícone + título" e o greeting (sem ícone) do Dashboard.
 export function PageHeader({ icon: Icon, title, desc, actions }: { icon?: IconType; title: ReactNode; desc?: ReactNode; actions?: ReactNode }) {
   return (
-    <header className="flex flex-wrap items-end justify-between gap-4">
+    <header className="flex flex-wrap items-start justify-between gap-4">
       <div className="space-y-1.5">
         <h1 className="flex items-center gap-2.5 font-heading text-3xl font-bold tracking-tight text-foreground">
           {Icon && <Icon className="size-7 shrink-0 text-primary-text" aria-hidden />}
@@ -63,8 +66,9 @@ export function Panel({ icon: Icon, title, desc, action, className, bodyClassNam
 }
 
 // Cartão de KPI/indicador. Chip de ícone (token primário) + valor; `delta` é a linha de variação opcional.
-export function StatCard({ icon: Icon, label, value, delta, className }: {
-  icon: IconType; label: ReactNode; value: ReactNode; delta?: ReactNode; className?: string
+// `loading` troca o valor por um skeleton (mesma altura) — KPIs e tabela carregam juntos, sem flash de "0".
+export function StatCard({ icon: Icon, label, value, delta, loading, className }: {
+  icon: IconType; label: ReactNode; value: ReactNode; delta?: ReactNode; loading?: boolean; className?: string
 }) {
   return (
     <div className={cn(CARD, 'p-5', className)}>
@@ -72,9 +76,30 @@ export function StatCard({ icon: Icon, label, value, delta, className }: {
         <p className="ty-overline text-muted-foreground">{label}</p>
         <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary-text" aria-hidden><Icon className="size-4.5" /></span>
       </div>
-      <p className="mt-3 font-heading text-3xl font-bold tabular-nums tracking-tight text-foreground">{value}</p>
-      {delta}
+      {loading ? (
+        <Skeleton className="mt-3 h-9 w-20" />
+      ) : (
+        <p className="mt-3 font-heading text-3xl font-bold tabular-nums tracking-tight text-foreground">{value}</p>
+      )}
+      {!loading && delta}
     </div>
+  )
+}
+
+// Linhas de SKELETON para o corpo de tabela durante a carga (vai dentro do <TableBody>). `cols` = nº de
+// colunas; larguras variadas p/ parecer conteúdo real, não barras iguais. Decorativo (sem texto/role).
+const SKEL_W = ['w-28', 'w-16', 'w-24', 'w-20', 'w-14', 'w-24', 'w-16', 'w-20']
+export function TableSkeleton({ rows = 6, cols }: { rows?: number; cols: number }) {
+  return (
+    <>
+      {Array.from({ length: rows }).map((_, r) => (
+        <TableRow key={r} className="hover:bg-transparent">
+          {Array.from({ length: cols }).map((_, c) => (
+            <TableCell key={c} className="py-3.5"><Skeleton className={cn('h-4', SKEL_W[c % SKEL_W.length])} /></TableCell>
+          ))}
+        </TableRow>
+      ))}
+    </>
   )
 }
 
@@ -157,6 +182,23 @@ export function Paginacao({ page, total, inicio, shown, totalItems, onPage, comp
         </div>
       </div>
     </div>
+  )
+}
+
+// Estado VAZIO (lista/filtro sem resultados): ícone + título + descrição + ação opcional (ex.: "Limpar
+// filtros"). Vai DENTRO do <td colSpan> da tabela quando o filtro zera a lista; o ícone é decorativo.
+export function EmptyState({ icon: Icon, title, description, action, className }: {
+  icon: IconType; title: ReactNode; description?: ReactNode; action?: ReactNode; className?: string
+}) {
+  return (
+    <Empty className={cn('py-12', className)}>
+      <EmptyHeader>
+        <EmptyMedia variant="icon"><Icon aria-hidden /></EmptyMedia>
+        <EmptyTitle>{title}</EmptyTitle>
+        {description && <EmptyDescription>{description}</EmptyDescription>}
+      </EmptyHeader>
+      {action && <EmptyContent>{action}</EmptyContent>}
+    </Empty>
   )
 }
 

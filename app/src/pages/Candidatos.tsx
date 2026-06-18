@@ -13,6 +13,7 @@ import { Sparkles } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { usePagination } from '@/lib/usePagination'
+import { useMockData } from '@/lib/useMockData'
 import { AppShell } from '@/components/shell/AppShell'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/ui/sheet'
@@ -35,7 +36,7 @@ export function Candidatos({ onNavigate, brand, mode, onCycleBrand, onToggleMode
   onNavigate: (v: string) => void; brand?: string; mode?: string; onCycleBrand?: () => void; onToggleMode?: () => void
 }) {
   const { t } = useTranslation('candidatos')
-  const [cands] = useState<Candidato[]>(CANDIDATOS_INICIAL)
+  const { data: cands, loading, error, retry } = useMockData<Candidato[]>('candidatos', () => CANDIDATOS_INICIAL, [])
   const [etapaF, setEtapaF] = useState<(typeof ETAPA_FILTROS)[number]>('Todas')
   const [vagaF, setVagaF] = useState('Todas')
   const [senioridadeF, setSenioridadeF] = useState('Todas')
@@ -86,6 +87,9 @@ export function Candidatos({ onNavigate, brand, mode, onCycleBrand, onToggleMode
       ) : (
         <ListaCandidatos
           cands={cands}
+          loading={loading}
+          error={!!error}
+          onRetry={retry}
           filtrados={filtrados}
           pageItems={pageItems}
           etapaF={etapaF}
