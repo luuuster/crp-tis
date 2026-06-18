@@ -5,6 +5,7 @@
     "desc": "Acompanhe as entrevistas concluídas pela IA no primeiro funil de recrutamento e registre a decisão do RH — aprovação ou reprovação. Clique em um candidato para ver a análise completa."
   },
   "kpi": {
+    "regiao": "Indicadores",
     "total": "Total",
     "pendente": "Pendente",
     "aprovadoBot": "Aprovado bot",
