@@ -15,7 +15,7 @@ const MODES: Mode[] = ['light', 'dark']
 const NO_MOTION = '*,*::before,*::after{transition:none!important;animation:none!important}'
 
 type FocusData = {
-  tag: string; label: string
+  tag: string; label: string; dataSlot: string | null
   outlineStyle: string; outlineWidth: number; outlineColor: string
   ring: string // box-shadow
   bgStack: string[] // do pai até a raiz (p/ compor o fundo sob o outline)
@@ -41,6 +41,7 @@ async function collectFocusStops(page: import('@playwright/test').Page): Promise
       return {
         tag: el.tagName.toLowerCase(),
         label: (el.getAttribute('aria-label') || el.textContent || el.getAttribute('placeholder') || '').trim().slice(0, 30),
+        dataSlot: el.getAttribute('data-slot'),
         outlineStyle: cs.outlineStyle, outlineWidth: parseFloat(cs.outlineWidth) || 0, outlineColor: cs.outlineColor,
         ring: cs.boxShadow,
         bgStack,
@@ -50,6 +51,10 @@ async function collectFocusStops(page: import('@playwright/test').Page): Promise
     if (!d) break
     if (seen.has(d.sig)) break // voltou ao começo / ciclou
     seen.add(d.sig)
+    // input-otp: o <input> real é transparente — o indicador de foco aparece no SLOT ATIVO
+    // (data-active → ring), que esta heurística por-elemento não consegue atribuir ao input. Pula
+    // (o foco É visível, no slot) e segue tabulando.
+    if (d.dataSlot === 'input-otp') { await page.keyboard.press('Tab'); continue }
     out.push(d)
     await page.keyboard.press('Tab')
   }
@@ -61,6 +66,9 @@ async function collectFocusStops(page: import('@playwright/test').Page): Promise
 const ROUTES: { name: string; go: (p: Page) => Promise<void> }[] = [
   { name: 'Gerador (wizard)', go: async (p) => { await gotoMenu(p, 'Vagas'); await abrirVaga(p) } },
   { name: 'Dashboard', go: async () => {} },
+  // Vitrine: dezenas de controles (botões, campos, toggles, tabs) — o indicador de foco de cada um
+  // precisa ser visível e ≥3:1. O sweep cobre os ~60 primeiros tabbables da página.
+  { name: 'Componentes', go: async (p) => { await gotoMenu(p, 'Componentes') } },
   { name: 'Banco de talentos', go: async (p) => { await gotoMenu(p, 'Banco de talentos') } },
   { name: 'Usuários (cadastro)', go: async (p) => {
     await gotoMenu(p, 'Usuários')

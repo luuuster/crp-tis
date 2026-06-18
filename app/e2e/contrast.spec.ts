@@ -28,6 +28,13 @@ const SURFACES: { name: string; go: (p: Page, b: Brand, m: Mode) => Promise<void
     await expect(p.getByText('Template aplicado automaticamente.')).toBeVisible()
   } },
   { name: 'Componentes', go: async (p, b, m) => { await login(p); await setTheme(p, b, m); await gotoMenu(p, 'Componentes') } },
+  // Overlay aberto na vitrine: mede o texto sobre a superfície --popover/--popover-foreground
+  // (que o scan fechado de "Componentes" não alcança — o conteúdo é portaled e só monta ao abrir).
+  { name: 'Componentes-Popover', go: async (p, b, m) => {
+    await login(p); await setTheme(p, b, m); await gotoMenu(p, 'Componentes')
+    await p.getByRole('button', { name: 'Abrir popover' }).click()
+    await expect(p.getByText('Dimensões')).toBeVisible()
+  } },
   // Charlie do Gerador é um painel-irmão (flex, não overlay): abri-lo audita o wizard + o drawer juntos.
   { name: 'Charlie-Gerador', go: async (p, b, m) => {
     await login(p); await setTheme(p, b, m); await gotoMenu(p, 'Vagas'); await abrirVaga(p)

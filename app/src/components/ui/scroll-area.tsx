@@ -16,6 +16,9 @@ function ScrollArea({
     >
       <ScrollAreaPrimitive.Viewport
         data-slot="scroll-area-viewport"
+        // tabIndex=0: torna a região rolável acessível por teclado (setas/PageUp-Down) — WCAG 2.1.1.
+        // O viewport já tinha estilos de foco (focus-visible:ring), mas sem tabindex nunca recebia foco.
+        tabIndex={0}
         className="size-full rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1"
       >
         {children}

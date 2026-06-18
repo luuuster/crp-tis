@@ -86,6 +86,16 @@ function CommandList({
   className,
   ...props
 }: React.ComponentProps<typeof CommandPrimitive.List>) {
+  const ref = React.useRef<HTMLDivElement>(null)
+  // A11Y (WCAG 1.3.1): o cmdk embrulha os itens num <div cmdk-list-sizer> genérico ENTRE a listbox
+  // (role=listbox) e os options (role=option) — esse nó quebra a posse listbox→option e o axe acusa
+  // `aria-required-children` com a lista aberta. Marcá-lo como presentational torna-o transparente na
+  // árvore de acessibilidade (sem aria/tabindex → sem presentation-role-conflict), devolvendo a posse
+  // dos grupos/options à listbox. O cmdk não expõe esse nó por prop; corrigir pela camada do wrapper é
+  // a única via. O elemento é estável (criado no mount), então uma passada é suficiente.
+  React.useEffect(() => {
+    ref.current?.querySelector('[cmdk-list-sizer]')?.setAttribute('role', 'presentation')
+  }, [])
   return (
     <CommandPrimitive.List
       data-slot="command-list"
@@ -94,6 +104,7 @@ function CommandList({
         className
       )}
       {...props}
+      ref={ref}
     />
   )
 }
@@ -133,6 +144,12 @@ function CommandSeparator({
   return (
     <CommandPrimitive.Separator
       data-slot="command-separator"
+      // A11Y (WCAG 1.3.1): dentro da listbox do cmdk só `option`/`group` são filhos válidos — um
+      // `role=separator` ali é "não permitido" (axe: aria-required-children). O separador é uma divisória
+      // VISUAL entre grupos (decorativa; a estrutura semântica vem dos headings dos grupos), então o
+      // escondemos da árvore de acessibilidade. cmdk fixa role=separator DEPOIS do spread (não dá p/
+      // sobrescrever o role por prop), mas não define aria-hidden — por isso esta é a via.
+      aria-hidden
       className={cn("-mx-1 h-px bg-border", className)}
       {...props}
     />
