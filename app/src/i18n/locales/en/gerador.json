@@ -1,0 +1,392 @@
+{
+  "topbar": {
+    "trilha": "Breadcrumb",
+    "workspace": "Workspace",
+    "vagas": "Jobs",
+    "menu": {
+      "abrir": "Open menu",
+      "fechar": "Close menu",
+      "recolher": "Collapse menu",
+      "expandir": "Expand menu"
+    },
+    "falarCharlie": "Talk to Charlie",
+    "conta": {
+      "label": "Your account",
+      "minha": "My account",
+      "contaDemo": "Account (demo).",
+      "sair": "Sign out"
+    },
+    "sairConfirm": {
+      "titulo": "Sign out of your account?",
+      "descricao": "You will be signed out. Unsaved changes will be lost.",
+      "voltar": "Back",
+      "sair": "Sign out"
+    }
+  },
+  "steps": {
+    "1": {
+      "title": "Job Briefing",
+      "eyebrow": "Briefing",
+      "desc": "Institutional and operational details"
+    },
+    "2": {
+      "title": "Profile & Requirements",
+      "eyebrow": "Profile",
+      "desc": "Skills, experience and education"
+    },
+    "3": {
+      "title": "Review & Publish",
+      "eyebrow": "Review",
+      "desc": "Review, edit and publish the job"
+    }
+  },
+  "stepper": {
+    "progresso": "Progress: step {{step}} of {{total}}",
+    "etapa": "Step {{n}}",
+    "etapaAqui": "Step {{n}}, you are here: ",
+    "etapaPrefixo": "Step {{n}}: ",
+    "status": {
+      "emAndamento": "In progress",
+      "incompleta": "Incomplete",
+      "concluida": "Completed",
+      "proxima": "Next"
+    }
+  },
+  "header": {
+    "eyebrowEdicao": "Editing",
+    "eyebrowCriacao": "Creating",
+    "etapaLinha": "{{modo}} · Step {{num}} — {{eyebrow}}",
+    "tituloEditar": "Edit job",
+    "tituloNova": "New job",
+    "descEditarAntes": "Update the information for ",
+    "descEditarDepois": " and save your changes. Charlie is still around to help refine the fields.",
+    "descNova": "Build the briefing at your own pace. Whenever you need, open Charlie — he offers suggestions and refines the fields with you."
+  },
+  "crumb": {
+    "vaga": "Job",
+    "editar": "Edit: {{cargo}}",
+    "novaVaga": "New job"
+  },
+  "footer": {
+    "cancelarEdicao": "Cancel editing",
+    "cancelarCriacao": "Cancel creation",
+    "salvarRascunho": "Save draft",
+    "voltar": "Back",
+    "avancarPara": "Continue to {{etapa}}",
+    "publicarVaga": "Publish job",
+    "republicarVaga": "Republish job",
+    "voltarLista": "Back to the list",
+    "editarVaga": "Edit job"
+  },
+  "validacao": {
+    "campoObrigatorio": "Required field",
+    "obrigatoriosEmBranco": "{{count}} required field(s) left blank — I highlighted them in red.",
+    "obrigatoriosDescricao": "You can fill them in now or continue anyway.",
+    "avancarAssimMesmo": "Continue anyway"
+  },
+  "toast": {
+    "editando": "Editing \"{{cargo}}\" (demo).",
+    "edicaoCancelada": "Editing cancelled (demo).",
+    "criacaoCancelada": "Creation cancelled (demo).",
+    "novaIniciada": "New job started (demo).",
+    "rascunhoSalvo": "Draft saved (demo).",
+    "vagaRepublicada": "Job republished! (demo)",
+    "vagaPublicada": "Job published! (demo)"
+  },
+  "dialog": {
+    "cancelarEdicaoTitulo": "Cancel editing this job?",
+    "cancelarCriacaoTitulo": "Cancel creating this job?",
+    "cancelarEdicaoDescricao": "The changes made to this job will be discarded and cannot be recovered.",
+    "cancelarCriacaoDescricao": "You are about to cancel creating this job. All progress will be lost and cannot be recovered.",
+    "continuarEditando": "Keep editing",
+    "simCancelar": "Yes, cancel",
+    "salvarRascunhoTitulo": "Save as a draft?",
+    "salvarRascunhoDescricao": "The information you filled in is kept so you can pick up editing this job whenever you want.",
+    "salvarRascunhoConfirmar": "Save draft",
+    "republicarTitulo": "Republish the job?",
+    "publicarTitulo": "Publish this job?",
+    "republicarDescricao": "Your changes will be saved and the job will be republished, accepting applications again.",
+    "publicarEdicaoDescricao": "The information will be saved and the job will be published, starting to accept applications.",
+    "publicarDescricao": "The job will be published and start accepting applications.",
+    "revisarAntes": "Review first"
+  },
+  "sectionStatus": {
+    "completa": "Complete",
+    "preenchendo": "Under review",
+    "pendente": "To fill in",
+    "opcional": "Optional"
+  },
+  "sections": {
+    "identidade": {
+      "title": "Job identity",
+      "desc": "How this position sits within the organization."
+    },
+    "sobre": {
+      "title": "About the job",
+      "desc": "The context of the challenge and the goal of the hire — the opening of the description."
+    },
+    "operacao": {
+      "title": "Operations & routine",
+      "desc": "Where, when and at what pace this person will work."
+    },
+    "investimento": {
+      "title": "Investment",
+      "desc": "The salary range and benefits that make this job competitive."
+    },
+    "processo": {
+      "title": "Selection process",
+      "desc": "The stages of the selection, in order — what applicants will go through."
+    },
+    "requisitos": {
+      "title": "Technical requirements",
+      "desc": "What this person needs to master right from the start."
+    },
+    "diferenciais": {
+      "title": "Nice-to-haves",
+      "desc": "Knowledge that counts in their favor but isn't a blocker."
+    },
+    "responsabilidades": {
+      "title": "Responsibilities & profile",
+      "desc": "The day-to-day of the role and the kind of person you're looking for."
+    }
+  },
+  "briefing": {
+    "cargo": { "label": "Role / Title", "placeholder": "Select the role", "buscar": "Search role…" },
+    "nivel": { "label": "Seniority", "placeholder": "Select the seniority" },
+    "modelo": { "label": "Work model", "placeholder": "Select the model" },
+    "cliente": { "label": "Client / Project", "hint": "Client or internal project this job belongs to.", "placeholder": "Client name" },
+    "gestor": { "label": "Direct manager", "hint": "Person the job reports to.", "placeholder": "Manager name" },
+    "desafio": { "label": "About the challenge", "hint": "The scenario where the job is born — the team/project and the moment.", "placeholder": "Ex: Estamos expandindo o time de engenharia do TIS Talent AI Platform para sustentar o crescimento da plataforma." },
+    "objetivo": { "label": "Goal of the job", "hint": "What this hire needs to achieve.", "placeholder": "Ex: Ampliar a capacidade de entrega de soluções backend de alta performance, garantindo escalabilidade e qualidade nas integrações da plataforma." },
+    "local": { "label": "Work location", "hint": "Base city/state (even for remote/hybrid).", "placeholder": "City — State" },
+    "horario": { "label": "Schedule", "placeholder": "Select a schedule" },
+    "carga": { "label": "Weekly hours", "placeholder": "Select weekly hours" },
+    "motivo": { "label": "Reason for opening", "placeholder": "Select the reason" },
+    "quantidade": { "label": "Number of openings", "placeholder": "Select the amount", "buscar": "Search number…" },
+    "budget": { "label": "Budget", "hint": "Expected salary range.", "placeholder": "R$ 8.000 — 10.000" },
+    "modalidade": { "label": "Contract type", "placeholder": "Select the contract type" },
+    "beneficios": { "label": "Benefits", "addLabel": "benefit", "buscar": "Search benefit…", "vazio": "No benefits added." },
+    "processo": { "label": "Process stages", "hint": "Select the stages and order the sequence with the arrows.", "addLabel": "stage", "buscar": "Search stage…", "vazio": "No stages added." }
+  },
+  "perfil": {
+    "templateAviso": "Template applied automatically.",
+    "templateAvisoResto": " Review and adjust each field to match the project's reality before moving on.",
+    "exigenciasLegenda": "Formal requirements",
+    "formacao": { "label": "Education / Schooling", "hint": "Accepted level and fields of study.", "placeholder": "Ex: Superior completo em Ciência da Computação ou áreas correlatas." },
+    "experiencia": { "label": "Required experience", "hint": "Minimum amount and type of experience required.", "placeholder": "Ex: Mínimo 3 anos em desenvolvimento backend com Python e APIs RESTful." },
+    "stackObrigatoria": { "label": "Required tech stack", "hint": "Without it, the profile won't pass screening.", "addLabel": "technology", "buscar": "Search technology…", "vazio": "No technologies — add some or ask Charlie." },
+    "conhecimentos": { "label": "Nice-to-have knowledge", "hint": "Counts in their favor, but doesn't block.", "addLabel": "knowledge", "buscar": "Search knowledge…", "vazio": "Add the desired nice-to-haves." },
+    "responsabilidades": { "label": "Duties and responsibilities", "hint": "One per sentence — they become bullets in the generated description.", "placeholder": "Ex: Desenvolver e manter APIs RESTful. Realizar code reviews. Mentorar pessoas." },
+    "habilidades": { "label": "Soft skills", "hint": "The kind of person you're looking for (optional).", "addLabel": "skill", "buscar": "Search skill…", "vazio": "Add the desired soft skills." },
+    "justificativa": { "label": "Hiring justification", "hint": "Why this job exists — free context for approval.", "placeholder": "Ex: Expansão do produto X para novo cliente — necessidade de reforço técnico no time de backend." }
+  },
+  "field": {
+    "obrigatorioMarca": " *",
+    "ajuda": "Help: {{label}}",
+    "campoObrigatorio": "Required field"
+  },
+  "chips": {
+    "adicionar": "Add {{label}}",
+    "adicionarMais": "add more",
+    "moverItemCima": "Move {{item}} up",
+    "moverItemBaixo": "Move {{item}} down",
+    "remover": "Remove {{item}}",
+    "etapaPrefixo": "Step {{n}}: ",
+    "sheetDescricao": "Search and check the items. Changes apply instantly; close when you're done.",
+    "opcoesDe": "{{label}} options",
+    "nadaEncontrado": "Nothing found.",
+    "fechar": "Close",
+    "limparTitulo": "Clear all items?",
+    "limparDescricao": "The {{count}} items in this field will be removed.",
+    "limparTudo": "Clear all",
+    "limparTudoContagem": "Clear all ({{count}})"
+  },
+  "select": {
+    "selecione": "Select",
+    "nadaEncontrado": "Nothing found.",
+    "opcoes": "Options",
+    "selecioneOpcao": "Select an option from the list."
+  },
+  "charlie": {
+    "fecharCharlie": "Close Charlie",
+    "nome": "Charlie",
+    "copiloto": "COPILOT",
+    "ativo": "ACTIVE",
+    "tituloSr": "Charlie — copilot",
+    "descricaoSr": "Suggestions and chat to help you build the job.",
+    "copilotoAside": "Charlie copilot",
+    "sugestoesAria": "Suggestions",
+    "sugestoesTitulo": "Suggestions for this step",
+    "conversaAria": "Conversation",
+    "conversaTitulo": "Conversation",
+    "vazio": "Use a suggestion above or write a message.",
+    "inputLabel": "Message for Charlie",
+    "inputPlaceholder": "Describe the job or ask a question…",
+    "anexar": "Attach file",
+    "anexarToast": "Attach (demo).",
+    "voz": "Dictate by voice",
+    "vozToast": "Voice (demo).",
+    "limparTitulo": "Clear the conversation?",
+    "limparDescricao": "The entire history of this conversation with Charlie will be deleted.",
+    "limpar": "Clear",
+    "enviar": "Send",
+    "saudacao": "Hi! I'm Charlie. I saw you selected {{nivel}} and {{modelo}} in {{local}}.{{budget}}",
+    "saudacaoBudget": " The budget is still blank — want a market range?",
+    "respostaPadrao": "Got it! In this demo I don't actually fill anything in, but this is where I'd distribute what I recognized across the fields.",
+    "haAgoSegundos": "{{s}}s ago",
+    "haAgoMinutos": "{{min}}min ago"
+  },
+  "review": {
+    "tomTitulo": "Choose the tone of the description.",
+    "tomGrupo": "Description tone",
+    "tom": {
+      "Equilibrado": "Balanced",
+      "Descontraído": "Casual",
+      "Formal": "Formal"
+    },
+    "descricaoVaga": "Job description",
+    "melhorando": "Enhancing…",
+    "melhorarIA": "Enhance with AI",
+    "melhorarToast": "Charlie enhanced the description. Tweak it by hand if you like.",
+    "acoes": "Actions",
+    "scoreQualidade": "Quality score",
+    "aprovado": "Approved",
+    "emRevisao": "Under review",
+    "prontaParaPublicar": "Job ready to publish.",
+    "resolvaPendencias": "Resolve the pending items to approve the job.",
+    "briefingIncompleto": "Briefing incomplete",
+    "perfilIncompleto": "Profile incomplete",
+    "textoAcimaLimite": "Text over 2,000 characters",
+    "resolver": "{{label}} · resolve",
+    "novaVagaTitulo": "Start a new job?",
+    "novaVagaDescricao": "The data filled in for this job will be discarded and cannot be recovered.",
+    "novaVagaConfirmar": "Yes, start over",
+    "novaVaga": "New job"
+  },
+  "copy": {
+    "copiarTexto": "Copy text",
+    "copiado": "Copied",
+    "copiar": "Copy",
+    "postCopiado": "Post text copied!",
+    "erroCopiar": "Couldn't copy — select and copy manually.",
+    "copiarPost": "Copy post text",
+    "publicarManual": "Use this content when publishing manually."
+  },
+  "charBadge": {
+    "caracteres": "{{num}} characters",
+    "ideal": "— Ideal for engagement (≤ {{limit}})",
+    "acima": "— Above the ideal (> {{limit}})"
+  },
+  "doc": {
+    "descricaoVaga": "Job description",
+    "sobreDesafio": "About the challenge",
+    "objetivo": "Goal",
+    "responsabilidades": "Responsibilities",
+    "requisitos": "Requirements",
+    "operacao": "Operations & conditions",
+    "processoSeletivo": "Selection process",
+    "beneficios": "Benefits",
+    "editar": "edit",
+    "editarLabel": "Edit {{label}}",
+    "semConteudo": "No content.",
+    "labelResumo": "summary",
+    "placeholderResumo": "Write a summary of the job.",
+    "placeholderDesafio": "Describe the context of the challenge.",
+    "placeholderObjetivo": "Describe the goal of the hire.",
+    "salvar": "Save",
+    "cancelar": "Cancel"
+  },
+  "opcoes": {
+    "cargo": {
+      "Desenvolvedor Backend": "Backend Developer",
+      "Desenvolvedor Frontend": "Frontend Developer",
+      "Desenvolvedor Fullstack": "Fullstack Developer",
+      "Product Manager": "Product Manager",
+      "Designer UX/UI": "UX/UI Designer",
+      "Analista de Dados": "Data Analyst",
+      "Engenheiro DevOps": "DevOps Engineer",
+      "Analista de QA": "QA Analyst"
+    },
+    "nivel": {
+      "Estágio": "Internship",
+      "Júnior": "Junior",
+      "Pleno": "Mid-level",
+      "Sênior": "Senior",
+      "Especialista": "Specialist",
+      "Liderança": "Leadership"
+    },
+    "modelo": {
+      "Presencial": "On-site",
+      "Híbrido": "Hybrid",
+      "Remoto": "Remote"
+    },
+    "carga": {
+      "20 horas": "20 hours",
+      "30 horas": "30 hours",
+      "40 horas": "40 hours",
+      "44 horas": "44 hours"
+    },
+    "motivo": {
+      "Aumento do quadro": "Headcount increase",
+      "Substituição": "Replacement",
+      "Novo projeto": "New project",
+      "Backfill": "Backfill",
+      "Confidencial": "Confidential"
+    },
+    "modalidade": {
+      "CLT": "CLT (employee)",
+      "PJ": "PJ (contractor)",
+      "Estágio": "Internship",
+      "Temporário": "Temporary",
+      "Cooperado": "Co-op"
+    },
+    "beneficio": {
+      "Vale-refeição": "Meal allowance",
+      "Vale-transporte": "Transport allowance",
+      "Plano de saúde": "Health insurance",
+      "Plano odontológico": "Dental plan",
+      "Auxílio home-office": "Home-office stipend",
+      "Day-off aniversário": "Birthday day off",
+      "Gympass": "Gympass",
+      "Bônus anual": "Annual bonus",
+      "Stock options": "Stock options",
+      "Auxílio creche": "Childcare allowance",
+      "Seguro de vida": "Life insurance",
+      "Horário flexível": "Flexible hours"
+    },
+    "processo": {
+      "Triagem de currículo": "Resume screening",
+      "Entrevista com RH": "HR interview",
+      "Entrevista comportamental": "Behavioral interview",
+      "Teste técnico / Case": "Technical test / Case",
+      "Entrevista técnica": "Technical interview",
+      "Entrevista com gestor": "Manager interview",
+      "Entrevista com liderança": "Leadership interview",
+      "Dinâmica de grupo": "Group activity",
+      "Verificação de referências": "Reference check",
+      "Proposta": "Offer"
+    },
+    "exigencia": {
+      "Ensino superior obrigatório": "Degree required",
+      "Comprovação de experiência": "Proof of experience",
+      "Certificações profissionais": "Professional certifications"
+    },
+    "habilidade": {
+      "Comunicação clara": "Clear communication",
+      "Trabalho em equipe": "Teamwork",
+      "Pensamento analítico": "Analytical thinking",
+      "Proatividade": "Proactivity",
+      "Mentoria": "Mentoring",
+      "Autonomia": "Autonomy",
+      "Organização": "Organization",
+      "Resolução de problemas": "Problem solving",
+      "Adaptabilidade": "Adaptability"
+    },
+    "tech": {
+      "APIs RESTful": "REST APIs",
+      "Testes automatizados": "Automated testing",
+      "Microsserviços": "Microservices",
+      "Observabilidade": "Observability"
+    }
+  }
+}

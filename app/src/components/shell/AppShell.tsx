@@ -5,14 +5,16 @@
  */
 import { useEffect, useState, type ReactNode } from 'react'
 import {
-  Blocks, Bot, Briefcase, CalendarDays, ChevronLeft, ClipboardList, LayoutDashboard, LogOut, Menu, Moon, Palette, Search, Sun, UserRound, Users, X,
+  Blocks, Bot, CalendarDays, ChevronLeft, ClipboardList, LayoutDashboard, LogOut, Menu, Moon, Palette, Sun, UserRound, Users, X,
 } from 'lucide-react'
 import { Dialog as DialogPrimitive } from 'radix-ui'
 import { toast } from 'sonner'
+import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/lib/utils'
 import { focusRing, focusRingOnPrimary } from '@/lib/focus'
 import { Button } from '@/components/ui/button'
+import { LanguageSelect } from '@/components/LanguageSelect'
 import { Separator } from '@/components/ui/separator'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
@@ -35,21 +37,18 @@ export function useIsMobile(query = '(max-width: 767px)') {
   return isMobile
 }
 
+// Os rótulos vêm do i18n (namespace 'nav'): grupo via `grupo.<key>`, item via `item.<key>`.
 export const NAV_GROUPS = [
-  { label: 'Workspace', items: [
-    { key: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { key: 'gerador', label: 'Vagas', icon: ClipboardList },
-    { key: 'entrevistas', label: 'Calendário de entrevistas', icon: CalendarDays },
-    { key: 'entrevistas-ia', label: 'Entrevistas IA', icon: Bot },
-    { key: 'candidatos', label: 'Banco de talentos', icon: UserRound },
+  { key: 'workspace', items: [
+    { key: 'dashboard', icon: LayoutDashboard },
+    { key: 'gerador', icon: ClipboardList },
+    { key: 'entrevistas-ia', icon: Bot },
+    { key: 'entrevistas', icon: CalendarDays },
+    { key: 'candidatos', icon: UserRound },
   ] },
-  { label: 'Pipeline', items: [
-    { key: 'vagas', label: 'Vagas Ativas', icon: Briefcase },
-    { key: 'buscar', label: 'Buscar Talentos', icon: Search },
-  ] },
-  { label: 'Sistema', items: [
-    { key: 'usuarios', label: 'Usuários', icon: Users },
-    { key: 'componentes', label: 'Componentes', icon: Blocks },
+  { key: 'sistema', items: [
+    { key: 'usuarios', icon: Users },
+    { key: 'componentes', icon: Blocks },
   ] },
 ] as const
 
@@ -58,10 +57,12 @@ const REAL_VIEWS = new Set(['dashboard', 'gerador', 'entrevistas', 'entrevistas-
 function navHandle(key: string, label: string, onNavigate?: (v: string) => void, onVagas?: () => void) {
   if (key === 'gerador' && onVagas) { onVagas(); return }
   if (REAL_VIEWS.has(key)) { onNavigate?.(key); return }
-  toast.info(`"${label}" não faz parte desta demo.`)
+  // Inalcançável hoje (todos os itens são views reais); fallback se um item demonstrativo voltar.
+  toast.info(`"${label}"`)
 }
 
 export function Sidebar({ active, expanded, onNavigate, onVagas }: { active: string; expanded: boolean; onNavigate?: (v: string) => void; onVagas?: () => void }) {
+  const { t } = useTranslation('nav')
   // Transição SUAVE recolher↔expandir: a largura anima com easing; o conteúdo faz fade (não é render
   // condicional, o que dava "estalo"). `overflow-hidden` corta o excedente; o ícone fica FIXO.
   return (
@@ -71,11 +72,12 @@ export function Sidebar({ active, expanded, onNavigate, onVagas }: { active: str
         <Logo variant="onBrand" className={cn('h-7 w-auto transition-opacity duration-300', expanded ? 'opacity-100' : 'opacity-0')} alt="TIS Talent" />
       </div>
 
-      <nav className="flex-1 space-y-5 overflow-x-hidden overflow-y-auto px-2.5 py-3" aria-label="Navegação principal">
+      <nav className="flex-1 space-y-5 overflow-x-hidden overflow-y-auto px-2.5 py-3" aria-label={t('principal')}>
         {NAV_GROUPS.map((group) => (
-          <div key={group.label} className="space-y-1">
-            <p className={cn('overflow-hidden px-2 ty-caption font-semibold tracking-widest text-primary-foreground uppercase transition-all duration-300', expanded ? 'h-5 pb-1 opacity-100' : 'h-0 pb-0 opacity-0')}>{group.label}</p>
-            {group.items.map(({ key, label, icon: Icon }) => {
+          <div key={group.key} className="space-y-1">
+            <p className={cn('overflow-hidden px-2 ty-caption font-semibold tracking-widest text-primary-foreground uppercase transition-all duration-300', expanded ? 'h-5 pb-1 opacity-100' : 'h-0 pb-0 opacity-0')}>{t(`grupo.${group.key}`)}</p>
+            {group.items.map(({ key, icon: Icon }) => {
+              const label = t(`item.${key}`)
               const isActive = key === active
               return (
                 <Tooltip key={key} delayDuration={0}>
@@ -106,6 +108,7 @@ export function Sidebar({ active, expanded, onNavigate, onVagas }: { active: str
 }
 
 export function MobileNav({ active, open, onOpenChange, onNavigate, onVagas }: { active: string; open: boolean; onOpenChange: (v: boolean) => void; onNavigate?: (v: string) => void; onVagas?: () => void }) {
+  const { t } = useTranslation('nav')
   const go = (key: string, label: string) => { onOpenChange(false); navHandle(key, label, onNavigate, onVagas) }
   return (
     <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
@@ -113,17 +116,18 @@ export function MobileNav({ active, open, onOpenChange, onNavigate, onVagas }: {
         <DialogPrimitive.Content className="fixed inset-0 z-50 flex w-full flex-col bg-primary text-primary-foreground outline-none motion-safe:duration-200 motion-safe:data-[state=open]:animate-in motion-safe:data-[state=open]:fade-in-0 motion-safe:data-[state=closed]:animate-out motion-safe:data-[state=closed]:fade-out-0 md:hidden">
           <div className="flex h-16 shrink-0 items-center justify-between px-5">
             <Logo variant="onBrand" className="h-7 w-auto" alt="TIS Talent" />
-            <DialogPrimitive.Close aria-label="Fechar menu" className={cn('flex size-9 items-center justify-center rounded-lg text-primary-foreground transition-colors hover:bg-primary-foreground/10', focusRingOnPrimary)}>
+            <DialogPrimitive.Close aria-label={t('menu.fechar')} className={cn('flex size-9 items-center justify-center rounded-lg text-primary-foreground transition-colors hover:bg-primary-foreground/10', focusRingOnPrimary)}>
               <X className="size-5" aria-hidden />
             </DialogPrimitive.Close>
           </div>
-          <DialogPrimitive.Title className="sr-only">Navegação principal</DialogPrimitive.Title>
-          <DialogPrimitive.Description className="sr-only">Acesse as áreas do workspace.</DialogPrimitive.Description>
-          <nav className="flex-1 space-y-7 overflow-y-auto px-3 py-4" aria-label="Navegação principal">
+          <DialogPrimitive.Title className="sr-only">{t('principal')}</DialogPrimitive.Title>
+          <DialogPrimitive.Description className="sr-only">{t('menu.descricao')}</DialogPrimitive.Description>
+          <nav className="flex-1 space-y-7 overflow-y-auto px-3 py-4" aria-label={t('principal')}>
             {NAV_GROUPS.map((group) => (
-              <div key={group.label} className="space-y-1.5">
-                <p className="px-3 pb-1 ty-caption font-semibold tracking-widest text-primary-foreground uppercase">{group.label}</p>
-                {group.items.map(({ key, label, icon: Icon }) => {
+              <div key={group.key} className="space-y-1.5">
+                <p className="px-3 pb-1 ty-caption font-semibold tracking-widest text-primary-foreground uppercase">{t(`grupo.${group.key}`)}</p>
+                {group.items.map(({ key, icon: Icon }) => {
+                  const label = t(`item.${key}`)
                   const isActive = key === active
                   return (
                     <button
@@ -151,25 +155,28 @@ function ShellTopBar({ onToggleMenu, menuExpanded, isMobile, onLogout, brand, mo
   onToggleMenu: () => void; menuExpanded: boolean; isMobile?: boolean; onLogout: () => void
   brand?: string; mode?: string; onCycleBrand?: () => void; onToggleMode?: () => void; crumb: string; headerAction?: ReactNode
 }) {
-  const menuLabel = isMobile ? (menuExpanded ? 'Fechar menu' : 'Abrir menu') : menuExpanded ? 'Recolher menu' : 'Expandir menu'
+  const { t } = useTranslation('nav')
+  const { t: tc } = useTranslation('common')
+  const menuLabel = isMobile ? (menuExpanded ? t('menu.fechar') : t('menu.abrir')) : menuExpanded ? t('menu.recolher') : t('menu.expandir')
   const [confirmSair, setConfirmSair] = useState(false)
   return (
     <header className="flex h-16 shrink-0 items-center gap-3 border-b border-border/40 bg-card/70 px-4 backdrop-blur-sm lg:px-6">
       <Button variant="ghost" size="icon" aria-label={menuLabel} aria-expanded={menuExpanded} onClick={onToggleMenu} className="text-muted-foreground hover:text-foreground">
         {isMobile ? <Menu /> : <ChevronLeft className={cn('transition-transform', !menuExpanded && 'rotate-180')} />}
       </Button>
-      <nav aria-label="Trilha" className="hidden items-center gap-1.5 ty-caption font-medium tracking-wide text-muted-foreground uppercase sm:flex">
-        <span>Workspace</span><span aria-hidden>/</span><span className="text-foreground" aria-current="page">{crumb}</span>
+      <nav aria-label={t('trilha')} className="hidden items-center gap-1.5 ty-caption font-medium tracking-wide text-muted-foreground uppercase sm:flex">
+        <span>{t('trilha')}</span><span aria-hidden>/</span><span className="text-foreground" aria-current="page">{crumb}</span>
       </nav>
 
       <div className="ml-auto flex items-center gap-1.5">
-        {onCycleBrand && <Button variant="ghost" size="icon" aria-label={`Trocar marca (atual: ${brand})`} onClick={onCycleBrand}><Palette /></Button>}
-        {onToggleMode && <Button variant="ghost" size="icon" aria-label={mode === 'dark' ? 'Tema claro' : 'Tema escuro'} onClick={onToggleMode}>{mode === 'dark' ? <Sun /> : <Moon />}</Button>}
+        <LanguageSelect size="icon" />
+        {onCycleBrand && <Button variant="ghost" size="icon" aria-label={tc('marca', { marca: brand })} onClick={onCycleBrand}><Palette /></Button>}
+        {onToggleMode && <Button variant="ghost" size="icon" aria-label={mode === 'dark' ? tc('tema.claro') : tc('tema.escuro')} onClick={onToggleMode}>{mode === 'dark' ? <Sun /> : <Moon />}</Button>}
         <Separator orientation="vertical" className="mx-1 h-5" />
         {headerAction}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button type="button" aria-label="Sua conta" className={cn('relative ml-1 rounded-full', focusRing)}>
+            <button type="button" aria-label={t('conta.label')} className={cn('relative ml-1 rounded-full', focusRing)}>
               <Avatar className="size-10"><AvatarFallback className="bg-primary text-xs font-semibold text-primary-foreground">FL</AvatarFallback></Avatar>
               <span className="absolute right-0 bottom-0 size-2.5 rounded-full border-2 border-card bg-success" aria-hidden />
             </button>
@@ -183,16 +190,16 @@ function ShellTopBar({ onToggleMenu, menuExpanded, isMobile, onLogout, brand, mo
               </div>
             </div>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onSelect={() => toast.info('Conta (demo).')}><UserRound /> Minha conta</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => toast.info(t('conta.contaDemo'))}><UserRound /> {t('conta.minha')}</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onSelect={() => setConfirmSair(true)} className="text-destructive-text focus:bg-destructive/10 focus:text-destructive-text"><LogOut /> Sair</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => setConfirmSair(true)} className="text-destructive-text focus:bg-destructive/10 focus:text-destructive-text"><LogOut /> {t('conta.sair')}</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
       <ConfirmDialog
         open={confirmSair} onOpenChange={setConfirmSair} icon={LogOut} tone="primary" confirmVariant="default"
-        title="Sair da conta?" description="Você será desconectado. Alterações não salvas serão perdidas."
-        cancelLabel="Voltar" confirmLabel="Sair" onConfirm={onLogout}
+        title={t('sairConfirm.titulo')} description={t('sairConfirm.descricao')}
+        cancelLabel={t('sairConfirm.voltar')} confirmLabel={t('sairConfirm.sair')} onConfirm={onLogout}
       />
     </header>
   )

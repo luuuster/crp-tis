@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { AlertTriangle, CheckCircle2 } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
@@ -5,8 +6,9 @@ import { focusRing } from '@/lib/focus'
 import { STEPS } from './model'
 
 export function Stepper({ step, onPick, complete }: { step: number; onPick: (n: number) => void; complete?: (n: number) => boolean }) {
+  const { t } = useTranslation('gerador')
   return (
-    <ol className="grid gap-3 sm:grid-cols-3" aria-label={`Progresso: etapa ${step} de ${STEPS.length}`}>
+    <ol className="grid gap-3 sm:grid-cols-3" aria-label={t('stepper.progresso', { step, total: STEPS.length })}>
       {STEPS.map((s) => {
         const active = s.n === step
         const done = s.n < step
@@ -15,7 +17,7 @@ export function Stepper({ step, onPick, complete }: { step: number; onPick: (n: 
         const incomplete = done && !filled
         // "concluída" = preenchida e não-atual (vale p/ etapas passadas E futuras já completas — ex.: edição).
         const concluida = !active && filled
-        const status = active ? 'Em andamento' : incomplete ? 'Incompleta' : concluida ? 'Concluída' : 'Próxima'
+        const status = active ? t('stepper.status.emAndamento') : incomplete ? t('stepper.status.incompleta') : concluida ? t('stepper.status.concluida') : t('stepper.status.proxima')
         // Clicável: etapa JÁ PASSADA (voltar/revisar) OU já COMPLETA (na edição, todas → todas clicáveis).
         // Só a futura ainda EM BRANCO fica travada (sem hover/foco/cursor).
         const navigable = !active && (done || filled)
@@ -34,8 +36,8 @@ export function Stepper({ step, onPick, complete }: { step: number; onPick: (n: 
             <span className="space-y-0.5">
               {/* sr-only: o badge com o número é aria-hidden; aqui o leitor de tela recebe "Etapa N" e,
                   na atual, um "Você está aqui" explícito (reforça o aria-current="step" da div). */}
-              <span className="sr-only">{active ? `Etapa ${s.n}, você está aqui: ` : `Etapa ${s.n}: `}</span>
-              <span className="block ty-body-sm font-semibold text-foreground">{s.title}</span>
+              <span className="sr-only">{active ? t('stepper.etapaAqui', { n: s.n }) : t('stepper.etapaPrefixo', { n: s.n })}</span>
+              <span className="block ty-body-sm font-semibold text-foreground">{t(`steps.${s.n}.title`)}</span>
               <span className={cn('block ty-caption font-medium', active ? 'text-primary-text' : incomplete ? 'text-destructive-text' : concluida ? 'text-success-text' : 'text-muted-foreground')}>{status}</span>
             </span>
           </>

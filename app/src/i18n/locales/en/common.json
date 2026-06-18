@@ -1,0 +1,35 @@
+{
+  "idioma": "Language",
+  "abrirCalendario": "Open calendar",
+  "exportar": "Export",
+  "tentarNovamente": "Try again",
+  "buscar": "Search",
+  "acao": {
+    "cancelar": "Cancel",
+    "salvar": "Save",
+    "confirmar": "Confirm",
+    "voltar": "Back",
+    "fechar": "Close",
+    "editar": "Edit",
+    "limpar": "Clear"
+  },
+  "filtro": { "todas": "All", "todos": "All" },
+  "tema": { "claro": "Light theme", "escuro": "Dark theme" },
+  "marca": "Switch brand (current: {{marca}})",
+  "erro": {
+    "titulo": "Something went wrong",
+    "descricao": "An unexpected error occurred while loading the screen. Reload the page to try again.",
+    "recarregar": "Reload",
+    "tituloCarregar": "Couldn't load",
+    "descricaoCarregar": "Something went wrong while loading this data."
+  },
+  "paginacao": {
+    "mostrando": "Showing",
+    "de": "of",
+    "pagina": "Page",
+    "anterior": "Previous",
+    "proxima": "Next",
+    "paginaAnterior": "Previous page",
+    "proximaPagina": "Next page"
+  }
+}

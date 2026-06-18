@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import { X } from 'lucide-react'
 import { Dialog as DialogPrimitive } from 'radix-ui'
 
@@ -9,9 +10,11 @@ import { FLOAT } from '@/lib/surfaces'
 /** Bottom sheet (mobile): desliza de baixo, alça + título + fechar. É o "padrão de mobile" p/ seleção
  * — substitui o dropdown ancorado / a modal flutuante em telas estreitas (< md). O foco abre no
  * "Fechar" (1º focável do DOM), então NÃO dispara o teclado: o usuário toca na busca quando quer filtrar. */
-export function MobileSheet({ open, onOpenChange, title, description = 'Selecione uma opção da lista.', trigger, children }: {
+export function MobileSheet({ open, onOpenChange, title, description, trigger, children }: {
   open: boolean; onOpenChange: (v: boolean) => void; title: string; description?: string; trigger: ReactNode; children: ReactNode
 }) {
+  const { t } = useTranslation('gerador')
+  const desc = description ?? t('select.selecioneOpcao')
   return (
     <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
       <DialogPrimitive.Trigger asChild>{trigger}</DialogPrimitive.Trigger>
@@ -21,9 +24,9 @@ export function MobileSheet({ open, onOpenChange, title, description = 'Selecion
           <div className="mx-auto mt-2.5 h-1 w-9 shrink-0 rounded-full bg-border" aria-hidden />
           <div className="flex shrink-0 items-center gap-2 px-4 pt-2 pb-3">
             <DialogPrimitive.Title className="ty-label font-semibold text-foreground">{title}</DialogPrimitive.Title>
-            <DialogPrimitive.Close aria-label="Fechar" className={cn('-mr-1 ml-auto flex size-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground', focusRing)}><X className="size-4.5" aria-hidden /></DialogPrimitive.Close>
+            <DialogPrimitive.Close aria-label={t('chips.fechar')} className={cn('-mr-1 ml-auto flex size-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground', focusRing)}><X className="size-4.5" aria-hidden /></DialogPrimitive.Close>
           </div>
-          <DialogPrimitive.Description className="sr-only">{description}</DialogPrimitive.Description>
+          <DialogPrimitive.Description className="sr-only">{desc}</DialogPrimitive.Description>
           {children}
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>

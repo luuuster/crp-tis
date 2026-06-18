@@ -4,24 +4,28 @@
  * setters continuam sendo chamados em handlers, nunca em effect). ColFilter é privado deste arquivo.
  */
 import { ClipboardCheck, LayoutList, Search, UserCheck, Users, Video } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/lib/utils'
 import { CARD } from '@/lib/surfaces'
 import { iniciais } from '@/lib/format'
 import { tintFor } from '@/lib/avatar'
+import { exportCsv } from '@/lib/exportCsv'
+import { ExportButton } from '@/components/ExportButton'
 import { PageContainer, PageHeader, StatCard, Paginacao } from '@/components/page'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import type { Candidato, ETAPA_FILTROS } from './types'
-import { EtapaBadge, scoreTint } from './styles'
+import { EtapaBadge, scoreTint, useSenioridadeLabel } from './styles'
 
-function ColFilter({ value, onChange, options, label }: { value: string; onChange: (v: string) => void; options: readonly string[]; label: string }) {
+// Filtro de coluna: o VALOR canônico pt-BR é a opção (preserva comparações/estado); `renderLabel` traduz a EXIBIÇÃO.
+function ColFilter({ value, onChange, options, label, renderLabel }: { value: string; onChange: (v: string) => void; options: readonly string[]; label: string; renderLabel: (v: string) => string }) {
   return (
     <Select value={value} onValueChange={onChange}>
       <SelectTrigger size="sm" aria-label={label} className="w-full font-normal"><SelectValue /></SelectTrigger>
-      <SelectContent>{options.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
+      <SelectContent>{options.map((o) => <SelectItem key={o} value={o}>{renderLabel(o)}</SelectItem>)}</SelectContent>
     </Select>
   )
 }
@@ -43,27 +47,48 @@ export function ListaCandidatos({
   onEtapaF: (v: string) => void; onVagaF: (v: string) => void; onSenioridadeF: (v: string) => void; onBusca: (v: string) => void
   onPage: (p: number | ((prev: number) => number)) => void; onAbrir: (c: Candidato) => void
 }) {
+  const { t } = useTranslation('candidatos')
+  const { t: tc } = useTranslation('common')
+  const senLabel = useSenioridadeLabel()
+  // Opção 'Todas' (filtro) reusa o genérico do common; as demais traduzem a EXIBIÇÃO mantendo o valor canônico.
+  const etapaLabel = (v: string) => (v === 'Todas' ? tc('filtro.todas') : t(`etapa.${v}` as 'etapa.Triagem'))
+  const senFiltroLabel = (v: string) => (v === 'Todas' ? tc('filtro.todas') : senLabel(v))
+  const vagaLabel = (v: string) => (v === 'Todas' ? tc('filtro.todas') : v)
+
+  // Exporta a lista FILTRADA (não só a página) — colunas traduzidas; valores de etapa/senioridade
+  // exportados pelo rótulo traduzido (display), nome/e-mail/vaga ficam como estão (dados).
+  const exportar = () =>
+    exportCsv(t('export.arquivo'), filtrados, [
+      { header: t('export.col.nome'), value: (c) => c.nome },
+      { header: t('export.col.email'), value: (c) => c.email },
+      { header: t('export.col.vaga'), value: (c) => c.vaga },
+      { header: t('export.col.senioridade'), value: (c) => senLabel(c.senioridade) },
+      { header: t('export.col.etapa'), value: (c) => t(`etapa.${c.etapa}` as 'etapa.Triagem') },
+      { header: t('export.col.score'), value: (c) => `${c.score}%` },
+    ])
+
   return (
     <PageContainer>
       <PageHeader
         icon={Users}
-        title="Banco de talentos"
-        desc="Veja todos os candidatos e em que etapa cada um está. Clique em um candidato para ver o histórico completo — quantos processos já participou e como foi em cada um."
+        title={t('header.titulo')}
+        desc={t('header.descricao')}
+        actions={<ExportButton onExport={exportar} disabled={filtrados.length === 0} />}
       />
 
       {/* KPIs */}
-      <section aria-label="Indicadores" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard icon={Users} label="Total de candidatos" value={cands.length} />
-        <StatCard icon={Video} label="Em entrevista" value={emEntrevista} />
-        <StatCard icon={ClipboardCheck} label="Entrevistados" value={entrevistados} />
-        <StatCard icon={UserCheck} label="Contratados" value={contratados} />
+      <section aria-label={t('aria.indicadores')} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StatCard icon={Users} label={t('kpi.total')} value={cands.length} />
+        <StatCard icon={Video} label={t('kpi.emEntrevista')} value={emEntrevista} />
+        <StatCard icon={ClipboardCheck} label={t('kpi.entrevistados')} value={entrevistados} />
+        <StatCard icon={UserCheck} label={t('kpi.contratados')} value={contratados} />
       </section>
 
       {/* Banco — filtros DENTRO do card */}
       <section aria-labelledby="lista-candidatos" className={cn(CARD, 'overflow-hidden')}>
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/50 p-4 sm:p-5">
           <h2 id="lista-candidatos" className="flex items-center gap-2 ty-body-lg text-foreground" style={{ fontWeight: 'var(--font-weight-bold)' }}>
-            <LayoutList className="size-5 shrink-0 text-primary-text" aria-hidden /> Candidatos
+            <LayoutList className="size-5 shrink-0 text-primary-text" aria-hidden /> {t('lista.titulo')}
             <span className="ty-body-sm font-normal text-muted-foreground tabular-nums">({filtrados.length})</span>
           </h2>
         </div>
@@ -71,32 +96,32 @@ export function ListaCandidatos({
         <Table className="[&_:is(th,td):first-child]:pl-5 [&_:is(th,td):last-child]:pr-5">
           <TableHeader>
             <TableRow className="hover:bg-transparent">
-              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">Candidato</TableHead>
-              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">Vaga de interesse</TableHead>
-              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">Senioridade</TableHead>
-              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">Pontuação</TableHead>
-              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">Etapa</TableHead>
-              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">Atualizado</TableHead>
+              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">{t('tabela.candidato')}</TableHead>
+              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">{t('tabela.vaga')}</TableHead>
+              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">{t('tabela.senioridade')}</TableHead>
+              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">{t('tabela.pontuacao')}</TableHead>
+              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">{t('tabela.etapa')}</TableHead>
+              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">{t('tabela.atualizado')}</TableHead>
             </TableRow>
             {/* Linha de FILTRO — barra de ferramentas (td, não th: não são cabeçalhos de coluna). */}
             <TableRow className="bg-muted/20 hover:bg-muted/20">
               <TableCell className="py-2">
                 <div className="relative">
                   <Search className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" aria-hidden />
-                  <Input value={q} onChange={(e) => onBusca(e.target.value)} placeholder="Buscar nome ou e-mail…" aria-label="Buscar candidato por nome ou e-mail" className="h-8 pl-8 ty-body-sm font-normal" />
+                  <Input value={q} onChange={(e) => onBusca(e.target.value)} placeholder={t('busca.placeholder')} aria-label={t('busca.aria')} className="h-8 pl-8 ty-body-sm font-normal" />
                 </div>
               </TableCell>
-              <TableCell className="py-2"><ColFilter value={vagaF} onChange={onVagaF} options={vagas} label="Filtrar por vaga" /></TableCell>
-              <TableCell className="py-2"><ColFilter value={senioridadeF} onChange={onSenioridadeF} options={senioridades} label="Filtrar por senioridade" /></TableCell>
+              <TableCell className="py-2"><ColFilter value={vagaF} onChange={onVagaF} options={vagas} label={t('filtro.vaga')} renderLabel={vagaLabel} /></TableCell>
+              <TableCell className="py-2"><ColFilter value={senioridadeF} onChange={onSenioridadeF} options={senioridades} label={t('filtro.senioridade')} renderLabel={senFiltroLabel} /></TableCell>
               <TableCell className="py-2" />
-              <TableCell className="py-2"><ColFilter value={etapaF} onChange={onEtapaF} options={etapaFiltros} label="Filtrar por etapa" /></TableCell>
+              <TableCell className="py-2"><ColFilter value={etapaF} onChange={onEtapaF} options={etapaFiltros} label={t('filtro.etapa')} renderLabel={etapaLabel} /></TableCell>
               <TableCell className="py-2" />
             </TableRow>
           </TableHeader>
           <TableBody>
             {filtrados.length === 0 ? (
               <TableRow className="hover:bg-transparent">
-                <TableCell colSpan={6} className="py-14 text-center ty-body-sm text-muted-foreground">Nenhum candidato encontrado com esses filtros.</TableCell>
+                <TableCell colSpan={6} className="py-14 text-center ty-body-sm text-muted-foreground">{t('vazio')}</TableCell>
               </TableRow>
             ) : (
               pageItems.map((c) => (
@@ -112,7 +137,7 @@ export function ListaCandidatos({
                     </div>
                   </TableCell>
                   <TableCell className="py-3 ty-body-sm text-muted-foreground">{c.vaga}</TableCell>
-                  <TableCell className="py-3"><Badge variant="ghost" className="bg-primary/10 ty-caption font-medium text-primary-text">{c.senioridade}</Badge></TableCell>
+                  <TableCell className="py-3"><Badge variant="ghost" className="bg-primary/10 ty-caption font-medium text-primary-text">{senLabel(c.senioridade)}</Badge></TableCell>
                   <TableCell className="py-3"><Badge variant="ghost" className={cn('ty-caption font-semibold tabular-nums', scoreTint(c.score))}>{c.score}%</Badge></TableCell>
                   <TableCell className="py-3"><EtapaBadge value={c.etapa} /></TableCell>
                   <TableCell className="py-3 ty-body-sm text-muted-foreground">{c.atualizado}</TableCell>

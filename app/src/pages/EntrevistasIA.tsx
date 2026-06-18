@@ -9,6 +9,7 @@
  * move p/ "Aprovado RH" e reprovar p/ "Reprovado" (regra de progressão da etapa de entrevista IA → RH).
  */
 import { useState, type ComponentType, type ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   ArrowUpRight, BarChart3, Bot, Briefcase, Calendar, CheckCircle2, ChevronLeft, CircleDot,
   Clock, FileSearch, FileText, HelpCircle, Mail, MessageSquareText, Search, Sparkles, Tags, Users, XCircle,
@@ -20,9 +21,11 @@ import { CARD } from '@/lib/surfaces'
 import { iniciais } from '@/lib/format'
 import { tintFor } from '@/lib/avatar'
 import { usePagination } from '@/lib/usePagination'
+import { exportCsv } from '@/lib/exportCsv'
 import { AppShell } from '@/components/shell/AppShell'
-import { PageContainer, PageHeader, Panel, StatCard, DetailScreen, StatusBadge, Paginacao, type BadgeTone } from '@/components/page'
+import { PageContainer, PageHeader, Panel, StatCard, DetailScreen, Paginacao, badgeTone, type BadgeTone } from '@/components/page'
 import { ConfirmDialog } from '@/components/confirm-dialog'
+import { ExportButton } from '@/components/ExportButton'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -202,6 +205,17 @@ const RECOMENDA_TONE: Record<Recomendacao, BadgeTone> = {
 const STATUS_FILTROS = ['Todos', 'Pendente', 'Aprovado bot', 'Aprovado RH', 'Reprovado'] as const
 const PER_PAGE = 10
 
+// Pílulas de status/recomendação: o VALOR canônico pt-BR fica nos mapas de tom e nas comparações; só a
+// EXIBIÇÃO é traduzida (lookup `status.<valor>` / `recomendacao.<valor>`). Espelham o StatusBadge do DS.
+function StatusPill({ value, className }: { value: StatusIA; className?: string }) {
+  const { t } = useTranslation('entrevistas-ia')
+  return <Badge variant="ghost" className={cn('ty-caption font-medium', badgeTone[STATUS_TONE[value]], className)}>{t(`status.${value}`)}</Badge>
+}
+function RecomendaPill({ value, className }: { value: Recomendacao; className?: string }) {
+  const { t } = useTranslation('entrevistas-ia')
+  return <Badge variant="ghost" className={cn('ty-caption font-medium', badgeTone[RECOMENDA_TONE[value]], className)}>{t(`recomendacao.${value}`)}</Badge>
+}
+
 const acionavel = (s: StatusIA) => s === 'Pendente' || s === 'Aprovado bot'
 
 // Faixa de uma nota 0–100 → cor do texto (-text, AA) + cor da barra (fill sólido).
@@ -212,11 +226,13 @@ function faixa(s: number) {
 }
 const scoreTint = (s: number) => (s >= 80 ? 'bg-success/10 text-success-text' : s >= 65 ? 'bg-warning/10 text-warning-text' : 'bg-destructive/10 text-destructive-text')
 
-function ColFilter({ value, onChange, options, label }: { value: string; onChange: (v: string) => void; options: readonly string[]; label: string }) {
+// `renderLabel` traduz a EXIBIÇÃO da opção mantendo o VALOR canônico (usado no filtro de status); sem ele
+// a opção é exibida como está (filtro de vaga — nomes de vaga são dados, não se traduzem).
+function ColFilter({ value, onChange, options, label, renderLabel }: { value: string; onChange: (v: string) => void; options: readonly string[]; label: string; renderLabel?: (o: string) => string }) {
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger size="sm" aria-label={label} className="w-full font-normal"><SelectValue /></SelectTrigger>
-      <SelectContent>{options.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
+      <SelectTrigger size="sm" aria-label={label} className="w-full font-normal"><SelectValue>{renderLabel ? renderLabel(value) : value}</SelectValue></SelectTrigger>
+      <SelectContent>{options.map((o) => <SelectItem key={o} value={o}>{renderLabel ? renderLabel(o) : o}</SelectItem>)}</SelectContent>
     </Select>
   )
 }
@@ -261,6 +277,8 @@ function Bloco({ icon: Icon, title, children }: { icon: ComponentType<{ classNam
 }
 
 export function CandidatoDetalhe({ c, onVoltar, onAprovar, onReprovar }: { c: Candidato; onVoltar: () => void; onAprovar: () => void; onReprovar: () => void }) {
+  const { t } = useTranslation('entrevistas-ia')
+  const { t: tc } = useTranslation('common')
   const d = c.detalhe ?? buildDetalhe(c)
   return (
     <DetailScreen
@@ -268,22 +286,32 @@ export function CandidatoDetalhe({ c, onVoltar, onAprovar, onReprovar }: { c: Ca
       footer={
         <>
           <div className="flex flex-wrap items-center gap-2">
-            <Button variant="ghost" onClick={onVoltar}><ChevronLeft aria-hidden /> Voltar para a lista</Button>
-            <Button variant="ghost" className="bg-secondary/10 text-secondary-text hover:bg-secondary/15 hover:text-secondary-text" onClick={() => toast.info('Currículo enviado pelo candidato (demo).')}><FileText aria-hidden /> Abrir currículo</Button>
+            <Button variant="ghost" onClick={onVoltar}><ChevronLeft aria-hidden /> {t('detalhe.voltarLista')}</Button>
+            <Button variant="ghost" className="bg-secondary/10 text-secondary-text hover:bg-secondary/15 hover:text-secondary-text" onClick={() => toast.info(t('toast.curriculo'))}><FileText aria-hidden /> {t('detalhe.abrirCurriculo')}</Button>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <ConfirmDialog
-              trigger={<Button variant="destructive-outline"><XCircle aria-hidden /> Reprovar candidato</Button>}
+              trigger={<Button variant="destructive-outline"><XCircle aria-hidden /> {t('detalhe.reprovarCandidato')}</Button>}
               icon={XCircle}
               tone="destructive"
               confirmVariant="destructive"
-              title="Reprovar este candidato?"
-              description={`${c.nome} será movido para "Reprovado", encerrando a participação no processo seletivo.`}
-              cancelLabel="Voltar"
-              confirmLabel="Reprovar"
+              title={t('detalhe.reprovarTitulo')}
+              description={t('detalhe.reprovarDescricao', { nome: c.nome })}
+              cancelLabel={tc('acao.voltar')}
+              confirmLabel={t('confirm.reprovar')}
               onConfirm={onReprovar}
             />
-            <Button onClick={onAprovar}><CheckCircle2 aria-hidden /> Aprovar candidato</Button>
+            <ConfirmDialog
+              trigger={<Button><CheckCircle2 aria-hidden /> {t('detalhe.aprovarCandidato')}</Button>}
+              icon={CheckCircle2}
+              tone="success"
+              confirmVariant="default"
+              title={t('detalhe.aprovarTitulo')}
+              description={t('detalhe.aprovarDescricao', { nome: c.nome })}
+              cancelLabel={tc('acao.voltar')}
+              confirmLabel={t('confirm.aprovar')}
+              onConfirm={onAprovar}
+            />
           </div>
         </>
       }
@@ -293,7 +321,7 @@ export function CandidatoDetalhe({ c, onVoltar, onAprovar, onReprovar }: { c: Ca
         <div className="flex items-center gap-4 p-6">
           <span className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-primary-foreground/15 font-heading text-xl font-bold" aria-hidden>{iniciais(c.nome)}</span>
           <div className="min-w-0">
-            <p className="ty-overline text-primary-foreground">Detalhes do candidato</p>
+            <p className="ty-overline text-primary-foreground">{t('detalhe.overline')}</p>
             <h1 className="truncate font-heading text-2xl font-bold tracking-tight sm:text-3xl">{c.nome}</h1>
             <p className="mt-0.5 truncate ty-body-sm text-primary-foreground">{c.vaga}</p>
           </div>
@@ -304,21 +332,21 @@ export function CandidatoDetalhe({ c, onVoltar, onAprovar, onReprovar }: { c: Ca
       <section className={cn(CARD, 'p-6')}>
         <div className="grid gap-6 lg:grid-cols-2">
           <div className="grid content-start gap-4 sm:grid-cols-2">
-            <Meta icon={Mail} label="E-mail" value={c.email} />
-            <Meta icon={Briefcase} label="Vaga" value={c.vaga} />
-            <Meta icon={CircleDot} label="Status"><StatusBadge value={c.status} tones={STATUS_TONE} /></Meta>
-            <Meta icon={Calendar} label="Data da análise" value={d.dataAnalise} />
+            <Meta icon={Mail} label={t('detalhe.email')} value={c.email} />
+            <Meta icon={Briefcase} label={t('detalhe.vaga')} value={c.vaga} />
+            <Meta icon={CircleDot} label={t('detalhe.status')}><StatusPill value={c.status} /></Meta>
+            <Meta icon={Calendar} label={t('detalhe.dataAnalise')} value={d.dataAnalise} />
           </div>
           <div className="space-y-5">
-            <ScoreBar label="Aderência à vaga" value={d.aderencia} unit="%" />
-            <ScoreBar label="Score da entrevista (IA)" value={d.scoreGeral} />
+            <ScoreBar label={t('detalhe.aderencia')} value={d.aderencia} unit="%" />
+            <ScoreBar label={t('detalhe.scoreEntrevista')} value={d.scoreGeral} />
             <div className="flex flex-wrap items-start gap-x-8 gap-y-3">
               <div>
-                <p className="ty-caption text-muted-foreground">Recomendação</p>
-                <StatusBadge value={d.recomendacao} tones={RECOMENDA_TONE} className="mt-1" />
+                <p className="ty-caption text-muted-foreground">{t('detalhe.recomendacao')}</p>
+                <RecomendaPill value={d.recomendacao} className="mt-1" />
               </div>
               <div>
-                <p className="ty-caption text-muted-foreground">Data da entrevista</p>
+                <p className="ty-caption text-muted-foreground">{t('detalhe.dataEntrevista')}</p>
                 <p className="mt-1 flex items-center gap-1.5 ty-body-sm font-medium tabular-nums text-foreground"><Clock className="size-3.5 text-muted-foreground" aria-hidden /> {d.dataEntrevista}</p>
               </div>
             </div>
@@ -327,15 +355,15 @@ export function CandidatoDetalhe({ c, onVoltar, onAprovar, onReprovar }: { c: Ca
       </section>
 
       {/* avaliação da IA */}
-      <Panel icon={Sparkles} title="Avaliação da entrevista com IA" desc="Resultado da entrevista conduzida pelo entrevistador conversacional." bodyClassName="space-y-5">
+      <Panel icon={Sparkles} title={t('detalhe.avaliacaoIATitulo')} desc={t('detalhe.avaliacaoIADesc')} bodyClassName="space-y-5">
         <div className="space-y-4">
-          <Bloco icon={BarChart3} title="Avaliação técnica">{d.avaliacaoTecnica}</Bloco>
-          <Bloco icon={Users} title="Avaliação comportamental">{d.avaliacaoComportamental}</Bloco>
+          <Bloco icon={BarChart3} title={t('detalhe.avaliacaoTecnica')}>{d.avaliacaoTecnica}</Bloco>
+          <Bloco icon={Users} title={t('detalhe.avaliacaoComportamental')}>{d.avaliacaoComportamental}</Bloco>
         </div>
 
         <div className="space-y-5">
           <div>
-            <h3 className="flex items-center gap-2 ty-body-sm font-semibold text-foreground"><CheckCircle2 className="size-4 text-success-text" aria-hidden /> Pontos fortes</h3>
+            <h3 className="flex items-center gap-2 ty-body-sm font-semibold text-foreground"><CheckCircle2 className="size-4 text-success-text" aria-hidden /> {t('detalhe.pontosFortes')}</h3>
             <div className="mt-3 space-y-2">
               {d.pontosFortes.map((p, i) => (
                 <span key={i} className="flex items-start gap-2 rounded-lg bg-success/10 px-3 py-2 ty-body-sm ring-1 ring-success/20">
@@ -346,7 +374,7 @@ export function CandidatoDetalhe({ c, onVoltar, onAprovar, onReprovar }: { c: Ca
             </div>
           </div>
           <div>
-            <h3 className="flex items-center gap-2 ty-body-sm font-semibold text-foreground"><ArrowUpRight className="size-4 text-warning-text" aria-hidden /> Áreas de melhoria</h3>
+            <h3 className="flex items-center gap-2 ty-body-sm font-semibold text-foreground"><ArrowUpRight className="size-4 text-warning-text" aria-hidden /> {t('detalhe.areasMelhoria')}</h3>
             <div className="mt-3 space-y-2">
               {d.areasMelhoria.map((p, i) => (
                 <span key={i} className="flex items-start gap-2 rounded-lg bg-warning/10 px-3 py-2 ty-body-sm ring-1 ring-warning/20">
@@ -359,7 +387,7 @@ export function CandidatoDetalhe({ c, onVoltar, onAprovar, onReprovar }: { c: Ca
         </div>
 
         <div>
-          <h3 className="flex items-center gap-2 ty-body-sm font-semibold text-foreground"><MessageSquareText className="size-4 text-muted-foreground" aria-hidden /> Feedback detalhado</h3>
+          <h3 className="flex items-center gap-2 ty-body-sm font-semibold text-foreground"><MessageSquareText className="size-4 text-muted-foreground" aria-hidden /> {t('detalhe.feedbackDetalhado')}</h3>
           <div className="mt-2 space-y-3 ty-body-sm leading-relaxed text-muted-foreground">
             {d.feedbackDetalhado.split('\n').map((para, i) => <p key={i}>{para}</p>)}
           </div>
@@ -367,10 +395,10 @@ export function CandidatoDetalhe({ c, onVoltar, onAprovar, onReprovar }: { c: Ca
       </Panel>
 
       {/* análise do currículo + competências */}
-      <Panel icon={FileSearch} title="Análise do currículo" desc="Resumo do currículo analisado e competências identificadas." bodyClassName="space-y-5">
+      <Panel icon={FileSearch} title={t('detalhe.analiseTitulo')} desc={t('detalhe.analiseDesc')} bodyClassName="space-y-5">
         <p className="ty-body-sm leading-relaxed text-muted-foreground">{d.analiseCandidato}</p>
         <div>
-          <h3 className="flex items-center gap-2 ty-body-sm font-semibold text-foreground"><Tags className="size-4 text-muted-foreground" aria-hidden /> Competências e habilidades</h3>
+          <h3 className="flex items-center gap-2 ty-body-sm font-semibold text-foreground"><Tags className="size-4 text-muted-foreground" aria-hidden /> {t('detalhe.competencias')}</h3>
           <div className="mt-3 flex flex-wrap gap-2">
             {d.competencias.map((s, i) => (
               <span key={i} className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 ty-body-sm font-medium text-primary-text ring-1 ring-primary/15">{s}</span>
@@ -380,11 +408,11 @@ export function CandidatoDetalhe({ c, onVoltar, onAprovar, onReprovar }: { c: Ca
       </Panel>
 
       {/* perguntas sugeridas */}
-      <Panel icon={HelpCircle} title="Perguntas sugeridas para a entrevista" desc="Use como guia durante a entrevista com o candidato." bodyClassName="space-y-5">
+      <Panel icon={HelpCircle} title={t('detalhe.perguntasTitulo')} desc={t('detalhe.perguntasDesc')} bodyClassName="space-y-5">
         <div className="space-y-3">
           {d.perguntas.map((p, i) => (
             <div key={i} className="rounded-xl bg-muted/30 p-4">
-              <p className="ty-overline text-muted-foreground">Pergunta {i + 1}</p>
+              <p className="ty-overline text-muted-foreground">{t('detalhe.pergunta', { n: i + 1 })}</p>
               <p className="mt-1 ty-body-sm font-semibold text-primary-text">{p.titulo}</p>
               <p className="mt-1.5 ty-body-sm leading-relaxed text-muted-foreground">{p.texto}</p>
             </div>
@@ -400,26 +428,27 @@ export function CandidatoDetalhe({ c, onVoltar, onAprovar, onReprovar }: { c: Ca
 export function AvaliacaoIAConteudo({ d, email, vaga, statusLabel }: {
   d: Detalhe; email?: string; vaga?: string; statusLabel?: StatusIA
 }) {
+  const { t } = useTranslation('entrevistas-ia')
   return (
     <div className="space-y-6">
       {/* visão geral: meta (largura total, 2 colunas) + scores empilhados — não espreme em coluna estreita */}
       <div className="space-y-6">
         <div className="grid content-start gap-4 sm:grid-cols-2">
-          {email && <Meta icon={Mail} label="E-mail" value={email} />}
-          {vaga && <Meta icon={Briefcase} label="Vaga" value={vaga} />}
-          {statusLabel && <Meta icon={CircleDot} label="Status"><StatusBadge value={statusLabel} tones={STATUS_TONE} /></Meta>}
-          <Meta icon={Calendar} label="Data da análise" value={d.dataAnalise} />
+          {email && <Meta icon={Mail} label={t('detalhe.email')} value={email} />}
+          {vaga && <Meta icon={Briefcase} label={t('detalhe.vaga')} value={vaga} />}
+          {statusLabel && <Meta icon={CircleDot} label={t('detalhe.status')}><StatusPill value={statusLabel} /></Meta>}
+          <Meta icon={Calendar} label={t('detalhe.dataAnalise')} value={d.dataAnalise} />
         </div>
         <div className="space-y-5">
-          <ScoreBar label="Aderência à vaga" value={d.aderencia} unit="%" />
-          <ScoreBar label="Score da entrevista (IA)" value={d.scoreGeral} />
+          <ScoreBar label={t('detalhe.aderencia')} value={d.aderencia} unit="%" />
+          <ScoreBar label={t('detalhe.scoreEntrevista')} value={d.scoreGeral} />
           <div className="flex flex-wrap items-start gap-x-8 gap-y-3">
             <div>
-              <p className="ty-caption text-muted-foreground">Recomendação</p>
-              <StatusBadge value={d.recomendacao} tones={RECOMENDA_TONE} className="mt-1" />
+              <p className="ty-caption text-muted-foreground">{t('detalhe.recomendacao')}</p>
+              <RecomendaPill value={d.recomendacao} className="mt-1" />
             </div>
             <div>
-              <p className="ty-caption text-muted-foreground">Data da entrevista</p>
+              <p className="ty-caption text-muted-foreground">{t('detalhe.dataEntrevista')}</p>
               <p className="mt-1 flex items-center gap-1.5 ty-body-sm font-medium tabular-nums text-foreground"><Clock className="size-3.5 text-muted-foreground" aria-hidden /> {d.dataEntrevista}</p>
             </div>
           </div>
@@ -428,14 +457,14 @@ export function AvaliacaoIAConteudo({ d, email, vaga, statusLabel }: {
 
       {/* avaliação técnica / comportamental */}
       <div className="space-y-4">
-        <Bloco icon={BarChart3} title="Avaliação técnica">{d.avaliacaoTecnica}</Bloco>
-        <Bloco icon={Users} title="Avaliação comportamental">{d.avaliacaoComportamental}</Bloco>
+        <Bloco icon={BarChart3} title={t('detalhe.avaliacaoTecnica')}>{d.avaliacaoTecnica}</Bloco>
+        <Bloco icon={Users} title={t('detalhe.avaliacaoComportamental')}>{d.avaliacaoComportamental}</Bloco>
       </div>
 
       {/* pontos fortes / áreas de melhoria */}
       <div className="space-y-5">
         <div>
-          <h4 className="flex items-center gap-2 ty-body-sm font-semibold text-foreground"><CheckCircle2 className="size-4 text-success-text" aria-hidden /> Pontos fortes</h4>
+          <h4 className="flex items-center gap-2 ty-body-sm font-semibold text-foreground"><CheckCircle2 className="size-4 text-success-text" aria-hidden /> {t('detalhe.pontosFortes')}</h4>
           <div className="mt-3 space-y-2">
             {d.pontosFortes.map((p, i) => (
               <span key={i} className="flex items-start gap-2 rounded-lg bg-success/10 px-3 py-2 ty-body-sm ring-1 ring-success/20">
@@ -446,7 +475,7 @@ export function AvaliacaoIAConteudo({ d, email, vaga, statusLabel }: {
           </div>
         </div>
         <div>
-          <h4 className="flex items-center gap-2 ty-body-sm font-semibold text-foreground"><ArrowUpRight className="size-4 text-warning-text" aria-hidden /> Áreas de melhoria</h4>
+          <h4 className="flex items-center gap-2 ty-body-sm font-semibold text-foreground"><ArrowUpRight className="size-4 text-warning-text" aria-hidden /> {t('detalhe.areasMelhoria')}</h4>
           <div className="mt-3 space-y-2">
             {d.areasMelhoria.map((p, i) => (
               <span key={i} className="flex items-start gap-2 rounded-lg bg-warning/10 px-3 py-2 ty-body-sm ring-1 ring-warning/20">
@@ -460,7 +489,7 @@ export function AvaliacaoIAConteudo({ d, email, vaga, statusLabel }: {
 
       {/* feedback detalhado */}
       <div>
-        <h4 className="flex items-center gap-2 ty-body-sm font-semibold text-foreground"><MessageSquareText className="size-4 text-muted-foreground" aria-hidden /> Feedback detalhado</h4>
+        <h4 className="flex items-center gap-2 ty-body-sm font-semibold text-foreground"><MessageSquareText className="size-4 text-muted-foreground" aria-hidden /> {t('detalhe.feedbackDetalhado')}</h4>
         <div className="mt-2 space-y-3 ty-body-sm leading-relaxed text-muted-foreground">
           {d.feedbackDetalhado.split('\n').map((para, i) => <p key={i}>{para}</p>)}
         </div>
@@ -469,8 +498,8 @@ export function AvaliacaoIAConteudo({ d, email, vaga, statusLabel }: {
       {/* análise do currículo + competências */}
       <div>
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h4 className="flex items-center gap-2 ty-body-sm font-semibold text-foreground"><FileSearch className="size-4 text-muted-foreground" aria-hidden /> Análise do currículo</h4>
-          <Button variant="ghost" size="sm" className="bg-secondary/10 text-secondary-text hover:bg-secondary/15 hover:text-secondary-text" onClick={() => toast.info('Currículo enviado pelo candidato (demo).')}><FileText aria-hidden /> Abrir currículo</Button>
+          <h4 className="flex items-center gap-2 ty-body-sm font-semibold text-foreground"><FileSearch className="size-4 text-muted-foreground" aria-hidden /> {t('detalhe.analiseTitulo')}</h4>
+          <Button variant="ghost" size="sm" className="bg-secondary/10 text-secondary-text hover:bg-secondary/15 hover:text-secondary-text" onClick={() => toast.info(t('toast.curriculo'))}><FileText aria-hidden /> {t('detalhe.abrirCurriculo')}</Button>
         </div>
         <p className="mt-2 ty-body-sm leading-relaxed text-muted-foreground">{d.analiseCandidato}</p>
         <div className="mt-3 flex flex-wrap gap-2">
@@ -482,11 +511,11 @@ export function AvaliacaoIAConteudo({ d, email, vaga, statusLabel }: {
 
       {/* perguntas sugeridas */}
       <div>
-        <h4 className="flex items-center gap-2 ty-body-sm font-semibold text-foreground"><HelpCircle className="size-4 text-muted-foreground" aria-hidden /> Perguntas sugeridas para a entrevista</h4>
+        <h4 className="flex items-center gap-2 ty-body-sm font-semibold text-foreground"><HelpCircle className="size-4 text-muted-foreground" aria-hidden /> {t('detalhe.perguntasTitulo')}</h4>
         <div className="mt-3 space-y-3">
           {d.perguntas.map((p, i) => (
             <div key={i} className="rounded-xl bg-muted/30 p-4">
-              <p className="ty-overline text-muted-foreground">Pergunta {i + 1}</p>
+              <p className="ty-overline text-muted-foreground">{t('detalhe.pergunta', { n: i + 1 })}</p>
               <p className="mt-1 ty-body-sm font-semibold text-primary-text">{p.titulo}</p>
               <p className="mt-1.5 ty-body-sm leading-relaxed text-muted-foreground">{p.texto}</p>
             </div>
@@ -502,6 +531,8 @@ export function AvaliacaoIAConteudo({ d, email, vaga, statusLabel }: {
 export function EntrevistasIA({ onNavigate, brand, mode, onCycleBrand, onToggleMode }: {
   onNavigate: (v: string) => void; brand?: string; mode?: string; onCycleBrand?: () => void; onToggleMode?: () => void
 }) {
+  const { t } = useTranslation('entrevistas-ia')
+  const { t: tc } = useTranslation('common')
   const [cands, setCands] = useState<Candidato[]>(CANDIDATOS_INICIAL)
   const [statusF, setStatusF] = useState<(typeof STATUS_FILTROS)[number]>('Todos')
   const [vagaF, setVagaF] = useState('Todas')
@@ -549,14 +580,15 @@ export function EntrevistasIA({ onNavigate, brand, mode, onCycleBrand, onToggleM
     toast.success(msg(n))
     setSel(new Set())
   }
-  const aprovar = () => aplicar('Aprovado RH', (n) => `${n} candidato(s) aprovado(s) pelo RH (demo).`)
-  const reprovar = () => aplicar('Reprovado', (n) => `${n} candidato(s) reprovado(s) (demo).`)
+  const aprovar = () => aplicar('Aprovado RH', (n) => t('toast.aprovadosLote', { n }))
+  const reprovar = () => aplicar('Reprovado', (n) => t('toast.reprovadosLote', { n }))
 
   // Decisão individual na tela de detalhe → muda o status do candidato e volta para a listagem.
+  // `verbo` é a chave do toast traduzido (aprovado pelo RH / reprovado), não o valor de estado.
   const decidirDetalhe = (novo: StatusIA, verbo: string) => {
     if (!vendo) return
     setCands((cs) => cs.map((x) => (x.id === vendo.id ? { ...x, status: novo } : x)))
-    toast.success(`Candidato "${vendo.nome}" ${verbo} (demo).`)
+    toast.success(t('toast.decisaoIndividual', { nome: vendo.nome, verbo }))
     setVendo(null)
   }
 
@@ -564,50 +596,80 @@ export function EntrevistasIA({ onNavigate, brand, mode, onCycleBrand, onToggleM
   // dispara onNavigate mesmo no item já ativo, então limpamos o candidato em foco antes de navegar.
   const handleNav = (v: string) => { setVendo(null); onNavigate(v) }
 
-  const crumb = vendo ? vendo.nome : 'Entrevistas IA'
+  // Exporta a lista FILTRADA (não só a página): candidato, vaga, score, data e status (rótulo traduzido).
+  const exportar = () =>
+    exportCsv(
+      t('export.arquivo'),
+      filtrados,
+      [
+        { header: t('export.colCandidato'), value: (c) => c.nome },
+        { header: t('export.colVaga'), value: (c) => c.vaga },
+        { header: t('export.colScore'), value: (c) => c.score },
+        { header: t('export.colData'), value: (c) => c.data },
+        { header: t('export.colStatus'), value: (c) => t(`status.${c.status}`) },
+      ],
+    )
+
+  const crumb = vendo ? vendo.nome : t('crumb')
+
+  // Rótulo das opções de filtro de status: 'Todos' usa o genérico; os demais, o status traduzido (valor canônico).
+  const statusOptionLabel = (o: string) => (o === 'Todos' ? tc('filtro.todos') : t(`status.${o as StatusIA}`))
+  // Filtro de vaga: traduz só a opção 'Todas'; nomes de vaga são dados (não se traduzem).
+  const vagaOptionLabel = (o: string) => (o === 'Todas' ? tc('filtro.todas') : o)
 
   return (
     <AppShell active="entrevistas-ia" crumb={crumb} onNavigate={handleNav} brand={brand} mode={mode} onCycleBrand={onCycleBrand} onToggleMode={onToggleMode}>
       {vendo ? (
-        <CandidatoDetalhe c={vendo} onVoltar={() => setVendo(null)} onAprovar={() => decidirDetalhe('Aprovado RH', 'aprovado pelo RH')} onReprovar={() => decidirDetalhe('Reprovado', 'reprovado')} />
+        <CandidatoDetalhe c={vendo} onVoltar={() => setVendo(null)} onAprovar={() => decidirDetalhe('Aprovado RH', t('toast.verboAprovado'))} onReprovar={() => decidirDetalhe('Reprovado', t('toast.verboReprovado'))} />
       ) : (
         <PageContainer>
           <PageHeader
             icon={Bot}
-            title="Entrevistas IA"
-            desc="Acompanhe as entrevistas concluídas pela IA no primeiro funil de recrutamento e registre a decisão do RH — aprovação ou reprovação. Clique em um candidato para ver a análise completa."
+            title={t('header.title')}
+            desc={t('header.desc')}
+            actions={<ExportButton onExport={exportar} disabled={filtrados.length === 0} />}
           />
 
           {/* KPIs — números reais derivados da lista */}
           <section aria-label="Indicadores" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <StatCard icon={Users} label="Total" value={cands.length} />
-            <StatCard icon={Clock} label="Pendente" value={pendentes} />
-            <StatCard icon={Bot} label="Aprovado bot" value={aprovadosBot} />
-            <StatCard icon={CheckCircle2} label="Aprovado RH" value={aprovadosRH} />
+            <StatCard icon={Users} label={t('kpi.total')} value={cands.length} />
+            <StatCard icon={Clock} label={t('kpi.pendente')} value={pendentes} />
+            <StatCard icon={Bot} label={t('kpi.aprovadoBot')} value={aprovadosBot} />
+            <StatCard icon={CheckCircle2} label={t('kpi.aprovadoRH')} value={aprovadosRH} />
           </section>
 
           {/* Lista de triagem — filtros DENTRO do card */}
           <section aria-labelledby="lista-triagem" className={cn(CARD, 'overflow-hidden')}>
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/50 p-4 sm:p-5">
               <h2 id="lista-triagem" className="flex items-center gap-2 ty-body-lg text-foreground" style={{ fontWeight: 'var(--font-weight-bold)' }}>
-                <Sparkles className="size-5 shrink-0 text-primary-text" aria-hidden /> Candidatos na triagem
+                <Sparkles className="size-5 shrink-0 text-primary-text" aria-hidden /> {t('lista.titulo')}
                 <span className="ty-body-sm font-normal text-muted-foreground tabular-nums">({filtrados.length})</span>
               </h2>
               {/* Ações em lote — na mesma linha do título; aplicam a regra de progressão da etapa IA → RH. */}
               <div className="flex flex-wrap items-center gap-2">
                 {sel.size > 0 && (
-                  <span className="mr-1 ty-body-sm font-medium text-primary-text tabular-nums" aria-live="polite">{sel.size} selecionado(s)</span>
+                  <span className="mr-1 ty-body-sm font-medium text-primary-text tabular-nums" aria-live="polite">{t('lista.selecionados', { n: sel.size })}</span>
                 )}
-                <Button onClick={aprovar} disabled={sel.size === 0}><CheckCircle2 aria-hidden /> Aprovar selecionados</Button>
                 <ConfirmDialog
-                  trigger={<Button variant="destructive-outline" disabled={sel.size === 0}><XCircle aria-hidden /> Reprovar selecionados</Button>}
+                  trigger={<Button disabled={sel.size === 0}><CheckCircle2 aria-hidden /> {t('lote.aprovar')}</Button>}
+                  icon={CheckCircle2}
+                  tone="success"
+                  confirmVariant="default"
+                  title={t('lote.aprovarTitulo', { count: sel.size })}
+                  description={t('lote.aprovarDescricao')}
+                  cancelLabel={tc('acao.voltar')}
+                  confirmLabel={t('confirm.aprovar')}
+                  onConfirm={aprovar}
+                />
+                <ConfirmDialog
+                  trigger={<Button variant="destructive-outline" disabled={sel.size === 0}><XCircle aria-hidden /> {t('lote.reprovar')}</Button>}
                   icon={XCircle}
                   tone="destructive"
                   confirmVariant="destructive"
-                  title={`Reprovar ${sel.size} candidato${sel.size > 1 ? 's' : ''}?`}
-                  description="Os candidatos selecionados serão movidos para “Reprovado”, encerrando a participação deles no processo seletivo."
-                  cancelLabel="Voltar"
-                  confirmLabel="Reprovar"
+                  title={t('lote.reprovarTitulo', { count: sel.size })}
+                  description={t('lote.reprovarDescricao')}
+                  cancelLabel={tc('acao.voltar')}
+                  confirmLabel={t('confirm.reprovar')}
                   onConfirm={reprovar}
                 />
               </div>
@@ -617,13 +679,13 @@ export function EntrevistasIA({ onNavigate, brand, mode, onCycleBrand, onToggleM
               <TableHeader>
                 <TableRow className="hover:bg-transparent">
                   <TableHead className="w-12">
-                    <Checkbox checked={allPageSelected} onCheckedChange={(v) => toggleAllPage(v === true)} disabled={pageActionableIds.length === 0} aria-label="Selecionar todos os candidatos desta página" />
+                    <Checkbox checked={allPageSelected} onCheckedChange={(v) => toggleAllPage(v === true)} disabled={pageActionableIds.length === 0} aria-label={t('filtro.selecionarTodosAria')} />
                   </TableHead>
-                  <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">Candidato</TableHead>
-                  <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">Vaga</TableHead>
-                  <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">Pontuação IA</TableHead>
-                  <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">Data</TableHead>
-                  <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">Status</TableHead>
+                  <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">{t('tabela.candidato')}</TableHead>
+                  <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">{t('tabela.vaga')}</TableHead>
+                  <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">{t('tabela.pontuacaoIA')}</TableHead>
+                  <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">{t('tabela.data')}</TableHead>
+                  <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">{t('tabela.status')}</TableHead>
                 </TableRow>
                 {/* Linha de FILTRO — barra de ferramentas (td, não th: não são cabeçalhos de coluna). */}
                 <TableRow className="bg-muted/20 hover:bg-muted/20">
@@ -631,19 +693,19 @@ export function EntrevistasIA({ onNavigate, brand, mode, onCycleBrand, onToggleM
                   <TableCell className="py-2">
                     <div className="relative">
                       <Search className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" aria-hidden />
-                      <Input value={q} onChange={(e) => { setQ(e.target.value); resetPage() }} placeholder="Buscar nome ou e-mail…" aria-label="Buscar candidato por nome ou e-mail" className="h-8 pl-8 ty-body-sm font-normal" />
+                      <Input value={q} onChange={(e) => { setQ(e.target.value); resetPage() }} placeholder={t('filtro.buscarPlaceholder')} aria-label={t('filtro.buscarAria')} className="h-8 pl-8 ty-body-sm font-normal" />
                     </div>
                   </TableCell>
-                  <TableCell className="py-2"><ColFilter value={vagaF} onChange={(v) => { setVagaF(v); resetPage() }} options={vagas} label="Filtrar por vaga" /></TableCell>
+                  <TableCell className="py-2"><ColFilter value={vagaF} onChange={(v) => { setVagaF(v); resetPage() }} options={vagas} label={t('filtro.vagaAria')} renderLabel={vagaOptionLabel} /></TableCell>
                   <TableCell className="py-2" />
                   <TableCell className="py-2" />
-                  <TableCell className="py-2"><ColFilter value={statusF} onChange={(v) => { setStatusF(v as (typeof STATUS_FILTROS)[number]); resetPage() }} options={STATUS_FILTROS} label="Filtrar por status" /></TableCell>
+                  <TableCell className="py-2"><ColFilter value={statusF} onChange={(v) => { setStatusF(v as (typeof STATUS_FILTROS)[number]); resetPage() }} options={STATUS_FILTROS} label={t('filtro.statusAria')} renderLabel={statusOptionLabel} /></TableCell>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filtrados.length === 0 ? (
                   <TableRow className="hover:bg-transparent">
-                    <TableCell colSpan={6} className="py-14 text-center ty-body-sm text-muted-foreground">Nenhum candidato encontrado com esses filtros.</TableCell>
+                    <TableCell colSpan={6} className="py-14 text-center ty-body-sm text-muted-foreground">{t('lista.vazio')}</TableCell>
                   </TableRow>
                 ) : (
                   pageItems.map((c) => (
@@ -651,7 +713,7 @@ export function EntrevistasIA({ onNavigate, brand, mode, onCycleBrand, onToggleM
                     // o botão do nome; a célula do checkbox para a propagação p/ selecionar não navegar.
                     <TableRow key={c.id} data-state={sel.has(c.id) ? 'selected' : undefined} onClick={() => setVendo(c)} className="cursor-pointer">
                       <TableCell className="py-3" onClick={(e) => e.stopPropagation()}>
-                        <Checkbox checked={sel.has(c.id)} onCheckedChange={(v) => toggleOne(c.id, v === true)} disabled={!acionavel(c.status)} aria-label={`Selecionar ${c.nome}`} />
+                        <Checkbox checked={sel.has(c.id)} onCheckedChange={(v) => toggleOne(c.id, v === true)} disabled={!acionavel(c.status)} aria-label={t('filtro.selecionarAria', { nome: c.nome })} />
                       </TableCell>
                       <TableCell className="py-3">
                         <div className="flex items-center gap-3">
@@ -667,7 +729,7 @@ export function EntrevistasIA({ onNavigate, brand, mode, onCycleBrand, onToggleM
                         <Badge variant="ghost" className={cn('gap-1 ty-caption font-semibold tabular-nums', scoreTint(c.score))}><Sparkles className="size-3" aria-hidden /> {c.score}%</Badge>
                       </TableCell>
                       <TableCell className="py-3 ty-body-sm tabular-nums text-muted-foreground">{c.data}</TableCell>
-                      <TableCell className="py-3"><StatusBadge value={c.status} tones={STATUS_TONE} /></TableCell>
+                      <TableCell className="py-3"><StatusPill value={c.status} /></TableCell>
                     </TableRow>
                   ))
                 )}

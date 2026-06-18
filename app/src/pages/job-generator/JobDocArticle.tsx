@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Check, FileText, Pencil } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
@@ -14,6 +15,7 @@ import type { Briefing, Perfil, GeneratedDesc } from '@/lib/vaga'
 function EditableProse({ value, onSave, label, placeholder, textClassName }: {
   value: string; onSave: (v: string) => void; label: string; placeholder?: string; textClassName?: string
 }) {
+  const { t } = useTranslation('gerador')
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(value)
   const ref = useRef<HTMLTextAreaElement>(null)
@@ -28,7 +30,7 @@ function EditableProse({ value, onSave, label, placeholder, textClassName }: {
     return (
       <div className="space-y-2">
         <Textarea
-          ref={ref} value={draft} onChange={(e) => setDraft(e.target.value)} aria-label={`Editar ${label}`}
+          ref={ref} value={draft} onChange={(e) => setDraft(e.target.value)} aria-label={t('doc.editarLabel', { label })}
           onKeyDown={(e) => {
             if (e.key === 'Escape') { e.preventDefault(); cancel() }
             else if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); save() }
@@ -36,20 +38,20 @@ function EditableProse({ value, onSave, label, placeholder, textClassName }: {
           style={{ lineHeight: 1.65 }} className={cn('min-h-24 resize-y', FIELD)}
         />
         <div className="flex items-center gap-2">
-          <Button size="sm" onClick={save}><Check className="size-3.5" aria-hidden /> Salvar</Button>
-          <Button size="sm" variant="ghost" onClick={cancel}>Cancelar</Button>
+          <Button size="sm" onClick={save}><Check className="size-3.5" aria-hidden /> {t('doc.salvar')}</Button>
+          <Button size="sm" variant="ghost" onClick={cancel}>{t('doc.cancelar')}</Button>
         </div>
       </div>
     )
   }
   return (
     <div className="group/edit space-y-1">
-      <p className={cn(textClassName, !value.trim() && 'text-muted-foreground/60 italic')}>{value.trim() ? value : (placeholder || 'Sem conteúdo.')}</p>
+      <p className={cn(textClassName, !value.trim() && 'text-muted-foreground/60 italic')}>{value.trim() ? value : (placeholder || t('doc.semConteudo'))}</p>
       <button
-        type="button" onClick={startEdit} aria-label={`Editar ${label}`}
+        type="button" onClick={startEdit} aria-label={t('doc.editarLabel', { label })}
         className={cn('inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 ty-caption font-medium text-muted-foreground transition-colors hover:text-primary-text', focusRing)}
       >
-        <Pencil className="size-3" aria-hidden /> editar
+        <Pencil className="size-3" aria-hidden /> {t('doc.editar')}
       </button>
     </div>
   )
@@ -62,6 +64,7 @@ export function JobDocArticle({ desc, data, perfil, resumo, onEditResumo, onEdit
   desc: GeneratedDesc; data: Briefing; perfil: Perfil; resumo?: string
   onEditResumo?: (v: string) => void; onEditDesafio?: (v: string) => void; onEditObjetivo?: (v: string) => void
 }) {
+  const { t } = useTranslation('gerador')
   const titleId = useId()
   const benefId = useId()
   const resumoText = resumo ?? desc.resumo
@@ -78,40 +81,40 @@ export function JobDocArticle({ desc, data, perfil, resumo, onEditResumo, onEdit
   return (
     <article aria-labelledby={titleId} className={cn('space-y-7 p-6 sm:p-8', CARD)}>
       <header className="space-y-2 border-b border-border/50 pb-5">
-        <span className="flex items-center gap-1.5 ty-label-sm uppercase text-muted-foreground"><FileText className="size-3.5" aria-hidden /> Descrição da vaga</span>
+        <span className="flex items-center gap-1.5 ty-label-sm uppercase text-muted-foreground"><FileText className="size-3.5" aria-hidden /> {t('doc.descricaoVaga')}</span>
         <h2 id={titleId} className="ty-h4 text-foreground">{desc.titulo}</h2>
         {onEditResumo
-          ? <EditableProse value={resumoText} onSave={onEditResumo} label="resumo" placeholder="Escreva um resumo da vaga." textClassName="ty-body text-muted-foreground" />
+          ? <EditableProse value={resumoText} onSave={onEditResumo} label={t('doc.labelResumo')} placeholder={t('doc.placeholderResumo')} textClassName="ty-body text-muted-foreground" />
           : <p className="ty-body text-muted-foreground">{resumoText}</p>}
       </header>
       {(onEditDesafio || onEditObjetivo || data.desafio?.trim() || data.objetivo?.trim()) && (
         <section className="space-y-5">
           {(onEditDesafio || data.desafio?.trim()) && (
             <div className="space-y-2">
-              <h3 className="ty-label text-foreground" style={{ fontWeight: 'var(--font-weight-semibold)' }}>Sobre o desafio</h3>
+              <h3 className="ty-label text-foreground" style={{ fontWeight: 'var(--font-weight-semibold)' }}>{t('doc.sobreDesafio')}</h3>
               {onEditDesafio
-                ? <EditableProse value={data.desafio || ''} onSave={onEditDesafio} label="Sobre o desafio" placeholder="Descreva o contexto do desafio." textClassName="ty-body-sm leading-relaxed text-muted-foreground" />
+                ? <EditableProse value={data.desafio || ''} onSave={onEditDesafio} label={t('doc.sobreDesafio')} placeholder={t('doc.placeholderDesafio')} textClassName="ty-body-sm leading-relaxed text-muted-foreground" />
                 : <p className="ty-body-sm leading-relaxed text-muted-foreground">{data.desafio?.trim()}</p>}
             </div>
           )}
           {(onEditObjetivo || data.objetivo?.trim()) && (
             <div className="space-y-2">
-              <h3 className="ty-label text-foreground" style={{ fontWeight: 'var(--font-weight-semibold)' }}>Objetivo</h3>
+              <h3 className="ty-label text-foreground" style={{ fontWeight: 'var(--font-weight-semibold)' }}>{t('doc.objetivo')}</h3>
               {onEditObjetivo
-                ? <EditableProse value={data.objetivo || ''} onSave={onEditObjetivo} label="Objetivo" placeholder="Descreva o objetivo da contratação." textClassName="ty-body-sm leading-relaxed text-muted-foreground" />
+                ? <EditableProse value={data.objetivo || ''} onSave={onEditObjetivo} label={t('doc.objetivo')} placeholder={t('doc.placeholderObjetivo')} textClassName="ty-body-sm leading-relaxed text-muted-foreground" />
                 : <p className="ty-body-sm leading-relaxed text-muted-foreground">{data.objetivo?.trim()}</p>}
             </div>
           )}
         </section>
       )}
-      <DocSection title="Responsabilidades" items={desc.responsabilidades} />
-      <DocSection title="Requisitos" items={desc.requisitos} />
-      <DocSection title="Operação & condições" items={operacao} />
-      {data.processoSeletivo.length > 0 && <DocSection title="Processo seletivo" items={data.processoSeletivo} />}
+      <DocSection title={t('doc.responsabilidades')} items={desc.responsabilidades} />
+      <DocSection title={t('doc.requisitos')} items={desc.requisitos} />
+      <DocSection title={t('doc.operacao')} items={operacao} />
+      {data.processoSeletivo.length > 0 && <DocSection title={t('doc.processoSeletivo')} items={data.processoSeletivo} />}
       {/* Benefícios — chips, último bloco; fio sutil separa do resto. */}
       <section aria-labelledby={benefId} className="space-y-3 border-t border-border/50 pt-6">
         {/* ty-label é unlayered (peso 500) e anula font-semibold → forço o 600 pelo token (inline vence). */}
-        <h3 id={benefId} className="flex items-baseline gap-2 ty-label text-foreground" style={{ fontWeight: 'var(--font-weight-semibold)' }}>Benefícios<span className="ty-caption tabular-nums text-muted-foreground">{desc.beneficios.length}</span></h3>
+        <h3 id={benefId} className="flex items-baseline gap-2 ty-label text-foreground" style={{ fontWeight: 'var(--font-weight-semibold)' }}>{t('doc.beneficios')}<span className="ty-caption tabular-nums text-muted-foreground">{desc.beneficios.length}</span></h3>
         <ul className="flex flex-wrap gap-2">
           {desc.beneficios.map((b) => <li key={b} className="rounded-full bg-muted px-3 py-1 ty-body-sm text-foreground">{b}</li>)}
         </ul>

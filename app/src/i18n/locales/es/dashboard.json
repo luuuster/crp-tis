@@ -1,0 +1,74 @@
+{
+  "saudacao": "¡Hola, {{nome}}!",
+  "desc": "Aquí está tu operación de reclutamiento — junio de 2026",
+  "abrirVaga": "Abrir vacante",
+  "indicadores": "Indicadores",
+  "vsMesAnterior": "vs. mes anterior",
+  "unidade": {
+    "dias": "días"
+  },
+  "kpi": {
+    "vagasAbertas": "Vacantes abiertas",
+    "candidatosFunil": "Candidatos en el embudo",
+    "contratacoesMes": "Contrataciones del mes",
+    "tempoMedioFechamento": "Tiempo medio de cierre"
+  },
+  "vagasPorStatus": {
+    "titulo": "Vacantes por estado",
+    "desc": "{{total}} vacantes en total",
+    "centro": "vacantes"
+  },
+  "status": {
+    "Aberta": "Abierta",
+    "Em pausa": "En pausa",
+    "Rascunho": "Borrador",
+    "Fechada": "Cerrada"
+  },
+  "destaque": {
+    "titulo": "¡Buena semana, {{nome}}!",
+    "texto": "Las contrataciones subieron <pct>{{pct}}</pct> en el mes y el tiempo de cierre bajó {{dias}}. Mira quién avanza en el embudo.",
+    "pct": "12%",
+    "dias": "4 días",
+    "cta": "Ver banco de talentos"
+  },
+  "contratacoesPorMes": {
+    "titulo": "Contrataciones por mes",
+    "desc": "Últimos 6 meses",
+    "legenda": "Contrataciones"
+  },
+  "mes": {
+    "Jan": "Ene",
+    "Fev": "Feb",
+    "Mar": "Mar",
+    "Abr": "Abr",
+    "Mai": "May",
+    "Jun": "Jun"
+  },
+  "funil": {
+    "titulo": "Embudo del proceso de selección",
+    "desc": "De la inscripción a la contratación"
+  },
+  "etapa": {
+    "Inscritos": "Inscritos",
+    "Triagem": "Preselección",
+    "Entrevista": "Entrevista",
+    "Oferta": "Oferta",
+    "Contratados": "Contratados"
+  },
+  "vagasRecentes": {
+    "titulo": "Vacantes recientes",
+    "desc": "Últimas aperturas y su estado",
+    "verTodas": "Ver todas",
+    "inscritos": "inscritos"
+  },
+  "export": {
+    "arquivo": "dashboard",
+    "secao": "Sección",
+    "metrica": "Métrica",
+    "valor": "Valor",
+    "kpis": "KPIs",
+    "vagasPorStatus": "Vacantes por estado",
+    "contratacoesPorMes": "Contrataciones por mes",
+    "funil": "Embudo del proceso de selección"
+  }
+}

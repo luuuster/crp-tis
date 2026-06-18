@@ -4,6 +4,7 @@
  */
 import { useState } from 'react'
 import { ChevronRight, Sparkles } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/lib/utils'
 import { CARD } from '@/lib/surfaces'
@@ -15,10 +16,12 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { charlieRank, type Candidato, type Match } from '../candidatos.logic'
 import { SEN_OPCOES } from './types'
-import { EtapaBadge, notaBar } from './styles'
+import { EtapaBadge, notaBar, useSenioridadeLabel } from './styles'
 
 // Cartão de um candidato sugerido pelo Charlie (dentro do painel lateral).
 function MatchCard({ m, onVerPerfil }: { m: Match; onVerPerfil: () => void }) {
+  const { t } = useTranslation('candidatos')
+  const senLabel = useSenioridadeLabel()
   const { c } = m
   return (
     <div className={cn(CARD, 'p-4')}>
@@ -31,7 +34,7 @@ function MatchCard({ m, onVerPerfil }: { m: Match; onVerPerfil: () => void }) {
           </div>
           <div className="mt-1 flex flex-wrap items-center gap-1.5">
             <EtapaBadge value={c.etapa} />
-            <span className="truncate ty-caption text-muted-foreground">{c.vaga} · {c.senioridade}</span>
+            <span className="truncate ty-caption text-muted-foreground">{c.vaga} · {senLabel(c.senioridade)}</span>
           </div>
         </div>
       </div>
@@ -47,22 +50,24 @@ function MatchCard({ m, onVerPerfil }: { m: Match; onVerPerfil: () => void }) {
           {m.skills.length > 4 && <span className="rounded-md bg-muted px-2 py-0.5 ty-caption font-medium text-muted-foreground">+{m.skills.length - 4}</span>}
         </div>
       )}
-      <Button variant="outline" size="sm" className="mt-3 w-full" onClick={onVerPerfil}>Ver perfil <ChevronRight aria-hidden /></Button>
+      <Button variant="outline" size="sm" className="mt-3 w-full" onClick={onVerPerfil}>{t('charlie.verPerfil')} <ChevronRight aria-hidden /></Button>
     </div>
   )
 }
 
 // Painel lateral do Charlie: recrutador diz a vaga (e, opcional, o contexto) → top aderências do banco.
 export function CharlieAssistente({ cands, vagas, onVerPerfil }: { cands: Candidato[]; vagas: string[]; onVerPerfil: (c: Candidato) => void }) {
+  const { t } = useTranslation('candidatos')
+  const senLabel = useSenioridadeLabel()
   const [vaga, setVaga] = useState(vagas[0] ?? '')
   const [sen, setSen] = useState('Qualquer')
   const [ctx, setCtx] = useState('')
   const matches = charlieRank(vaga, sen, ctx, cands).slice(0, 6)
   const topPct = matches[0]?.pct ?? 0
   const fala =
-    topPct >= 75 ? `Achei candidatos com forte aderência a ${vaga} — ${matches[0].c.nome} lidera com ${topPct}%.`
-      : topPct >= 50 ? `Encontrei opções razoáveis para ${vaga}. Vale revisar os perfis abaixo.`
-        : `Aderência baixa no banco para ${vaga} — considere abrir a vaga ou rever os requisitos.`
+    topPct >= 75 ? t('charlie.fala.alta', { vaga, nome: matches[0].c.nome, pct: topPct })
+      : topPct >= 50 ? t('charlie.fala.media', { vaga })
+        : t('charlie.fala.baixa', { vaga })
 
   return (
     <>
@@ -74,40 +79,40 @@ export function CharlieAssistente({ cands, vagas, onVerPerfil }: { cands: Candid
         </span>
         <div className="min-w-0 flex-1">
           <p className="ty-body font-semibold text-foreground">Charlie</p>
-          <p className="flex items-center gap-1.5 ty-caption font-medium text-muted-foreground"><span className="size-1.5 rounded-full bg-success" aria-hidden /> COPILOTO · <span className="text-success-text">ATIVO</span></p>
+          <p className="flex items-center gap-1.5 ty-caption font-medium text-muted-foreground"><span className="size-1.5 rounded-full bg-success" aria-hidden /> {t('charlie.copiloto')} · <span className="text-success-text">{t('charlie.ativo')}</span></p>
         </div>
       </header>
 
       {/* corpo rolável */}
       <div className="flex-1 space-y-5 overflow-y-auto p-5">
-        <p className="ty-body-sm text-muted-foreground">Diga a vaga que você quer preencher que eu acho, no banco, quem mais combina.</p>
+        <p className="ty-body-sm text-muted-foreground">{t('charlie.intro')}</p>
         {/* o que o recrutador quer */}
         <div className="space-y-4 rounded-xl bg-muted/30 p-4">
           <div className="space-y-1.5">
-            <Label htmlFor="charlie-vaga">Vaga a preencher</Label>
+            <Label htmlFor="charlie-vaga">{t('charlie.vagaLabel')}</Label>
             <Select value={vaga} onValueChange={setVaga}>
               <SelectTrigger id="charlie-vaga" className="w-full bg-card"><SelectValue /></SelectTrigger>
               <SelectContent>{vagas.map((v) => <SelectItem key={v} value={v}>{v}</SelectItem>)}</SelectContent>
             </Select>
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="charlie-sen">Senioridade</Label>
+            <Label htmlFor="charlie-sen">{t('charlie.senLabel')}</Label>
             <Select value={sen} onValueChange={setSen}>
               <SelectTrigger id="charlie-sen" className="w-full bg-card"><SelectValue /></SelectTrigger>
-              <SelectContent>{SEN_OPCOES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+              <SelectContent>{SEN_OPCOES.map((s) => <SelectItem key={s} value={s}>{senLabel(s)}</SelectItem>)}</SelectContent>
             </Select>
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="charlie-ctx">Requisitos ou contexto <span className="font-normal text-muted-foreground">(opcional)</span></Label>
-            <Textarea id="charlie-ctx" rows={2} value={ctx} onChange={(e) => setCtx(e.target.value)} placeholder="Ex.: forte em React e AWS, perfil de produto, inglês avançado…" className="bg-card" />
+            <Label htmlFor="charlie-ctx">{t('charlie.ctxLabel')} <span className="font-normal text-muted-foreground">{t('charlie.opcional')}</span></Label>
+            <Textarea id="charlie-ctx" rows={2} value={ctx} onChange={(e) => setCtx(e.target.value)} placeholder={t('charlie.ctxPlaceholder')} className="bg-card" />
           </div>
         </div>
 
         {/* resultado do Charlie */}
         <div>
           <div className="flex items-center justify-between gap-2">
-            <p className="ty-caption font-semibold tracking-wide text-foreground uppercase">Melhores aderências</p>
-            <span className="ty-caption text-muted-foreground tabular-nums">{matches.length} de {cands.length}</span>
+            <p className="ty-caption font-semibold tracking-wide text-foreground uppercase">{t('charlie.melhores')}</p>
+            <span className="ty-caption text-muted-foreground tabular-nums">{t('charlie.contador', { mostrados: matches.length, total: cands.length })}</span>
           </div>
           {/* fala do Charlie — muda conforme a melhor aderência */}
           <p className="mt-2 flex gap-2 rounded-lg bg-secondary/10 p-3 ty-caption leading-relaxed text-foreground">
@@ -124,7 +129,7 @@ export function CharlieAssistente({ cands, vagas, onVerPerfil }: { cands: Candid
 
       {/* rodapé */}
       <footer className="border-t border-border/40 p-4">
-        <p className="ty-caption text-muted-foreground">Sugestões do Charlie a partir do banco de talentos. Revise sempre antes de decidir.</p>
+        <p className="ty-caption text-muted-foreground">{t('charlie.rodape')}</p>
       </footer>
     </>
   )

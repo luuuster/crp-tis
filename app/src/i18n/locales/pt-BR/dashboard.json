@@ -1,0 +1,74 @@
+{
+  "saudacao": "Olá, {{nome}}!",
+  "desc": "Aqui está sua operação de recrutamento — junho de 2026",
+  "abrirVaga": "Abrir vaga",
+  "indicadores": "Indicadores",
+  "vsMesAnterior": "vs. mês anterior",
+  "unidade": {
+    "dias": "dias"
+  },
+  "kpi": {
+    "vagasAbertas": "Vagas abertas",
+    "candidatosFunil": "Candidatos no funil",
+    "contratacoesMes": "Contratações no mês",
+    "tempoMedioFechamento": "Tempo médio de fechamento"
+  },
+  "vagasPorStatus": {
+    "titulo": "Vagas por status",
+    "desc": "{{total}} vagas no total",
+    "centro": "vagas"
+  },
+  "status": {
+    "Aberta": "Aberta",
+    "Em pausa": "Em pausa",
+    "Rascunho": "Rascunho",
+    "Fechada": "Fechada"
+  },
+  "destaque": {
+    "titulo": "Boa semana, {{nome}}!",
+    "texto": "As contratações subiram <pct>{{pct}}</pct> no mês e o tempo de fechamento caiu {{dias}}. Veja quem está avançando no funil.",
+    "pct": "12%",
+    "dias": "4 dias",
+    "cta": "Ver banco de talentos"
+  },
+  "contratacoesPorMes": {
+    "titulo": "Contratações por mês",
+    "desc": "Últimos 6 meses",
+    "legenda": "Contratações"
+  },
+  "mes": {
+    "Jan": "Jan",
+    "Fev": "Fev",
+    "Mar": "Mar",
+    "Abr": "Abr",
+    "Mai": "Mai",
+    "Jun": "Jun"
+  },
+  "funil": {
+    "titulo": "Funil do processo seletivo",
+    "desc": "Da inscrição à contratação"
+  },
+  "etapa": {
+    "Inscritos": "Inscritos",
+    "Triagem": "Triagem",
+    "Entrevista": "Entrevista",
+    "Oferta": "Oferta",
+    "Contratados": "Contratados"
+  },
+  "vagasRecentes": {
+    "titulo": "Vagas recentes",
+    "desc": "Últimas aberturas e seu status",
+    "verTodas": "Ver todas",
+    "inscritos": "inscritos"
+  },
+  "export": {
+    "arquivo": "dashboard",
+    "secao": "Seção",
+    "metrica": "Métrica",
+    "valor": "Valor",
+    "kpis": "KPIs",
+    "vagasPorStatus": "Vagas por status",
+    "contratacoesPorMes": "Contratações por mês",
+    "funil": "Funil do processo seletivo"
+  }
+}

@@ -14,6 +14,7 @@ import {
   Wallet,
 } from 'lucide-react'
 import type { ComponentType } from 'react'
+import type { TFunction } from 'i18next'
 import type { Briefing, Perfil, Tom } from '@/lib/vaga'
 
 /* ────────────────────────────── dados estáticos ────────────────────────────── */
@@ -49,13 +50,15 @@ export const BRIEFING_INICIAL: Briefing = {
   processoSeletivo: ['Entrevista comportamental', 'Entrevista técnica', 'Entrevista com RH'],
 }
 
-/* seções do briefing: ícone + campos (p/ status reativo conforme o usuário preenche) */
+/* seções do briefing: ícone + campos (p/ status reativo conforme o usuário preenche).
+ * `key` = identificador estável p/ a tradução (sections.<key> no namespace 'gerador'); title/desc
+ * ficam como fallback pt-BR (a UI exibe via t()). */
 export const SECTIONS = [
-  { icon: Building2, title: 'Identidade da vaga', desc: 'Como essa posição se posiciona dentro da organização.', fields: ['cargo', 'nivel', 'modelo', 'cliente', 'gestor'] as (keyof Briefing)[] },
-  { icon: Rocket, title: 'Sobre a vaga', desc: 'O contexto do desafio e o objetivo da contratação — a abertura da descrição.', fields: ['desafio', 'objetivo'] as (keyof Briefing)[] },
-  { icon: CalendarClock, title: 'Operação & rotina', desc: 'Onde, quando e em que ritmo essa pessoa vai trabalhar.', fields: ['local', 'horario', 'carga', 'motivo', 'quantidade'] as (keyof Briefing)[] },
-  { icon: Wallet, title: 'Investimento', desc: 'A faixa salarial e benefícios que tornam essa vaga competitiva.', fields: ['budget', 'modalidade', 'beneficios'] as (keyof Briefing)[] },
-  { icon: ListChecks, title: 'Processo seletivo', desc: 'As etapas da seleção, na ordem — o que quem se candidata vai enfrentar.', fields: ['processoSeletivo'] as (keyof Briefing)[] },
+  { key: 'identidade', icon: Building2, title: 'Identidade da vaga', desc: 'Como essa posição se posiciona dentro da organização.', fields: ['cargo', 'nivel', 'modelo', 'cliente', 'gestor'] as (keyof Briefing)[] },
+  { key: 'sobre', icon: Rocket, title: 'Sobre a vaga', desc: 'O contexto do desafio e o objetivo da contratação — a abertura da descrição.', fields: ['desafio', 'objetivo'] as (keyof Briefing)[] },
+  { key: 'operacao', icon: CalendarClock, title: 'Operação & rotina', desc: 'Onde, quando e em que ritmo essa pessoa vai trabalhar.', fields: ['local', 'horario', 'carga', 'motivo', 'quantidade'] as (keyof Briefing)[] },
+  { key: 'investimento', icon: Wallet, title: 'Investimento', desc: 'A faixa salarial e benefícios que tornam essa vaga competitiva.', fields: ['budget', 'modalidade', 'beneficios'] as (keyof Briefing)[] },
+  { key: 'processo', icon: ListChecks, title: 'Processo seletivo', desc: 'As etapas da seleção, na ordem — o que quem se candidata vai enfrentar.', fields: ['processoSeletivo'] as (keyof Briefing)[] },
 ] as const
 
 export const isFilledVal = (v: unknown) =>
@@ -86,11 +89,11 @@ export const PERFIL_INICIAL: Perfil = {
 }
 
 // `optional` = seção que NÃO entra no readiness (Diferenciais) — mostra "Opcional" no StatusPill.
-export type PerfilSection = { icon: ComponentType<{ className?: string }>; title: string; desc: string; fields: (keyof Perfil)[]; optional?: boolean }
+export type PerfilSection = { key: string; icon: ComponentType<{ className?: string }>; title: string; desc: string; fields: (keyof Perfil)[]; optional?: boolean }
 export const PERFIL_SECTIONS: PerfilSection[] = [
-  { icon: Code2, title: 'Requisitos técnicos', desc: 'O que essa pessoa precisa dominar logo de cara.', fields: ['formacao', 'experiencia', 'stackObrigatoria'] },
-  { icon: Star, title: 'Diferenciais', desc: 'Conhecimentos que pesam positivamente, mas não são bloqueantes.', fields: ['conhecimentosDesejaveis'], optional: true },
-  { icon: AlignLeft, title: 'Responsabilidades & perfil', desc: 'O dia a dia da posição e o tipo de pessoa que você procura.', fields: ['responsabilidades', 'justificativa'] },
+  { key: 'requisitos', icon: Code2, title: 'Requisitos técnicos', desc: 'O que essa pessoa precisa dominar logo de cara.', fields: ['formacao', 'experiencia', 'stackObrigatoria'] },
+  { key: 'diferenciais', icon: Star, title: 'Diferenciais', desc: 'Conhecimentos que pesam positivamente, mas não são bloqueantes.', fields: ['conhecimentosDesejaveis'], optional: true },
+  { key: 'responsabilidades', icon: AlignLeft, title: 'Responsabilidades & perfil', desc: 'O dia a dia da posição e o tipo de pessoa que você procura.', fields: ['responsabilidades', 'justificativa'] },
 ]
 
 /* ───────── etapa 3 · descrição gerada por IA ───────── */
@@ -170,11 +173,24 @@ export function buildPostText(d: Briefing, p: Perfil, desc: import('@/lib/vaga')
 
 /* ────────────────────────────── tipos auxiliares de UI ────────────────────────────── */
 
-export type SectionMeta = { icon: ComponentType<{ className?: string }>; title: string; desc: string }
+export type SectionMeta = { key: string; icon: ComponentType<{ className?: string }>; title: string; desc: string }
 
 export type Msg = { id: number; role: 'user' | 'assistant'; text: string; at: number }
 
-export function formatAgo(at: number) {
+// Tempo relativo CRU (módulo → fora do escopo de pureza de render): a UI traduz o rótulo via i18n.
+// `unit` escolhe a chave (segundos/minutos) e `value` é o número a interpolar.
+export function relativeAgo(at: number): { unit: 'segundos' | 'minutos'; value: number } {
   const s = Math.max(0, Math.round((Date.now() - at) / 1000))
-  return s < 60 ? `Há ${s}s` : `Há ${Math.round(s / 60)}min`
+  return s < 60 ? { unit: 'segundos', value: s } : { unit: 'minutos', value: Math.round(s / 60) }
 }
+
+/* ───────── tradução só da EXIBIÇÃO das opções ─────────
+ * O VALOR canônico pt-BR permanece no estado do form, no buildDesc e no post (a vaga GERADA é conteúdo
+ * pt-BR). Só o rótulo que o recrutador VÊ no picker é traduzido (lookup `opcoes.<grupo>.<valor>`); o
+ * `defaultValue` garante o fallback ao canônico se faltar chave. Grupos de palavras comuns — stack
+ * técnica, horários e quantidades ficam como estão (nomes próprios/formato, não se traduzem). */
+// 'tech' cobre os pools de stack/conhecimentos: traduz só os TERMOS GENÉRICOS (ex.: "Observabilidade");
+// nomes próprios (Python, Kubernetes…) e itens digitados à mão caem no fallback canônico via defaultValue.
+export type OptGroup = 'cargo' | 'nivel' | 'modelo' | 'carga' | 'motivo' | 'modalidade' | 'beneficio' | 'processo' | 'exigencia' | 'habilidade' | 'tech'
+export const optLabeler = (t: TFunction<'gerador'>, group: OptGroup) => (value: string) =>
+  t(`opcoes.${group}.${value}` as 'opcoes.nivel.Pleno', { defaultValue: value })

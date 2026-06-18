@@ -7,6 +7,7 @@ import { Separator } from '@/components/ui/separator'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { Toaster } from '@/components/ui/sonner'
 import { Spinner } from '@/components/ui/spinner'
+import { LanguageSelect } from '@/components/LanguageSelect'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { LoginPage } from '@/pages/LoginPage'
 import { RegisterPage } from '@/pages/RegisterPage'
@@ -87,6 +88,7 @@ export function App() {
 
   const themeToggles = (
     <>
+      <LanguageSelect />
       <Button
         variant="ghost"
         size="icon-sm"

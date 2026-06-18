@@ -1,0 +1,81 @@
+{
+  "header": {
+    "titulo": "Jobs",
+    "descricao": "View the jobs registered in the TalentAI Data API and track applicants, approvals and status. Click <0>Open job</0> to create a new one through the step-by-step flow."
+  },
+  "kpi": {
+    "regiao": "Indicators",
+    "abertas": "Open jobs",
+    "inscritos": "Total applicants",
+    "aprovados": "Approved",
+    "emProcesso": "In progress"
+  },
+  "lista": {
+    "regiao": "Job list",
+    "titulo": "Job list",
+    "abrirVaga": "Open job",
+    "vazio": "No jobs found with these filters."
+  },
+  "tabela": {
+    "data": "Date",
+    "vaga": "Job",
+    "senioridade": "Seniority",
+    "modelo": "Model",
+    "inscritos": "Applicants",
+    "aprovados": "Approved",
+    "status": "Status",
+    "acoes": "Actions"
+  },
+  "filtro": {
+    "data": "Filter by date",
+    "senioridade": "Filter by seniority",
+    "modelo": "Filter by model",
+    "status": "Filter by status"
+  },
+  "busca": {
+    "placeholder": "Search title…",
+    "aria": "Search job by title"
+  },
+  "acoes": {
+    "editar": "Edit {{vaga}}",
+    "fechar": "Close {{vaga}}"
+  },
+  "fecharDialog": {
+    "titulo": "Close job?",
+    "descricao": "Are you sure you want to close <0>{{vaga}}</0>? The job will stop receiving applications and move to the <1>Closed</1> status.",
+    "confirmar": "Close job"
+  },
+  "toast": {
+    "fechada": "Job \"{{vaga}}\" closed (demo)."
+  },
+  "detalhe": {
+    "overline": "Job",
+    "resultados": "Results",
+    "dataAbertura": "Opening date",
+    "senioridade": "Seniority",
+    "modeloAtuacao": "Work model",
+    "inscritos": "Applicants",
+    "aprovados": "Approved",
+    "taxaAprovacao": "Approval rate"
+  },
+  "status": {
+    "Aberta": "Open",
+    "Rascunho": "Draft",
+    "Em pausa": "Paused",
+    "Fechada": "Closed"
+  },
+  "export": {
+    "arquivo": "jobs",
+    "col": {
+      "data": "Date",
+      "cargo": "Role",
+      "senioridade": "Seniority",
+      "modelo": "Model",
+      "cliente": "Client",
+      "gestor": "Manager",
+      "inscritos": "Applicants",
+      "aprovados": "Approved",
+      "status": "Status"
+    }
+  }
+}

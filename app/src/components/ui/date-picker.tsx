@@ -1,7 +1,8 @@
 import * as React from "react"
 import { CalendarDays } from "lucide-react"
 import { format, isValid, parse } from "date-fns"
-import { ptBR } from "date-fns/locale"
+import { enUS, es, ptBR } from "date-fns/locale"
+import { useTranslation } from "react-i18next"
 
 import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
@@ -22,6 +23,9 @@ function DatePicker({ id, value, onChange, placeholder = "dd/mm/aaaa", disabled,
   disabled?: boolean
   className?: string
 }) {
+  // Idioma do CALENDÁRIO (nomes de mês/semana) acompanha o app; o INPUT segue dd/mm/aaaa (formato BR fixo).
+  const { t, i18n } = useTranslation("common")
+  const calLocale = ({ "pt-BR": ptBR, en: enUS, es }[i18n.language] ?? ptBR)
   const [open, setOpen] = React.useState(false)
   const parsed = value ? parse(value, "yyyy-MM-dd", new Date()) : undefined
   const selected = parsed && isValid(parsed) ? parsed : undefined
@@ -75,7 +79,7 @@ function DatePicker({ id, value, onChange, placeholder = "dd/mm/aaaa", disabled,
               variant="ghost"
               size="icon-sm"
               disabled={disabled}
-              aria-label="Abrir calendário"
+              aria-label={t("abrirCalendario")}
               className="absolute top-1/2 right-1 -translate-y-1/2 text-muted-foreground hover:text-foreground"
             >
               <CalendarDays aria-hidden />
@@ -84,7 +88,7 @@ function DatePicker({ id, value, onChange, placeholder = "dd/mm/aaaa", disabled,
         </div>
       </PopoverAnchor>
       <PopoverContent align="start" className="w-auto p-0" onOpenAutoFocus={(e) => e.preventDefault()}>
-        <Calendar mode="single" selected={selected} defaultMonth={selected} onSelect={selecionar} locale={ptBR} />
+        <Calendar mode="single" selected={selected} defaultMonth={selected} onSelect={selecionar} locale={calLocale} />
       </PopoverContent>
     </Popover>
   )

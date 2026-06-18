@@ -7,12 +7,16 @@
  * 100% token-driven: badges de status usam as variantes -text (AA por tema), nada de cor à mão.
  */
 import { useState, type ComponentType } from 'react'
+import type { TFunction } from 'i18next'
 import { Briefcase, Calendar, CheckCircle2, Clock, Layers, LayoutList, Lock, MapPin, Pencil, Plus, Search, TrendingUp, Users } from 'lucide-react'
+import { Trans, useTranslation } from 'react-i18next'
 
 import { cn } from '@/lib/utils'
 import { CARD } from '@/lib/surfaces'
 import { usePagination } from '@/lib/usePagination'
 import { PageContainer, PageHeader, StatCard, Paginacao, StatusBadge, type BadgeTone } from '@/components/page'
+import { ExportButton } from '@/components/ExportButton'
+import { exportCsv, type CsvColumn } from '@/lib/exportCsv'
 import { VagaDocumento } from '@/lib/vaga'
 import { type StatusVaga as Status } from '@/lib/types'
 import { BENEF, PROCESSO, mkGen, mkVaga, type Vaga } from './vagas.logic'
@@ -177,13 +181,22 @@ const STATUS_TOM: Record<Status, BadgeTone> = {
 const STATUS_FILTROS = ['Todos', 'Aberta', 'Rascunho', 'Em pausa', 'Fechada'] as const
 const PER_PAGE = 10
 
+// Rótulo TRADUZIDO de um status (o VALOR canônico pt-BR continua no estado/filtros/tones; só a exibição muda).
+// Chave dinâmica `status.${Status}` sobre a união literal — a tipagem segue feliz. Para o sentinela "Todos"
+// do filtro (que não é um Status), cai no fallback e devolve o rótulo genérico de "todos".
+function statusLabel(t: TFunction<'vagas'>, value: Status): string {
+  return t(`status.${value}`)
+}
+
 // Filtro de coluna (select compacto) — usado nas colunas Data, Senioridade, Modelo e Status.
-function ColFilter({ value, onChange, options, label }: { value: string; onChange: (v: string) => void; options: readonly string[]; label: string }) {
+// `format` traduz só o RÓTULO exibido; o `value` (e a opção) continua o valor canônico do filtro.
+function ColFilter({ value, onChange, options, label, format }: { value: string; onChange: (v: string) => void; options: readonly string[]; label: string; format?: (v: string) => string }) {
+  const fmt = format ?? ((v: string) => v)
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger size="sm" aria-label={label} className="w-full font-normal"><SelectValue /></SelectTrigger>
+      <SelectTrigger size="sm" aria-label={label} className="w-full font-normal"><SelectValue>{fmt(value)}</SelectValue></SelectTrigger>
       <SelectContent>
-        {options.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+        {options.map((o) => <SelectItem key={o} value={o}>{fmt(o)}</SelectItem>)}
       </SelectContent>
     </Select>
   )
@@ -192,11 +205,12 @@ function ColFilter({ value, onChange, options, label }: { value: string; onChang
 // Detalhe da vaga (conteúdo) — abre ao clicar na linha. As ações (Voltar / Editar) ficam no rodapé do
 // shell (JobGenerator), no MESMO slot do rodapé do wizard — por isso aqui é só o conteúdo (rola no <main>).
 export function VagaDetalhe({ vaga }: { vaga: Vaga }) {
+  const { t } = useTranslation('vagas')
   const taxa = vaga.inscritos > 0 ? Math.round((vaga.aprovados / vaga.inscritos) * 100) : 0
   const detalhes: { icon: ComponentType<{ className?: string }>; label: string; value: string }[] = [
-    { icon: Calendar, label: 'Data de abertura', value: vaga.data },
-    { icon: Layers, label: 'Senioridade', value: vaga.senioridade },
-    { icon: MapPin, label: 'Modelo de atuação', value: vaga.modelo },
+    { icon: Calendar, label: t('detalhe.dataAbertura'), value: vaga.data },
+    { icon: Layers, label: t('detalhe.senioridade'), value: vaga.senioridade },
+    { icon: MapPin, label: t('detalhe.modeloAtuacao'), value: vaga.modelo },
   ]
   return (
     <div className="mx-auto max-w-5xl space-y-6 px-5 py-6 lg:px-8">
@@ -204,10 +218,10 @@ export function VagaDetalhe({ vaga }: { vaga: Vaga }) {
       <header className={cn(CARD, 'space-y-5 p-6')}>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="space-y-1.5">
-            <p className="ty-overline text-muted-foreground">Vaga</p>
+            <p className="ty-overline text-muted-foreground">{t('detalhe.overline')}</p>
             <h1 className="font-heading text-3xl font-bold tracking-tight text-foreground">{vaga.vaga}</h1>
           </div>
-          <StatusBadge value={vaga.status} tones={STATUS_TOM} />
+          <StatusBadge value={statusLabel(t, vaga.status)} tones={{ [statusLabel(t, vaga.status)]: STATUS_TOM[vaga.status] }} />
         </div>
         <dl className="grid gap-4 sm:grid-cols-3">
           {detalhes.map((d) => (
@@ -223,12 +237,12 @@ export function VagaDetalhe({ vaga }: { vaga: Vaga }) {
       </header>
 
       {/* funil: inscritos → aprovados → taxa */}
-      <section aria-label="Resultados" className="grid gap-4 sm:grid-cols-3">
-        <StatCard icon={Users} label="Inscritos" value={vaga.inscritos} />
-        <StatCard icon={CheckCircle2} label="Aprovados" value={vaga.aprovados} />
+      <section aria-label={t('detalhe.resultados')} className="grid gap-4 sm:grid-cols-3">
+        <StatCard icon={Users} label={t('detalhe.inscritos')} value={vaga.inscritos} />
+        <StatCard icon={CheckCircle2} label={t('detalhe.aprovados')} value={vaga.aprovados} />
         <StatCard
           icon={TrendingUp}
-          label="Taxa de aprovação"
+          label={t('detalhe.taxaAprovacao')}
           value={`${taxa}%`}
           delta={
             <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-muted" aria-hidden>
@@ -245,6 +259,8 @@ export function VagaDetalhe({ vaga }: { vaga: Vaga }) {
 }
 
 export function VagasList({ onAbrirVaga, onEditVaga, onVerVaga }: { onAbrirVaga: () => void; onEditVaga: (vaga: Vaga) => void; onVerVaga: (vaga: Vaga) => void }) {
+  const { t } = useTranslation('vagas')
+  const { t: tc } = useTranslation('common')
   const [vagas, setVagas] = useState<Vaga[]>(VAGAS_INICIAL)
   const [status, setStatus] = useState<(typeof STATUS_FILTROS)[number]>('Todos')
   const [q, setQ] = useState('')
@@ -282,70 +298,94 @@ export function VagasList({ onAbrirVaga, onEditVaga, onVerVaga }: { onAbrirVaga:
   const fecharVaga = () => {
     if (!fechar) return
     setVagas((vs) => vs.map((x) => (x.id === fechar.id ? { ...x, status: 'Fechada' } : x)))
-    toast.success(`Vaga "${fechar.vaga}" fechada (demo).`)
+    toast.success(t('toast.fechada', { vaga: fechar.vaga }))
     setFechar(null)
+  }
+
+  // Rótulo traduzido dos sentinelas de filtro/status: "Todas"/"Todos" → common; status canônico → ns vagas.
+  const fmtTodas = (v: string) => (v === 'Todas' ? tc('filtro.todas') : v)
+  const fmtTodos = (v: string) => (v === 'Todos' ? tc('filtro.todos') : v)
+  const fmtStatus = (v: string) => (v === 'Todos' ? tc('filtro.todos') : statusLabel(t, v as Status))
+
+  // Export CSV da lista FILTRADA (não só a página). Cabeçalhos via t(); DADOS das vagas ficam como estão.
+  const exportarCsv = () => {
+    const colunas: CsvColumn<Vaga>[] = [
+      { header: t('export.col.data'), value: (v) => v.data },
+      { header: t('export.col.cargo'), value: (v) => v.vaga },
+      { header: t('export.col.senioridade'), value: (v) => v.senioridade },
+      { header: t('export.col.modelo'), value: (v) => v.modelo },
+      { header: t('export.col.cliente'), value: (v) => v.briefing.cliente },
+      { header: t('export.col.gestor'), value: (v) => v.briefing.gestor },
+      { header: t('export.col.inscritos'), value: (v) => v.inscritos },
+      { header: t('export.col.aprovados'), value: (v) => v.aprovados },
+      { header: t('export.col.status'), value: (v) => statusLabel(t, v.status) },
+    ]
+    exportCsv(t('export.arquivo'), filtradas, colunas)
   }
 
   return (
     <PageContainer>
       <PageHeader
         icon={MapPin}
-        title="Vagas"
-        desc={<>Visualize as vagas cadastradas na TalentAI Data API e acompanhe inscritos, aprovados e status. Clique em <span className="font-medium text-foreground">Abrir vaga</span> para criar uma nova pelo passo a passo.</>}
+        title={t('header.titulo')}
+        desc={<Trans t={t} i18nKey="header.descricao" components={{ 0: <span className="font-medium text-foreground" /> }} />}
       />
 
       {/* KPIs — números reais derivados da lista */}
-      <section aria-label="Indicadores" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard icon={Briefcase} label="Vagas abertas" value={abertas} />
-        <StatCard icon={Users} label="Total de inscritos" value={inscritos} />
-        <StatCard icon={CheckCircle2} label="Aprovados" value={aprovados} />
-        <StatCard icon={Clock} label="Em processo" value={emProcesso} />
+      <section aria-label={t('kpi.regiao')} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StatCard icon={Briefcase} label={t('kpi.abertas')} value={abertas} />
+        <StatCard icon={Users} label={t('kpi.inscritos')} value={inscritos} />
+        <StatCard icon={CheckCircle2} label={t('kpi.aprovados')} value={aprovados} />
+        <StatCard icon={Clock} label={t('kpi.emProcesso')} value={emProcesso} />
       </section>
 
       {/* Lista — filtros DENTRO do card, na barra de ferramentas da tabela */}
       <section aria-labelledby="lista-vagas" className={cn(CARD, 'overflow-hidden')}>
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/50 p-4 sm:p-5">
           <h2 id="lista-vagas" className="flex items-center gap-2 ty-body-lg text-foreground" style={{ fontWeight: 'var(--font-weight-bold)' }}>
-            <LayoutList className="size-5 shrink-0 text-primary-text" aria-hidden /> Lista de vagas
+            <LayoutList className="size-5 shrink-0 text-primary-text" aria-hidden /> {t('lista.titulo')}
             <span className="ty-body-sm font-normal text-muted-foreground tabular-nums">({filtradas.length})</span>
           </h2>
-          <Button onClick={onAbrirVaga}><Plus aria-hidden /> Abrir vaga</Button>
+          <div className="flex items-center gap-2">
+            <ExportButton onExport={exportarCsv} disabled={filtradas.length === 0} />
+            <Button onClick={onAbrirVaga}><Plus aria-hidden /> {t('lista.abrirVaga')}</Button>
+          </div>
         </div>
 
         <Table className="[&_:is(th,td):first-child]:pl-5 [&_:is(th,td):last-child]:pr-5">
           <TableHeader>
             <TableRow className="hover:bg-transparent">
-              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">Data</TableHead>
-              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">Vaga</TableHead>
-              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">Senioridade</TableHead>
-              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">Modelo</TableHead>
-              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase text-right">Inscritos</TableHead>
-              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase text-right">Aprovados</TableHead>
-              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">Status</TableHead>
-              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase text-right">Ações</TableHead>
+              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">{t('tabela.data')}</TableHead>
+              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">{t('tabela.vaga')}</TableHead>
+              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">{t('tabela.senioridade')}</TableHead>
+              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">{t('tabela.modelo')}</TableHead>
+              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase text-right">{t('tabela.inscritos')}</TableHead>
+              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase text-right">{t('tabela.aprovados')}</TableHead>
+              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">{t('tabela.status')}</TableHead>
+              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase text-right">{t('tabela.acoes')}</TableHead>
             </TableRow>
             {/* Linha de FILTRO — barra de ferramentas (td, não th: não são cabeçalhos de coluna). Busca
                 alinhada à coluna Vaga, status à coluna Status. */}
             <TableRow className="bg-muted/20 hover:bg-muted/20">
-              <TableCell className="py-2"><ColFilter value={dataF} onChange={(v) => { setDataF(v); resetPage() }} options={datas} label="Filtrar por data" /></TableCell>
+              <TableCell className="py-2"><ColFilter value={dataF} onChange={(v) => { setDataF(v); resetPage() }} options={datas} label={t('filtro.data')} format={fmtTodas} /></TableCell>
               <TableCell className="py-2">
                 <div className="relative">
                   <Search className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" aria-hidden />
-                  <Input value={q} onChange={(e) => { setQ(e.target.value); resetPage() }} placeholder="Buscar título…" aria-label="Buscar vaga por título" className="h-8 pl-8 ty-body-sm font-normal" />
+                  <Input value={q} onChange={(e) => { setQ(e.target.value); resetPage() }} placeholder={t('busca.placeholder')} aria-label={t('busca.aria')} className="h-8 pl-8 ty-body-sm font-normal" />
                 </div>
               </TableCell>
-              <TableCell className="py-2"><ColFilter value={senioridadeF} onChange={(v) => { setSenioridadeF(v); resetPage() }} options={senioridades} label="Filtrar por senioridade" /></TableCell>
-              <TableCell className="py-2"><ColFilter value={modeloF} onChange={(v) => { setModeloF(v); resetPage() }} options={modelos} label="Filtrar por modelo" /></TableCell>
+              <TableCell className="py-2"><ColFilter value={senioridadeF} onChange={(v) => { setSenioridadeF(v); resetPage() }} options={senioridades} label={t('filtro.senioridade')} format={fmtTodas} /></TableCell>
+              <TableCell className="py-2"><ColFilter value={modeloF} onChange={(v) => { setModeloF(v); resetPage() }} options={modelos} label={t('filtro.modelo')} format={fmtTodos} /></TableCell>
               <TableCell className="py-2" />
               <TableCell className="py-2" />
-              <TableCell className="py-2"><ColFilter value={status} onChange={(v) => { setStatus(v as (typeof STATUS_FILTROS)[number]); resetPage() }} options={STATUS_FILTROS} label="Filtrar por status" /></TableCell>
+              <TableCell className="py-2"><ColFilter value={status} onChange={(v) => { setStatus(v as (typeof STATUS_FILTROS)[number]); resetPage() }} options={STATUS_FILTROS} label={t('filtro.status')} format={fmtStatus} /></TableCell>
               <TableCell className="py-2" />
             </TableRow>
           </TableHeader>
           <TableBody>
             {filtradas.length === 0 ? (
               <TableRow className="hover:bg-transparent">
-                <TableCell colSpan={8} className="py-14 text-center ty-body-sm text-muted-foreground">Nenhuma vaga encontrada com esses filtros.</TableCell>
+                <TableCell colSpan={8} className="py-14 text-center ty-body-sm text-muted-foreground">{t('lista.vazio')}</TableCell>
               </TableRow>
             ) : (
               pageItems.map((v) => (
@@ -361,11 +401,11 @@ export function VagasList({ onAbrirVaga, onEditVaga, onVerVaga }: { onAbrirVaga:
                   <TableCell className="py-3 ty-body-sm text-muted-foreground">{v.modelo}</TableCell>
                   <TableCell className="py-3 text-right ty-body-sm font-medium tabular-nums text-foreground">{v.inscritos}</TableCell>
                   <TableCell className="py-3 text-right ty-body-sm font-semibold tabular-nums text-success-text">{v.aprovados}</TableCell>
-                  <TableCell className="py-3"><StatusBadge value={v.status} tones={STATUS_TOM} /></TableCell>
+                  <TableCell className="py-3"><StatusBadge value={statusLabel(t, v.status)} tones={{ [statusLabel(t, v.status)]: STATUS_TOM[v.status] }} /></TableCell>
                   <TableCell className="py-3 text-right">
                     <div className="flex justify-end gap-1">
-                      <Button variant="ghost" size="icon-sm" aria-label={`Editar ${v.vaga}`} onClick={(e) => { e.stopPropagation(); onEditVaga(v) }} className="text-muted-foreground hover:bg-primary/10 hover:text-primary-text"><Pencil /></Button>
-                      <Button variant="ghost" size="icon-sm" aria-label={`Fechar ${v.vaga}`} onClick={(e) => { e.stopPropagation(); setFechar(v) }} className="text-muted-foreground hover:bg-warning/10 hover:text-warning-text"><Lock /></Button>
+                      <Button variant="ghost" size="icon-sm" aria-label={t('acoes.editar', { vaga: v.vaga })} onClick={(e) => { e.stopPropagation(); onEditVaga(v) }} className="text-muted-foreground hover:bg-primary/10 hover:text-primary-text"><Pencil /></Button>
+                      <Button variant="ghost" size="icon-sm" aria-label={t('acoes.fechar', { vaga: v.vaga })} onClick={(e) => { e.stopPropagation(); setFechar(v) }} className="text-muted-foreground hover:bg-warning/10 hover:text-warning-text"><Lock /></Button>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -388,13 +428,20 @@ export function VagasList({ onAbrirVaga, onEditVaga, onVerVaga }: { onAbrirVaga:
           <div className="flex items-start gap-4">
             <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-warning/10 text-warning-text" aria-hidden><Lock className="size-5" /></span>
             <div className="space-y-1.5">
-              <AlertDialogTitle>Fechar vaga?</AlertDialogTitle>
-              <AlertDialogDescription>Tem certeza que deseja fechar <span className="font-medium text-foreground">{fechar?.vaga}</span>? A vaga deixará de receber candidaturas e passará para o status <span className="font-medium text-foreground">Fechada</span>.</AlertDialogDescription>
+              <AlertDialogTitle>{t('fecharDialog.titulo')}</AlertDialogTitle>
+              <AlertDialogDescription>
+                <Trans
+                  t={t}
+                  i18nKey="fecharDialog.descricao"
+                  values={{ vaga: fechar?.vaga }}
+                  components={{ 0: <span className="font-medium text-foreground" />, 1: <span className="font-medium text-foreground" /> }}
+                />
+              </AlertDialogDescription>
             </div>
           </div>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction variant="warning" onClick={fecharVaga}>Fechar vaga</AlertDialogAction>
+            <AlertDialogCancel>{tc('acao.cancelar')}</AlertDialogCancel>
+            <AlertDialogAction variant="warning" onClick={fecharVaga}>{t('fecharDialog.confirmar')}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

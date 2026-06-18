@@ -6,9 +6,11 @@
  * de tela); upload de currículo acessível (clique + arrastar + teclado). "Cadastro" é simulado.
  */
 import { useEffect, useRef, useState, type ReactNode } from 'react'
+import type { TFunction } from 'i18next'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { useTranslation } from 'react-i18next'
 import { Check, Eye, EyeOff, FileText, Upload, UserPlus, X } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -33,49 +35,55 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const MAX_MB = 5
 
 // Regras da senha — alimentam o checklist AO VIVO e a validação do zod (fonte única).
+// `key` aponta p/ o rótulo no namespace 'auth' (regras.*); o rótulo é resolvido via t() na UI.
 const PWD_RULES = [
-  { label: 'Mínimo de 8 caracteres', test: (v: string) => v.length >= 8 },
-  { label: 'Pelo menos uma letra maiúscula', test: (v: string) => /[A-Z]/.test(v) },
-  { label: 'Pelo menos um número', test: (v: string) => /[0-9]/.test(v) },
-  { label: 'Pelo menos um caractere especial (ex.: ! @ # $)', test: (v: string) => /[^A-Za-z0-9]/.test(v) },
-]
+  { key: 'minChars', test: (v: string) => v.length >= 8 },
+  { key: 'maiuscula', test: (v: string) => /[A-Z]/.test(v) },
+  { key: 'numero', test: (v: string) => /[0-9]/.test(v) },
+  { key: 'especial', test: (v: string) => /[^A-Za-z0-9]/.test(v) },
+] as const
 
-const registerSchema = z
-  .object({
-    nome: z.string().trim().min(1, 'Informe seu nome completo.'),
-    email: z.string().min(1, 'Informe seu e-mail.').refine((v) => EMAIL_RE.test(v), 'Informe um e-mail válido.'),
-    password: z.string().refine((v) => PWD_RULES.every((r) => r.test(v)), 'A senha não cumpre todos os requisitos.'),
-    confirmPassword: z.string().min(1, 'Confirme sua senha.'),
-    aceiteTermos: z.boolean().refine((v) => v === true, {
-      message: 'Você precisa aceitar os Termos e a Política de Privacidade.',
-    }),
-  })
-  .refine((d) => d.password === d.confirmPassword, {
-    message: 'As senhas não coincidem.',
-    path: ['confirmPassword'],
-  })
-type RegisterValues = z.infer<typeof registerSchema>
+// Schema parametrizado por `t` — mensagens do zod saem do namespace 'auth' (chrome de UI).
+function makeRegisterSchema(t: TFunction<'auth'>) {
+  return z
+    .object({
+      nome: z.string().trim().min(1, t('validacao.nomeObrigatorio')),
+      email: z.string().min(1, t('validacao.emailObrigatorio')).refine((v) => EMAIL_RE.test(v), t('validacao.emailInvalido')),
+      password: z.string().refine((v) => PWD_RULES.every((r) => r.test(v)), t('validacao.senhaRequisitos')),
+      confirmPassword: z.string().min(1, t('validacao.confirmeSenha')),
+      aceiteTermos: z.boolean().refine((v) => v === true, {
+        message: t('validacao.aceiteTermos'),
+      }),
+    })
+    .refine((d) => d.password === d.confirmPassword, {
+      message: t('validacao.senhasNaoCoincidem'),
+      path: ['confirmPassword'],
+    })
+}
+type RegisterValues = z.infer<ReturnType<typeof makeRegisterSchema>>
 
 // Label com marca de obrigatório: o <span> agrupa texto + asterisco num ÚNICO item do flex do
 // Label (que tem gap-2), então o "*" cola no texto. Asterisco decorativo + "(obrigatório)" p/ leitor.
 function ReqLabel({ children }: { children: ReactNode }) {
+  const { t } = useTranslation('auth')
   return (
     <span>
       {children}
       <span aria-hidden className="ml-0.5 text-destructive-text">*</span>
-      <span className="sr-only"> (obrigatório)</span>
+      <span className="sr-only">{t('registro.obrigatorio')}</span>
     </span>
   )
 }
 
 export function RegisterPage({ onBackToLogin, onRegistered }: { onBackToLogin?: () => void; onRegistered?: () => void }) {
+  const { t } = useTranslation('auth')
   const [showPwd, setShowPwd] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [cvFile, setCvFile] = useState<File | null>(null)
   const [cvError, setCvError] = useState<string | null>(null)
 
   const form = useForm<RegisterValues>({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(makeRegisterSchema(t)),
     defaultValues: { nome: '', email: '', password: '', confirmPassword: '', aceiteTermos: false },
     mode: 'onTouched',
   })
@@ -93,43 +101,43 @@ export function RegisterPage({ onBackToLogin, onRegistered }: { onBackToLogin?: 
   const pwd = form.watch('password') || ''
   const confirm = form.watch('confirmPassword') || ''
   const checks = [
-    ...PWD_RULES.map((r) => ({ label: r.label, ok: r.test(pwd) })),
-    { label: 'As senhas coincidem', ok: pwd.length > 0 && pwd === confirm },
+    ...PWD_RULES.map((r) => ({ label: t(`registro.regras.${r.key}`), ok: r.test(pwd) })),
+    { label: t('registro.regras.coincidem'), ok: pwd.length > 0 && pwd === confirm },
   ]
   const metCount = checks.filter((c) => c.ok).length
   const allOk = metCount === checks.length
 
   function pickCv(file?: File) {
     if (!file) return
-    if (!/\.(pdf|docx?)$/i.test(file.name)) return setCvError('Formato não suportado — envie um arquivo PDF ou Word (.pdf, .doc ou .docx).')
-    if (file.size > MAX_MB * 1024 * 1024) return setCvError(`O arquivo é muito grande — o limite é ${MAX_MB} MB.`)
+    if (!/\.(pdf|docx?)$/i.test(file.name)) return setCvError(t('registro.curriculo.formatoInvalido'))
+    if (file.size > MAX_MB * 1024 * 1024) return setCvError(t('registro.curriculo.muitoGrande', { max: MAX_MB }))
     setCvError(null)
     setCvFile(file)
   }
 
   async function onSubmit(values: RegisterValues) {
     if (!cvFile) {
-      setCvError('Anexe seu currículo.')
+      setCvError(t('registro.curriculo.anexe'))
       return
     }
     await new Promise((r) => setTimeout(r, 1200)) // simula a criação da conta
     if (!mountedRef.current) return // desmontou durante o "await" → não dispara toast/callback
-    toast.success('Conta criada com sucesso!', { description: `Bem-vindo(a), ${values.nome.split(' ')[0]}! Faça login para continuar.` })
+    toast.success(t('registro.sucessoTitulo'), { description: t('registro.sucessoDescricao', { nome: values.nome.split(' ')[0] }) })
     onRegistered?.()
   }
 
   return (
     <AuthLayout
-      headline="Sua próxima vaga começa aqui."
-      subline="Crie seu perfil e candidate-se às melhores oportunidades em minutos."
-      title="Crie sua conta"
-      subtitle="Preencha seus dados para se candidatar às vagas."
+      headline={t('registro.headline')}
+      subline={t('registro.subline')}
+      title={t('registro.title')}
+      subtitle={t('registro.subtitle')}
       maxWidth="md"
       footer={
         <p className="text-sm text-muted-foreground">
-          Já tem uma conta?{' '}
+          {t('registro.temConta')}{' '}
           <button type="button" onClick={() => onBackToLogin?.()} className={`font-medium text-link underline-offset-4 hover:underline ${focusRing}`}>
-            Entrar
+            {t('registro.entrar')}
           </button>
         </p>
       }
@@ -141,9 +149,9 @@ export function RegisterPage({ onBackToLogin, onRegistered }: { onBackToLogin?: 
             name="nome"
             render={({ field }) => (
               <FormItem>
-                <FormLabel><ReqLabel>Nome completo</ReqLabel></FormLabel>
+                <FormLabel><ReqLabel>{t('registro.label.nome')}</ReqLabel></FormLabel>
                 <FormControl>
-                  <Input placeholder="O seu nome" autoComplete="name" {...field} />
+                  <Input placeholder={t('registro.placeholder.nome')} autoComplete="name" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -155,9 +163,9 @@ export function RegisterPage({ onBackToLogin, onRegistered }: { onBackToLogin?: 
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel><ReqLabel>E-mail</ReqLabel></FormLabel>
+                <FormLabel><ReqLabel>{t('registro.label.email')}</ReqLabel></FormLabel>
                 <FormControl>
-                  <Input type="email" inputMode="email" placeholder="voce@empresa.com" autoComplete="email" {...field} />
+                  <Input type="email" inputMode="email" placeholder={t('registro.placeholder.email')} autoComplete="email" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -171,22 +179,22 @@ export function RegisterPage({ onBackToLogin, onRegistered }: { onBackToLogin?: 
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel><ReqLabel>Senha</ReqLabel></FormLabel>
+                <FormLabel><ReqLabel>{t('registro.label.senha')}</ReqLabel></FormLabel>
                 <div className="relative">
                   <FormControl>
-                    <Input type={showPwd ? 'text' : 'password'} placeholder="••••••••" autoComplete="new-password" className="pr-9" {...field} />
+                    <Input type={showPwd ? 'text' : 'password'} placeholder={t('registro.placeholder.senha')} autoComplete="new-password" className="pr-9" {...field} />
                   </FormControl>
                   <button
                     type="button"
                     onClick={() => setShowPwd((s) => !s)}
-                    aria-label={showPwd ? 'Ocultar senha' : 'Mostrar senha'}
+                    aria-label={showPwd ? t('registro.ocultarSenha') : t('registro.mostrarSenha')}
                     className={`absolute top-1/2 right-2 grid size-7 -translate-y-1/2 place-items-center text-muted-foreground transition-colors hover:text-foreground ${focusRing}`}
                   >
                     {showPwd ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                   </button>
                 </div>
                 <FormDescription className="sr-only">
-                  A senha deve ter no mínimo 8 caracteres, uma letra maiúscula, um número e um caractere especial.
+                  {t('registro.descricaoSenha')}
                 </FormDescription>
               </FormItem>
             )}
@@ -197,21 +205,21 @@ export function RegisterPage({ onBackToLogin, onRegistered }: { onBackToLogin?: 
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel><ReqLabel>Confirmar senha</ReqLabel></FormLabel>
+                <FormLabel><ReqLabel>{t('registro.label.confirmarSenha')}</ReqLabel></FormLabel>
                 <div className="relative">
                   <FormControl>
-                    <Input type={showConfirm ? 'text' : 'password'} placeholder="••••••••" autoComplete="new-password" className="pr-9" {...field} />
+                    <Input type={showConfirm ? 'text' : 'password'} placeholder={t('registro.placeholder.confirmarSenha')} autoComplete="new-password" className="pr-9" {...field} />
                   </FormControl>
                   <button
                     type="button"
                     onClick={() => setShowConfirm((s) => !s)}
-                    aria-label={showConfirm ? 'Ocultar senha' : 'Mostrar senha'}
+                    aria-label={showConfirm ? t('registro.ocultarSenha') : t('registro.mostrarSenha')}
                     className={`absolute top-1/2 right-2 grid size-7 -translate-y-1/2 place-items-center text-muted-foreground transition-colors hover:text-foreground ${focusRing}`}
                   >
                     {showConfirm ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                   </button>
                 </div>
-                <FormDescription className="sr-only">Repita exatamente a senha digitada acima.</FormDescription>
+                <FormDescription className="sr-only">{t('registro.descricaoConfirmar')}</FormDescription>
               </FormItem>
             )}
           />
@@ -222,14 +230,14 @@ export function RegisterPage({ onBackToLogin, onRegistered }: { onBackToLogin?: 
               role="status" e anuncia "X de N requisitos" de forma concisa (não lê a lista a cada tecla). */}
           <div className="space-y-2.5">
             <div className="flex items-center justify-between gap-2">
-              <p className="ty-body-sm font-medium">Requisitos da senha</p>
+              <p className="ty-body-sm font-medium">{t('registro.requisitos.titulo')}</p>
               <span
                 role="status"
                 aria-live="polite"
                 className={cn('ty-body-sm font-medium tabular-nums transition-colors', allOk ? 'text-success-text' : 'text-muted-foreground')}
               >
                 <span aria-hidden>{metCount}/{checks.length}</span>
-                <span className="sr-only">{metCount} de {checks.length} requisitos cumpridos</span>
+                <span className="sr-only">{t('registro.requisitos.contador', { met: metCount, total: checks.length })}</span>
               </span>
             </div>
 
@@ -253,7 +261,7 @@ export function RegisterPage({ onBackToLogin, onRegistered }: { onBackToLogin?: 
                     {c.ok && <Check className="size-3 motion-safe:animate-in motion-safe:zoom-in-75" strokeWidth={2.5} />}
                   </span>
                   <span>{c.label}</span>
-                  <span className="sr-only">{c.ok ? '(cumprido)' : '(pendente)'}</span>
+                  <span className="sr-only">{c.ok ? t('registro.requisitos.cumprido') : t('registro.requisitos.pendente')}</span>
                 </li>
               ))}
             </ul>
@@ -261,7 +269,7 @@ export function RegisterPage({ onBackToLogin, onRegistered }: { onBackToLogin?: 
 
           {/* Currículo — input sobreposto (clique/arrastar/teclado), token-driven */}
           <div className="space-y-2">
-            <Label htmlFor="cv"><ReqLabel>Currículo</ReqLabel></Label>
+            <Label htmlFor="cv"><ReqLabel>{t('registro.label.curriculo')}</ReqLabel></Label>
             {!cvFile ? (
               <div className="relative">
                 <input
@@ -284,9 +292,9 @@ export function RegisterPage({ onBackToLogin, onRegistered }: { onBackToLogin?: 
                   )}
                 >
                   <p className={cn('flex items-center gap-2 ty-body-sm font-medium', cvError ? 'text-destructive-text' : 'text-link')}>
-                    <Upload className="size-4" aria-hidden /> Enviar currículo (PDF ou Word)
+                    <Upload className="size-4" aria-hidden /> {t('registro.curriculo.enviar')}
                   </p>
-                  <p id="cv-hint" className="ty-body-sm text-muted-foreground">Máximo {MAX_MB} MB · fica salvo neste dispositivo até concluir o cadastro</p>
+                  <p id="cv-hint" className="ty-body-sm text-muted-foreground">{t('registro.curriculo.dica', { max: MAX_MB })}</p>
                 </div>
               </div>
             ) : (
@@ -297,7 +305,7 @@ export function RegisterPage({ onBackToLogin, onRegistered }: { onBackToLogin?: 
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="flex items-center gap-1.5 ty-body-sm font-medium text-success-text">
-                    <Check className="size-4 shrink-0" aria-hidden /> Currículo anexado
+                    <Check className="size-4 shrink-0" aria-hidden /> {t('registro.curriculo.anexado')}
                   </p>
                   <p className="truncate ty-body-sm font-medium">
                     {cvFile.name}
@@ -307,7 +315,7 @@ export function RegisterPage({ onBackToLogin, onRegistered }: { onBackToLogin?: 
                 <button
                   type="button"
                   onClick={() => { setCvFile(null); setCvError(null) }}
-                  aria-label="Remover currículo"
+                  aria-label={t('registro.curriculo.remover')}
                   className="grid size-8 shrink-0 place-items-center rounded-md text-muted-foreground outline-none transition-colors hover:bg-destructive/10 hover:text-destructive-text focus-visible:ring-[3px] focus-visible:ring-ring/50"
                 >
                   <X className="size-4" />
@@ -335,21 +343,21 @@ export function RegisterPage({ onBackToLogin, onRegistered }: { onBackToLogin?: 
                     />
                   </FormControl>
                   <FormLabel className="font-normal leading-snug">
-                    Li e aceito os{' '}
+                    {t('registro.termos.li')}{' '}
                     <button
                       type="button"
-                      onClick={(e) => { e.stopPropagation(); toast('Termos de Uso', { description: 'Demonstração — os Termos de Uso abririam aqui.' }) }}
+                      onClick={(e) => { e.stopPropagation(); toast(t('registro.termos.termosTitulo'), { description: t('registro.termos.termosDescricao') }) }}
                       className={`text-link underline-offset-4 hover:underline ${focusRing}`}
                     >
-                      Termos
+                      {t('registro.termos.termos')}
                     </button>
-                    {' '}e a{' '}
+                    {' '}{t('registro.termos.e')}{' '}
                     <button
                       type="button"
-                      onClick={(e) => { e.stopPropagation(); toast('Política de Privacidade', { description: 'Demonstração — a Política de Privacidade abriria aqui.' }) }}
+                      onClick={(e) => { e.stopPropagation(); toast(t('registro.termos.politicaTitulo'), { description: t('registro.termos.politicaDescricao') }) }}
                       className={`text-link underline-offset-4 hover:underline ${focusRing}`}
                     >
-                      Política de Privacidade
+                      {t('registro.termos.politica')}
                     </button>
                     .
                   </FormLabel>
@@ -363,9 +371,9 @@ export function RegisterPage({ onBackToLogin, onRegistered }: { onBackToLogin?: 
               `disabled` tira da ordem de tab e fica mudo p/ leitor de tela durante o submit. */}
           <Button type="submit" className="group w-full" isLoading={isSubmitting}>
             {isSubmitting ? (
-              'Criando conta…'
+              t('registro.criando')
             ) : (
-              <><UserPlus /> Criar conta</>
+              <><UserPlus /> {t('registro.criarConta')}</>
             )}
           </Button>
         </form>

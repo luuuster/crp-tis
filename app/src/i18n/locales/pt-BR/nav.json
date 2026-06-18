@@ -1,0 +1,34 @@
+{
+  "principal": "Navegação principal",
+  "trilha": "Workspace",
+  "grupo": { "workspace": "Workspace", "sistema": "Sistema" },
+  "item": {
+    "dashboard": "Dashboard",
+    "gerador": "Vagas",
+    "entrevistas-ia": "Entrevistas IA",
+    "entrevistas": "Calendário de entrevistas",
+    "candidatos": "Banco de talentos",
+    "usuarios": "Usuários",
+    "componentes": "Componentes"
+  },
+  "menu": {
+    "abrir": "Abrir menu",
+    "fechar": "Fechar menu",
+    "recolher": "Recolher menu",
+    "expandir": "Expandir menu",
+    "descricao": "Acesse as áreas do workspace."
+  },
+  "demoToast": "\"{{item}}\" não faz parte desta demo.",
+  "conta": {
+    "label": "Sua conta",
+    "minha": "Minha conta",
+    "contaDemo": "Conta (demo).",
+    "sair": "Sair"
+  },
+  "sairConfirm": {
+    "titulo": "Sair da conta?",
+    "descricao": "Você será desconectado. Alterações não salvas serão perdidas.",
+    "voltar": "Voltar",
+    "sair": "Sair"
+  }
+}

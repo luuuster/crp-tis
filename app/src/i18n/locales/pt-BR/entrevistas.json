@@ -1,0 +1,117 @@
+{
+  "crumb": "Calendário de entrevistas",
+  "header": {
+    "title": "Calendário de entrevistas",
+    "desc": "Acompanhe as entrevistas agendadas, o que vem a seguir e os candidatos que ainda precisam de horário."
+  },
+  "calendario": {
+    "label": "Calendário de {{mes}} de {{ano}}",
+    "mesAnterior": "Mês anterior",
+    "proximoMes": "Próximo mês",
+    "mes": "Mês",
+    "ano": "Ano"
+  },
+  "dia": {
+    "mais": "+{{n}} mais",
+    "agendadas_one": "{{count}} entrevista agendada neste dia.",
+    "agendadas_other": "{{count}} entrevistas agendadas neste dia."
+  },
+  "proximas": {
+    "title": "Próximas entrevistas",
+    "desc": "{{n}} em {{mes}}",
+    "buscar": "Buscar entrevista pelo nome…",
+    "buscarAria": "Buscar entrevista pelo nome do candidato",
+    "vaziaBusca": "Nenhuma entrevista encontrada para essa busca.",
+    "vazia": "Nenhuma entrevista agendada neste mês."
+  },
+  "fila": {
+    "title": "Candidatos aguardando agendamento",
+    "desc": "{{n}} na fila",
+    "buscar": "Buscar candidato pelo nome…",
+    "buscarAria": "Buscar candidato pelo nome",
+    "vaziaBusca": "Nenhum candidato encontrado para essa busca.",
+    "vazia": "Nenhum candidato na fila.",
+    "aguardando": "{{vaga}} · aguardando {{desde}}",
+    "agendar": "Agendar"
+  },
+  "formato": {
+    "Online": "Online",
+    "Presencial": "Presencial"
+  },
+  "detalhe": {
+    "overline": "Entrevista agendada",
+    "statusAgendada": "Agendada",
+    "secaoDetalhes": "Detalhes do agendamento",
+    "data": "Data",
+    "horario": "Horário",
+    "formato": "Formato",
+    "online": "Online · Microsoft Teams",
+    "presencial": "Presencial",
+    "entrevistadores": "Entrevistadores ({{n}})",
+    "entrevistador": "Entrevistador(a)",
+    "linkReuniao": "Link da reunião (Teams)",
+    "local": "Local",
+    "localValor": "Sala 3 · 4º andar — Escritório SP",
+    "etapa": "Etapa",
+    "etapaValor": "Entrevista — processo seletivo",
+    "entrarChamada": "Entrar na chamada",
+    "verLocal": "Ver local",
+    "toastEntrando": "Entrando na chamada… (demo)",
+    "toastLocalCopiado": "Endereço do local copiado (demo).",
+    "reagendar": "Reagendar",
+    "cancelar": "Cancelar",
+    "cancelarTitulo": "Cancelar esta entrevista?",
+    "cancelarDescricao": "A entrevista com {{cand}} será cancelada e o candidato volta para a fila de agendamento.",
+    "cancelarConfirmar": "Sim, cancelar"
+  },
+  "agendar": {
+    "overlineReagendar": "Reagendar entrevista",
+    "overlineAgendar": "Agendar entrevista",
+    "data": "Data",
+    "entrevistadores": "Entrevistadores",
+    "contador": "({{n}}/4)",
+    "disponibilidade": "Disponibilidade no Teams",
+    "escolhaData": "Escolha uma data para ver os horários livres.",
+    "selecioneEntrevistador": "Selecione ao menos um entrevistador.",
+    "semHorarioTitulo": "Nenhum horário livre neste dia",
+    "semHorarioUm": "O entrevistador não tem horários disponíveis nesta data.",
+    "semHorarioVarios": "Os {{n}} entrevistadores não têm um horário em comum nesta data.",
+    "proximaDataLivre": "Ir para a próxima data livre · {{data}}",
+    "tenteOutraData": "Tente outra data.",
+    "tenteOutraDataReduza": "Tente outra data ou reduza os entrevistadores.",
+    "horariosUm": "Horários livres na agenda do entrevistador.",
+    "horariosVarios": "Horários em que os {{n}} entrevistadores estão livres ao mesmo tempo.",
+    "slotOcupadoTitle": "Ocupado: {{nomes}}",
+    "slotLivreAria": "{{slot}} — livre",
+    "slotOcupadoAria": "{{slot}} — ocupado",
+    "duracao": "Duração",
+    "formato": "Formato",
+    "formatoOnline": "Online (Teams)",
+    "formatoPresencial": "Presencial",
+    "linkReuniao": "Link da reunião",
+    "local": "Local",
+    "linkPlaceholder": "Gerado automaticamente pelo Teams ao confirmar",
+    "localPlaceholder": "Sala / endereço (opcional)",
+    "teamsNota": "Uma reunião do Microsoft Teams é criada e enviada no convite.",
+    "observacoes": "Observações",
+    "observacoesPlaceholder": "Notas para os entrevistadores, pauta da conversa… (opcional)",
+    "confirmarReagendamento": "Confirmar reagendamento",
+    "confirmarAgendamento": "Confirmar agendamento",
+    "reagendarTitulo": "Confirmar o reagendamento?",
+    "reagendarDescricao": "A entrevista com {{cand}} será movida para a nova data e horário selecionados.",
+    "reagendarConfirmar": "Sim, reagendar"
+  },
+  "sheet": {
+    "tituloReagendar": "Reagendar entrevista com {{cand}}",
+    "tituloAgendar": "Agendar entrevista com {{cand}}",
+    "descAgendar": "Formulário para definir data, horário, formato e entrevistador.",
+    "tituloDetalhe": "Agendamento de {{cand}}",
+    "descDetalhe": "Detalhes da entrevista agendada."
+  },
+  "toast": {
+    "agendada_one": "Entrevista com {{cand}} agendada para {{data}} às {{hora}} · {{count}} entrevistador{{via}}.",
+    "agendada_other": "Entrevista com {{cand}} agendada para {{data}} às {{hora}} · {{count}} entrevistadores{{via}}.",
+    "viaTeams": " · reunião do Teams criada e convite enviado",
+    "cancelada": "Entrevista com {{cand}} cancelada — voltou para a fila."
+  }
+}

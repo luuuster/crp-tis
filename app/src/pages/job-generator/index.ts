@@ -13,6 +13,7 @@ export {
   BRIEFING_INICIAL,
   PERFIL_INICIAL,
   isFilledVal,
+  optLabeler,
   requiredBriefingOk,
   requiredPerfilOk,
   type Msg,

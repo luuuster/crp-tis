@@ -1,0 +1,106 @@
+{
+  "crumb": "Entrevistas IA",
+  "header": {
+    "title": "Entrevistas IA",
+    "desc": "Haz seguimiento de las entrevistas completadas por la IA en el primer embudo de reclutamiento y registra la decisión de RR. HH. — aprobación o rechazo. Haz clic en un candidato para ver el análisis completo."
+  },
+  "kpi": {
+    "total": "Total",
+    "pendente": "Pendiente",
+    "aprovadoBot": "Aprobado por bot",
+    "aprovadoRH": "Aprobado por RR. HH."
+  },
+  "lista": {
+    "titulo": "Candidatos en preselección",
+    "selecionados": "{{n}} seleccionado(s)",
+    "vazio": "No se encontraron candidatos con estos filtros."
+  },
+  "lote": {
+    "aprovar": "Aprobar seleccionados",
+    "reprovar": "Rechazar seleccionados",
+    "aprovarTitulo_one": "¿Aprobar {{count}} candidato?",
+    "aprovarTitulo_other": "¿Aprobar {{count}} candidatos?",
+    "aprovarDescricao": "Los candidatos seleccionados pasarán a “Aprobado por RR. HH.”, avanzando a la siguiente etapa del proceso de selección.",
+    "reprovarTitulo_one": "¿Rechazar {{count}} candidato?",
+    "reprovarTitulo_other": "¿Rechazar {{count}} candidatos?",
+    "reprovarDescricao": "Los candidatos seleccionados pasarán a “Rechazado”, finalizando su participación en el proceso de selección."
+  },
+  "toast": {
+    "aprovadosLote": "{{n}} candidato(s) aprobado(s) por RR. HH. (demo).",
+    "reprovadosLote": "{{n}} candidato(s) rechazado(s) (demo).",
+    "decisaoIndividual": "Candidato \"{{nome}}\" {{verbo}} (demo).",
+    "verboAprovado": "aprobado por RR. HH.",
+    "verboReprovado": "rechazado",
+    "curriculo": "Currículum enviado por el candidato (demo)."
+  },
+  "tabela": {
+    "candidato": "Candidato",
+    "vaga": "Vacante",
+    "pontuacaoIA": "Puntuación IA",
+    "data": "Fecha",
+    "status": "Estado"
+  },
+  "filtro": {
+    "buscarPlaceholder": "Buscar nombre o correo…",
+    "buscarAria": "Buscar candidato por nombre o correo",
+    "vagaAria": "Filtrar por vacante",
+    "statusAria": "Filtrar por estado",
+    "selecionarTodosAria": "Seleccionar todos los candidatos de esta página",
+    "selecionarAria": "Seleccionar {{nome}}"
+  },
+  "detalhe": {
+    "overline": "Detalles del candidato",
+    "voltarLista": "Volver a la lista",
+    "abrirCurriculo": "Abrir currículum",
+    "reprovarCandidato": "Rechazar candidato",
+    "aprovarCandidato": "Aprobar candidato",
+    "reprovarTitulo": "¿Rechazar a este candidato?",
+    "reprovarDescricao": "{{nome}} pasará a \"Rechazado\", finalizando su participación en el proceso de selección.",
+    "aprovarTitulo": "¿Aprobar a este candidato?",
+    "aprovarDescricao": "{{nome}} pasará a \"Aprobado por RR. HH.\", avanzando a la siguiente etapa del proceso de selección.",
+    "email": "Correo",
+    "vaga": "Vacante",
+    "status": "Estado",
+    "dataAnalise": "Fecha del análisis",
+    "aderencia": "Ajuste a la vacante",
+    "scoreEntrevista": "Puntuación de la entrevista (IA)",
+    "recomendacao": "Recomendación",
+    "dataEntrevista": "Fecha de la entrevista",
+    "avaliacaoIATitulo": "Evaluación de la entrevista con IA",
+    "avaliacaoIADesc": "Resultado de la entrevista realizada por el entrevistador conversacional.",
+    "avaliacaoTecnica": "Evaluación técnica",
+    "avaliacaoComportamental": "Evaluación conductual",
+    "pontosFortes": "Puntos fuertes",
+    "areasMelhoria": "Áreas de mejora",
+    "feedbackDetalhado": "Comentarios detallados",
+    "analiseTitulo": "Análisis del currículum",
+    "analiseDesc": "Resumen del currículum analizado y competencias identificadas.",
+    "competencias": "Competencias y habilidades",
+    "perguntasTitulo": "Preguntas sugeridas para la entrevista",
+    "perguntasDesc": "Úsalas como guía durante la entrevista con el candidato.",
+    "pergunta": "Pregunta {{n}}"
+  },
+  "confirm": {
+    "aprovar": "Aprobar",
+    "reprovar": "Rechazar"
+  },
+  "export": {
+    "arquivo": "entrevistas-ia",
+    "colCandidato": "Candidato",
+    "colVaga": "Vacante",
+    "colScore": "Puntuación",
+    "colData": "Fecha",
+    "colStatus": "Estado"
+  },
+  "status": {
+    "Pendente": "Pendiente",
+    "Aprovado bot": "Aprobado por bot",
+    "Aprovado RH": "Aprobado por RR. HH.",
+    "Reprovado": "Rechazado"
+  },
+  "recomendacao": {
+    "Sim": "Sí",
+    "Talvez": "Quizás",
+    "Não": "No"
+  }
+}

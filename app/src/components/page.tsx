@@ -10,7 +10,8 @@
  * - DetailScreen   → casca de tela de DETALHE (largura 5xl/6xl + rodapé fixo casado).
  */
 import type { ComponentType, ReactNode } from 'react'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, RotateCcw, TriangleAlert } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/lib/utils'
 import { CARD, toneBadge, type Tone } from '@/lib/surfaces'
@@ -134,21 +135,47 @@ export function Paginacao({ page, total, inicio, shown, totalItems, onPage, comp
   onPage: (p: number | ((prev: number) => number)) => void
   compact?: boolean; className?: string
 }) {
+  const { t } = useTranslation('common')
   const size = compact ? 'icon-sm' : 'sm'
   return (
     <div className={cn('mt-4 flex items-center justify-between gap-3 border-t border-border/50 pt-4', className)}>
       <p className="ty-caption text-muted-foreground">
-        Mostrando <span className="font-medium tabular-nums text-foreground">{inicio + 1}–{inicio + shown}</span> de <span className="font-medium tabular-nums text-foreground">{totalItems}</span>
+        {t('paginacao.mostrando')} <span className="font-medium tabular-nums text-foreground">{inicio + 1}–{inicio + shown}</span> {t('paginacao.de')} <span className="font-medium tabular-nums text-foreground">{totalItems}</span>
       </p>
-      <div className="flex items-center gap-2">
-        <Button variant="outline" size={size} aria-label="Página anterior" onClick={() => onPage((p) => Math.max(1, p - 1))} disabled={page <= 1}>
-          <ChevronLeft aria-hidden />{!compact && <span>Anterior</span>}
-        </Button>
-        <span className="ty-caption tabular-nums text-muted-foreground" aria-live="polite">{page} de {total}</span>
-        <Button variant="outline" size={size} aria-label="Próxima página" onClick={() => onPage((p) => Math.min(total, p + 1))} disabled={page >= total}>
-          {!compact && <span>Próxima</span>}<ChevronRight aria-hidden />
-        </Button>
+      <div className="flex items-center gap-3">
+        {/* Contador FORA do par (não-compact): senão o "Anterior" desabilitado (opacity-50) fica órfão
+            entre os dois botões. Agrupados, prev/next leem como UM controle mesmo com um deles desabilitado. */}
+        {!compact && <span className="ty-caption tabular-nums text-muted-foreground" aria-live="polite">{t('paginacao.pagina')} {page} {t('paginacao.de')} {total}</span>}
+        <div className="flex items-center gap-1.5">
+          <Button variant="outline" size={size} aria-label={t('paginacao.paginaAnterior')} onClick={() => onPage((p) => Math.max(1, p - 1))} disabled={page <= 1}>
+            <ChevronLeft aria-hidden />{!compact && <span>{t('paginacao.anterior')}</span>}
+          </Button>
+          {compact && <span className="px-0.5 ty-caption tabular-nums text-muted-foreground" aria-live="polite">{page} {t('paginacao.de')} {total}</span>}
+          <Button variant="outline" size={size} aria-label={t('paginacao.proximaPagina')} onClick={() => onPage((p) => Math.min(total, p + 1))} disabled={page >= total}>
+            {!compact && <span>{t('paginacao.proxima')}</span>}<ChevronRight aria-hidden />
+          </Button>
+        </div>
       </div>
+    </div>
+  )
+}
+
+// Estado de ERRO ao carregar (espelha o empty-state do app: ícone + texto + ação). `role="alert"` anuncia;
+// `onRetry` mostra o botão "Tentar novamente" (casa com useAsync.retry). Rótulos via i18n (default chrome).
+export function ErrorState({ title, description, onRetry, className }: { title?: string; description?: string; onRetry?: () => void; className?: string }) {
+  const { t } = useTranslation('common')
+  return (
+    <div role="alert" className={cn('flex flex-col items-center justify-center gap-3 rounded-xl bg-muted/30 py-12 text-center', className)}>
+      <TriangleAlert className="size-7 text-warning-text" aria-hidden />
+      <div className="space-y-1">
+        <p className="ty-body-sm font-medium text-foreground">{title ?? t('erro.tituloCarregar')}</p>
+        <p className="ty-caption text-muted-foreground">{description ?? t('erro.descricaoCarregar')}</p>
+      </div>
+      {onRetry && (
+        <Button variant="outline" size="sm" onClick={onRetry}>
+          <RotateCcw aria-hidden /> {t('tentarNovamente')}
+        </Button>
+      )}
     </div>
   )
 }

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Check, Search } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
@@ -14,11 +15,13 @@ export function SheetSearch({ value, onChange, placeholder }: { value: string; o
 }
 
 /** Lista SINGLE-SELECT do sheet (listbox/option; selecionado destacado por cor/peso + check). */
-export function SheetOptions({ id, options, value, onPick }: { id?: string; options: readonly string[]; value: string; onPick: (o: string) => void }) {
+export function SheetOptions({ id, options, value, onPick, labelOf }: { id?: string; options: readonly string[]; value: string; onPick: (o: string) => void; labelOf?: (value: string) => string }) {
+  const { t } = useTranslation('gerador')
+  const lbl = labelOf ?? ((v: string) => v)
   return (
-    <div id={id} role="listbox" aria-label="Opções" className="min-h-0 flex-1 overflow-y-auto p-2">
+    <div id={id} role="listbox" aria-label={t('select.opcoes')} className="min-h-0 flex-1 overflow-y-auto p-2">
       {options.length === 0
-        ? <p className="px-3 py-8 text-center ty-body-sm text-muted-foreground">Nada encontrado.</p>
+        ? <p className="px-3 py-8 text-center ty-body-sm text-muted-foreground">{t('select.nadaEncontrado')}</p>
         : options.map((o) => {
             const sel = value === o
             return (
@@ -26,7 +29,7 @@ export function SheetOptions({ id, options, value, onPick }: { id?: string; opti
                 key={o} type="button" role="option" aria-selected={sel} onClick={() => onPick(o)}
                 className={cn('flex w-full items-center justify-between gap-3 rounded-xl px-3 py-3 text-left ty-body transition-colors hover:bg-accent hover:text-accent-foreground', focusRing, sel ? 'font-semibold text-primary-text' : 'text-foreground')}
               >
-                <span className="line-clamp-2">{o}</span>
+                <span className="line-clamp-2">{lbl(o)}</span>
                 {sel && <Check className="size-5 shrink-0 text-primary-text" aria-hidden />}
               </button>
             )

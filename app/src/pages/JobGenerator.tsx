@@ -17,6 +17,7 @@
  * primitivos de campo, Charlie, revisão, modelo/validação) vivem em ./job-generator/*.
  */
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { AlertTriangle, ArrowRight, ChevronLeft, Pencil, Rocket, Save, X } from 'lucide-react'
 
@@ -43,6 +44,7 @@ import {
   PERFIL_SECTIONS,
   STEPS,
   isFilledVal,
+  optLabeler,
   requiredBriefingOk,
   requiredPerfilOk,
 } from './job-generator'
@@ -52,6 +54,7 @@ import {
 export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMode }: {
   onNavigate?: (v: string) => void; brand?: string; mode?: string; onCycleBrand?: () => void; onToggleMode?: () => void
 } = {}) {
+  const { t } = useTranslation('gerador')
   const [step, setStep] = useState(1)
   const [data, setData] = useState<Briefing>(BRIEFING_INICIAL)
   const [perfil, setPerfil] = useState<Perfil>(PERFIL_INICIAL)
@@ -88,7 +91,7 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
   const editarVaga = (v: Vaga) => {
     setData(v.briefing); setPerfil(v.perfil); setResumoOverride(null); setTom('Equilibrado'); setShowErrors({}); setStep(1)
     setEditingVaga(v); setCharlieOpen(false); setScreen('wizard')
-    toast.info(`Editando "${v.briefing.cargo}" (demo).`)
+    toast.info(t('toast.editando', { cargo: v.briefing.cargo }))
   }
   // Lista → detalhe (clique na linha) e detalhe → editar.
   const verVaga = (v: Vaga) => { setCharlieOpen(false); setVagaSel(v); setScreen('detalhe') }
@@ -96,9 +99,9 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
   // Qualquer tela → lista (fecha o Charlie, zera o rascunho e descarta a vaga aberta). É o destino do menu "Vagas".
   const irParaLista = () => { resetWizard(); setCharlieOpen(false); setVagaSel(null); setScreen('lista') }
   // Cancelar a criação só executa após a confirmação na modal (volta à lista).
-  const resetAll = () => { const editando = !!editingVaga; irParaLista(); toast.info(editando ? 'Edição cancelada (demo).' : 'Criação cancelada (demo).') }
+  const resetAll = () => { const editando = !!editingVaga; irParaLista(); toast.info(editando ? t('toast.edicaoCancelada') : t('toast.criacaoCancelada')) }
   // "Nova vaga" (no passo final): recomeça o wizard do zero, sem sair pra lista.
-  const novaVaga = () => { resetWizard(); toast.success('Nova vaga iniciada (demo).') }
+  const novaVaga = () => { resetWizard(); toast.success(t('toast.novaIniciada')) }
 
   // mutuamente exclusivos: expandir o menu fecha o Charlie; abrir o Charlie recolhe o menu.
   const setLeft = (v: boolean) => { setLeftExpanded(v); if (v) setCharlieOpen(false) }
@@ -113,8 +116,9 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
   const openCharlie = () => {
     setCharlieOpen(true); setLeftExpanded(false); setMobileNavOpen(false)
     if (msgs.length === 0) {
-      const t = Date.now()
-      setMsgs([{ id: t, role: 'assistant', at: t, text: `Oi! Sou o Charlie. Vi que marcou ${data.nivel} e ${data.modelo} em ${data.local}.${data.budget ? '' : ' O budget ainda está em branco — quer uma faixa de mercado?'}` }])
+      const at = Date.now()
+      // nivel/modelo entram traduzidos na saudação (o valor canônico pt-BR segue no estado da vaga).
+      setMsgs([{ id: at, role: 'assistant', at, text: t('charlie.saudacao', { nivel: optLabeler(t, 'nivel')(data.nivel), modelo: optLabeler(t, 'modelo')(data.modelo), local: data.local, budget: data.budget ? '' : t('charlie.saudacaoBudget') }) }])
     }
   }
   const toggleCharlie = () => (charlieOpen ? setCharlieOpen(false) : openCharlie())
@@ -123,7 +127,7 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
     const t = Date.now()
     setMsgs((m) => [...m, { id: t, role: 'user', text: userText, at: t }, { id: t + 1, role: 'assistant', text: assistantText, at: t }])
   }
-  const onSend = (text: string) => pushPair(text, 'Recebido! Nesta demo eu não preencho de verdade, mas é aqui que eu distribuiria o que reconhecesse nos campos.')
+  const onSend = (text: string) => pushPair(text, t('charlie.respostaPadrao'))
   const onSuggestion = (s: Suggestion) => pushPair(s.label, s.run({ data, set, perfil, setPerfil: setPerf }))
 
   // etapa "completa" = obrigatórios preenchidos. A etapa 3 (descrição) está pronta quando 1 e 2 estão.
@@ -150,9 +154,9 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
     if (step >= STEPS.length) { setPublishOpen(true); return }
     if ((step === 1 || step === 2) && !stepComplete(step) && !showErrors[step]) {
       setShowErrors((p) => ({ ...p, [step]: true }))
-      toast.warning(`${countMissing(step)} campo(s) obrigatório(s) em branco — destaquei em vermelho.`, {
-        description: 'Você pode preencher agora ou avançar assim mesmo.',
-        action: { label: 'Avançar assim mesmo', onClick: () => setStep((s) => s + 1) },
+      toast.warning(t('validacao.obrigatoriosEmBranco', { count: countMissing(step) }), {
+        description: t('validacao.obrigatoriosDescricao'),
+        action: { label: t('validacao.avancarAssimMesmo'), onClick: () => setStep((s) => s + 1) },
       })
       focusFirstInvalid()
       return
@@ -164,12 +168,13 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
   const isEditing = !!editingVaga
   const editingDraft = editingVaga?.status === 'Rascunho'
   const republicar = isEditing && !editingDraft
-  const finalCtaLabel = republicar ? 'Republicar vaga' : 'Publicar vaga'
-  const nextLabel = step >= STEPS.length ? finalCtaLabel : `Avançar para ${STEPS[step].eyebrow.toLowerCase()}`
+  const finalCtaLabel = republicar ? t('footer.republicarVaga') : t('footer.publicarVaga')
+  // O eyebrow do próximo passo, traduzido e minúsculo (mantém o byte-idêntico "Avançar para …" por idioma).
+  const nextLabel = step >= STEPS.length ? finalCtaLabel : t('footer.avancarPara', { etapa: t(`steps.${(step + 1) as 1 | 2 | 3}.eyebrow`).toLowerCase() })
   // Rótulo da página atual no breadcrumb (vale p/ detalhe e wizard; na lista o TopBar ignora).
-  const crumbLabel = screen === 'detalhe' ? (vagaSel?.briefing.cargo ?? 'Vaga')
-    : editingVaga ? `Editar: ${editingVaga.briefing.cargo}`
-    : 'Nova vaga'
+  const crumbLabel = screen === 'detalhe' ? (vagaSel?.briefing.cargo ?? t('crumb.vaga'))
+    : editingVaga ? t('crumb.editar', { cargo: editingVaga.briefing.cargo })
+    : t('crumb.novaVaga')
 
   return (
     <div className="ty-scale-16 flex h-dvh overflow-hidden bg-muted/40 text-foreground">
@@ -187,11 +192,11 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
           {screen === 'wizard' && (
             <div className="mx-auto max-w-5xl space-y-7 px-5 py-8 lg:px-8">
               <header className="space-y-3">
-                <p className="ty-overline text-muted-foreground">{isEditing ? 'Edição' : 'Criação'} · Etapa {String(step).padStart(2, '0')} — {STEPS[step - 1].eyebrow}</p>
-                <h1 className="font-heading text-3xl font-bold tracking-tight">{isEditing ? 'Editar vaga' : 'Nova vaga'}</h1>
+                <p className="ty-overline text-muted-foreground">{t('header.etapaLinha', { modo: isEditing ? t('header.eyebrowEdicao') : t('header.eyebrowCriacao'), num: String(step).padStart(2, '0'), eyebrow: t(`steps.${step as 1 | 2 | 3}.eyebrow`) })}</p>
+                <h1 className="font-heading text-3xl font-bold tracking-tight">{isEditing ? t('header.tituloEditar') : t('header.tituloNova')}</h1>
                 {isEditing
-                  ? <p className="max-w-2xl ty-body text-muted-foreground">Atualize as informações de <span className="font-medium text-foreground">{editingVaga.briefing.cargo}</span> e salve as alterações. O Charlie continua à disposição para refinar os campos.</p>
-                  : <p className="max-w-2xl ty-body text-muted-foreground">Estruture o briefing com calma. Quando precisar, abra o Charlie — ele dá sugestões e refina os campos com você.</p>}
+                  ? <p className="max-w-2xl ty-body text-muted-foreground">{t('header.descEditarAntes')}<span className="font-medium text-foreground">{editingVaga.briefing.cargo}</span>{t('header.descEditarDepois')}</p>
+                  : <p className="max-w-2xl ty-body text-muted-foreground">{t('header.descNova')}</p>}
               </header>
 
               <Separator />
@@ -211,25 +216,25 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
           <div className="mx-auto flex max-w-5xl flex-col gap-2.5 px-5 py-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-3 lg:px-8">
             <div className="flex items-center gap-2">
               <ConfirmDialog
-                trigger={<Button variant="destructive-outline" className="max-sm:flex-1"><X /> {isEditing ? 'Cancelar edição' : 'Cancelar criação'}</Button>}
+                trigger={<Button variant="destructive-outline" className="max-sm:flex-1"><X /> {isEditing ? t('footer.cancelarEdicao') : t('footer.cancelarCriacao')}</Button>}
                 icon={AlertTriangle} tone="destructive"
-                title={isEditing ? 'Cancelar edição da vaga?' : 'Cancelar criação de vaga?'}
-                description={isEditing ? 'As alterações feitas nesta vaga serão descartadas e não poderão ser recuperadas.' : 'Você está prestes a cancelar a criação desta vaga. Todo o progresso será perdido e não poderá ser recuperado.'}
-                cancelLabel="Continuar editando" confirmLabel="Sim, cancelar" confirmVariant="destructive" onConfirm={resetAll}
+                title={isEditing ? t('dialog.cancelarEdicaoTitulo') : t('dialog.cancelarCriacaoTitulo')}
+                description={isEditing ? t('dialog.cancelarEdicaoDescricao') : t('dialog.cancelarCriacaoDescricao')}
+                cancelLabel={t('dialog.continuarEditando')} confirmLabel={t('dialog.simCancelar')} confirmVariant="destructive" onConfirm={resetAll}
               />
               {/* "Salvar rascunho" só faz sentido criando OU editando uma vaga que ainda é rascunho. */}
               {(!isEditing || editingDraft) && (
                 <ConfirmDialog
-                  trigger={<Button variant="ghost" className="bg-secondary/10 text-secondary-text hover:bg-secondary/15 hover:text-secondary-text max-sm:flex-1"><Save /> Salvar rascunho</Button>}
+                  trigger={<Button variant="ghost" className="bg-secondary/10 text-secondary-text hover:bg-secondary/15 hover:text-secondary-text max-sm:flex-1"><Save /> {t('footer.salvarRascunho')}</Button>}
                   icon={Save} tone="secondary"
-                  title="Salvar como rascunho?"
-                  description="As informações preenchidas ficam guardadas para você retomar a edição desta vaga quando quiser."
-                  cancelLabel="Voltar" confirmLabel="Salvar rascunho" confirmVariant="secondary" onConfirm={() => toast.success('Rascunho salvo (demo).')}
+                  title={t('dialog.salvarRascunhoTitulo')}
+                  description={t('dialog.salvarRascunhoDescricao')}
+                  cancelLabel={t('footer.voltar')} confirmLabel={t('dialog.salvarRascunhoConfirmar')} confirmVariant="secondary" onConfirm={() => toast.success(t('toast.rascunhoSalvo'))}
                 />
               )}
             </div>
             <div className="flex items-center gap-2">
-              {step > 1 && <Button variant="ghost" onClick={voltar} className="max-sm:flex-1"><ChevronLeft /> Voltar</Button>}
+              {step > 1 && <Button variant="ghost" onClick={voltar} className="max-sm:flex-1"><ChevronLeft /> {t('footer.voltar')}</Button>}
               {/* Último passo: publicar vive na coluna de Ações (desktop); no mobile fica AQUI no rodapé fixo. */}
               {step < STEPS.length && <Button onClick={avancar} className="max-sm:flex-1">{nextLabel} <ArrowRight /></Button>}
               {step === STEPS.length && <Button onClick={avancar} className="max-sm:flex-1 lg:hidden"><Rocket /> {finalCtaLabel}</Button>}
@@ -242,8 +247,8 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
         {screen === 'detalhe' && (
         <footer className="border-t border-border/40 bg-card/80 backdrop-blur-sm">
           <div className="mx-auto flex max-w-4xl items-center justify-between gap-3 px-5 py-3 lg:px-8">
-            <Button variant="ghost" onClick={irParaLista} className="max-sm:flex-1"><ChevronLeft /> Voltar para a lista</Button>
-            <Button onClick={editarVagaSel} className="max-sm:flex-1"><Pencil /> Editar vaga</Button>
+            <Button variant="ghost" onClick={irParaLista} className="max-sm:flex-1"><ChevronLeft /> {t('footer.voltarLista')}</Button>
+            <Button onClick={editarVagaSel} className="max-sm:flex-1"><Pencil /> {t('footer.editarVaga')}</Button>
           </div>
         </footer>
         )}
@@ -252,9 +257,9 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
         <ConfirmDialog
           open={publishOpen} onOpenChange={setPublishOpen}
           icon={Rocket} tone="primary"
-          title={republicar ? 'Republicar a vaga?' : 'Publicar esta vaga?'}
-          description={republicar ? 'As alterações serão salvas e a vaga será republicada, voltando a receber candidaturas.' : isEditing ? 'As informações serão salvas e a vaga será publicada, passando a receber candidaturas.' : 'A vaga será publicada e passará a receber candidaturas.'}
-          cancelLabel="Revisar antes" confirmLabel={finalCtaLabel} confirmVariant="default" onConfirm={() => { toast.success(republicar ? 'Vaga republicada! (demo)' : 'Vaga publicada! (demo)'); irParaLista() }}
+          title={republicar ? t('dialog.republicarTitulo') : t('dialog.publicarTitulo')}
+          description={republicar ? t('dialog.republicarDescricao') : isEditing ? t('dialog.publicarEdicaoDescricao') : t('dialog.publicarDescricao')}
+          cancelLabel={t('dialog.revisarAntes')} confirmLabel={finalCtaLabel} confirmVariant="default" onConfirm={() => { toast.success(republicar ? t('toast.vagaRepublicada') : t('toast.vagaPublicada')); irParaLista() }}
         />
       </div>
 

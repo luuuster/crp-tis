@@ -10,6 +10,7 @@
  */
 import { useState } from 'react'
 import { Sparkles } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 import { usePagination } from '@/lib/usePagination'
 import { AppShell } from '@/components/shell/AppShell'
@@ -33,6 +34,7 @@ export { CharlieAssistente } from './candidatos/CharlieAssistente'
 export function Candidatos({ onNavigate, brand, mode, onCycleBrand, onToggleMode }: {
   onNavigate: (v: string) => void; brand?: string; mode?: string; onCycleBrand?: () => void; onToggleMode?: () => void
 }) {
+  const { t } = useTranslation('candidatos')
   const [cands] = useState<Candidato[]>(CANDIDATOS_INICIAL)
   const [etapaF, setEtapaF] = useState<(typeof ETAPA_FILTROS)[number]>('Todas')
   const [vagaF, setVagaF] = useState('Todas')
@@ -62,7 +64,7 @@ export function Candidatos({ onNavigate, brand, mode, onCycleBrand, onToggleMode
 
   // Qualquer clique no menu volta para o banco: limpa perfil e processo abertos.
   const handleNav = (v: string) => { setVendo(null); setProc(null); setCharlie(false); onNavigate(v) }
-  const crumb = proc ? proc.titulo : vendo ? vendo.nome : 'Banco de talentos'
+  const crumb = proc ? proc.titulo : vendo ? vendo.nome : t('crumbBanco')
 
   return (
     <AppShell
@@ -71,8 +73,8 @@ export function Candidatos({ onNavigate, brand, mode, onCycleBrand, onToggleMode
         // Charlie é copiloto de match do BANCO — só na lista. Ao abrir um candidato (perfil/análise) ele
         // some, pois não há necessidade dele dentro da visualização de um candidato específico.
         vendo ? undefined : (
-          <Button variant="secondary" aria-label="Falar com Charlie" onClick={() => setCharlie(true)}>
-            <Sparkles aria-hidden /><span className="hidden sm:inline">Falar com Charlie</span>
+          <Button variant="secondary" aria-label={t('charlie.abrir')} onClick={() => setCharlie(true)}>
+            <Sparkles aria-hidden /><span className="hidden sm:inline">{t('charlie.abrir')}</span>
           </Button>
         )
       }
@@ -112,8 +114,8 @@ export function Candidatos({ onNavigate, brand, mode, onCycleBrand, onToggleMode
       {/* painel lateral — Charlie, copiloto de match de talentos (modal lateral) */}
       <Sheet open={charlie} onOpenChange={(aberto) => { if (!aberto) setCharlie(false) }}>
         <SheetContent side="right" className="w-full gap-0 p-0 sm:max-w-lg">
-          <SheetTitle className="sr-only">Charlie — copiloto de talentos</SheetTitle>
-          <SheetDescription className="sr-only">Selecione a vaga e o Charlie ranqueia os candidatos do banco por aderência.</SheetDescription>
+          <SheetTitle className="sr-only">{t('charlie.sheetTitulo')}</SheetTitle>
+          <SheetDescription className="sr-only">{t('charlie.sheetDescricao')}</SheetDescription>
           <CharlieAssistente
             cands={cands}
             vagas={vagas.slice(1)}
