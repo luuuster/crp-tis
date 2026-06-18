@@ -149,11 +149,15 @@ export function Dashboard({ onNavigate, brand, mode, onCycleBrand, onToggleMode 
                 label={t(`kpi.${key}`)}
                 value={`${valor}${unidadeTxt}`}
                 delta={
-                  <p className={cn('mt-1.5 flex items-center gap-1 ty-body-sm', good ? 'text-success-text' : 'text-destructive-text')}>
-                    {dir === 'up' ? <TrendingUp className="size-3.5 shrink-0" aria-hidden /> : <TrendingDown className="size-3.5 shrink-0" aria-hidden />}
-                    <span className="font-medium tabular-nums">{delta}{unidadeTxt}</span>
-                    <span className="text-muted-foreground">{t('vsMesAnterior')}</span>
-                  </p>
+                  <div className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+                    {/* chip de variação contido (par fill/-text a 10% → AA nos 4 temas); cor pela
+                        QUALIDADE (good), seta pela DIREÇÃO (dir) — ex.: tempo médio cai e é positivo. */}
+                    <span className={cn('inline-flex items-center gap-1 rounded-full px-2 py-0.5 ty-caption font-medium tabular-nums', good ? 'bg-success/10 text-success-text' : 'bg-destructive/10 text-destructive-text')}>
+                      {dir === 'up' ? <TrendingUp className="size-3 shrink-0" aria-hidden /> : <TrendingDown className="size-3 shrink-0" aria-hidden />}
+                      {delta}{unidadeTxt}
+                    </span>
+                    <span className="ty-caption text-muted-foreground">{t('vsMesAnterior')}</span>
+                  </div>
                 }
               />
             )
