@@ -107,7 +107,7 @@ for (const [name, shades] of Object.entries(palettes)) {
 // leem marcas/temas de tokens/$themes.json via build/lib/themes.mjs; este é o único hardcode legítimo.
 const BRANDS = {
   crp: { primary: '#036EF2', secondary: '#8e51ff' },
-  'marca-b': { primary: '#B30631', secondary: '#2886F3' },
+  'marca-b': { primary: '#15803d', secondary: '#2886F3' },
 };
 const brandAnchors = {};
 colorJson.color.brand = {};

@@ -1,8 +1,9 @@
 {
   "brand-primary":              { "$type": "color", "$value": "{color.brand.marca-b.primary.700}", "$description": "Âncora de marca: primary em superfície CLARA (Light). Consumido por mode/light (primary/sidebar-primary)." },
   "brand-primary-foreground":   { "$type": "color", "$value": "{color.neutral.50}", "$description": "Âncora: texto/ícone sobre o primary no Light." },
+  "brand-primary-text":         { "$type": "color", "$value": "{color.brand.marca-b.primary.800}", "$description": "Âncora: primary como TEXTO/ícone em superfície CLARA. MarcaB = shade 800 (mais escuro que o fill 700): o verde-700 como texto sobre a tinta soft dava 4.10:1 < AA; 800 garante AA — mesmo padrão de success-text=green.800. Consumido por mode/light (primary-text/link)." },
   "brand-ring":                 { "$type": "color", "$value": "{color.brand.marca-b.primary.700}", "$description": "Âncora: anel de foco da marca no Light (Marca B usa shade 700). Consumido por mode/light (ring/sidebar-ring)." },
-  "brand-primary-on-dark":      { "$type": "color", "$value": "{color.brand.marca-b.primary.600}", "$description": "Âncora: primary p/ o modo DARK (shade 600). Consumido por mode/dark." },
+  "brand-primary-on-dark":      { "$type": "color", "$value": "{color.brand.marca-b.primary.700}", "$description": "Âncora: primary p/ o modo DARK (shade 700 — o verde no .600 dava 4.05:1 < AA com texto branco; .700 garante AA). Consumido por mode/dark." },
   "brand-primary-on-dark-text": { "$type": "color", "$value": "{color.brand.marca-b.primary.400}", "$description": "Âncora: brand primary p/ TEXTO/links em superfície escura (shade 400). Consumido por mode/dark (link/primary-text)." },
 
   "brand-secondary":            { "$type": "color", "$value": "{color.brand.marca-b.secondary.700}", "$description": "Âncora de marca: secondary em superfície CLARA (Light) — secundária da Marca B (shade 700). Consumido por mode/light (secondary)." },
