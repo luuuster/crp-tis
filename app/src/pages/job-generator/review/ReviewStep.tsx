@@ -132,58 +132,58 @@ export function ReviewStep({ data, perfil, tom, onTom, set, resumoOverride, onRe
       <aside className="space-y-4 lg:sticky lg:top-4" aria-label={t('review.acoes')}>
         <h2 className="ty-overline text-muted-foreground">{t('review.acoes')}</h2>
 
-        {/* Score de qualidade — completude (campos obrigatórios + tamanho do post). */}
-        <div className={cn(CARD, 'space-y-3 p-4', aprovado ? 'bg-success/5' : 'bg-warning/5')}>
-          <div className="flex items-center justify-between gap-2">
-            <span className="ty-label-sm text-muted-foreground">{t('review.scoreQualidade')}</span>
-            <span className={cn('inline-flex items-center gap-1.5 ty-label-sm font-semibold', aprovado ? 'text-success-text' : 'text-warning-text')}>
-              {aprovado ? <CheckCircle2 className="size-4 shrink-0" aria-hidden /> : <AlertTriangle className="size-4 shrink-0" aria-hidden />}
-              {aprovado ? t('review.aprovado') : t('review.emRevisao')}
-            </span>
+        {/* Card único "Qualidade & Revisão": faixa compacta de completude + análise de consistência do Charlie. */}
+        <div className={cn(CARD, 'space-y-4 p-4', revisado && criticas > 0 ? 'bg-destructive/5' : aprovado ? 'bg-success/5' : 'bg-warning/5')}>
+          {/* Qualidade (completude) — número inline + barra fina, sem o número gigante de antes */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between gap-2">
+              <span className="ty-label-sm text-muted-foreground">{t('review.scoreQualidade')}</span>
+              <span className={cn('inline-flex items-center gap-1.5 ty-label-sm font-semibold', aprovado ? 'text-success-text' : 'text-warning-text')}>
+                {aprovado ? <CheckCircle2 className="size-4 shrink-0" aria-hidden /> : <AlertTriangle className="size-4 shrink-0" aria-hidden />}
+                <span className="tabular-nums text-foreground">{score.toFixed(0)}</span><span className="text-muted-foreground">/100</span>
+              </span>
+            </div>
+            <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted" role="progressbar" aria-valuenow={Math.round(score)} aria-valuemin={0} aria-valuemax={100} aria-label={t('review.scoreQualidade')}>
+              <div className={cn('h-full rounded-full motion-safe:transition-[width] motion-safe:duration-500', aprovado ? 'bg-success' : 'bg-warning')} style={{ width: `${score}%` }} />
+            </div>
+            {pendencias.length > 0 && (
+              <ul className="space-y-1.5 pt-1">
+                {pendencias.map((item) => (
+                  <li key={item.label}>
+                    <button type="button" onClick={() => onResolve(item.goto)} className={cn('inline-flex items-center gap-1.5 rounded-md ty-body-sm text-primary-text transition-colors hover:underline', focusRing)}>
+                      <AlertTriangle className="size-3.5 shrink-0 text-warning-text" aria-hidden /> {t('review.resolver', { label: item.label })}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
-          <div className="flex items-end gap-1.5">
-            <span className="ty-h3 tabular-nums text-foreground" style={{ fontWeight: 'var(--font-weight-bold)' }}>{score.toFixed(0)}</span>
-            <span className="pb-1 ty-body-sm text-muted-foreground">/ 100</span>
-          </div>
-          <div className="h-2 w-full overflow-hidden rounded-full bg-muted" role="progressbar" aria-valuenow={Math.round(score)} aria-valuemin={0} aria-valuemax={100} aria-label={t('review.scoreQualidade')}>
-            <div className={cn('h-full rounded-full motion-safe:transition-[width] motion-safe:duration-500', aprovado ? 'bg-success' : 'bg-warning')} style={{ width: `${score}%` }} />
-          </div>
-          <p className="ty-body-sm text-muted-foreground">{aprovado ? t('review.prontaParaPublicar') : t('review.resolvaPendencias')}</p>
-          {pendencias.length > 0 && (
-            <ul className="space-y-1.5 pt-1">
-              {pendencias.map((item) => (
-                <li key={item.label}>
-                  <button type="button" onClick={() => onResolve(item.goto)} className={cn('inline-flex items-center gap-1.5 rounded-md ty-body-sm text-primary-text transition-colors hover:underline', focusRing)}>
-                    <AlertTriangle className="size-3.5 shrink-0 text-warning-text" aria-hidden /> {t('review.resolver', { label: item.label })}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
 
-        {/* Revisão do Charlie — análise de consistência (salário × mercado, experiência × nível…). */}
-        <div className={cn(CARD, 'space-y-3 p-4', revisado && criticas > 0 && 'bg-destructive/5')}>
-          <h3 className="flex items-center gap-1.5 ty-label-sm font-medium text-foreground"><Sparkles className="size-4 shrink-0 text-secondary-text" aria-hidden /> {t('review.charlie.titulo')}</h3>
-          {!revisado ? (
-            <p className="ty-body-sm text-muted-foreground">{t('review.charlie.aguardando')}</p>
-          ) : (
-            <>
-              {criticas > 0 || avisos > 0 ? (
-                <div className="flex flex-wrap gap-1.5">
-                  {criticas > 0 && <span className="inline-flex items-center rounded-full bg-destructive/10 px-2 py-0.5 ty-caption font-medium text-destructive-text">{t('review.charlie.resumoCriticas', { count: criticas })}</span>}
-                  {avisos > 0 && <span className="inline-flex items-center rounded-full bg-warning/10 px-2 py-0.5 ty-caption font-medium text-warning-text">{t('review.charlie.resumoAvisos', { count: avisos })}</span>}
-                </div>
-              ) : (
-                <p className="flex items-center gap-1.5 ty-body-sm text-success-text"><CheckCircle2 className="size-4 shrink-0" aria-hidden /> {t('review.charlie.tudoCerto')}</p>
-              )}
-              {findings.length > 0 && (
-                <ul className="space-y-2.5">
-                  {findings.map((f) => <FindingRow key={f.id} f={f} t={t} onAjustar={onResolve} />)}
-                </ul>
-              )}
-            </>
-          )}
+          <div className="h-px bg-border/60" aria-hidden />
+
+          {/* Revisão do Charlie — consistência (salário × mercado, jornada, experiência × nível…). */}
+          <div className="space-y-3">
+            <h3 className="flex items-center gap-1.5 ty-label-sm font-medium text-foreground"><Sparkles className="size-4 shrink-0 text-secondary-text" aria-hidden /> {t('review.charlie.titulo')}</h3>
+            {!revisado ? (
+              <p className="ty-body-sm text-muted-foreground">{t('review.charlie.aguardando')}</p>
+            ) : (
+              <>
+                {criticas > 0 || avisos > 0 ? (
+                  <div className="flex flex-wrap gap-1.5">
+                    {criticas > 0 && <span className="inline-flex items-center rounded-full bg-destructive/10 px-2 py-0.5 ty-caption font-medium text-destructive-text">{t('review.charlie.resumoCriticas', { count: criticas })}</span>}
+                    {avisos > 0 && <span className="inline-flex items-center rounded-full bg-warning/10 px-2 py-0.5 ty-caption font-medium text-warning-text">{t('review.charlie.resumoAvisos', { count: avisos })}</span>}
+                  </div>
+                ) : (
+                  <p className="flex items-center gap-1.5 ty-body-sm text-success-text"><CheckCircle2 className="size-4 shrink-0" aria-hidden /> {t('review.charlie.tudoCerto')}</p>
+                )}
+                {findings.length > 0 && (
+                  <ul className="space-y-2.5">
+                    {findings.map((f) => <FindingRow key={f.id} f={f} t={t} onAjustar={onResolve} />)}
+                  </ul>
+                )}
+              </>
+            )}
+          </div>
         </div>
 
         {/* Ações principais. No mobile o "Publicar" vai pro rodapé fixo (sempre alcançável). */}

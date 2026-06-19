@@ -76,7 +76,8 @@ export function DashboardCanvas({ editMode, onNavigate, layout, onPersonalizar }
           }
         />
       ) : (
-        <div className="grid grid-cols-1 items-start gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        // grade: items-stretch (default, sem items-start) → cards da mesma fileira alinham o fundo
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {items.map((item, idx) => {
             const def = WIDGETS[item.id]
             if (!def) return null
@@ -84,7 +85,8 @@ export function DashboardCanvas({ editMode, onNavigate, layout, onPersonalizar }
             return (
               <div key={item.id} className={cn('flex min-w-0 flex-col gap-2', SPAN[item.size])}>
                 {editMode && <EditBar id={item.id} idx={idx} total={items.length} size={item.size} layout={layout} t={t} />}
-                <div className={cn('min-w-0', editMode && 'pointer-events-none select-none rounded-2xl ring-2 ring-primary/30 ring-offset-2 ring-offset-background')}>
+                {/* flex-1 + [&>*]:h-full: o card do widget estica até a altura da fileira (Panel já tem corpo flex-1). */}
+                <div className={cn('min-w-0 flex-1 [&>*]:h-full', editMode && 'pointer-events-none select-none rounded-2xl ring-1 ring-primary/40 ring-offset-2 ring-offset-background')}>
                   <Widget onNavigate={onNavigate} />
                 </div>
               </div>
