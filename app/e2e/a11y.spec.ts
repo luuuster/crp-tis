@@ -1,13 +1,12 @@
 import { test, expect } from '@playwright/test'
 import { fmt, scan } from './axe'
-import { login, gotoRegister, setTheme, gotoMenu, abrirVaga, type Brand, type Mode } from './helpers'
+import { login, gotoRegister, setTheme, gotoMenu, abrirVaga } from './helpers'
+import { BRANDS, MODES } from './themes'
 
 // axe ESTRUTURAL no DOM renderizado (ARIA, roles, labels, heading-order) — nas 4 combinações
 // marca × tema, nas telas de auth e pós-login. É o que o jsdom (axe.test.tsx) não exercita: o
 // fluxo real do app (dock + navegação). Helpers (TAGS/scan/fmt) vivem em ./axe (compartilhados com
 // showcase-a11y.spec.ts). CONTRASTE fica desligado no axe — validado por culori (ver ./axe e contrast.spec).
-const BRANDS: Brand[] = ['crp', 'marca-b']
-const MODES: Mode[] = ['light', 'dark']
 // Login cai na Dashboard (AppShell); as demais telas vêm pelo MENU (sidebar), não pelo dock de abas.
 const TABS: { label: string; go: (p: Parameters<typeof login>[0]) => Promise<void> }[] = [
   { label: 'Dashboard', go: async () => {} },

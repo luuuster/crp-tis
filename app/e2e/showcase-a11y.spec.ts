@@ -1,14 +1,13 @@
 import { test, expect, type Page } from '@playwright/test'
 import { fmt, scanOverlay } from './axe'
-import { login, setTheme, gotoMenu, type Brand, type Mode } from './helpers'
+import { login, setTheme, gotoMenu } from './helpers'
+import { BRANDS, MODES } from './themes'
 import { A11Y_MANIFEST } from '../src/components/ui/a11y-manifest'
 
 // AUDITORIA AXE-ABERTO: o a11y.spec varre a tela "Componentes" FECHADA; aqui abrimos CADA overlay do
 // manifesto (dialog, menu, popover, tooltip, select, calendário…) e auditamos a estrutura ARIA com o
 // overlay montado — nos 4 temas. Dirigido pelo manifesto: um overlay novo é auditado sozinho ao
 // declarar `openTrigger`/`openVia`, sem editar este arquivo.
-const BRANDS: Brand[] = ['crp', 'marca-b']
-const MODES: Mode[] = ['light', 'dark']
 
 // Só os overlays cujo contrato inclui 'axe-open' — todos os overlays do DS qualificam. (O `command`/cmdk
 // emitia aria-required-children aberto por causa do `cmdk-list-sizer`; corrigido em command.tsx, agora

@@ -1,14 +1,13 @@
 import { test, expect, type Page } from '@playwright/test'
 import { contrastOnStack, aaThreshold } from './wcag'
 import { login, gotoRegister, setTheme, gotoMenu, abrirVaga, type Brand, type Mode } from './helpers'
+import { BRANDS, MODES } from './themes'
 
 // AUDITORIA DE CONTRASTE por PIXEL REAL (WCAG 1.4.3): para cada texto VISÍVEL, mede a cor renderizada
 // vs o fundo composto (camada a camada, com alpha) e exige AA (4.5:1 normal / 3:1 grande). Usa culori
 // (o axe erra OKLCH). É o guard-rail que torna "conferi no olho" um GATE — nos 4 temas.
 // Exclui o que o WCAG dispensa: desabilitado, sr-only, e SVG/charts (fill, não color).
 
-const BRANDS: Brand[] = ['crp', 'marca-b']
-const MODES: Mode[] = ['light', 'dark']
 
 // setTheme ANTES de navegar p/ a aba: o Gerador é full-screen e cobre os toggles flutuantes de tema.
 // Os toggles de marca/tema são GLOBAIS (App.tsx) — existem no Login E no Cadastro.

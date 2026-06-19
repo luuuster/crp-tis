@@ -1,12 +1,11 @@
 import { test } from '@playwright/test'
 import { mkdirSync } from 'node:fs'
-import { login, setTheme, type Brand, type Mode } from './helpers'
+import { login, setTheme } from './helpers'
+import { BRANDS, MODES } from './themes'
 
 // Vitrine como artifact do PR: quem revisa VÊ a mudança visual sem rodar nada.
 // Login/Dashboard/Componentes × CRP/MarcaB × light/dark = 12 PNGs (gitignored; publicados no CI).
 const OUT = 'e2e/__screenshots__'
-const BRANDS: Brand[] = ['crp', 'marca-b']
-const MODES: Mode[] = ['light', 'dark']
 
 test('matriz da vitrine (Login/Dashboard/Componentes × marca × tema)', async ({ page }) => {
   test.slow() // 12 telas + navegação

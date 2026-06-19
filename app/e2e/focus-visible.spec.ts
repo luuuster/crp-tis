@@ -1,6 +1,7 @@
 import { test, expect, type Page } from '@playwright/test'
 import { contrastOnStack } from './wcag'
-import { login, setTheme, gotoMenu, abrirVaga, type Brand, type Mode } from './helpers'
+import { login, setTheme, gotoMenu, abrirVaga } from './helpers'
+import { BRANDS, MODES } from './themes'
 
 // AUDITORIA DE FOCO (WCAG 2.4.7 / 1.4.11): todo elemento na ordem de tabulação precisa de um
 // indicador de foco VISÍVEL (outline ≥2px sólido OU um ring de box-shadow) e com contraste ≥3:1
@@ -10,8 +11,6 @@ import { login, setTheme, gotoMenu, abrirVaga, type Brand, type Mode } from './h
 // Truque: desligamos transition/animation antes de medir, então o outline é IMEDIATO e determinístico
 // (sem o flash do `transition-all` que media o outline do UA no meio do caminho).
 
-const BRANDS: Brand[] = ['crp', 'marca-b']
-const MODES: Mode[] = ['light', 'dark']
 const NO_MOTION = '*,*::before,*::after{transition:none!important;animation:none!important}'
 
 type FocusData = {
