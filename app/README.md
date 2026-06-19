@@ -1,5 +1,8 @@
 # @crp/app — componentes shadcn/ui tematizados pelo CRP DS
 
+> 📦 **Vai assumir este projeto?** Leia o **[HANDOFF.md](HANDOFF.md)** primeiro — guia completo
+> (arquitetura, telas, onde plugar o backend, convenções, gotchas). Este README é só o resumo rápido.
+
 App React (Vite + TypeScript + Tailwind v4) que usa os componentes do **shadcn/ui** tematizados
 **100% pelos tokens** do `@crp/design-tokens` — multi-marca (CRP / Marca B) e claro/escuro saem de graça.
 
