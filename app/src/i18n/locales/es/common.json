@@ -1,0 +1,37 @@
+{
+  "idioma": "Idioma",
+  "abrirCalendario": "Abrir calendario",
+  "exportar": "Exportar",
+  "tentarNovamente": "Reintentar",
+  "buscar": "Buscar",
+  "acao": {
+    "cancelar": "Cancelar",
+    "salvar": "Guardar",
+    "confirmar": "Confirmar",
+    "voltar": "Volver",
+    "fechar": "Cerrar",
+    "editar": "Editar",
+    "limpar": "Limpiar",
+    "limparFiltros": "Limpiar filtros"
+  },
+  "filtro": { "todas": "Todas", "todos": "Todos" },
+  "vazio": { "descricaoFiltro": "Ajusta la búsqueda o los filtros para ver más resultados." },
+  "tema": { "claro": "Tema claro", "escuro": "Tema oscuro" },
+  "marca": "Cambiar marca (actual: {{marca}})",
+  "erro": {
+    "titulo": "Algo salió mal",
+    "descricao": "Ocurrió un error inesperado al cargar la pantalla. Recarga la página para intentar de nuevo.",
+    "recarregar": "Recargar",
+    "tituloCarregar": "No se pudo cargar",
+    "descricaoCarregar": "Algo salió mal al cargar estos datos."
+  },
+  "paginacao": {
+    "mostrando": "Mostrando",
+    "de": "de",
+    "pagina": "Página",
+    "anterior": "Anterior",
+    "proxima": "Siguiente",
+    "paginaAnterior": "Página anterior",
+    "proximaPagina": "Página siguiente"
+  }
+}

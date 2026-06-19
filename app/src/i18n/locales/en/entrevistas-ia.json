@@ -1,0 +1,107 @@
+{
+  "crumb": "AI Interviews",
+  "header": {
+    "title": "AI Interviews",
+    "desc": "Track the interviews completed by AI in the first recruitment funnel and record the HR decision, approval or rejection. Click a candidate to see the full analysis."
+  },
+  "kpi": {
+    "regiao": "Indicators",
+    "total": "Total",
+    "pendente": "Pending",
+    "aprovadoBot": "Bot-approved",
+    "aprovadoRH": "HR-approved"
+  },
+  "lista": {
+    "titulo": "Candidates in screening",
+    "selecionados": "{{n}} selected",
+    "vazio": "No candidates found with these filters."
+  },
+  "lote": {
+    "aprovar": "Approve selected",
+    "reprovar": "Reject selected",
+    "aprovarTitulo_one": "Approve {{count}} candidate?",
+    "aprovarTitulo_other": "Approve {{count}} candidates?",
+    "aprovarDescricao": "The selected candidates will be moved to “HR-approved”, advancing to the next stage of the hiring process.",
+    "reprovarTitulo_one": "Reject {{count}} candidate?",
+    "reprovarTitulo_other": "Reject {{count}} candidates?",
+    "reprovarDescricao": "The selected candidates will be moved to “Rejected”, ending their participation in the hiring process."
+  },
+  "toast": {
+    "aprovadosLote": "{{n}} candidate(s) approved by HR (demo).",
+    "reprovadosLote": "{{n}} candidate(s) rejected (demo).",
+    "decisaoIndividual": "Candidate \"{{nome}}\" {{verbo}} (demo).",
+    "verboAprovado": "approved by HR",
+    "verboReprovado": "rejected",
+    "curriculo": "Résumé submitted by the candidate (demo)."
+  },
+  "tabela": {
+    "candidato": "Candidate",
+    "vaga": "Job",
+    "pontuacaoIA": "AI score",
+    "data": "Date",
+    "status": "Status"
+  },
+  "filtro": {
+    "buscarPlaceholder": "Search name or email…",
+    "buscarAria": "Search candidate by name or email",
+    "vagaAria": "Filter by job",
+    "statusAria": "Filter by status",
+    "selecionarTodosAria": "Select all candidates on this page",
+    "selecionarAria": "Select {{nome}}"
+  },
+  "detalhe": {
+    "overline": "Candidate details",
+    "voltarLista": "Back to list",
+    "abrirCurriculo": "Open résumé",
+    "reprovarCandidato": "Reject candidate",
+    "aprovarCandidato": "Approve candidate",
+    "reprovarTitulo": "Reject this candidate?",
+    "reprovarDescricao": "{{nome}} will be moved to \"Rejected\", ending their participation in the hiring process.",
+    "aprovarTitulo": "Approve this candidate?",
+    "aprovarDescricao": "{{nome}} will be moved to \"HR-approved\", advancing to the next stage of the hiring process.",
+    "email": "Email",
+    "vaga": "Job",
+    "status": "Status",
+    "dataAnalise": "Analysis date",
+    "aderencia": "Job fit",
+    "scoreEntrevista": "Interview score (AI)",
+    "recomendacao": "Recommendation",
+    "dataEntrevista": "Interview date",
+    "avaliacaoIATitulo": "AI interview assessment",
+    "avaliacaoIADesc": "Result of the interview conducted by the conversational interviewer.",
+    "avaliacaoTecnica": "Technical assessment",
+    "avaliacaoComportamental": "Behavioral assessment",
+    "pontosFortes": "Strengths",
+    "areasMelhoria": "Areas for improvement",
+    "feedbackDetalhado": "Detailed feedback",
+    "analiseTitulo": "Résumé analysis",
+    "analiseDesc": "Summary of the analyzed résumé and identified skills.",
+    "competencias": "Skills and competencies",
+    "perguntasTitulo": "Suggested interview questions",
+    "perguntasDesc": "Use as a guide during the interview with the candidate.",
+    "pergunta": "Question {{n}}"
+  },
+  "confirm": {
+    "aprovar": "Approve",
+    "reprovar": "Reject"
+  },
+  "export": {
+    "arquivo": "ai-interviews",
+    "colCandidato": "Candidate",
+    "colVaga": "Job",
+    "colScore": "Score",
+    "colData": "Date",
+    "colStatus": "Status"
+  },
+  "status": {
+    "Pendente": "Pending",
+    "Aprovado bot": "Bot-approved",
+    "Aprovado RH": "HR-approved",
+    "Reprovado": "Rejected"
+  },
+  "recomendacao": {
+    "Sim": "Yes",
+    "Talvez": "Maybe",
+    "Não": "No"
+  }
+}

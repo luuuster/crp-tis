@@ -9,19 +9,22 @@
 import { cn } from '@/lib/utils'
 import { Logo } from './Logo'
 
-const COPYRIGHT = '© 2026 TIS · Plataforma de RH'
+const brandName = (brand?: string) => (brand === 'marca-b' ? 'Trevo' : 'TIS')
 
 export function BrandPanel({
   headline,
   subline,
   variant = 'aside',
+  brand,
   className,
 }: {
   headline: string
   subline: string
   variant?: 'aside' | 'banner'
+  brand?: string
   className?: string
 }) {
+  const copyright = `© 2026 ${brandName(brand)} · Plataforma de RH`
   if (variant === 'banner') {
     return (
       <div
@@ -33,7 +36,7 @@ export function BrandPanel({
         {/* items-baseline: o baseline da <img> (borda inferior) casa com o baseline do wordmark "TIS",
             então a frase senta na MESMA linha do "TIS" (o símbolo é alto e centralizado; alinhar pelo
             centro da caixa deixaria a frase flutuando acima do texto). */}
-        <Logo variant="onBrand" className="h-9 shrink-0" />
+        <Logo variant="onBrand" brand={brand} className="h-9 shrink-0" />
         {/* < sm: só o logo (o dock de tema fixo no canto cobriria a frase); ≥ sm há espaço antes do dock. */}
         <p className="ty-body hidden font-medium text-balance sm:block">{headline}</p>
       </div>
@@ -60,7 +63,7 @@ export function BrandPanel({
       </div>
 
       <p className="absolute inset-x-12 bottom-12 text-sm text-primary-foreground xl:inset-x-16 xl:bottom-16">
-        {COPYRIGHT}
+        {copyright}
       </p>
     </aside>
   )

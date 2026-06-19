@@ -5,9 +5,11 @@
  * Validação com react-hook-form + zod; a "auth" é simulada (demo: recrutador@talentai.com / talentai123).
  */
 import { useEffect, useRef, useState } from 'react'
+import type { TFunction } from 'i18next'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { useTranslation } from 'react-i18next'
 import { AlertCircle, ArrowRight, Eye, EyeOff } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -31,21 +33,25 @@ const DEMO_EMAIL = 'recrutador@talentai.com'
 const DEMO_PASSWORD = 'talentai123'
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-const loginSchema = z.object({
-  email: z
-    .string()
-    .min(1, 'Informe seu e-mail.')
-    .refine((v) => EMAIL_RE.test(v), 'Informe um e-mail válido.'),
-  password: z.string().min(6, 'A senha precisa ter ao menos 6 caracteres.'),
-})
-type LoginValues = z.infer<typeof loginSchema>
+// Schema parametrizado por `t` — as mensagens do zod saem do namespace 'auth' (chrome de UI).
+function makeLoginSchema(t: TFunction<'auth'>) {
+  return z.object({
+    email: z
+      .string()
+      .min(1, t('validacao.emailObrigatorio'))
+      .refine((v) => EMAIL_RE.test(v), t('validacao.emailInvalido')),
+    password: z.string().min(6, t('validacao.senhaMin')),
+  })
+}
+type LoginValues = z.infer<ReturnType<typeof makeLoginSchema>>
 
-export function LoginPage({ onLogin, onCreateAccount }: { onLogin?: () => void; onCreateAccount?: () => void }) {
+export function LoginPage({ onLogin, onCreateAccount, brand }: { onLogin?: () => void; onCreateAccount?: () => void; brand?: string }) {
+  const { t } = useTranslation('auth')
   const [showPwd, setShowPwd] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
 
   const form = useForm<LoginValues>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(makeLoginSchema(t)),
     defaultValues: { email: '', password: '' },
     mode: 'onTouched',
   })
@@ -62,7 +68,11 @@ export function LoginPage({ onLogin, onCreateAccount }: { onLogin?: () => void; 
   }, [])
 
   // Some o erro de credencial assim que o usuário edita qualquer campo.
+  // KNOWN: RHF × React Compiler — a subscrição `form.watch(cb)` não é memoizável e o compilador PULA
+  // este componente ("Compilation Skipped"). useWatch força a compilação e aí ele tropeça noutros internals
+  // do RHF (form.handleSubmit/spread = ref em render). Mantemos a subscrição; o skip é perf-hint, não bug.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/incompatible-library
     const sub = form.watch(() => setFormError(null))
     return () => sub.unsubscribe()
   }, [form])
@@ -72,30 +82,31 @@ export function LoginPage({ onLogin, onCreateAccount }: { onLogin?: () => void; 
     await new Promise((r) => setTimeout(r, 1100)) // simula a chamada de auth
     if (!mountedRef.current) return // desmontou durante o "await" → não toca em estado/foco
     if (values.email.trim().toLowerCase() !== DEMO_EMAIL || values.password !== DEMO_PASSWORD) {
-      setFormError('E-mail ou senha incorretos. Verifique e tente de novo.')
+      setFormError(t('login.credenciaisInvalidas'))
       form.setFocus('password')
       return
     }
-    toast.success('Bem-vindo de volta!', { description: 'Login de demonstração.' })
+    toast.success(t('login.sucessoTitulo'), { description: t('login.sucessoDescricao') })
     onLogin?.()
   }
 
   return (
     <AuthLayout
-      headline="Gestão de pessoas, sem atrito."
-      subline="Centralize times, jornadas e indicadores numa plataforma só."
-      title="Entrar na sua conta"
-      subtitle="Bem-vindo de volta! Informe suas credenciais para continuar."
+      headline={t('login.headline')}
+      subline={t('login.subline')}
+      title={t('login.title')}
+      subtitle={t('login.subtitle')}
       maxWidth="sm"
+      brand={brand}
       footer={
         <p className="text-sm text-muted-foreground">
-          Não tem uma conta?{' '}
+          {t('login.semConta')}{' '}
           <button
             type="button"
             onClick={() => onCreateAccount?.()}
             className={`font-medium text-link underline-offset-4 hover:underline ${focusRing}`}
           >
-            Criar conta
+            {t('login.criarConta')}
           </button>
         </p>
       }
@@ -114,9 +125,9 @@ export function LoginPage({ onLogin, onCreateAccount }: { onLogin?: () => void; 
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>E-mail</FormLabel>
+                <FormLabel>{t('login.label.email')}</FormLabel>
                 <FormControl>
-                  <Input type="email" inputMode="email" placeholder="recrutador@talentai.com" autoComplete="email" {...field} />
+                  <Input type="email" inputMode="email" placeholder={t('login.placeholder.email')} autoComplete="email" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -128,12 +139,12 @@ export function LoginPage({ onLogin, onCreateAccount }: { onLogin?: () => void; 
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Senha</FormLabel>
+                <FormLabel>{t('login.label.senha')}</FormLabel>
                 <div className="relative">
                   <FormControl>
                     <Input
                       type={showPwd ? 'text' : 'password'}
-                      placeholder="••••••••"
+                      placeholder={t('login.placeholder.senha')}
                       autoComplete="current-password"
                       className="pr-9"
                       {...field}
@@ -142,7 +153,7 @@ export function LoginPage({ onLogin, onCreateAccount }: { onLogin?: () => void; 
                   <button
                     type="button"
                     onClick={() => setShowPwd((s) => !s)}
-                    aria-label={showPwd ? 'Ocultar senha' : 'Mostrar senha'}
+                    aria-label={showPwd ? t('login.ocultarSenha') : t('login.mostrarSenha')}
                     className={`absolute top-1/2 right-2 grid size-7 -translate-y-1/2 place-items-center text-muted-foreground transition-colors hover:text-foreground ${focusRing}`}
                   >
                     {showPwd ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
@@ -155,14 +166,14 @@ export function LoginPage({ onLogin, onCreateAccount }: { onLogin?: () => void; 
 
           <div className="flex items-center justify-between gap-3">
             <label htmlFor="remember" className="flex items-center gap-2 text-sm">
-              <Checkbox id="remember" defaultChecked /> Lembrar de mim
+              <Checkbox id="remember" defaultChecked /> {t('login.lembrar')}
             </label>
             <button
               type="button"
-              onClick={() => toast('Recuperação de senha', { description: 'Demonstração — o fluxo de redefinição abriria aqui.' })}
+              onClick={() => toast(t('login.recuperacaoTitulo'), { description: t('login.recuperacaoDescricao') })}
               className={`text-sm font-medium text-link underline-offset-4 hover:underline ${focusRing}`}
             >
-              Esqueceu a senha?
+              {t('login.esqueceuSenha')}
             </button>
           </div>
 
@@ -170,9 +181,9 @@ export function LoginPage({ onLogin, onCreateAccount }: { onLogin?: () => void; 
               `disabled` tira da ordem de tab e fica mudo p/ leitor de tela durante o submit. */}
           <Button type="submit" className="group w-full" isLoading={isSubmitting}>
             {isSubmitting ? (
-              'Entrando…'
+              t('login.entrando')
             ) : (
-              <>Entrar <ArrowRight className="transition-transform group-hover:translate-x-0.5" /></>
+              <>{t('login.entrar')} <ArrowRight className="transition-transform group-hover:translate-x-0.5" /></>
             )}
           </Button>
         </form>

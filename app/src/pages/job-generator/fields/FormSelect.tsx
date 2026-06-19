@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ChevronDown } from 'lucide-react'
 import * as SelectPrimitive from '@radix-ui/react-select'
 
@@ -10,10 +11,14 @@ import { SheetOptions } from './sheet-parts'
 
 /** Select limpo (Radix): parece um select normal, sem checkmark; campo preenchido e dropdown
  * definido por sombra (sem a borda preta marcada do popup nativo do SO). */
-export function FormSelect({ id, value, onChange, options, placeholder, "aria-invalid": ariaInvalid, "aria-describedby": ariaDescribedby, "aria-required": ariaRequired }: {
+export function FormSelect({ id, value, onChange, options, placeholder, labelOf, "aria-invalid": ariaInvalid, "aria-describedby": ariaDescribedby, "aria-required": ariaRequired }: {
   id: string; value: string; onChange: (v: string) => void; options: readonly string[]; placeholder?: string
+  // labelOf: traduz só a EXIBIÇÃO (valor canônico pt-BR permanece em value/onChange). Sem ela, mostra o valor cru.
+  labelOf?: (value: string) => string
   "aria-invalid"?: boolean; "aria-describedby"?: string; "aria-required"?: boolean
 }) {
+  const { t } = useTranslation('gerador')
+  const lbl = labelOf ?? ((v: string) => v)
   const isMobile = useIsMobile()
   const [open, setOpen] = useState(false)
 
@@ -21,19 +26,19 @@ export function FormSelect({ id, value, onChange, options, placeholder, "aria-in
   if (isMobile) {
     return (
       <MobileSheet
-        open={open} onOpenChange={setOpen} title={placeholder || 'Selecione'}
+        open={open} onOpenChange={setOpen} title={placeholder || t('select.selecione')}
         trigger={
           <button
             id={id} type="button" role="combobox" aria-expanded={open} aria-controls={open ? `${id}-list` : undefined}
             aria-invalid={ariaInvalid} aria-describedby={ariaDescribedby} aria-required={ariaRequired}
             className={cn('flex min-h-[var(--button-height-lg)] w-full items-center justify-between gap-2 border px-3 outline-none', FIELD, 'focus-visible:focus-ring dark:bg-input/30 dark:hover:bg-input/50', !value && 'text-muted-foreground')}
           >
-            <span className="line-clamp-1 text-left">{value || placeholder}</span>
+            <span className="line-clamp-1 text-left">{value ? lbl(value) : placeholder}</span>
             <ChevronDown className="size-4 shrink-0 text-muted-foreground opacity-60" aria-hidden />
           </button>
         }
       >
-        <SheetOptions id={`${id}-list`} options={options} value={value} onPick={(o) => { onChange(o); setOpen(false) }} />
+        <SheetOptions id={`${id}-list`} options={options} value={value} labelOf={labelOf} onPick={(o) => { onChange(o); setOpen(false) }} />
       </MobileSheet>
     )
   }
@@ -51,7 +56,9 @@ export function FormSelect({ id, value, onChange, options, placeholder, "aria-in
           'data-[placeholder]:text-muted-foreground dark:bg-input/30 dark:hover:bg-input/50 [&>span]:line-clamp-1 [&>span]:text-left',
         )}
       >
-        <SelectPrimitive.Value placeholder={placeholder} />
+        {/* children explícito: o Radix Value cacheia o texto do item ao selecionar e NÃO reage à troca de
+            idioma — então renderizamos o rótulo traduzido nós mesmos (placeholder quando vazio). */}
+        <SelectPrimitive.Value placeholder={placeholder}>{value ? lbl(value) : undefined}</SelectPrimitive.Value>
         <SelectPrimitive.Icon asChild><ChevronDown className="size-4 shrink-0 text-muted-foreground opacity-60" /></SelectPrimitive.Icon>
       </SelectPrimitive.Trigger>
       <SelectPrimitive.Portal>
@@ -65,7 +72,7 @@ export function FormSelect({ id, value, onChange, options, placeholder, "aria-in
                 key={o} value={o}
                 className="flex cursor-pointer items-center rounded-lg px-2.5 py-2 text-sm outline-none transition-colors select-none data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground data-[state=checked]:font-semibold data-[state=checked]:text-primary-text"
               >
-                <SelectPrimitive.ItemText>{o}</SelectPrimitive.ItemText>
+                <SelectPrimitive.ItemText>{lbl(o)}</SelectPrimitive.ItemText>
               </SelectPrimitive.Item>
             ))}
           </SelectPrimitive.Viewport>

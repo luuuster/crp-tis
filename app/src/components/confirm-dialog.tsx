@@ -1,4 +1,5 @@
 import { type ComponentType, type ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/lib/utils'
 import { toneBadge, type Tone } from '@/lib/surfaces'
@@ -15,13 +16,15 @@ import {
  */
 export function ConfirmDialog({
   open, onOpenChange, trigger, icon: Icon, tone = 'destructive',
-  title, description, cancelLabel = 'Voltar', confirmLabel, confirmVariant = 'destructive', onConfirm,
+  title, description, cancelLabel, confirmLabel, confirmVariant = 'destructive', onConfirm,
 }: {
   open?: boolean; onOpenChange?: (v: boolean) => void; trigger?: ReactNode
   icon: ComponentType<{ className?: string }>; tone?: Tone
   title: string; description: ReactNode; cancelLabel?: string; confirmLabel: string
   confirmVariant?: 'default' | 'destructive' | 'secondary' | 'warning'; onConfirm: () => void
 }) {
+  // Rótulo de cancelar PADRÃO traduzido (common): call-sites que não passam cancelLabel não vazam pt cru.
+  const { t } = useTranslation('common')
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       {trigger && <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>}
@@ -36,7 +39,7 @@ export function ConfirmDialog({
           </div>
         </div>
         <AlertDialogFooter>
-          <AlertDialogCancel>{cancelLabel}</AlertDialogCancel>
+          <AlertDialogCancel>{cancelLabel ?? t('acao.voltar')}</AlertDialogCancel>
           {/* Deferimos a ação 1 macrotask: quando o ConfirmDialog está ANINHADO em outro modal (Sheet,
               Dialog) e a ação fecha esse modal pai, fechar os dois no mesmo tick pode deixar o
               `pointer-events:none` preso no <body> (race de cleanup do Radix). O setTimeout deixa o

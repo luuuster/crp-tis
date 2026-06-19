@@ -1,0 +1,119 @@
+{
+  "header": {
+    "title": "Users",
+    "desc": "Manage who has access to the system and what each person can do. Invite new members, adjust roles and control your team's access."
+  },
+  "kpi": {
+    "total": "Total users",
+    "ativos": "Active",
+    "pendentes": "Pending invites",
+    "admins": "Administrators"
+  },
+  "lista": {
+    "indicadores": "Indicators",
+    "equipe": "Team",
+    "cadastrar": "Add user",
+    "vazio": "No users found with these filters."
+  },
+  "tabela": {
+    "usuario": "User",
+    "funcao": "Role",
+    "status": "Status",
+    "ultimoAcesso": "Last access",
+    "acoes": "Actions"
+  },
+  "filtro": {
+    "buscarPlaceholder": "Search name or email…",
+    "buscarLabel": "Search user by name or email",
+    "porFuncao": "Filter by role",
+    "porStatus": "Filter by status"
+  },
+  "voce": "you",
+  "semAcesso": "No access",
+  "acoes": {
+    "editar": "Edit {{nome}}",
+    "reenviar": "Resend invite to {{nome}}",
+    "reativar": "Reactivate access for {{nome}}",
+    "desativar": "Deactivate access for {{nome}}"
+  },
+  "funcao": {
+    "Administrador": "Administrator",
+    "Recrutador": "Recruiter",
+    "Gestor": "Manager"
+  },
+  "funcaoDesc": {
+    "Administrador": "Full access: users, settings and all jobs.",
+    "Recrutador": "Creates and manages jobs, candidates and interviews.",
+    "Gestor": "Tracks jobs and approves candidates on their team."
+  },
+  "status": {
+    "Ativo": "Active",
+    "Convite pendente": "Invite pending",
+    "Inativo": "Inactive"
+  },
+  "tipoPessoa": {
+    "Pessoa Física": "Individual",
+    "Pessoa Jurídica": "Company"
+  },
+  "sheet": {
+    "overlineEditar": "Edit access",
+    "overlineNovo": "New member",
+    "tituloEditar": "Edit user",
+    "tituloNovo": "Add user",
+    "descEditar": "Update this person's details and role.",
+    "descNovo": "Fill in the new member's details and set their access role.",
+    "nome": "Full name",
+    "nomePlaceholder": "Full name",
+    "email": "Email",
+    "emailPlaceholder": "name@company.com",
+    "emailInvalido": "Enter a valid email.",
+    "telefone": "Phone",
+    "telefonePlaceholder": "(11) 98765-4321",
+    "tipoPessoa": "Person type",
+    "doc": {
+      "cpf": "CPF",
+      "cnpj": "CNPJ",
+      "cpfPlaceholder": "000.000.000-00",
+      "cnpjPlaceholder": "00.000.000/0000-00"
+    },
+    "data": {
+      "nascimento": "Date of birth",
+      "abertura": "Founding date",
+      "placeholder": "DD/MM/YYYY"
+    },
+    "funcao": "Role",
+    "salvarAlteracoes": "Save changes",
+    "cadastrarUsuario": "Add user"
+  },
+  "toast": {
+    "atualizado": "User \"{{nome}}\" updated (demo).",
+    "cadastrado": "User \"{{nome}}\" added (demo).",
+    "desativado": "Access for \"{{nome}}\" deactivated (demo).",
+    "reativado": "Access for \"{{nome}}\" reactivated (demo).",
+    "reenviado": "Invite resent to {{email}} (demo)."
+  },
+  "confirmDesativar": {
+    "titulo": "Deactivate access?",
+    "descPre": "will lose access to the system and move to the status",
+    "descPos": ". You can reactivate it at any time.",
+    "statusInativo": "Inactive",
+    "acao": "Deactivate access"
+  },
+  "confirmReativar": {
+    "titulo": "Reactivate access?",
+    "descPre": "will regain access to the system and move to the status",
+    "descPos": ".",
+    "statusAtivo": "Active",
+    "acao": "Reactivate access"
+  },
+  "export": {
+    "arquivo": "users",
+    "col": {
+      "nome": "Name",
+      "email": "Email",
+      "funcao": "Role",
+      "status": "Status",
+      "ultimoAcesso": "Last access"
+    }
+  }
+}

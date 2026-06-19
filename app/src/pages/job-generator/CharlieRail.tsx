@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { ArrowRight, Bot, Mic, Paperclip, Trash2, UserRound, X } from 'lucide-react'
 import { Dialog as DialogPrimitive } from 'radix-ui'
@@ -12,13 +13,19 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { useIsMobile } from '@/components/shell/AppShell'
-import { formatAgo, type Msg } from './model'
+import { relativeAgo, type Msg } from './model'
 import { suggestionsFor, type Suggestion } from './charlie-suggestions'
 
 export function CharlieRail({ open, onClose, step, msgs, onSuggestion, onSend, onClear }: {
   open: boolean; onClose: () => void; step: number; msgs: Msg[]
   onSuggestion: (s: Suggestion) => void; onSend: (text: string) => void; onClear: () => void
 }) {
+  const { t } = useTranslation('gerador')
+  // Tempo relativo localizado: o cálculo (impuro, usa Date.now) vive em model.ts; aqui só traduzimos.
+  const formatAgo = (at: number) => {
+    const { unit, value } = relativeAgo(at)
+    return unit === 'segundos' ? t('charlie.haAgoSegundos', { s: value }) : t('charlie.haAgoMinutos', { min: value })
+  }
   const [draft, setDraft] = useState('')
   // `< lg`: o Charlie é um MODAL de tela cheia (Radix Dialog trata foco/Esc). `lg+`: painel lateral
   // NÃO-modal (dá p/ editar o form com ele aberto ao lado), então o Esc é manual aqui.
@@ -44,15 +51,15 @@ export function CharlieRail({ open, onClose, step, msgs, onSuggestion, onSend, o
           <span className="absolute -right-0.5 -bottom-0.5 size-2.5 rounded-full border-2 border-card bg-success" aria-hidden />
         </span>
         <div className="min-w-0 flex-1">
-          <p className="ty-body font-semibold text-foreground">Charlie</p>
-          <p className="flex items-center gap-1.5 ty-caption font-medium text-muted-foreground"><span className="size-1.5 rounded-full bg-success" aria-hidden /> COPILOTO · <span className="text-success-text">ATIVO</span></p>
+          <p className="ty-body font-semibold text-foreground">{t('charlie.nome')}</p>
+          <p className="flex items-center gap-1.5 ty-caption font-medium text-muted-foreground"><span className="size-1.5 rounded-full bg-success" aria-hidden /> {t('charlie.copiloto')} · <span className="text-success-text">{t('charlie.ativo')}</span></p>
         </div>
-        <Button variant="ghost" size="icon" aria-label="Fechar Charlie" onClick={onClose}><X /></Button>
+        <Button variant="ghost" size="icon" aria-label={t('charlie.fecharCharlie')} onClick={onClose}><X /></Button>
       </header>
 
       <div className="flex-1 space-y-5 overflow-y-auto p-4">
-        <section className="space-y-2" aria-label="Sugestões">
-          <h3 className="ty-overline text-muted-foreground">Sugestões para esta etapa</h3>
+        <section className="space-y-2" aria-label={t('charlie.sugestoesAria')}>
+          <h3 className="ty-overline text-muted-foreground">{t('charlie.sugestoesTitulo')}</h3>
           <div className="space-y-2">
             {suggestions.map(({ icon: Icon, label, run }, i) => (
               <button key={i} type="button" onClick={() => onSuggestion({ icon: Icon, label, run })}
@@ -64,10 +71,10 @@ export function CharlieRail({ open, onClose, step, msgs, onSuggestion, onSend, o
           </div>
         </section>
 
-        <section className="space-y-3" aria-label="Conversa" aria-live="polite">
-          <h3 className="ty-overline text-muted-foreground">Conversa</h3>
+        <section className="space-y-3" aria-label={t('charlie.conversaAria')} aria-live="polite">
+          <h3 className="ty-overline text-muted-foreground">{t('charlie.conversaTitulo')}</h3>
           {msgs.length === 0 ? (
-            <div className="flex flex-col items-center gap-2 py-6 text-center text-muted-foreground"><Bot className="size-6" aria-hidden /><p className="max-w-48 ty-body-sm">Use uma sugestão acima ou escreva uma mensagem.</p></div>
+            <div className="flex flex-col items-center gap-2 py-6 text-center text-muted-foreground"><Bot className="size-6" aria-hidden /><p className="max-w-48 ty-body-sm">{t('charlie.vazio')}</p></div>
           ) : (
             msgs.map((m) => (
               <div key={m.id} className={cn('flex items-start gap-2', m.role === 'user' && 'flex-row-reverse')}>
@@ -84,26 +91,26 @@ export function CharlieRail({ open, onClose, step, msgs, onSuggestion, onSend, o
         </section>
       </div>
 
-      <div className="border-t border-border/40 p-3">
+      <div className="border-t border-border/40 p-3 pb-[calc(0.75rem_+_env(safe-area-inset-bottom))]">
         <div className="rounded-xl bg-muted/50 p-2 transition-colors focus-within:bg-background focus-within:ring-[3px] focus-within:ring-ring/50">
-          <Label htmlFor="charlie-input" className="sr-only">Mensagem para o Charlie</Label>
-          <Textarea id="charlie-input" value={draft} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submit() } }} placeholder="Descreva a vaga ou pergunte…" className="min-h-10 resize-none border-0 bg-transparent p-1 shadow-none focus-visible:ring-0" />
+          <Label htmlFor="charlie-input" className="sr-only">{t('charlie.inputLabel')}</Label>
+          <Textarea id="charlie-input" value={draft} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submit() } }} placeholder={t('charlie.inputPlaceholder')} className="min-h-10 resize-none border-0 bg-transparent p-1 shadow-none focus-visible:ring-0" />
           <div className="flex items-center justify-between gap-2 pt-1">
             <div className="flex items-center gap-0.5">
-              <Button variant="ghost" size="icon" aria-label="Anexar arquivo" onClick={() => toast.info('Anexar (demo).')}><Paperclip /></Button>
-              <Button variant="ghost" size="icon" aria-label="Ditar por voz" onClick={() => toast.info('Voz (demo).')}><Mic /></Button>
+              <Button variant="ghost" size="icon" aria-label={t('charlie.anexar')} onClick={() => toast.info(t('charlie.anexarToast'))}><Paperclip /></Button>
+              <Button variant="ghost" size="icon" aria-label={t('charlie.voz')} onClick={() => toast.info(t('charlie.vozToast'))}><Mic /></Button>
             </div>
             <div className="flex items-center gap-2">
               {msgs.length > 0 && (
                 <ConfirmDialog
                   icon={Trash2} tone="secondary" confirmVariant="secondary"
-                  title="Limpar a conversa?"
-                  description="Todo o histórico desta conversa com o Charlie será apagado."
-                  confirmLabel="Limpar" onConfirm={onClear}
-                  trigger={<Button variant="ghost">Limpar</Button>}
+                  title={t('charlie.limparTitulo')}
+                  description={t('charlie.limparDescricao')}
+                  confirmLabel={t('charlie.limpar')} onConfirm={onClear}
+                  trigger={<Button variant="ghost">{t('charlie.limpar')}</Button>}
                 />
               )}
-              <Button onClick={submit} disabled={!draft.trim()}>Enviar <ArrowRight /></Button>
+              <Button onClick={submit} disabled={!draft.trim()}>{t('charlie.enviar')} <ArrowRight /></Button>
             </div>
           </div>
         </div>
@@ -118,11 +125,11 @@ export function CharlieRail({ open, onClose, step, msgs, onSuggestion, onSend, o
       <DialogPrimitive.Root open={open} onOpenChange={(o) => { if (!o) onClose() }}>
         <DialogPrimitive.Portal>
           <DialogPrimitive.Content
-            onCloseAutoFocus={(e) => { e.preventDefault(); document.querySelector<HTMLElement>('[aria-label="Falar com Charlie"]')?.focus() }}
+            onCloseAutoFocus={(e) => { e.preventDefault(); document.querySelector<HTMLElement>('[data-charlie-trigger]')?.focus() }}
             className="fixed inset-0 z-50 flex h-dvh w-full flex-col bg-card outline-none motion-safe:duration-200 motion-safe:data-[state=open]:animate-in motion-safe:data-[state=open]:slide-in-from-right motion-safe:data-[state=closed]:animate-out motion-safe:data-[state=closed]:slide-out-to-right"
           >
-            <DialogPrimitive.Title className="sr-only">Charlie — copiloto</DialogPrimitive.Title>
-            <DialogPrimitive.Description className="sr-only">Sugestões e conversa para ajudar a montar a vaga.</DialogPrimitive.Description>
+            <DialogPrimitive.Title className="sr-only">{t('charlie.tituloSr')}</DialogPrimitive.Title>
+            <DialogPrimitive.Description className="sr-only">{t('charlie.descricaoSr')}</DialogPrimitive.Description>
             {content}
           </DialogPrimitive.Content>
         </DialogPrimitive.Portal>
@@ -132,7 +139,7 @@ export function CharlieRail({ open, onClose, step, msgs, onSuggestion, onSend, o
 
   // `lg+`: painel lateral NÃO-modal (de propósito — dá p/ editar o form com o Charlie aberto ao lado).
   return (
-    <aside aria-label="Copiloto Charlie" className="relative z-50 flex h-dvh w-[300px] shrink-0 flex-col border-l border-border/40 bg-card shadow-panel-r motion-safe:duration-200 motion-safe:animate-in motion-safe:slide-in-from-right">
+    <aside aria-label={t('charlie.copilotoAside')} className="relative z-50 flex h-dvh w-[300px] shrink-0 flex-col border-l border-border/40 bg-card shadow-panel-r motion-safe:duration-200 motion-safe:animate-in motion-safe:slide-in-from-right">
       {content}
     </aside>
   )

@@ -4,9 +4,10 @@ import { LogOut, Moon, Palette, Sun } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Separator } from '@/components/ui/separator'
-import { TooltipProvider } from '@/components/ui/tooltip'
+import { TooltipProvider, Tip } from '@/components/ui/tooltip'
 import { Toaster } from '@/components/ui/sonner'
 import { Spinner } from '@/components/ui/spinner'
+import { LanguageSelect } from '@/components/LanguageSelect'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { LoginPage } from '@/pages/LoginPage'
 import { RegisterPage } from '@/pages/RegisterPage'
@@ -85,24 +86,31 @@ export function App() {
     setView(v)
   }
 
+  const brandLabel = `Trocar para ${brand === 'crp' ? 'Trevo' : 'TIS'}`
+  const modeLabel = mode === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro'
   const themeToggles = (
     <>
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        aria-label={`Trocar para ${brand === 'crp' ? 'Marca B' : 'TIS'}`}
-        onClick={() => setBrand((b) => (b === 'crp' ? 'marca-b' : 'crp'))}
-      >
-        <Palette />
-      </Button>
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        aria-label={mode === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
-        onClick={() => setMode((m) => (m === 'dark' ? 'light' : 'dark'))}
-      >
-        {mode === 'dark' ? <Sun /> : <Moon />}
-      </Button>
+      <LanguageSelect />
+      <Tip label={brandLabel}>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label={brandLabel}
+          onClick={() => setBrand((b) => (b === 'crp' ? 'marca-b' : 'crp'))}
+        >
+          <Palette />
+        </Button>
+      </Tip>
+      <Tip label={modeLabel}>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label={modeLabel}
+          onClick={() => setMode((m) => (m === 'dark' ? 'light' : 'dark'))}
+        >
+          {mode === 'dark' ? <Sun /> : <Moon />}
+        </Button>
+      </Tip>
     </>
   )
 
@@ -122,7 +130,7 @@ export function App() {
                 <TabsTrigger value="gerador" className="text-xs">Vagas</TabsTrigger>
                 <TabsTrigger value="componentes" className="text-xs">Componentes</TabsTrigger>
               </TabsList>
-              <Button variant="ghost" size="icon-sm" aria-label="Sair" onClick={() => setView('login')}><LogOut /></Button>
+              <Tip label="Sair"><Button variant="ghost" size="icon-sm" aria-label="Sair" onClick={() => setView('login')}><LogOut /></Button></Tip>
               <Separator orientation="vertical" className="h-5" />
               {themeToggles}
             </div>
@@ -206,9 +214,9 @@ export function App() {
           <div className={DOCK}>{themeToggles}</div>
           <ErrorBoundary>
             {view === 'login' ? (
-              <LoginPage onLogin={() => setView('dashboard')} onCreateAccount={() => setView('register')} />
+              <LoginPage onLogin={() => setView('dashboard')} onCreateAccount={() => setView('register')} brand={brand} />
             ) : (
-              <RegisterPage onBackToLogin={() => setView('login')} onRegistered={() => setView('login')} />
+              <RegisterPage onBackToLogin={() => setView('login')} onRegistered={() => setView('login')} brand={brand} />
             )}
           </ErrorBoundary>
         </>

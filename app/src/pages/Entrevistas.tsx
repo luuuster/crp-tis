@@ -5,6 +5,7 @@
  * Reconstruído no DS (AppShell, CARD, .ty-*, tokens) — nada de cor/borda à mão. Demo: dados mockados.
  */
 import { useState, type ComponentType } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   CalendarCheck, CalendarDays, CalendarOff, CalendarPlus, CalendarX2, Check, ChevronLeft, ChevronRight, Clock, Inbox,
   Link2, MapPin, Pencil, Search, User, Users, Video,
@@ -15,6 +16,7 @@ import { cn } from '@/lib/utils'
 import { CARD } from '@/lib/surfaces'
 import { iniciais } from '@/lib/format'
 import { usePagination } from '@/lib/usePagination'
+import { dataLonga, dataMedia, mesAbrev, mesLongo, semanaCurta } from '@/lib/datetime'
 import { AppShell } from '@/components/shell/AppShell'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -29,10 +31,8 @@ import { PageContainer, PageHeader, Panel, Paginacao } from '@/components/page'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import { ENTREVISTADORES, DURACOES, WORK_SLOTS, ocupado, slotLivre, temHorarioLivre, proximaDataLivre, painelDe, duracaoDe, linkDe } from './entrevistas.logic'
 
-const MESES = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
 const ANOS = [2025, 2026, 2027]
-const SEMANA = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom']
-const DIAS_LONGO = ['domingo', 'segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado']
+// Nomes de mês/semana/data por LOCALE vêm de @/lib/datetime (Intl) — pt-BR sai idêntico ao legado.
 
 type Tipo = 'Online' | 'Presencial'
 export type Evento = { y: number; m: number; d: number; hora: string; cand: string; vaga: string; tipo: Tipo; entrevistadores?: string[] }
@@ -66,10 +66,7 @@ const AGUARDANDO: Fila[] = [
 ]
 const PER_PAGE = 10
 
-const fmtData = (ev: Evento) => {
-  const dt = new Date(ev.y, ev.m, ev.d)
-  return `${DIAS_LONGO[dt.getDay()]}, ${ev.d} de ${MESES[ev.m].toLowerCase()} de ${ev.y}`
-}
+const fmtData = (ev: Evento) => dataLonga(ev.y, ev.m, ev.d)
 const paraInput = (y: number, m: number, d: number) => `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`
 // 'yyyy-MM-dd' → 'dd/MM/yyyy' p/ exibição (mesmo formato que o usuário vê no campo de data).
 const fmtBR = (iso: string) => { const [y, m, d] = iso.split('-'); return `${d}/${m}/${y}` }
@@ -89,7 +86,7 @@ function EventoChip({ ev, onOpen }: { ev: Evento; onOpen: (ev: Evento) => void }
           <span className="truncate text-foreground">{ev.cand}</span>
         </button>
       </TooltipTrigger>
-      <TooltipContent>{`${ev.hora} · ${ev.cand} — ${ev.vaga}`}</TooltipContent>
+      <TooltipContent>{`${ev.hora} · ${ev.cand}, ${ev.vaga}`}</TooltipContent>
     </Tooltip>
   )
 }
@@ -97,6 +94,7 @@ function EventoChip({ ev, onOpen }: { ev: Evento; onOpen: (ev: Evento) => void }
 // Linha rica de agendamento (avatar + nome + vaga + horário/formato) — mesmo padrão das "Próximas
 // entrevistas", usada DENTRO da modal do dia (onde há espaço p/ a versão completa, não o chip da célula).
 function EventoLinhaDia({ ev, onOpen }: { ev: Evento; onOpen: (ev: Evento) => void }) {
+  const { t } = useTranslation('entrevistas')
   return (
     <button
       type="button"
@@ -111,7 +109,7 @@ function EventoLinhaDia({ ev, onOpen }: { ev: Evento; onOpen: (ev: Evento) => vo
       <div className="flex shrink-0 flex-col items-end gap-1">
         <span className="flex items-center gap-1 ty-body-sm font-medium tabular-nums text-foreground"><Clock className="size-3.5 text-muted-foreground" aria-hidden /> {ev.hora}</span>
         <span className="flex items-center gap-1 ty-caption text-muted-foreground">
-          {ev.tipo === 'Online' ? <Video className="size-3" aria-hidden /> : <MapPin className="size-3" aria-hidden />} {ev.tipo}
+          {ev.tipo === 'Online' ? <Video className="size-3" aria-hidden /> : <MapPin className="size-3" aria-hidden />} {t(`formato.${ev.tipo}`)}
         </span>
       </div>
     </button>
@@ -122,13 +120,14 @@ function EventoLinhaDia({ ev, onOpen }: { ev: Evento; onOpen: (ev: Evento) => vo
 // horário, cada um clicável → abre o detalhe). Fecha o modal e abre o detalhe no próximo tick p/ não
 // empilhar 2 modais (evita o race de pointer-events do Radix).
 function MaisDoDia({ titulo, evs, onOpen }: { titulo: string; evs: Evento[]; onOpen: (ev: Evento) => void }) {
+  const { t } = useTranslation('entrevistas')
   const [open, setOpen] = useState(false)
   const ordenados = [...evs].sort((a, b) => a.hora.localeCompare(b.hora))
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <button type="button" className="flex w-full items-center justify-center rounded-md bg-primary/15 px-1.5 py-1 ty-caption font-semibold text-primary-text ring-1 ring-primary/25 transition-colors hover:bg-primary/25 focus-visible:focus-ring">
-          +{evs.length - 2} mais
+          {t('dia.mais', { n: evs.length - 2 })}
         </button>
       </DialogTrigger>
       <DialogContent className="max-w-md">
@@ -137,7 +136,7 @@ function MaisDoDia({ titulo, evs, onOpen }: { titulo: string; evs: Evento[]; onO
             <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary-text" aria-hidden><CalendarDays className="size-5" /></span>
             <div className="min-w-0">
               <DialogTitle className="truncate">{titulo}</DialogTitle>
-              <DialogDescription>{evs.length} {evs.length === 1 ? 'entrevista agendada' : 'entrevistas agendadas'} neste dia.</DialogDescription>
+              <DialogDescription>{t('dia.agendadas', { count: evs.length })}</DialogDescription>
             </div>
           </div>
         </DialogHeader>
@@ -171,6 +170,8 @@ function InfoItem({ icon: Icon, label, valor }: { icon: ComponentType<{ classNam
 export function AgendamentoDetalhe({ ev, onReagendar, onCancelar }: {
   ev: Evento; onReagendar: () => void; onCancelar: () => void
 }) {
+  const { t } = useTranslation('entrevistas')
+  const { t: tc } = useTranslation('common')
   const online = ev.tipo === 'Online'
   const intvs = ev.entrevistadores?.length ? ev.entrevistadores : painelDe(ev)
   return (
@@ -179,27 +180,27 @@ export function AgendamentoDetalhe({ ev, onReagendar, onCancelar }: {
       <header className="flex items-start gap-3 border-b border-border/50 p-5 pr-12">
         <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 font-heading text-base font-bold text-primary-text" aria-hidden>{iniciais(ev.cand)}</span>
         <div className="min-w-0">
-          <p className="ty-overline text-muted-foreground">Entrevista agendada</p>
+          <p className="ty-overline text-muted-foreground">{t('detalhe.overline')}</p>
           <h2 className="truncate font-heading text-xl font-bold tracking-tight text-foreground">{ev.cand}</h2>
           <p className="truncate ty-body-sm text-muted-foreground">{ev.vaga}</p>
-          <span className="mt-2 inline-flex rounded-full bg-primary/10 px-2.5 py-0.5 ty-caption font-medium text-primary-text">Agendada</span>
+          <span className="mt-2 inline-flex rounded-full bg-primary/10 px-2.5 py-0.5 ty-caption font-medium text-primary-text">{t('detalhe.statusAgendada')}</span>
         </div>
       </header>
 
       {/* detalhes (rolável) */}
       <div className="flex-1 overflow-y-auto p-5">
-        <p className="ty-caption font-semibold tracking-wide text-foreground uppercase">Detalhes do agendamento</p>
+        <p className="ty-caption font-semibold tracking-wide text-foreground uppercase">{t('detalhe.secaoDetalhes')}</p>
         <div className="mt-3 space-y-2.5">
-          <InfoItem icon={CalendarDays} label="Data" valor={fmtData(ev)} />
-          <InfoItem icon={Clock} label="Horário" valor={`${ev.hora} · ${duracaoDe(ev)}`} />
-          <InfoItem icon={online ? Video : MapPin} label="Formato" valor={online ? 'Online · Microsoft Teams' : 'Presencial'} />
-          {/* Entrevistadores: cada um em sua própria linha (nome + papel) — legível com vários no painel. */}
+          <InfoItem icon={CalendarDays} label={t('detalhe.data')} valor={fmtData(ev)} />
+          <InfoItem icon={Clock} label={t('detalhe.horario')} valor={`${ev.hora} · ${duracaoDe(ev)}`} />
+          <InfoItem icon={online ? Video : MapPin} label={t('detalhe.formato')} valor={online ? t('detalhe.online') : t('detalhe.presencial')} />
+          {/* Entrevistadores: cada um em sua própria linha (nome + papel), legível com vários no painel. */}
           <div className="flex gap-3 rounded-lg bg-muted/30 p-3">
             {intvs.length > 1
               ? <Users className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden />
               : <User className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden />}
             <div className="min-w-0">
-              <p className="ty-caption text-muted-foreground">{intvs.length > 1 ? `Entrevistadores (${intvs.length})` : 'Entrevistador(a)'}</p>
+              <p className="ty-caption text-muted-foreground">{intvs.length > 1 ? t('detalhe.entrevistadores', { n: intvs.length }) : t('detalhe.entrevistador')}</p>
               <ul className="mt-1 space-y-1">
                 {intvs.map((p) => {
                   const [nome, papel] = p.split(' · ')
@@ -213,27 +214,27 @@ export function AgendamentoDetalhe({ ev, onReagendar, onCancelar }: {
               </ul>
             </div>
           </div>
-          <InfoItem icon={online ? Link2 : MapPin} label={online ? 'Link da reunião (Teams)' : 'Local'} valor={online ? linkDe(ev) : 'Sala 3 · 4º andar — Escritório SP'} />
-          <InfoItem icon={CalendarCheck} label="Etapa" valor="Entrevista — processo seletivo" />
+          <InfoItem icon={online ? Link2 : MapPin} label={online ? t('detalhe.linkReuniao') : t('detalhe.local')} valor={online ? linkDe(ev) : t('detalhe.localValor')} />
+          <InfoItem icon={CalendarCheck} label={t('detalhe.etapa')} valor={t('detalhe.etapaValor')} />
         </div>
       </div>
 
       {/* rodapé */}
-      <footer className="space-y-2 border-t border-border/40 p-4">
-        <Button className="w-full" onClick={() => (online ? toast.success('Entrando na chamada… (demo)') : toast.info('Endereço do local copiado (demo).'))}>
-          {online ? <><Video aria-hidden /> Entrar na chamada</> : <><MapPin aria-hidden /> Ver local</>}
+      <footer className="space-y-2 border-t border-border/40 p-4 pb-[calc(1rem_+_env(safe-area-inset-bottom))]">
+        <Button className="w-full" onClick={() => (online ? toast.success(t('detalhe.toastEntrando')) : toast.info(t('detalhe.toastLocalCopiado')))}>
+          {online ? <><Video aria-hidden /> {t('detalhe.entrarChamada')}</> : <><MapPin aria-hidden /> {t('detalhe.verLocal')}</>}
         </Button>
         <div className="grid grid-cols-2 gap-2">
-          <Button variant="outline" onClick={onReagendar}><Pencil aria-hidden /> Reagendar</Button>
+          <Button variant="outline" onClick={onReagendar}><Pencil aria-hidden /> {t('detalhe.reagendar')}</Button>
           <ConfirmDialog
-            trigger={<Button variant="destructive-outline"><CalendarX2 aria-hidden /> Cancelar</Button>}
+            trigger={<Button variant="destructive-outline"><CalendarX2 aria-hidden /> {t('detalhe.cancelar')}</Button>}
             icon={CalendarX2}
             tone="destructive"
             confirmVariant="destructive"
-            title="Cancelar esta entrevista?"
-            description={`A entrevista com ${ev.cand} será cancelada e o candidato volta para a fila de agendamento.`}
-            cancelLabel="Voltar"
-            confirmLabel="Sim, cancelar"
+            title={t('detalhe.cancelarTitulo')}
+            description={t('detalhe.cancelarDescricao', { cand: ev.cand })}
+            cancelLabel={tc('acao.voltar')}
+            confirmLabel={t('detalhe.cancelarConfirmar')}
             onConfirm={onCancelar}
           />
         </div>
@@ -247,6 +248,8 @@ export function AgendamentoDetalhe({ ev, onReagendar, onCancelar }: {
 export function AgendarEntrevista({ cand, vaga, inicial, onCancelar, onConfirmar }: {
   cand: string; vaga: string; inicial?: Evento; onCancelar: () => void; onConfirmar: (ev: Evento) => void
 }) {
+  const { t } = useTranslation('entrevistas')
+  const { t: tc } = useTranslation('common')
   const reagendando = !!inicial
   const [data, setData] = useState(inicial ? paraInput(inicial.y, inicial.m, inicial.d) : '')
   const [hora, setHora] = useState(inicial?.hora ?? '')
@@ -280,7 +283,7 @@ export function AgendarEntrevista({ cand, vaga, inicial, onCancelar, onConfirmar
       <header className="flex items-center gap-3 border-b border-border/50 p-5 pr-12">
         <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary-text" aria-hidden><CalendarPlus className="size-6" /></span>
         <div className="min-w-0">
-          <p className="ty-overline text-muted-foreground">{reagendando ? 'Reagendar entrevista' : 'Agendar entrevista'}</p>
+          <p className="ty-overline text-muted-foreground">{reagendando ? t('agendar.overlineReagendar') : t('agendar.overlineAgendar')}</p>
           <h2 className="truncate font-heading text-xl font-bold tracking-tight text-foreground">{cand}</h2>
           <p className="truncate ty-body-sm text-muted-foreground">{vaga}</p>
         </div>
@@ -289,14 +292,14 @@ export function AgendarEntrevista({ cand, vaga, inicial, onCancelar, onConfirmar
       {/* formulário (rolável) */}
       <div className="flex-1 space-y-5 overflow-y-auto p-5">
         <div className="space-y-1.5">
-          <Label htmlFor="ag-data">Data</Label>
+          <Label htmlFor="ag-data">{t('agendar.data')}</Label>
           <DatePicker id="ag-data" value={data} onChange={setData} />
         </div>
 
-        {/* entrevistadores (internos) — 1 a 4. A disponibilidade abaixo cruza as agendas de todos. */}
+        {/* entrevistadores (internos), 1 a 4. A disponibilidade abaixo cruza as agendas de todos. */}
         <fieldset className="space-y-2">
           <legend className="flex items-center gap-2 ty-label-sm font-medium text-foreground">
-            Entrevistadores <span className="ty-caption font-normal text-muted-foreground">({entrevistadores.length}/4)</span>
+            {t('agendar.entrevistadores')} <span className="ty-caption font-normal text-muted-foreground">{t('agendar.contador', { n: entrevistadores.length })}</span>
           </legend>
           <div className="space-y-1.5">
             {ENTREVISTADORES.map((e) => {
@@ -323,11 +326,11 @@ export function AgendarEntrevista({ cand, vaga, inicial, onCancelar, onConfirmar
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <Video className="size-4 shrink-0 text-primary-text" aria-hidden />
-            <span id="ag-disp-label" className="ty-label-sm font-medium text-foreground">Disponibilidade no Teams</span>
+            <span id="ag-disp-label" className="ty-label-sm font-medium text-foreground">{t('agendar.disponibilidade')}</span>
           </div>
           {data === '' || entrevistadores.length === 0 ? (
             <p className="rounded-lg bg-muted/30 p-3 ty-body-sm text-muted-foreground">
-              {data === '' ? 'Escolha uma data para ver os horários livres.' : 'Selecione ao menos um entrevistador.'}
+              {data === '' ? t('agendar.escolhaData') : t('agendar.selecioneEntrevistador')}
             </p>
           ) : semHorario ? (
             // Nenhum slot em comum no dia: troca a grade (toda riscada, confusa) por um aviso claro e
@@ -336,11 +339,11 @@ export function AgendarEntrevista({ cand, vaga, inicial, onCancelar, onConfirmar
               <CalendarOff className="mt-0.5 size-5 shrink-0" aria-hidden />
               <div className="space-y-2">
                 <div className="space-y-0.5">
-                  <p className="ty-body-sm font-semibold">Nenhum horário livre neste dia</p>
+                  <p className="ty-body-sm font-semibold">{t('agendar.semHorarioTitulo')}</p>
                   <p className="ty-body-sm">
                     {entrevistadores.length === 1
-                      ? 'O entrevistador não tem horários disponíveis nesta data.'
-                      : `Os ${entrevistadores.length} entrevistadores não têm um horário em comum nesta data.`}
+                      ? t('agendar.semHorarioUm')
+                      : t('agendar.semHorarioVarios', { n: entrevistadores.length })}
                   </p>
                 </div>
                 {proximaLivre ? (
@@ -350,17 +353,17 @@ export function AgendarEntrevista({ cand, vaga, inicial, onCancelar, onConfirmar
                     className="inline-flex items-center gap-1.5 rounded-md ty-body-sm font-semibold underline-offset-2 hover:underline focus-visible:focus-ring"
                   >
                     <CalendarCheck className="size-4 shrink-0" aria-hidden />
-                    Ir para a próxima data livre · {fmtBR(proximaLivre)}
+                    {t('agendar.proximaDataLivre', { data: fmtBR(proximaLivre) })}
                   </button>
                 ) : (
-                  <p className="ty-body-sm">Tente outra data{entrevistadores.length > 1 ? ' ou reduza os entrevistadores' : ''}.</p>
+                  <p className="ty-body-sm">{entrevistadores.length > 1 ? t('agendar.tenteOutraDataReduza') : t('agendar.tenteOutraData')}</p>
                 )}
               </div>
             </div>
           ) : (
             <>
               <p className="ty-caption text-muted-foreground">
-                {entrevistadores.length === 1 ? 'Horários livres na agenda do entrevistador.' : `Horários em que os ${entrevistadores.length} entrevistadores estão livres ao mesmo tempo.`}
+                {entrevistadores.length === 1 ? t('agendar.horariosUm') : t('agendar.horariosVarios', { n: entrevistadores.length })}
               </p>
               <div className="grid grid-cols-3 gap-1.5" role="group" aria-labelledby="ag-disp-label">
                 {WORK_SLOTS.map((slot) => {
@@ -371,8 +374,8 @@ export function AgendarEntrevista({ cand, vaga, inicial, onCancelar, onConfirmar
                     <button
                       key={slot} type="button" disabled={!livre} aria-pressed={sel}
                       onClick={() => setHora(slot)}
-                      title={livre ? undefined : `Ocupado: ${conflito.map((c) => c.split(' · ')[0]).join(', ')}`}
-                      aria-label={`${slot} — ${livre ? 'livre' : 'ocupado'}`}
+                      title={livre ? undefined : t('agendar.slotOcupadoTitle', { nomes: conflito.map((c) => c.split(' · ')[0]).join(', ') })}
+                      aria-label={livre ? t('agendar.slotLivreAria', { slot }) : t('agendar.slotOcupadoAria', { slot })}
                       className={cn('rounded-lg px-2 py-1.5 text-center ty-body-sm font-medium tabular-nums transition-colors focus-visible:focus-ring',
                         sel ? 'bg-primary text-primary-foreground'
                           : livre ? 'bg-success/10 text-success-text hover:bg-success/15'
@@ -389,54 +392,54 @@ export function AgendarEntrevista({ cand, vaga, inicial, onCancelar, onConfirmar
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
-            <Label htmlFor="ag-dur">Duração</Label>
+            <Label htmlFor="ag-dur">{t('agendar.duracao')}</Label>
             <Select value={duracao} onValueChange={setDuracao}>
               <SelectTrigger id="ag-dur" className="w-full"><SelectValue /></SelectTrigger>
               <SelectContent>{DURACOES.map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent>
             </Select>
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="ag-fmt">Formato</Label>
+            <Label htmlFor="ag-fmt">{t('agendar.formato')}</Label>
             <Select value={tipo} onValueChange={(v) => setTipo(v as Tipo)}>
               <SelectTrigger id="ag-fmt" className="w-full"><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="Online">Online (Teams)</SelectItem>
-                <SelectItem value="Presencial">Presencial</SelectItem>
+                <SelectItem value="Online">{t('agendar.formatoOnline')}</SelectItem>
+                <SelectItem value="Presencial">{t('agendar.formatoPresencial')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="ag-contato">{online ? 'Link da reunião' : 'Local'}</Label>
-          <Input id="ag-contato" value={contato} onChange={(e) => setContato(e.target.value)} placeholder={online ? 'Gerado automaticamente pelo Teams ao confirmar' : 'Sala / endereço (opcional)'} disabled={online} />
-          {online && <p className="flex items-center gap-1.5 ty-caption text-muted-foreground"><Video className="size-3.5 shrink-0 text-primary-text" aria-hidden /> Uma reunião do Microsoft Teams é criada e enviada no convite.</p>}
+          <Label htmlFor="ag-contato">{online ? t('agendar.linkReuniao') : t('agendar.local')}</Label>
+          <Input id="ag-contato" value={contato} onChange={(e) => setContato(e.target.value)} placeholder={online ? t('agendar.linkPlaceholder') : t('agendar.localPlaceholder')} disabled={online} />
+          {online && <p className="flex items-center gap-1.5 ty-caption text-muted-foreground"><Video className="size-3.5 shrink-0 text-primary-text" aria-hidden /> {t('agendar.teamsNota')}</p>}
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="ag-obs">Observações</Label>
-          <Textarea id="ag-obs" rows={3} value={obs} onChange={(e) => setObs(e.target.value)} placeholder="Notas para os entrevistadores, pauta da conversa… (opcional)" />
+          <Label htmlFor="ag-obs">{t('agendar.observacoes')}</Label>
+          <Textarea id="ag-obs" rows={3} value={obs} onChange={(e) => setObs(e.target.value)} placeholder={t('agendar.observacoesPlaceholder')} />
         </div>
       </div>
 
       {/* rodapé */}
-      <footer className="space-y-2 border-t border-border/40 p-4">
+      <footer className="space-y-2 border-t border-border/40 p-4 pb-[calc(1rem_+_env(safe-area-inset-bottom))]">
         {reagendando ? (
           <ConfirmDialog
-            trigger={<Button className="w-full" disabled={!valido}><CalendarCheck aria-hidden /> Confirmar reagendamento</Button>}
+            trigger={<Button className="w-full" disabled={!valido}><CalendarCheck aria-hidden /> {t('agendar.confirmarReagendamento')}</Button>}
             icon={CalendarCheck}
             tone="primary"
             confirmVariant="default"
-            title="Confirmar o reagendamento?"
-            description={`A entrevista com ${cand} será movida para a nova data e horário selecionados.`}
-            cancelLabel="Voltar"
-            confirmLabel="Sim, reagendar"
+            title={t('agendar.reagendarTitulo')}
+            description={t('agendar.reagendarDescricao', { cand })}
+            cancelLabel={tc('acao.voltar')}
+            confirmLabel={t('agendar.reagendarConfirmar')}
             onConfirm={confirmar}
           />
         ) : (
-          <Button className="w-full" onClick={confirmar} disabled={!valido}><CalendarCheck aria-hidden /> Confirmar agendamento</Button>
+          <Button className="w-full" onClick={confirmar} disabled={!valido}><CalendarCheck aria-hidden /> {t('agendar.confirmarAgendamento')}</Button>
         )}
-        <Button variant="ghost" className="w-full" onClick={onCancelar}>Cancelar</Button>
+        <Button variant="ghost" className="w-full" onClick={onCancelar}>{tc('acao.cancelar')}</Button>
       </footer>
     </>
   )
@@ -447,6 +450,7 @@ export function AgendarEntrevista({ cand, vaga, inicial, onCancelar, onConfirmar
 export function Entrevistas({ onNavigate, brand, mode, onCycleBrand, onToggleMode }: {
   onNavigate: (v: string) => void; brand?: string; mode?: string; onCycleBrand?: () => void; onToggleMode?: () => void
 }) {
+  const { t } = useTranslation('entrevistas')
   const hoje = new Date()
   const [mes, setMes] = useState(() => new Date().getMonth())
   const [ano, setAno] = useState(() => new Date().getFullYear())
@@ -484,35 +488,35 @@ export function Entrevistas({ onNavigate, brand, mode, onCycleBrand, onToggleMod
     setMes(novo.m); setAno(novo.y); setPage(1)
     setAgendar(null); setDetalhe(null)
     const nIntv = novo.entrevistadores?.length ?? 1
-    const via = novo.tipo === 'Online' ? ' · reunião do Teams criada e convite enviado' : ''
-    toast.success(`Entrevista com ${novo.cand} agendada para ${novo.d}/${novo.m + 1} às ${novo.hora} · ${nIntv} entrevistador${nIntv > 1 ? 'es' : ''}${via}.`)
+    const via = novo.tipo === 'Online' ? t('toast.viaTeams') : ''
+    toast.success(t('toast.agendada', { count: nIntv, cand: novo.cand, data: `${novo.d}/${novo.m + 1}`, hora: novo.hora, via }))
   }
 
   return (
-    <AppShell active="entrevistas" crumb="Calendário de entrevistas" onNavigate={handleNav} brand={brand} mode={mode} onCycleBrand={onCycleBrand} onToggleMode={onToggleMode}>
+    <AppShell active="entrevistas" crumb={t('crumb')} onNavigate={handleNav} brand={brand} mode={mode} onCycleBrand={onCycleBrand} onToggleMode={onToggleMode}>
       <PageContainer>
           <PageHeader
             icon={CalendarDays}
-            title="Calendário de entrevistas"
-            desc="Acompanhe as entrevistas agendadas, o que vem a seguir e os candidatos que ainda precisam de horário."
+            title={t('header.title')}
+            desc={t('header.desc')}
           />
 
           {/* calendário */}
-          <section aria-label={`Calendário de ${MESES[mes]} de ${ano}`} className={cn(CARD, 'overflow-hidden')}>
+          <section aria-label={t('calendario.label', { mes: mesLongo(mes), ano })} className={cn(CARD, 'overflow-hidden')}>
             {/* controles: navegação + mês/ano */}
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/50 p-4 sm:p-5">
               <div className="flex items-center gap-1.5">
-                <Button variant="outline" size="icon-sm" aria-label="Mês anterior" onClick={() => mudarMes(-1)}><ChevronLeft aria-hidden /></Button>
-                <h2 className="min-w-[10rem] text-center font-heading text-lg font-bold tracking-tight text-foreground tabular-nums">{MESES[mes]} {ano}</h2>
-                <Button variant="outline" size="icon-sm" aria-label="Próximo mês" onClick={() => mudarMes(1)}><ChevronRight aria-hidden /></Button>
+                <Button variant="outline" size="icon-sm" aria-label={t('calendario.mesAnterior')} onClick={() => mudarMes(-1)}><ChevronLeft aria-hidden /></Button>
+                <h2 className="min-w-[10rem] text-center font-heading text-lg font-bold tracking-tight text-foreground tabular-nums">{mesLongo(mes)} {ano}</h2>
+                <Button variant="outline" size="icon-sm" aria-label={t('calendario.proximoMes')} onClick={() => mudarMes(1)}><ChevronRight aria-hidden /></Button>
               </div>
               <div className="flex items-center gap-2">
                 <Select value={String(mes)} onValueChange={(v) => setMes(Number(v))}>
-                  <SelectTrigger size="sm" aria-label="Mês" className="w-36"><SelectValue /></SelectTrigger>
-                  <SelectContent>{MESES.map((m, i) => <SelectItem key={m} value={String(i)}>{m}</SelectItem>)}</SelectContent>
+                  <SelectTrigger size="sm" aria-label={t('calendario.mes')} className="w-36"><SelectValue /></SelectTrigger>
+                  <SelectContent>{Array.from({ length: 12 }, (_, i) => <SelectItem key={i} value={String(i)}>{mesLongo(i)}</SelectItem>)}</SelectContent>
                 </Select>
                 <Select value={String(ano)} onValueChange={(v) => setAno(Number(v))}>
-                  <SelectTrigger size="sm" aria-label="Ano" className="w-24"><SelectValue /></SelectTrigger>
+                  <SelectTrigger size="sm" aria-label={t('calendario.ano')} className="w-24"><SelectValue /></SelectTrigger>
                   <SelectContent>{ANOS.map((a) => <SelectItem key={a} value={String(a)}>{a}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
@@ -520,7 +524,7 @@ export function Entrevistas({ onNavigate, brand, mode, onCycleBrand, onToggleMod
 
             {/* cabeçalho dos dias da semana */}
             <div className="grid grid-cols-7 border-b border-border/50 bg-muted/30">
-              {SEMANA.map((d) => (
+              {semanaCurta().map((d) => (
                 <div key={d} className="px-2 py-2 text-center ty-caption font-semibold tracking-wide text-muted-foreground uppercase">{d}</div>
               ))}
             </div>
@@ -545,7 +549,7 @@ export function Entrevistas({ onNavigate, brand, mode, onCycleBrand, onToggleMod
                         </div>
                         <div className="space-y-1">
                           {evs.slice(0, 2).map((ev, k) => <EventoChip key={k} ev={ev} onOpen={setDetalhe} />)}
-                          {evs.length > 2 && <MaisDoDia titulo={`${d} de ${MESES[mes]} de ${ano}`} evs={evs} onOpen={setDetalhe} />}
+                          {evs.length > 2 && <MaisDoDia titulo={dataMedia(ano, mes, d)} evs={evs} onOpen={setDetalhe} />}
                         </div>
                       </>
                     )}
@@ -555,17 +559,17 @@ export function Entrevistas({ onNavigate, brand, mode, onCycleBrand, onToggleMod
             </div>
           </section>
 
-          {/* próximas entrevistas + candidatos aguardando — busca própria em cada painel + paginação (10/página) */}
+          {/* próximas entrevistas + candidatos aguardando, busca própria em cada painel + paginação (10/página) */}
           <div className="grid gap-4 lg:grid-cols-2">
-            <Panel icon={CalendarDays} title="Próximas entrevistas" desc={`${proximas.length} em ${MESES[mes]}`}>
+            <Panel icon={CalendarDays} title={t('proximas.title')} desc={t('proximas.desc', { n: proximas.length, mes: mesLongo(mes) })}>
               <div className="relative mb-4">
                 <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
-                <Input value={qProx} onChange={(e) => { setQProx(e.target.value); setPage(1) }} placeholder="Buscar entrevista pelo nome…" aria-label="Buscar entrevista pelo nome do candidato" className="pl-9" />
+                <Input value={qProx} onChange={(e) => { setQProx(e.target.value); setPage(1) }} placeholder={t('proximas.buscar')} aria-label={t('proximas.buscarAria')} className="pl-9" />
               </div>
               {proximas.length === 0 ? (
                 <div className="flex flex-col items-center justify-center gap-2 rounded-xl bg-muted/30 py-12 text-center">
                   <CalendarX2 className="size-7 text-muted-foreground/60" aria-hidden />
-                  <p className="ty-body-sm text-muted-foreground">{qProx.trim() ? 'Nenhuma entrevista encontrada para essa busca.' : 'Nenhuma entrevista agendada neste mês.'}</p>
+                  <p className="ty-body-sm text-muted-foreground">{qProx.trim() ? t('proximas.vaziaBusca') : t('proximas.vazia')}</p>
                 </div>
               ) : (
                 <>
@@ -576,7 +580,7 @@ export function Entrevistas({ onNavigate, brand, mode, onCycleBrand, onToggleMod
                         <button type="button" onClick={() => setDetalhe(ev)} className="flex w-full items-center gap-3 rounded-xl bg-muted/30 p-3 text-left transition-colors hover:bg-muted/50 focus-visible:focus-ring">
                           <div className="flex size-12 shrink-0 flex-col items-center justify-center rounded-lg bg-card text-center shadow-sm ring-1 ring-surface-ring" aria-hidden>
                             <span className="font-heading text-base font-bold leading-none tabular-nums text-foreground">{String(ev.d).padStart(2, '0')}</span>
-                            <span className="ty-caption text-muted-foreground uppercase">{MESES[ev.m].slice(0, 3)}</span>
+                            <span className="ty-caption text-muted-foreground uppercase">{mesAbrev(ev.m)}</span>
                           </div>
                           <div className="min-w-0 flex-1">
                             <p className="truncate ty-body-sm font-medium text-foreground">{ev.cand}</p>
@@ -585,7 +589,7 @@ export function Entrevistas({ onNavigate, brand, mode, onCycleBrand, onToggleMod
                           <div className="flex shrink-0 flex-col items-end gap-1">
                             <span className="flex items-center gap-1 ty-body-sm font-medium tabular-nums text-foreground"><Clock className="size-3.5 text-muted-foreground" aria-hidden /> {ev.hora}</span>
                             <span className="flex items-center gap-1 ty-caption text-muted-foreground">
-                              {ev.tipo === 'Online' ? <Video className="size-3" aria-hidden /> : <MapPin className="size-3" aria-hidden />} {ev.tipo}
+                              {ev.tipo === 'Online' ? <Video className="size-3" aria-hidden /> : <MapPin className="size-3" aria-hidden />} {t(`formato.${ev.tipo}`)}
                             </span>
                           </div>
                         </button>
@@ -599,15 +603,15 @@ export function Entrevistas({ onNavigate, brand, mode, onCycleBrand, onToggleMod
               )}
             </Panel>
 
-            <Panel icon={Inbox} title="Candidatos aguardando agendamento" desc={`${aguardando.length} na fila`}>
+            <Panel icon={Inbox} title={t('fila.title')} desc={t('fila.desc', { n: aguardando.length })}>
               <div className="relative mb-4">
                 <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
-                <Input value={qAgu} onChange={(e) => setQAgu(e.target.value)} placeholder="Buscar candidato pelo nome…" aria-label="Buscar candidato pelo nome" className="pl-9" />
+                <Input value={qAgu} onChange={(e) => setQAgu(e.target.value)} placeholder={t('fila.buscar')} aria-label={t('fila.buscarAria')} className="pl-9" />
               </div>
               {aguardando.length === 0 ? (
                 <div className="flex flex-col items-center justify-center gap-2 rounded-xl bg-muted/30 py-12 text-center">
                   <Inbox className="size-7 text-muted-foreground/60" aria-hidden />
-                  <p className="ty-body-sm text-muted-foreground">{qAgu.trim() ? 'Nenhum candidato encontrado para essa busca.' : 'Nenhum candidato na fila.'}</p>
+                  <p className="ty-body-sm text-muted-foreground">{qAgu.trim() ? t('fila.vaziaBusca') : t('fila.vazia')}</p>
                 </div>
               ) : (
                 <ul className="space-y-2.5">
@@ -616,9 +620,9 @@ export function Entrevistas({ onNavigate, brand, mode, onCycleBrand, onToggleMod
                       <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-secondary/15 ty-body-sm font-semibold text-secondary-text" aria-hidden>{iniciais(c.cand)}</span>
                       <div className="min-w-0 flex-1">
                         <p className="truncate ty-body-sm font-medium text-foreground">{c.cand}</p>
-                        <p className="truncate ty-caption text-muted-foreground">{c.vaga} · aguardando {c.desde}</p>
+                        <p className="truncate ty-caption text-muted-foreground">{t('fila.aguardando', { vaga: c.vaga, desde: c.desde })}</p>
                       </div>
-                      <Button size="sm" variant="outline" className="shrink-0" onClick={() => setAgendar({ cand: c.cand, vaga: c.vaga })}><CalendarPlus aria-hidden /> Agendar</Button>
+                      <Button size="sm" variant="outline" className="shrink-0" onClick={() => setAgendar({ cand: c.cand, vaga: c.vaga })}><CalendarPlus aria-hidden /> {t('fila.agendar')}</Button>
                     </li>
                   ))}
                 </ul>
@@ -627,13 +631,13 @@ export function Entrevistas({ onNavigate, brand, mode, onCycleBrand, onToggleMod
           </div>
         </PageContainer>
 
-        {/* painel lateral — agendar ou ver o detalhe do agendamento (modal lateral) */}
+        {/* painel lateral, agendar ou ver o detalhe do agendamento (modal lateral) */}
         <Sheet open={!!agendar || !!detalhe} onOpenChange={(aberto) => { if (!aberto) { setAgendar(null); setDetalhe(null) } }}>
           <SheetContent side="right" className="w-full gap-0 p-0 sm:max-w-md">
             {agendar ? (
               <>
-                <SheetTitle className="sr-only">{`${agendar.inicial ? 'Reagendar' : 'Agendar'} entrevista com ${agendar.cand}`}</SheetTitle>
-                <SheetDescription className="sr-only">Formulário para definir data, horário, formato e entrevistador.</SheetDescription>
+                <SheetTitle className="sr-only">{agendar.inicial ? t('sheet.tituloReagendar', { cand: agendar.cand }) : t('sheet.tituloAgendar', { cand: agendar.cand })}</SheetTitle>
+                <SheetDescription className="sr-only">{t('sheet.descAgendar')}</SheetDescription>
                 <AgendarEntrevista
                   cand={agendar.cand}
                   vaga={agendar.vaga}
@@ -644,8 +648,8 @@ export function Entrevistas({ onNavigate, brand, mode, onCycleBrand, onToggleMod
               </>
             ) : detalhe ? (
               <>
-                <SheetTitle className="sr-only">{`Agendamento de ${detalhe.cand}`}</SheetTitle>
-                <SheetDescription className="sr-only">Detalhes da entrevista agendada.</SheetDescription>
+                <SheetTitle className="sr-only">{t('sheet.tituloDetalhe', { cand: detalhe.cand })}</SheetTitle>
+                <SheetDescription className="sr-only">{t('sheet.descDetalhe')}</SheetDescription>
                 <AgendamentoDetalhe
                   ev={detalhe}
                   onReagendar={() => { setAgendar({ cand: detalhe.cand, vaga: detalhe.vaga, inicial: detalhe }); setDetalhe(null) }}
@@ -653,7 +657,7 @@ export function Entrevistas({ onNavigate, brand, mode, onCycleBrand, onToggleMod
                     setEventos((prev) => prev.filter((e) => e !== detalhe))
                     setFila((prev) => [{ cand: detalhe.cand, vaga: detalhe.vaga, desde: 'há instantes' }, ...prev])
                     setDetalhe(null)
-                    toast.info(`Entrevista com ${detalhe.cand} cancelada — voltou para a fila.`)
+                    toast.info(t('toast.cancelada', { cand: detalhe.cand }))
                   }}
                 />
               </>

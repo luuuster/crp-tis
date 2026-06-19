@@ -1,0 +1,81 @@
+{
+  "header": {
+    "titulo": "Vagas",
+    "descricao": "Visualize as vagas cadastradas na TalentAI Data API e acompanhe inscritos, aprovados e status. Clique em <0>Abrir vaga</0> para criar uma nova pelo passo a passo."
+  },
+  "kpi": {
+    "regiao": "Indicadores",
+    "abertas": "Vagas abertas",
+    "inscritos": "Total de inscritos",
+    "aprovados": "Aprovados",
+    "emProcesso": "Em processo"
+  },
+  "lista": {
+    "regiao": "Lista de vagas",
+    "titulo": "Lista de vagas",
+    "abrirVaga": "Abrir vaga",
+    "vazio": "Nenhuma vaga encontrada com esses filtros."
+  },
+  "tabela": {
+    "data": "Data",
+    "vaga": "Vaga",
+    "senioridade": "Senioridade",
+    "modelo": "Modelo",
+    "inscritos": "Inscritos",
+    "aprovados": "Aprovados",
+    "status": "Status",
+    "acoes": "Ações"
+  },
+  "filtro": {
+    "data": "Filtrar por data",
+    "senioridade": "Filtrar por senioridade",
+    "modelo": "Filtrar por modelo",
+    "status": "Filtrar por status"
+  },
+  "busca": {
+    "placeholder": "Buscar título…",
+    "aria": "Buscar vaga por título"
+  },
+  "acoes": {
+    "editar": "Editar {{vaga}}",
+    "fechar": "Fechar {{vaga}}"
+  },
+  "fecharDialog": {
+    "titulo": "Fechar vaga?",
+    "descricao": "Tem certeza que deseja fechar <0>{{vaga}}</0>? A vaga deixará de receber candidaturas e passará para o status <1>Fechada</1>.",
+    "confirmar": "Fechar vaga"
+  },
+  "toast": {
+    "fechada": "Vaga \"{{vaga}}\" fechada (demo)."
+  },
+  "detalhe": {
+    "overline": "Vaga",
+    "resultados": "Resultados",
+    "dataAbertura": "Data de abertura",
+    "senioridade": "Senioridade",
+    "modeloAtuacao": "Modelo de atuação",
+    "inscritos": "Inscritos",
+    "aprovados": "Aprovados",
+    "taxaAprovacao": "Taxa de aprovação"
+  },
+  "status": {
+    "Aberta": "Aberta",
+    "Rascunho": "Rascunho",
+    "Em pausa": "Em pausa",
+    "Fechada": "Fechada"
+  },
+  "export": {
+    "arquivo": "vagas",
+    "col": {
+      "data": "Data",
+      "cargo": "Cargo",
+      "senioridade": "Senioridade",
+      "modelo": "Modelo",
+      "cliente": "Cliente",
+      "gestor": "Gestor",
+      "inscritos": "Inscritos",
+      "aprovados": "Aprovados",
+      "status": "Status"
+    }
+  }
+}

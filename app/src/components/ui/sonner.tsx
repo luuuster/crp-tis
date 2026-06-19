@@ -18,7 +18,7 @@ function Toaster(props: ToasterProps) {
   return (
     <Sonner
       className="toaster group"
-      position="top-center"
+      position="bottom-right"
       richColors
       icons={{
         success: <CircleCheckIcon className="size-4" />,

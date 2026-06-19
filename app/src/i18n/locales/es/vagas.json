@@ -1,0 +1,81 @@
+{
+  "header": {
+    "titulo": "Vacantes",
+    "descricao": "Visualiza las vacantes registradas en la TalentAI Data API y haz seguimiento de inscritos, aprobados y estado. Haz clic en <0>Abrir vacante</0> para crear una nueva mediante el paso a paso."
+  },
+  "kpi": {
+    "regiao": "Indicadores",
+    "abertas": "Vacantes abiertas",
+    "inscritos": "Total de inscritos",
+    "aprovados": "Aprobados",
+    "emProcesso": "En proceso"
+  },
+  "lista": {
+    "regiao": "Lista de vacantes",
+    "titulo": "Lista de vacantes",
+    "abrirVaga": "Abrir vacante",
+    "vazio": "No se encontraron vacantes con estos filtros."
+  },
+  "tabela": {
+    "data": "Fecha",
+    "vaga": "Vacante",
+    "senioridade": "Seniority",
+    "modelo": "Modelo",
+    "inscritos": "Inscritos",
+    "aprovados": "Aprobados",
+    "status": "Estado",
+    "acoes": "Acciones"
+  },
+  "filtro": {
+    "data": "Filtrar por fecha",
+    "senioridade": "Filtrar por seniority",
+    "modelo": "Filtrar por modelo",
+    "status": "Filtrar por estado"
+  },
+  "busca": {
+    "placeholder": "Buscar título…",
+    "aria": "Buscar vacante por título"
+  },
+  "acoes": {
+    "editar": "Editar {{vaga}}",
+    "fechar": "Cerrar {{vaga}}"
+  },
+  "fecharDialog": {
+    "titulo": "¿Cerrar vacante?",
+    "descricao": "¿Seguro que quieres cerrar <0>{{vaga}}</0>? La vacante dejará de recibir candidaturas y pasará al estado <1>Cerrada</1>.",
+    "confirmar": "Cerrar vacante"
+  },
+  "toast": {
+    "fechada": "Vacante \"{{vaga}}\" cerrada (demo)."
+  },
+  "detalhe": {
+    "overline": "Vacante",
+    "resultados": "Resultados",
+    "dataAbertura": "Fecha de apertura",
+    "senioridade": "Seniority",
+    "modeloAtuacao": "Modelo de trabajo",
+    "inscritos": "Inscritos",
+    "aprovados": "Aprobados",
+    "taxaAprovacao": "Tasa de aprobación"
+  },
+  "status": {
+    "Aberta": "Abierta",
+    "Rascunho": "Borrador",
+    "Em pausa": "En pausa",
+    "Fechada": "Cerrada"
+  },
+  "export": {
+    "arquivo": "vacantes",
+    "col": {
+      "data": "Fecha",
+      "cargo": "Cargo",
+      "senioridade": "Seniority",
+      "modelo": "Modelo",
+      "cliente": "Cliente",
+      "gestor": "Responsable",
+      "inscritos": "Inscritos",
+      "aprovados": "Aprobados",
+      "status": "Estado"
+    }
+  }
+}

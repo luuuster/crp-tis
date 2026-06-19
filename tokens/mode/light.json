@@ -95,9 +95,9 @@
   "sidebar-accent-foreground": { "$type": "color", "$value": "{color.neutral.900}" },
   "sidebar-border":        { "$type": "color", "$value": "{color.neutral.200}" },
 
-  "link":                  { "$type": "color", "$value": "{primary}", "$description": "Cor de link/texto interativo. Light = primary (legível em superfície clara)." },
+  "link":                  { "$type": "color", "$value": "{brand-primary-text}", "$description": "Cor de link/texto interativo. Light = brand-primary-text (texto-safe da marca; CRP shade 700, MarcaB 800 — verde precisa de tom mais escuro que o fill p/ AA)." },
 
-  "primary-text":          { "$type": "color", "$value": "{primary}", "$description": "Acento PRIMARY usado como TEXTO/ícone nas variantes não-sólidas (outline/ghost/soft/link). Light = primary (shade 700, AA sobre branco e sobre a tinta soft). Padrão mode-aware análogo a link." },
+  "primary-text":          { "$type": "color", "$value": "{brand-primary-text}", "$description": "Acento PRIMARY usado como TEXTO/ícone nas variantes não-sólidas (outline/ghost/soft/link). Light = brand-primary-text: âncora de TEXTO da marca, mais escura que o fill quando preciso (CRP 700 = fill; MarcaB 800 ≠ fill 700, pois o verde-700 reprovava AA sobre a tinta soft)." },
   "secondary-text":        { "$type": "color", "$value": "{secondary}", "$description": "Acento SECONDARY (roxo) como TEXTO/ícone nas variantes não-sólidas. Light = secondary (shade 700, AA sobre branco e soft). Espelha primary-text — antes a intent-secondary reusava secondary-foreground (era cinza)." },
   "destructive-text":      { "$type": "color", "$value": "{color.red.700}", "$description": "Acento DESTRUCTIVE como TEXTO nas variantes não-sólidas. red.700 p/ passar AA sobre branco E sobre a tinta soft (red.600 reprovava na soft)." },
   "warning-text":          { "$type": "color", "$value": "{color.amber.800}", "$description": "Acento WARNING como TEXTO nas variantes não-sólidas. amber é muito claro: precisa shade 800 p/ AA sobre branco e soft (o warning sólido continua amber.500)." },

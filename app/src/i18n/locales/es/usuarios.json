@@ -1,0 +1,119 @@
+{
+  "header": {
+    "title": "Usuarios",
+    "desc": "Gestiona quién tiene acceso al sistema y qué puede hacer cada persona. Invita a nuevos miembros, ajusta funciones y controla el acceso del equipo."
+  },
+  "kpi": {
+    "total": "Total de usuarios",
+    "ativos": "Activos",
+    "pendentes": "Invitaciones pendientes",
+    "admins": "Administradores"
+  },
+  "lista": {
+    "indicadores": "Indicadores",
+    "equipe": "Equipo",
+    "cadastrar": "Registro de usuario",
+    "vazio": "No se encontraron usuarios con estos filtros."
+  },
+  "tabela": {
+    "usuario": "Usuario",
+    "funcao": "Función",
+    "status": "Estado",
+    "ultimoAcesso": "Último acceso",
+    "acoes": "Acciones"
+  },
+  "filtro": {
+    "buscarPlaceholder": "Buscar nombre o correo…",
+    "buscarLabel": "Buscar usuario por nombre o correo",
+    "porFuncao": "Filtrar por función",
+    "porStatus": "Filtrar por estado"
+  },
+  "voce": "tú",
+  "semAcesso": "Sin acceso",
+  "acoes": {
+    "editar": "Editar {{nome}}",
+    "reenviar": "Reenviar invitación a {{nome}}",
+    "reativar": "Reactivar acceso de {{nome}}",
+    "desativar": "Desactivar acceso de {{nome}}"
+  },
+  "funcao": {
+    "Administrador": "Administrador",
+    "Recrutador": "Reclutador",
+    "Gestor": "Gestor"
+  },
+  "funcaoDesc": {
+    "Administrador": "Acceso total: usuarios, configuración y todas las vacantes.",
+    "Recrutador": "Crea y gestiona vacantes, candidatos y entrevistas.",
+    "Gestor": "Da seguimiento a las vacantes y aprueba candidatos de su equipo."
+  },
+  "status": {
+    "Ativo": "Activo",
+    "Convite pendente": "Invitación pendiente",
+    "Inativo": "Inactivo"
+  },
+  "tipoPessoa": {
+    "Pessoa Física": "Persona física",
+    "Pessoa Jurídica": "Persona jurídica"
+  },
+  "sheet": {
+    "overlineEditar": "Editar acceso",
+    "overlineNovo": "Nuevo miembro",
+    "tituloEditar": "Editar usuario",
+    "tituloNovo": "Registro de usuario",
+    "descEditar": "Actualiza los datos y la función de esta persona.",
+    "descNovo": "Completa los datos del nuevo miembro y define su función de acceso.",
+    "nome": "Nombre completo",
+    "nomePlaceholder": "El nombre completo",
+    "email": "Correo electrónico",
+    "emailPlaceholder": "nombre@empresa.com",
+    "emailInvalido": "Introduce un correo válido.",
+    "telefone": "Teléfono",
+    "telefonePlaceholder": "(11) 98765-4321",
+    "tipoPessoa": "Tipo de persona",
+    "doc": {
+      "cpf": "CPF",
+      "cnpj": "CNPJ",
+      "cpfPlaceholder": "000.000.000-00",
+      "cnpjPlaceholder": "00.000.000/0000-00"
+    },
+    "data": {
+      "nascimento": "Fecha de nacimiento",
+      "abertura": "Fecha de constitución",
+      "placeholder": "DD/MM/AAAA"
+    },
+    "funcao": "Función",
+    "salvarAlteracoes": "Guardar cambios",
+    "cadastrarUsuario": "Registrar usuario"
+  },
+  "toast": {
+    "atualizado": "Usuario \"{{nome}}\" actualizado (demo).",
+    "cadastrado": "Usuario \"{{nome}}\" registrado (demo).",
+    "desativado": "Acceso de \"{{nome}}\" desactivado (demo).",
+    "reativado": "Acceso de \"{{nome}}\" reactivado (demo).",
+    "reenviado": "Invitación reenviada a {{email}} (demo)."
+  },
+  "confirmDesativar": {
+    "titulo": "¿Desactivar acceso?",
+    "descPre": "perderá el acceso al sistema y pasará al estado",
+    "descPos": ". Puedes reactivarlo en cualquier momento.",
+    "statusInativo": "Inactivo",
+    "acao": "Desactivar acceso"
+  },
+  "confirmReativar": {
+    "titulo": "¿Reactivar acceso?",
+    "descPre": "volverá a tener acceso al sistema y pasará al estado",
+    "descPos": ".",
+    "statusAtivo": "Activo",
+    "acao": "Reactivar acceso"
+  },
+  "export": {
+    "arquivo": "usuarios",
+    "col": {
+      "nome": "Nombre",
+      "email": "Correo electrónico",
+      "funcao": "Función",
+      "status": "Estado",
+      "ultimoAcesso": "Último acceso"
+    }
+  }
+}

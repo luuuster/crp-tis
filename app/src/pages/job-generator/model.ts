@@ -14,6 +14,7 @@ import {
   Wallet,
 } from 'lucide-react'
 import type { ComponentType } from 'react'
+import type { TFunction } from 'i18next'
 import type { Briefing, Perfil, Tom } from '@/lib/vaga'
 
 /* ────────────────────────────── dados estáticos ────────────────────────────── */
@@ -44,18 +45,20 @@ export const BRIEFING_INICIAL: Briefing = {
   cliente: 'TIS Talent AI Platform', gestor: 'Carlos Mendes',
   desafio: 'Estamos expandindo o time de engenharia do TIS Talent AI Platform para sustentar o crescimento da plataforma.',
   objetivo: 'Ampliar a capacidade de entrega de soluções backend de alta performance, garantindo escalabilidade e qualidade nas integrações da plataforma.',
-  local: 'São Paulo — SP', horario: '', carga: '', motivo: 'Aumento do quadro', quantidade: 1,
+  local: 'São Paulo, SP', horario: '', carga: '', motivo: 'Aumento do quadro', quantidade: 1,
   budget: '', modalidade: 'CLT', beneficios: ['Vale-refeição', 'Plano de saúde', 'Auxílio home-office', 'Day-off aniversário'],
   processoSeletivo: ['Entrevista comportamental', 'Entrevista técnica', 'Entrevista com RH'],
 }
 
-/* seções do briefing: ícone + campos (p/ status reativo conforme o usuário preenche) */
+/* seções do briefing: ícone + campos (p/ status reativo conforme o usuário preenche).
+ * `key` = identificador estável p/ a tradução (sections.<key> no namespace 'gerador'); title/desc
+ * ficam como fallback pt-BR (a UI exibe via t()). */
 export const SECTIONS = [
-  { icon: Building2, title: 'Identidade da vaga', desc: 'Como essa posição se posiciona dentro da organização.', fields: ['cargo', 'nivel', 'modelo', 'cliente', 'gestor'] as (keyof Briefing)[] },
-  { icon: Rocket, title: 'Sobre a vaga', desc: 'O contexto do desafio e o objetivo da contratação — a abertura da descrição.', fields: ['desafio', 'objetivo'] as (keyof Briefing)[] },
-  { icon: CalendarClock, title: 'Operação & rotina', desc: 'Onde, quando e em que ritmo essa pessoa vai trabalhar.', fields: ['local', 'horario', 'carga', 'motivo', 'quantidade'] as (keyof Briefing)[] },
-  { icon: Wallet, title: 'Investimento', desc: 'A faixa salarial e benefícios que tornam essa vaga competitiva.', fields: ['budget', 'modalidade', 'beneficios'] as (keyof Briefing)[] },
-  { icon: ListChecks, title: 'Processo seletivo', desc: 'As etapas da seleção, na ordem — o que quem se candidata vai enfrentar.', fields: ['processoSeletivo'] as (keyof Briefing)[] },
+  { key: 'identidade', icon: Building2, title: 'Identidade da vaga', desc: 'Como essa posição se posiciona dentro da organização.', fields: ['cargo', 'nivel', 'modelo', 'cliente', 'gestor'] as (keyof Briefing)[] },
+  { key: 'sobre', icon: Rocket, title: 'Sobre a vaga', desc: 'O contexto do desafio e o objetivo da contratação, a abertura da descrição.', fields: ['desafio', 'objetivo'] as (keyof Briefing)[] },
+  { key: 'operacao', icon: CalendarClock, title: 'Operação & rotina', desc: 'Onde, quando e em que ritmo essa pessoa vai trabalhar.', fields: ['local', 'horario', 'carga', 'motivo', 'quantidade'] as (keyof Briefing)[] },
+  { key: 'investimento', icon: Wallet, title: 'Investimento', desc: 'A faixa salarial e benefícios que tornam essa vaga competitiva.', fields: ['budget', 'modalidade', 'beneficios'] as (keyof Briefing)[] },
+  { key: 'processo', icon: ListChecks, title: 'Processo seletivo', desc: 'As etapas da seleção, na ordem, o que quem se candidata vai enfrentar.', fields: ['processoSeletivo'] as (keyof Briefing)[] },
 ] as const
 
 export const isFilledVal = (v: unknown) =>
@@ -86,11 +89,11 @@ export const PERFIL_INICIAL: Perfil = {
 }
 
 // `optional` = seção que NÃO entra no readiness (Diferenciais) — mostra "Opcional" no StatusPill.
-export type PerfilSection = { icon: ComponentType<{ className?: string }>; title: string; desc: string; fields: (keyof Perfil)[]; optional?: boolean }
+export type PerfilSection = { key: string; icon: ComponentType<{ className?: string }>; title: string; desc: string; fields: (keyof Perfil)[]; optional?: boolean }
 export const PERFIL_SECTIONS: PerfilSection[] = [
-  { icon: Code2, title: 'Requisitos técnicos', desc: 'O que essa pessoa precisa dominar logo de cara.', fields: ['formacao', 'experiencia', 'stackObrigatoria'] },
-  { icon: Star, title: 'Diferenciais', desc: 'Conhecimentos que pesam positivamente, mas não são bloqueantes.', fields: ['conhecimentosDesejaveis'], optional: true },
-  { icon: AlignLeft, title: 'Responsabilidades & perfil', desc: 'O dia a dia da posição e o tipo de pessoa que você procura.', fields: ['responsabilidades', 'justificativa'] },
+  { key: 'requisitos', icon: Code2, title: 'Requisitos técnicos', desc: 'O que essa pessoa precisa dominar logo de cara.', fields: ['formacao', 'experiencia', 'stackObrigatoria'] },
+  { key: 'diferenciais', icon: Star, title: 'Diferenciais', desc: 'Conhecimentos que pesam positivamente, mas não são bloqueantes.', fields: ['conhecimentosDesejaveis'], optional: true },
+  { key: 'responsabilidades', icon: AlignLeft, title: 'Responsabilidades & perfil', desc: 'O dia a dia da posição e o tipo de pessoa que você procura.', fields: ['responsabilidades', 'justificativa'] },
 ]
 
 /* ───────── etapa 3 · descrição gerada por IA ───────── */
@@ -107,7 +110,7 @@ export function melhorarDesafio(d: Briefing): string {
   return `O ${d.cliente} está em plena expansão e busca reforço técnico para sustentar o próximo ciclo de crescimento. É a chance de construir junto: novas integrações, mais escala e decisões de arquitetura que vão moldar a evolução da plataforma.`
 }
 export function melhorarObjetivo(_d: Briefing, p: Perfil): string {
-  return `Elevar a capacidade de entrega de soluções backend${p.stackObrigatoria[0] ? ` em ${p.stackObrigatoria[0]}` : ''}, garantindo escalabilidade, segurança e alta performance — com impacto direto na qualidade das integrações e na experiência de quem usa a plataforma.`
+  return `Elevar a capacidade de entrega de soluções backend${p.stackObrigatoria[0] ? ` em ${p.stackObrigatoria[0]}` : ''}, garantindo escalabilidade, segurança e alta performance, com impacto direto na qualidade das integrações e na experiência de quem usa a plataforma.`
 }
 
 
@@ -153,28 +156,41 @@ export function buildPostText(d: Briefing, p: Perfil, desc: import('@/lib/vaga')
   L.push('🚀 SOBRE O DESAFIO')
   if (d.desafio?.trim()) L.push(d.desafio.trim())
   if (d.objetivo?.trim()) L.push(`OBJETIVO: ${d.objetivo.trim()}`)
-  L.push('', '— O QUE VOCÊ VAI FAZER', ...desc.responsabilidades.map((r) => `• ${r}`))
-  L.push('', '— O QUE BUSCAMOS')
+  L.push('', 'O QUE VOCÊ VAI FAZER', ...desc.responsabilidades.map((r) => `• ${r}`))
+  L.push('', 'O QUE BUSCAMOS')
   if (p.formacao.trim()) L.push(`✅ FORMAÇÃO: ${p.formacao.trim()}`)
   if (p.experiencia.trim()) L.push(`✅ EXPERIÊNCIA: ${p.experiencia.trim()}`)
   if (p.stackObrigatoria.length) L.push(`✅ STACK TÉCNICA: ${p.stackObrigatoria.join(', ')}`)
-  if (p.conhecimentosDesejaveis.length) L.push('', '— DIFERENCIAIS', p.conhecimentosDesejaveis.join(', '))
-  if (p.habilidades.length) L.push('', '— PERFIL COMPORTAMENTAL', `Buscamos alguém com ${p.habilidades.join(', ')}.`)
-  L.push('', '— REMUNERAÇÃO E CONDIÇÕES')
+  if (p.conhecimentosDesejaveis.length) L.push('', 'DIFERENCIAIS', p.conhecimentosDesejaveis.join(', '))
+  if (p.habilidades.length) L.push('', 'PERFIL COMPORTAMENTAL', `Buscamos alguém com ${p.habilidades.join(', ')}.`)
+  L.push('', 'REMUNERAÇÃO E CONDIÇÕES')
   if (d.budget) L.push(`Orçamento: ${d.budget}`)
   if (d.carga) L.push(`Regime: ${d.carga}`)
-  if (d.processoSeletivo.length) L.push('', '— PROCESSO SELETIVO', d.processoSeletivo.map((e, i) => `${i + 1}. ${e}`).join('; '))
+  if (d.processoSeletivo.length) L.push('', 'PROCESSO SELETIVO', d.processoSeletivo.map((e, i) => `${i + 1}. ${e}`).join('; '))
   L.push('', 'Link:', CANDIDATE_LINK)
   return L.join('\n')
 }
 
 /* ────────────────────────────── tipos auxiliares de UI ────────────────────────────── */
 
-export type SectionMeta = { icon: ComponentType<{ className?: string }>; title: string; desc: string }
+export type SectionMeta = { key: string; icon: ComponentType<{ className?: string }>; title: string; desc: string }
 
 export type Msg = { id: number; role: 'user' | 'assistant'; text: string; at: number }
 
-export function formatAgo(at: number) {
+// Tempo relativo CRU (módulo → fora do escopo de pureza de render): a UI traduz o rótulo via i18n.
+// `unit` escolhe a chave (segundos/minutos) e `value` é o número a interpolar.
+export function relativeAgo(at: number): { unit: 'segundos' | 'minutos'; value: number } {
   const s = Math.max(0, Math.round((Date.now() - at) / 1000))
-  return s < 60 ? `Há ${s}s` : `Há ${Math.round(s / 60)}min`
+  return s < 60 ? { unit: 'segundos', value: s } : { unit: 'minutos', value: Math.round(s / 60) }
 }
+
+/* ───────── tradução só da EXIBIÇÃO das opções ─────────
+ * O VALOR canônico pt-BR permanece no estado do form, no buildDesc e no post (a vaga GERADA é conteúdo
+ * pt-BR). Só o rótulo que o recrutador VÊ no picker é traduzido (lookup `opcoes.<grupo>.<valor>`); o
+ * `defaultValue` garante o fallback ao canônico se faltar chave. Grupos de palavras comuns — stack
+ * técnica, horários e quantidades ficam como estão (nomes próprios/formato, não se traduzem). */
+// 'tech' cobre os pools de stack/conhecimentos: traduz só os TERMOS GENÉRICOS (ex.: "Observabilidade");
+// nomes próprios (Python, Kubernetes…) e itens digitados à mão caem no fallback canônico via defaultValue.
+export type OptGroup = 'cargo' | 'nivel' | 'modelo' | 'carga' | 'motivo' | 'modalidade' | 'beneficio' | 'processo' | 'exigencia' | 'habilidade' | 'tech'
+export const optLabeler = (t: TFunction<'gerador'>, group: OptGroup) => (value: string) =>
+  t(`opcoes.${group}.${value}` as 'opcoes.nivel.Pleno', { defaultValue: value })

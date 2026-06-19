@@ -1,0 +1,165 @@
+{
+  "crumbBanco": "Talent pool",
+  "charlie": {
+    "abrir": "Talk to Charlie",
+    "sheetTitulo": "Charlie, talent copilot",
+    "sheetDescricao": "Pick a role and Charlie ranks the talent pool by fit.",
+    "copiloto": "COPILOT",
+    "ativo": "ACTIVE",
+    "intro": "Tell me which role you want to fill and I'll find the best matches in the pool.",
+    "vagaLabel": "Role to fill",
+    "senLabel": "Seniority",
+    "ctxLabel": "Requirements or context",
+    "opcional": "(optional)",
+    "ctxPlaceholder": "e.g. strong in React and AWS, product-minded, advanced English…",
+    "melhores": "Best matches",
+    "contador": "{{mostrados}} of {{total}}",
+    "verPerfil": "View profile",
+    "rodape": "Charlie's suggestions come from the talent pool. Always review before deciding.",
+    "fala": {
+      "alta": "I found candidates with a strong fit for {{vaga}}, {{nome}} leads with {{pct}}%.",
+      "media": "I found some reasonable options for {{vaga}}. Worth reviewing the profiles below.",
+      "baixa": "Low fit in the pool for {{vaga}}, consider opening the role or revising the requirements."
+    }
+  },
+  "header": {
+    "titulo": "Talent pool",
+    "descricao": "See every candidate and which stage each one is in. Click a candidate to view their full history, how many processes they've taken part in and how each one went."
+  },
+  "kpi": {
+    "total": "Total candidates",
+    "emEntrevista": "In interview",
+    "entrevistados": "Interviewed",
+    "contratados": "Hired"
+  },
+  "aria": {
+    "indicadores": "Indicators"
+  },
+  "lista": {
+    "titulo": "Candidates"
+  },
+  "tabela": {
+    "candidato": "Candidate",
+    "vaga": "Role of interest",
+    "senioridade": "Seniority",
+    "pontuacao": "Score",
+    "etapa": "Stage",
+    "atualizado": "Updated"
+  },
+  "busca": {
+    "placeholder": "Search by name or email…",
+    "aria": "Search candidate by name or email"
+  },
+  "filtro": {
+    "vaga": "Filter by role",
+    "senioridade": "Filter by seniority",
+    "etapa": "Filter by stage"
+  },
+  "vazio": "No candidates found with these filters.",
+  "export": {
+    "arquivo": "talent-pool",
+    "col": {
+      "nome": "Name",
+      "email": "Email",
+      "vaga": "Role of interest",
+      "senioridade": "Seniority",
+      "etapa": "Stage",
+      "score": "Score"
+    }
+  },
+  "perfil": {
+    "voltar": "Back to the pool",
+    "verCurriculo": "View latest résumé",
+    "toastCurriculo": "{{nome}}'s latest résumé (demo).",
+    "overline": "Candidate profile",
+    "ariaResumo": "History summary",
+    "kpi": {
+      "processos": "Processes taken part in",
+      "emAndamento": "In progress",
+      "contratacoes": "Hires",
+      "melhorFase": "Best stage reached"
+    },
+    "fase": "Stage {{n}}",
+    "processosTitulo": "Selection processes",
+    "processosDesc": "{{count}} process(es), click to see the stage-by-stage analysis.",
+    "chegouA": "Reached",
+    "faseDeAplicou": "stage {{atual}} of {{total}}",
+    "aplicou": "applied {{data}}",
+    "verAnalise": "View analysis"
+  },
+  "proc": {
+    "crumbBanco": "Talent pool",
+    "voltar": "Back to profile",
+    "overline": "Selection process",
+    "aplicou": "Applied {{data}}",
+    "progresso": "Funnel progress",
+    "faseDe": "Stage {{atual}} of {{total}}",
+    "vagaCandidato": {
+      "titulo": "The role × the candidate",
+      "desc": "What the position required and how far the candidate got."
+    },
+    "aderencia": "Fit with the role profile",
+    "vagaPedia": "The role required",
+    "expExigida": "Experience required",
+    "requisitos": "Role requirements",
+    "atendido": "Met: ",
+    "naoAtendido": "Not met: ",
+    "obrigatorio": "Required",
+    "desejavel": "Preferred",
+    "etapas": {
+      "titulo": "Process stages",
+      "desc": "Click a stage to see, in detail, how the candidate did in it.",
+      "aria": "Process stages: stage {{atual}} of {{total}}"
+    },
+    "etapaN": "Stage {{n}}: ",
+    "etapaDe": "Stage {{atual}} of {{total}}",
+    "conversa": {
+      "rh": "What was discussed",
+      "gestor": "Questions for the candidate"
+    },
+    "desafio": "The challenge",
+    "desafioCampo": {
+      "enunciado": "Brief",
+      "entrega": "Submission",
+      "observacao": "Reviewer's note"
+    },
+    "criterios": "Assessment by criterion",
+    "destaques": "Highlights",
+    "atencao": "Points of attention",
+    "iaReprovado": "Rejected",
+    "iaAprovado": "Bot approved",
+    "reprovacao": {
+      "titulo": "Why they were rejected",
+      "motivos": "Reasons for rejection",
+      "positivos": "Positive points",
+      "recomendacao": "Recommendation",
+      "avaliadoPor": "Assessed by"
+    }
+  },
+  "etapa": {
+    "Triagem": "Screening",
+    "Em entrevista": "In interview",
+    "Entrevistado": "Interviewed",
+    "Contratado": "Hired",
+    "Banco de talentos": "Talent pool",
+    "Reprovado": "Rejected"
+  },
+  "senioridade": {
+    "Júnior": "Junior",
+    "Pleno": "Mid-level",
+    "Pleno/Sênior": "Mid/Senior",
+    "Sênior": "Senior",
+    "Qualquer": "Any"
+  },
+  "statusProc": {
+    "Em andamento": "In progress",
+    "Contratado": "Hired",
+    "Reprovado": "Rejected"
+  },
+  "resultadoFase": {
+    "aprovado": "Approved",
+    "reprovado": "Rejected",
+    "em andamento": "In progress",
+    "pendente": "Pending"
+  }
+}

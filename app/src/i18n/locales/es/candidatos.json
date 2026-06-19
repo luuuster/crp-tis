@@ -1,0 +1,165 @@
+{
+  "crumbBanco": "Banco de talentos",
+  "charlie": {
+    "abrir": "Hablar con Charlie",
+    "sheetTitulo": "Charlie, copiloto de talentos",
+    "sheetDescricao": "Elige la vacante y Charlie clasifica a los candidatos del banco por afinidad.",
+    "copiloto": "COPILOTO",
+    "ativo": "ACTIVO",
+    "intro": "Dime qué vacante quieres cubrir y encontraré, en el banco, a quien mejor encaja.",
+    "vagaLabel": "Vacante a cubrir",
+    "senLabel": "Seniority",
+    "ctxLabel": "Requisitos o contexto",
+    "opcional": "(opcional)",
+    "ctxPlaceholder": "Ej.: sólido en React y AWS, perfil de producto, inglés avanzado…",
+    "melhores": "Mejores coincidencias",
+    "contador": "{{mostrados}} de {{total}}",
+    "verPerfil": "Ver perfil",
+    "rodape": "Las sugerencias de Charlie parten del banco de talentos. Revisa siempre antes de decidir.",
+    "fala": {
+      "alta": "Encontré candidatos con fuerte afinidad para {{vaga}}, {{nome}} lidera con {{pct}}%.",
+      "media": "Encontré opciones razonables para {{vaga}}. Conviene revisar los perfiles de abajo.",
+      "baixa": "Baja afinidad en el banco para {{vaga}}, considera abrir la vacante o revisar los requisitos."
+    }
+  },
+  "header": {
+    "titulo": "Banco de talentos",
+    "descricao": "Mira a todos los candidatos y en qué etapa está cada uno. Haz clic en un candidato para ver su historial completo: cuántos procesos ha participado y cómo le fue en cada uno."
+  },
+  "kpi": {
+    "total": "Total de candidatos",
+    "emEntrevista": "En entrevista",
+    "entrevistados": "Entrevistados",
+    "contratados": "Contratados"
+  },
+  "aria": {
+    "indicadores": "Indicadores"
+  },
+  "lista": {
+    "titulo": "Candidatos"
+  },
+  "tabela": {
+    "candidato": "Candidato",
+    "vaga": "Vacante de interés",
+    "senioridade": "Seniority",
+    "pontuacao": "Puntuación",
+    "etapa": "Etapa",
+    "atualizado": "Actualizado"
+  },
+  "busca": {
+    "placeholder": "Buscar por nombre o correo…",
+    "aria": "Buscar candidato por nombre o correo"
+  },
+  "filtro": {
+    "vaga": "Filtrar por vacante",
+    "senioridade": "Filtrar por seniority",
+    "etapa": "Filtrar por etapa"
+  },
+  "vazio": "No se encontraron candidatos con estos filtros.",
+  "export": {
+    "arquivo": "banco-de-talentos",
+    "col": {
+      "nome": "Nombre",
+      "email": "Correo",
+      "vaga": "Vacante de interés",
+      "senioridade": "Seniority",
+      "etapa": "Etapa",
+      "score": "Puntuación"
+    }
+  },
+  "perfil": {
+    "voltar": "Volver al banco",
+    "verCurriculo": "Ver último currículum",
+    "toastCurriculo": "Último currículum de {{nome}} (demo).",
+    "overline": "Perfil del candidato",
+    "ariaResumo": "Resumen del historial",
+    "kpi": {
+      "processos": "Procesos participados",
+      "emAndamento": "En curso",
+      "contratacoes": "Contrataciones",
+      "melhorFase": "Mejor etapa alcanzada"
+    },
+    "fase": "Etapa {{n}}",
+    "processosTitulo": "Procesos de selección",
+    "processosDesc": "{{count}} proceso(s), haz clic para ver el análisis etapa por etapa.",
+    "chegouA": "Llegó a la",
+    "faseDeAplicou": "etapa {{atual}} de {{total}}",
+    "aplicou": "se postuló {{data}}",
+    "verAnalise": "Ver análisis"
+  },
+  "proc": {
+    "crumbBanco": "Banco de talentos",
+    "voltar": "Volver al perfil",
+    "overline": "Proceso de selección",
+    "aplicou": "Se postuló {{data}}",
+    "progresso": "Progreso en el embudo",
+    "faseDe": "Etapa {{atual}} de {{total}}",
+    "vagaCandidato": {
+      "titulo": "La vacante × el candidato",
+      "desc": "Lo que la posición exigía y hasta dónde llegó el candidato."
+    },
+    "aderencia": "Afinidad con el perfil de la vacante",
+    "vagaPedia": "La vacante pedía",
+    "expExigida": "Experiencia exigida",
+    "requisitos": "Requisitos de la vacante",
+    "atendido": "Cumplido: ",
+    "naoAtendido": "No cumplido: ",
+    "obrigatorio": "Obligatorio",
+    "desejavel": "Deseable",
+    "etapas": {
+      "titulo": "Etapas del proceso",
+      "desc": "Haz clic en una etapa para ver, en detalle, cómo le fue al candidato en ella.",
+      "aria": "Etapas del proceso: etapa {{atual}} de {{total}}"
+    },
+    "etapaN": "Etapa {{n}}: ",
+    "etapaDe": "Etapa {{atual}} de {{total}}",
+    "conversa": {
+      "rh": "Lo que se conversó",
+      "gestor": "Preguntas al candidato"
+    },
+    "desafio": "El desafío",
+    "desafioCampo": {
+      "enunciado": "Enunciado",
+      "entrega": "Entrega",
+      "observacao": "Observación del evaluador"
+    },
+    "criterios": "Evaluación por criterio",
+    "destaques": "Destacados",
+    "atencao": "Puntos de atención",
+    "iaReprovado": "Rechazado",
+    "iaAprovado": "Aprobado por bot",
+    "reprovacao": {
+      "titulo": "Por qué fue rechazado",
+      "motivos": "Motivos del rechazo",
+      "positivos": "Puntos positivos",
+      "recomendacao": "Recomendación",
+      "avaliadoPor": "Evaluado por"
+    }
+  },
+  "etapa": {
+    "Triagem": "Cribado",
+    "Em entrevista": "En entrevista",
+    "Entrevistado": "Entrevistado",
+    "Contratado": "Contratado",
+    "Banco de talentos": "Banco de talentos",
+    "Reprovado": "Rechazado"
+  },
+  "senioridade": {
+    "Júnior": "Júnior",
+    "Pleno": "Semisénior",
+    "Pleno/Sênior": "Semisénior/Sénior",
+    "Sênior": "Sénior",
+    "Qualquer": "Cualquiera"
+  },
+  "statusProc": {
+    "Em andamento": "En curso",
+    "Contratado": "Contratado",
+    "Reprovado": "Rechazado"
+  },
+  "resultadoFase": {
+    "aprovado": "Aprobado",
+    "reprovado": "Rechazado",
+    "em andamento": "En curso",
+    "pendente": "Pendiente"
+  }
+}

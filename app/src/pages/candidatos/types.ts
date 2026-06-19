@@ -74,7 +74,7 @@ export const MOTIVO_REPROVA = [
   'Pouca experiência prática nas tecnologias obrigatórias.',
 ]
 export const STATUS_ANDAMENTO = [
-  'Entrevista agendada — aguardando realização.',
+  'Entrevista agendada, aguardando realização.',
   'Aguardando feedback do gestor.',
   'Em análise pela equipe de recrutamento.',
 ]
@@ -115,7 +115,7 @@ export const RECOMENDACOES = [
   'Manter no banco de talentos e reavaliar em processos futuros (~6 meses).',
   'Indicado para vaga de senioridade inferior, com melhor aderência ao perfil.',
   'Revisitar após ganhar mais experiência prática nas tecnologias da vaga.',
-  'Bom potencial — considerar para outras posições em aberto.',
+  'Bom potencial, considerar para outras posições em aberto.',
 ]
 export const AVALIADORES = ['Carlos Mendes · Gestor', 'Marina Albuquerque · RH', 'Rafael Tavares · Tech Lead', 'Beatriz Nunes · Recrutadora']
 
@@ -124,23 +124,23 @@ export const AVALIADORES = ['Carlos Mendes · Gestor', 'Marina Albuquerque · RH
 export const RESUMO_FASE: Record<number, { ok: string; ko: string; and: string }> = {
   1: {
     ok: 'A IA leu o currículo e cruzou com os requisitos da vaga. A aderência ficou acima do corte e o candidato foi liberado para a etapa seguinte.',
-    ko: 'A IA leu o currículo e cruzou com os requisitos da vaga, mas a aderência ficou abaixo do corte — o candidato não avançou automaticamente.',
+    ko: 'A IA leu o currículo e cruzou com os requisitos da vaga, mas a aderência ficou abaixo do corte, o candidato não avançou automaticamente.',
     and: 'A IA está processando o currículo e cruzando com os requisitos da vaga.',
   },
   2: {
-    ok: 'Conversa inicial de RH para entender trajetória, motivação e expectativas. Avaliação positiva — seguiu para a etapa técnica.',
+    ok: 'Conversa inicial de RH para entender trajetória, motivação e expectativas. Avaliação positiva, seguiu para a etapa técnica.',
     ko: 'Conversa inicial de RH para entender trajetória, motivação e expectativas. A aderência ficou abaixo do esperado nesta etapa.',
-    and: 'Entrevista de RH agendada — aguardando realização e registro do feedback.',
+    and: 'Entrevista de RH agendada, aguardando realização e registro do feedback.',
   },
   3: {
     ok: 'Desafio técnico para avaliar a forma de resolver problemas e a qualidade do código. Resultado acima do corte exigido.',
     ko: 'Desafio técnico para avaliar a forma de resolver problemas e a qualidade do código. Resultado abaixo do corte exigido.',
-    and: 'Teste técnico enviado — aguardando a entrega do candidato.',
+    and: 'Teste técnico enviado, aguardando a entrega do candidato.',
   },
   4: {
     ok: 'Entrevista com o gestor da vaga sobre cenários reais, arquitetura e fit com o time. Avaliação positiva.',
     ko: 'Entrevista com o gestor da vaga sobre cenários reais, arquitetura e fit com o time. Não atingiu o nível esperado.',
-    and: 'Entrevista com o gestor agendada — aguardando realização.',
+    and: 'Entrevista com o gestor agendada, aguardando realização.',
   },
   5: {
     ok: 'Apresentação e negociação da proposta. Condições acordadas entre as partes.',

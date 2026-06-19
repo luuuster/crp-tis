@@ -1,14 +1,13 @@
 import { test, expect, type Page } from '@playwright/test'
 import { contrastOnStack, aaThreshold } from './wcag'
 import { login, gotoRegister, setTheme, gotoMenu, abrirVaga, type Brand, type Mode } from './helpers'
+import { BRANDS, MODES } from './themes'
 
 // AUDITORIA DE CONTRASTE por PIXEL REAL (WCAG 1.4.3): para cada texto VISÍVEL, mede a cor renderizada
 // vs o fundo composto (camada a camada, com alpha) e exige AA (4.5:1 normal / 3:1 grande). Usa culori
 // (o axe erra OKLCH). É o guard-rail que torna "conferi no olho" um GATE — nos 4 temas.
 // Exclui o que o WCAG dispensa: desabilitado, sr-only, e SVG/charts (fill, não color).
 
-const BRANDS: Brand[] = ['crp', 'marca-b']
-const MODES: Mode[] = ['light', 'dark']
 
 // setTheme ANTES de navegar p/ a aba: o Gerador é full-screen e cobre os toggles flutuantes de tema.
 // Os toggles de marca/tema são GLOBAIS (App.tsx) — existem no Login E no Cadastro.
@@ -28,6 +27,13 @@ const SURFACES: { name: string; go: (p: Page, b: Brand, m: Mode) => Promise<void
     await expect(p.getByText('Template aplicado automaticamente.')).toBeVisible()
   } },
   { name: 'Componentes', go: async (p, b, m) => { await login(p); await setTheme(p, b, m); await gotoMenu(p, 'Componentes') } },
+  // Overlay aberto na vitrine: mede o texto sobre a superfície --popover/--popover-foreground
+  // (que o scan fechado de "Componentes" não alcança — o conteúdo é portaled e só monta ao abrir).
+  { name: 'Componentes-Popover', go: async (p, b, m) => {
+    await login(p); await setTheme(p, b, m); await gotoMenu(p, 'Componentes')
+    await p.getByRole('button', { name: 'Abrir popover' }).click()
+    await expect(p.getByText('Dimensões')).toBeVisible()
+  } },
   // Charlie do Gerador é um painel-irmão (flex, não overlay): abri-lo audita o wizard + o drawer juntos.
   { name: 'Charlie-Gerador', go: async (p, b, m) => {
     await login(p); await setTheme(p, b, m); await gotoMenu(p, 'Vagas'); await abrirVaga(p)

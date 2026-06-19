@@ -1,0 +1,34 @@
+{
+  "principal": "Main navigation",
+  "trilha": "Workspace",
+  "grupo": { "workspace": "Workspace", "sistema": "System" },
+  "item": {
+    "dashboard": "Dashboard",
+    "gerador": "Jobs",
+    "entrevistas-ia": "AI Interviews",
+    "entrevistas": "Interview calendar",
+    "candidatos": "Talent pool",
+    "usuarios": "Users",
+    "componentes": "Components"
+  },
+  "menu": {
+    "abrir": "Open menu",
+    "fechar": "Close menu",
+    "recolher": "Collapse menu",
+    "expandir": "Expand menu",
+    "descricao": "Access the workspace areas."
+  },
+  "demoToast": "\"{{item}}\" is not part of this demo.",
+  "conta": {
+    "label": "Your account",
+    "minha": "My account",
+    "contaDemo": "Account (demo).",
+    "sair": "Sign out"
+  },
+  "sairConfirm": {
+    "titulo": "Sign out?",
+    "descricao": "You will be signed out. Unsaved changes will be lost.",
+    "voltar": "Back",
+    "sair": "Sign out"
+  }
+}

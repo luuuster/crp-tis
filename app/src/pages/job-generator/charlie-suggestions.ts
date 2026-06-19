@@ -29,7 +29,7 @@ export function suggestionsFor(step: number): Suggestion[] {
           const faixas: Record<string, string> = { 'Estágio': 'R$ 1.800 – R$ 2.500', 'Júnior': 'R$ 4.000 – R$ 6.500', 'Pleno': 'R$ 9.000 – R$ 13.000', 'Sênior': 'R$ 14.000 – R$ 19.000', 'Especialista': 'R$ 16.000 – R$ 22.000', 'Liderança': 'R$ 20.000 – R$ 28.000' }
           const faixa = faixas[data.nivel] ?? 'R$ 9.000 – R$ 13.000'
           set('budget', faixa)
-          return `Para ${data.cargo} ${data.nivel} em ${data.local} (${data.modelo}), o mercado fica em torno de ${faixa}. Já preenchi o Budget — ajuste à vontade.`
+          return `Para ${data.cargo} ${data.nivel} em ${data.local} (${data.modelo}), o mercado fica em torno de ${faixa}. Já preenchi o Budget, ajuste à vontade.`
         } },
         { icon: Wallet, label: 'Recomendar benefícios', run: ({ data, set }) => {
           const sugeridos = ['Plano de saúde', 'Vale-refeição', 'Auxílio home-office', 'Gympass', 'Bônus anual']
@@ -43,7 +43,7 @@ export function suggestionsFor(step: number): Suggestion[] {
           const faltando = SECTIONS.flatMap((s) => s.fields).filter((k) => !isFilledVal(data[k])).length
           return faltando === 0
             ? `Briefing completo: ${data.cargo} ${data.nivel} · ${data.modelo} · ${data.local} · ${data.modalidade}. Pode avançar para o Perfil. 👍`
-            : `Briefing quase pronto — ${faltando} campo(s) ainda em branco${data.budget ? '' : ', incluindo o Budget'}. Quer que eu sugira a faixa salarial?`
+            : `Resumo quase pronto, ${faltando} campo(s) ainda em branco${data.budget ? '' : ', incluindo o Budget'}. Quer que eu sugira a faixa salarial?`
         } },
       ]
     case 2:
@@ -67,13 +67,13 @@ export function suggestionsFor(step: number): Suggestion[] {
     case 3:
       return [
         { icon: AlignLeft, label: 'Resumir em um parágrafo', run: ({ data }) => `Resumo: vaga de ${data.cargo} ${data.nivel}, modelo ${data.modelo}, em ${data.local}, com foco em entregar valor ao projeto ${data.cliente}.` },
-        { icon: Smile, label: 'Ajustar o tom da vaga', run: () => 'Use os botões Equilibrado / Descontraído / Formal acima da descrição — eu reescrevo o texto no tom escolhido na hora.' },
+        { icon: Smile, label: 'Ajustar o tom da vaga', run: () => 'Use os botões Equilibrado / Descontraído / Formal acima da descrição, eu reescrevo o texto no tom escolhido na hora.' },
       ]
     default:
       return [
         { icon: ShieldCheck, label: 'Checar viés e inclusão', run: () => 'Revisei: evite termos como "jovem" ou "nativo digital" (podem indicar viés etário). O texto está neutro em gênero. 👍' },
         { icon: CheckCircle2, label: 'Revisar clareza', run: () => 'A descrição está clara. Sugiro separar os requisitos em "obrigatórios" e "desejáveis" para facilitar a leitura.' },
-        { icon: Sparkles, label: 'Sugerir título chamativo', run: ({ data }) => `Que tal o título: "${data.cargo} ${data.nivel} (${data.modelo}) — ${data.local}"?` },
+        { icon: Sparkles, label: 'Sugerir título chamativo', run: ({ data }) => `Que tal o título: "${data.cargo} ${data.nivel} (${data.modelo}), ${data.local}"?` },
       ]
   }
 }

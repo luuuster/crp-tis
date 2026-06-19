@@ -1127,52 +1127,52 @@
       "marca-b": {
         "primary": {
           "50": {
-            "$value": "oklch(97.1% 0.019 18.84)",
-            "$description": "#fff1f0"
+            "$value": "oklch(97.1% 0.016 150.07)",
+            "$description": "#eef9f0"
           },
           "100": {
-            "$value": "oklch(93.6% 0.042 18.84)",
-            "$description": "#ffdfdf"
+            "$value": "oklch(93.6% 0.034 150.07)",
+            "$description": "#dbf1de"
           },
           "200": {
-            "$value": "oklch(88.5% 0.079 18.84)",
-            "$description": "#ffc5c5"
+            "$value": "oklch(88.5% 0.065 150.07)",
+            "$description": "#bbe6c3"
           },
           "300": {
-            "$value": "oklch(80.8% 0.141 18.84)",
-            "$description": "#ff999c"
+            "$value": "oklch(80.8% 0.101 150.07)",
+            "$description": "#90d39e"
           },
           "400": {
-            "$value": "oklch(70.4% 0.193 18.84)",
-            "$description": "#ff626f"
+            "$value": "oklch(70.4% 0.137 150.07)",
+            "$description": "#58b771"
           },
           "500": {
-            "$value": "oklch(63.7% 0.219 18.84)",
-            "$description": "#f33a54"
+            "$value": "oklch(63.7% 0.156 150.07)",
+            "$description": "#2da555"
           },
           "600": {
-            "$value": "oklch(57.7% 0.219 18.84)",
-            "$description": "#dd1c43"
+            "$value": "oklch(57.7% 0.156 150.07)",
+            "$description": "#0a9243"
           },
           "700": {
-            "$value": "oklch(48.7% 0.193 18.84)",
-            "$description": "#b30631"
+            "$value": "oklch(52.7% 0.137 150.07)",
+            "$description": "#15803d"
           },
           "800": {
-            "$value": "oklch(44.4% 0.162 18.84)",
-            "$description": "#99182e"
+            "$value": "oklch(44.4% 0.115 150.07)",
+            "$description": "#0f642f"
           },
           "900": {
-            "$value": "oklch(39.6% 0.136 18.84)",
-            "$description": "#801a28"
+            "$value": "oklch(39.6% 0.097 150.07)",
+            "$description": "#135529"
           },
           "950": {
-            "$value": "oklch(25.8% 0.092 18.84)",
-            "$description": "#460711"
+            "$value": "oklch(25.8% 0.065 150.07)",
+            "$description": "#042c11"
           },
           "DEFAULT": {
-            "$value": "oklch(48.7% 0.193 18.84)",
-            "$description": "#b30631"
+            "$value": "oklch(52.7% 0.137 150.07)",
+            "$description": "#15803d"
           }
         },
         "secondary": {

@@ -1,0 +1,450 @@
+{
+  "topbar": {
+    "trilha": "Trilha",
+    "workspace": "Workspace",
+    "vagas": "Vagas",
+    "menu": {
+      "abrir": "Abrir menu",
+      "fechar": "Fechar menu",
+      "recolher": "Recolher menu",
+      "expandir": "Expandir menu"
+    },
+    "falarCharlie": "Falar com Charlie",
+    "conta": {
+      "label": "Sua conta",
+      "minha": "Minha conta",
+      "contaDemo": "Conta (demo).",
+      "sair": "Sair"
+    },
+    "sairConfirm": {
+      "titulo": "Sair da conta?",
+      "descricao": "Você será desconectado. Alterações não salvas serão perdidas.",
+      "voltar": "Voltar",
+      "sair": "Sair"
+    }
+  },
+  "steps": {
+    "1": {
+      "title": "Resumo da Vaga",
+      "eyebrow": "Resumo",
+      "desc": "Dados institucionais e operacionais"
+    },
+    "2": {
+      "title": "Perfil e Requisitos",
+      "eyebrow": "Perfil",
+      "desc": "Skills, experiência e formação"
+    },
+    "3": {
+      "title": "Revisar & Publicar",
+      "eyebrow": "Revisão",
+      "desc": "Revise, edite e publique a vaga"
+    }
+  },
+  "stepper": {
+    "progresso": "Progresso: etapa {{step}} de {{total}}",
+    "etapa": "Etapa {{n}}",
+    "etapaAqui": "Etapa {{n}}, você está aqui: ",
+    "etapaPrefixo": "Etapa {{n}}: ",
+    "status": {
+      "emAndamento": "Em andamento",
+      "incompleta": "Incompleta",
+      "concluida": "Concluída",
+      "proxima": "Próxima"
+    }
+  },
+  "header": {
+    "eyebrowEdicao": "Edição",
+    "eyebrowCriacao": "Criação",
+    "etapaLinha": "{{modo}} · Etapa {{num}}, {{eyebrow}}",
+    "tituloEditar": "Editar vaga",
+    "tituloNova": "Nova vaga",
+    "descEditarAntes": "Atualize as informações de ",
+    "descEditarDepois": " e salve as alterações. O Charlie continua à disposição para refinar os campos.",
+    "descNova": "Estruture o resumo da vaga com calma. Quando precisar, abra o Charlie, que dá sugestões e refina os campos com você."
+  },
+  "crumb": {
+    "vaga": "Vaga",
+    "editar": "Editar: {{cargo}}",
+    "novaVaga": "Nova vaga"
+  },
+  "footer": {
+    "cancelarEdicao": "Cancelar edição",
+    "cancelarCriacao": "Cancelar criação",
+    "salvarRascunho": "Salvar rascunho",
+    "voltar": "Voltar",
+    "avancarPara": "Avançar para {{etapa}}",
+    "publicarVaga": "Publicar vaga",
+    "republicarVaga": "Republicar vaga",
+    "voltarLista": "Voltar para a lista",
+    "editarVaga": "Editar vaga"
+  },
+  "validacao": {
+    "campoObrigatorio": "Campo obrigatório",
+    "obrigatoriosEmBranco": "{{count}} campo(s) obrigatório(s) em branco, destaquei em vermelho.",
+    "obrigatoriosDescricao": "Você pode preencher agora ou avançar assim mesmo.",
+    "avancarAssimMesmo": "Avançar assim mesmo"
+  },
+  "toast": {
+    "editando": "Editando \"{{cargo}}\" (demo).",
+    "edicaoCancelada": "Edição cancelada (demo).",
+    "criacaoCancelada": "Criação cancelada (demo).",
+    "novaIniciada": "Nova vaga iniciada (demo).",
+    "rascunhoSalvo": "Rascunho salvo (demo).",
+    "vagaRepublicada": "Vaga republicada! (demo)",
+    "vagaPublicada": "Vaga publicada! (demo)"
+  },
+  "dialog": {
+    "cancelarEdicaoTitulo": "Cancelar edição da vaga?",
+    "cancelarCriacaoTitulo": "Cancelar criação de vaga?",
+    "cancelarEdicaoDescricao": "As alterações feitas nesta vaga serão descartadas e não poderão ser recuperadas.",
+    "cancelarCriacaoDescricao": "Você está prestes a cancelar a criação desta vaga. Todo o progresso será perdido e não poderá ser recuperado.",
+    "continuarEditando": "Continuar editando",
+    "simCancelar": "Sim, cancelar",
+    "salvarRascunhoTitulo": "Salvar como rascunho?",
+    "salvarRascunhoDescricao": "As informações preenchidas ficam guardadas para você retomar a edição desta vaga quando quiser.",
+    "salvarRascunhoConfirmar": "Salvar rascunho",
+    "republicarTitulo": "Republicar a vaga?",
+    "publicarTitulo": "Publicar esta vaga?",
+    "republicarDescricao": "As alterações serão salvas e a vaga será republicada, voltando a receber candidaturas.",
+    "publicarEdicaoDescricao": "As informações serão salvas e a vaga será publicada, passando a receber candidaturas.",
+    "publicarDescricao": "A vaga será publicada e passará a receber candidaturas.",
+    "revisarAntes": "Revisar antes"
+  },
+  "sectionStatus": {
+    "completa": "Completa",
+    "preenchendo": "Em revisão",
+    "pendente": "A preencher",
+    "opcional": "Opcional"
+  },
+  "sections": {
+    "identidade": {
+      "title": "Identidade da vaga",
+      "desc": "Como essa posição se posiciona dentro da organização."
+    },
+    "sobre": {
+      "title": "Sobre a vaga",
+      "desc": "O contexto do desafio e o objetivo da contratação, a abertura da descrição."
+    },
+    "operacao": {
+      "title": "Operação & rotina",
+      "desc": "Onde, quando e em que ritmo essa pessoa vai trabalhar."
+    },
+    "investimento": {
+      "title": "Investimento",
+      "desc": "A faixa salarial e benefícios que tornam essa vaga competitiva."
+    },
+    "processo": {
+      "title": "Processo seletivo",
+      "desc": "As etapas da seleção, na ordem, o que quem se candidata vai enfrentar."
+    },
+    "requisitos": {
+      "title": "Requisitos técnicos",
+      "desc": "O que essa pessoa precisa dominar logo de cara."
+    },
+    "diferenciais": {
+      "title": "Diferenciais",
+      "desc": "Conhecimentos que pesam positivamente, mas não são bloqueantes."
+    },
+    "responsabilidades": {
+      "title": "Responsabilidades & perfil",
+      "desc": "O dia a dia da posição e o tipo de pessoa que você procura."
+    }
+  },
+  "briefing": {
+    "cargo": { "label": "Cargo / Papel", "placeholder": "Selecione o cargo", "buscar": "Buscar cargo…" },
+    "nivel": { "label": "Senioridade", "placeholder": "Selecione a senioridade" },
+    "modelo": { "label": "Modelo", "placeholder": "Selecione o modelo" },
+    "cliente": { "label": "Cliente / Projeto", "hint": "Cliente ou projeto interno ao qual a vaga pertence.", "placeholder": "Nome do cliente" },
+    "gestor": { "label": "Gestor imediato", "hint": "Pessoa a quem a vaga se reporta.", "placeholder": "Nome do gestor" },
+    "desafio": { "label": "Sobre o desafio", "hint": "O cenário em que a vaga nasce, o time/projeto e o momento.", "placeholder": "Ex: Estamos expandindo o time de engenharia do TIS Talent AI Platform para sustentar o crescimento da plataforma." },
+    "objetivo": { "label": "Objetivo da vaga", "hint": "O que essa contratação precisa alcançar.", "placeholder": "Ex: Ampliar a capacidade de entrega de soluções backend de alta performance, garantindo escalabilidade e qualidade nas integrações da plataforma." },
+    "local": { "label": "Local de trabalho", "hint": "Cidade/UF base (mesmo em remoto/híbrido).", "placeholder": "Cidade, UF" },
+    "horario": { "label": "Horário", "placeholder": "Selecione um horário" },
+    "carga": { "label": "Carga semanal", "placeholder": "Selecione uma carga semanal" },
+    "motivo": { "label": "Motivo de abertura", "placeholder": "Selecione o motivo" },
+    "quantidade": { "label": "Quantidade de vagas", "placeholder": "Selecione a quantidade", "buscar": "Buscar número…" },
+    "budget": { "label": "Budget", "hint": "Faixa salarial prevista.", "placeholder": "R$ 8.000 a 10.000" },
+    "modalidade": { "label": "Modalidade contratual", "placeholder": "Selecione a modalidade" },
+    "beneficios": { "label": "Benefícios", "addLabel": "benefício", "buscar": "Buscar benefício…", "vazio": "Nenhum benefício adicionado." },
+    "processo": { "label": "Etapas do processo", "hint": "Selecione as etapas e ordene a sequência com as setas.", "addLabel": "etapa", "buscar": "Buscar etapa…", "vazio": "Nenhuma etapa adicionada." }
+  },
+  "perfil": {
+    "templateAviso": "Template aplicado automaticamente.",
+    "templateAvisoResto": " Revise e ajuste cada campo conforme a realidade do projeto antes de avançar.",
+    "exigenciasLegenda": "Exigências formais",
+    "formacao": { "label": "Formação / Escolaridade", "hint": "Nível e áreas de formação aceitos.", "placeholder": "Ex: Superior completo em Ciência da Computação ou áreas correlatas." },
+    "experiencia": { "label": "Experiência obrigatória", "hint": "Tempo e tipo de experiência mínima exigida.", "placeholder": "Ex: Mínimo 3 anos em desenvolvimento backend com Python e APIs RESTful." },
+    "stackObrigatoria": { "label": "Stack técnica obrigatória", "hint": "Sem isso, o perfil não avança na triagem.", "addLabel": "tecnologia", "buscar": "Buscar tecnologia…", "vazio": "Nenhuma tecnologia, adicione ou peça ao Charlie." },
+    "conhecimentos": { "label": "Conhecimentos desejáveis", "hint": "Pesam positivamente, mas não bloqueiam.", "addLabel": "conhecimento", "buscar": "Buscar conhecimento…", "vazio": "Adicione os diferenciais desejados." },
+    "responsabilidades": { "label": "Atribuições e responsabilidades", "hint": "Uma por frase, viram bullets na descrição gerada.", "placeholder": "Ex: Desenvolver e manter APIs RESTful. Realizar code reviews. Mentorar pessoas." },
+    "habilidades": { "label": "Habilidades comportamentais", "hint": "O tipo de pessoa que você procura (opcional).", "addLabel": "habilidade", "buscar": "Buscar habilidade…", "vazio": "Adicione as soft skills desejadas." },
+    "justificativa": { "label": "Justificativa da contratação", "hint": "Por que essa vaga existe, contexto livre para a aprovação.", "placeholder": "Ex: Expansão do produto X para novo cliente, necessidade de reforço técnico no time de backend." }
+  },
+  "field": {
+    "obrigatorioMarca": " *",
+    "ajuda": "Ajuda: {{label}}",
+    "campoObrigatorio": "Campo obrigatório"
+  },
+  "chips": {
+    "adicionar": "Adicionar {{label}}",
+    "adicionarMais": "adicionar mais",
+    "moverItemCima": "Mover {{item}} para cima",
+    "moverItemBaixo": "Mover {{item}} para baixo",
+    "remover": "Remover {{item}}",
+    "etapaPrefixo": "Etapa {{n}}: ",
+    "sheetDescricao": "Pesquise e marque os itens. As alterações são aplicadas na hora; feche quando terminar.",
+    "opcoesDe": "Opções de {{label}}",
+    "nadaEncontrado": "Nada encontrado.",
+    "fechar": "Fechar",
+    "limparTitulo": "Limpar todos os itens?",
+    "limparDescricao": "Os {{count}} itens deste campo serão removidos.",
+    "limparTudo": "Limpar tudo",
+    "limparTudoContagem": "Limpar tudo ({{count}})"
+  },
+  "select": {
+    "selecione": "Selecione",
+    "nadaEncontrado": "Nada encontrado.",
+    "opcoes": "Opções",
+    "selecioneOpcao": "Selecione uma opção da lista."
+  },
+  "charlie": {
+    "fecharCharlie": "Fechar Charlie",
+    "nome": "Charlie",
+    "copiloto": "COPILOTO",
+    "ativo": "ATIVO",
+    "tituloSr": "Charlie, copiloto",
+    "descricaoSr": "Sugestões e conversa para ajudar a montar a vaga.",
+    "copilotoAside": "Copiloto Charlie",
+    "sugestoesAria": "Sugestões",
+    "sugestoesTitulo": "Sugestões para esta etapa",
+    "conversaAria": "Conversa",
+    "conversaTitulo": "Conversa",
+    "vazio": "Use uma sugestão acima ou escreva uma mensagem.",
+    "inputLabel": "Mensagem para o Charlie",
+    "inputPlaceholder": "Descreva a vaga ou pergunte…",
+    "anexar": "Anexar arquivo",
+    "anexarToast": "Anexar (demo).",
+    "voz": "Ditar por voz",
+    "vozToast": "Voz (demo).",
+    "limparTitulo": "Limpar a conversa?",
+    "limparDescricao": "Todo o histórico desta conversa com o Charlie será apagado.",
+    "limpar": "Limpar",
+    "enviar": "Enviar",
+    "saudacao": "Oi! Sou o Charlie. Vi que marcou {{nivel}} e {{modelo}} em {{local}}.{{budget}}",
+    "saudacaoBudget": " O budget ainda está em branco, quer uma faixa de mercado?",
+    "respostaPadrao": "Recebido! Nesta demo eu não preencho de verdade, mas é aqui que eu distribuiria o que reconhecesse nos campos.",
+    "haAgoSegundos": "Há {{s}}s",
+    "haAgoMinutos": "Há {{min}}min"
+  },
+  "review": {
+    "tomTitulo": "Escolha o tom da descrição.",
+    "tomGrupo": "Tom da descrição",
+    "tom": {
+      "Equilibrado": "Equilibrado",
+      "Descontraído": "Descontraído",
+      "Formal": "Formal"
+    },
+    "descricaoVaga": "Descrição da vaga",
+    "melhorando": "Revisando…",
+    "melhorarIA": "Revisar vaga com Charlie",
+    "melhorarToast": "Charlie aprimorou a descrição. Ajuste à mão se quiser.",
+    "reviseParaPublicar": "Revise a vaga com o Charlie para liberar a publicação.",
+    "charlie": {
+      "titulo": "Revisão do Charlie",
+      "aguardando": "Rode a revisão com o Charlie para checar salário, jornada, experiência e consistência antes de publicar.",
+      "tudoCerto": "Tudo certo. Não encontrei inconsistências para apontar.",
+      "resumoCriticas_one": "{{count}} inconsistência crítica",
+      "resumoCriticas_other": "{{count}} inconsistências críticas",
+      "resumoAvisos_one": "{{count}} ponto de atenção",
+      "resumoAvisos_other": "{{count}} pontos de atenção",
+      "ajustar": "Ajustar",
+      "revisarNovamente": "Revisar novamente",
+      "bloqueadoCritica": "Há uma inconsistência crítica na vaga. Ajuste antes de publicar (ou publique mesmo assim).",
+      "publicarMesmoAssim": "Publicar mesmo assim",
+      "salarioAbaixo": {
+        "titulo": "Salário abaixo do mercado",
+        "detalhe": "Para {{cargo}} {{nivel}}, o mercado fica em torno de {{mercado}}. Sua faixa ({{sua}}) está abaixo do piso de {{piso}}, isso afasta bons candidatos. Reveja o budget."
+      },
+      "salarioAcima": {
+        "titulo": "Salário acima do mercado",
+        "detalhe": "Sua faixa ({{sua}}) passa bem do teto de mercado ({{teto}}) para {{cargo}} {{nivel}}. Se for proposital (skill rara, contraproposta), tudo bem, só confirme a verba."
+      },
+      "salarioOk": {
+        "titulo": "Faixa alinhada ao mercado",
+        "detalhe": "{{sua}} está dentro do esperado para {{cargo}} {{nivel}} ({{mercado}}). 👍"
+      },
+      "salarioIlegivel": {
+        "titulo": "Não consegui ler a faixa",
+        "detalhe": "Não identifiquei valores no budget para comparar com o mercado ({{mercado}} para {{cargo}} {{nivel}}). Informe a faixa em reais."
+      },
+      "faixaAmpla": {
+        "titulo": "Faixa salarial muito ampla",
+        "detalhe": "{{sua}} é uma janela larga demais e confunde o candidato sobre o nível real da vaga. Estreite a faixa."
+      },
+      "expAlta": {
+        "titulo": "Experiência alta para o nível",
+        "detalhe": "Você exige {{anos}} anos de experiência, muito para uma vaga {{nivel}} (o usual vai até {{max}}). Pode estreitar demais o funil de candidatos."
+      },
+      "expBaixa": {
+        "titulo": "Experiência baixa para o nível",
+        "detalhe": "{{anos}} ano(s) de experiência é pouco para uma vaga {{nivel}} (o usual começa em {{min}}). Confira se o nível está certo."
+      },
+      "poucosBeneficios": {
+        "titulo": "Poucos benefícios",
+        "detalhe": "Só {{n}} benefício(s) listado(s). Um pacote enxuto reduz a competitividade da vaga frente ao mercado."
+      },
+      "estagioCarga": {
+        "titulo": "Carga horária acima do limite de estágio",
+        "detalhe": "Estágio é limitado a 30h semanais (Lei 11.788). {{carga}} excede o teto, reduza a carga ou ajuste a modalidade do contrato."
+      },
+      "cltCarga": {
+        "titulo": "Carga horária baixa para CLT",
+        "detalhe": "CLT em tempo integral costuma ser 40h ou 44h. {{carga}} configura tempo parcial, confirme se é intencional."
+      },
+      "pjBeneficios": {
+        "titulo": "Benefícios de CLT em vaga PJ",
+        "detalhe": "{{itens}} são benefícios típicos de CLT e normalmente não se aplicam a PJ. Revise o pacote."
+      }
+    },
+    "acoes": "Ações",
+    "scoreQualidade": "Score de qualidade",
+    "aprovado": "Aprovado",
+    "emRevisao": "Em revisão",
+    "prontaParaPublicar": "Vaga pronta para publicação.",
+    "resolvaPendencias": "Resolva as pendências para aprovar a vaga.",
+    "briefingIncompleto": "Resumo incompleto",
+    "perfilIncompleto": "Perfil incompleto",
+    "textoAcimaLimite": "Texto acima de 2.000 caracteres",
+    "resolver": "{{label}} · resolver",
+    "novaVagaTitulo": "Começar uma nova vaga?",
+    "novaVagaDescricao": "Os dados preenchidos nesta vaga serão descartados e não poderão ser recuperados.",
+    "novaVagaConfirmar": "Sim, recomeçar",
+    "novaVaga": "Nova vaga"
+  },
+  "copy": {
+    "copiarTexto": "Copiar texto",
+    "copiado": "Copiado",
+    "copiar": "Copiar",
+    "postCopiado": "Texto do post copiado!",
+    "erroCopiar": "Não foi possível copiar, selecione e copie manualmente.",
+    "copiarPost": "Copiar texto do post",
+    "publicarManual": "Use este conteúdo ao publicar manualmente."
+  },
+  "charBadge": {
+    "caracteres": "{{num}} caracteres",
+    "ideal": "Ideal para engajamento (≤ {{limit}})",
+    "acima": "Acima do ideal (> {{limit}})"
+  },
+  "doc": {
+    "descricaoVaga": "Descrição da vaga",
+    "sobreDesafio": "Sobre o desafio",
+    "objetivo": "Objetivo",
+    "responsabilidades": "Responsabilidades",
+    "requisitos": "Requisitos",
+    "operacao": "Operação & condições",
+    "processoSeletivo": "Processo seletivo",
+    "beneficios": "Benefícios",
+    "editar": "editar",
+    "editarLabel": "Editar {{label}}",
+    "semConteudo": "Sem conteúdo.",
+    "labelResumo": "resumo",
+    "placeholderResumo": "Escreva um resumo da vaga.",
+    "placeholderDesafio": "Descreva o contexto do desafio.",
+    "placeholderObjetivo": "Descreva o objetivo da contratação.",
+    "salvar": "Salvar",
+    "cancelar": "Cancelar"
+  },
+  "opcoes": {
+    "cargo": {
+      "Desenvolvedor Backend": "Desenvolvedor Backend",
+      "Desenvolvedor Frontend": "Desenvolvedor Frontend",
+      "Desenvolvedor Fullstack": "Desenvolvedor Fullstack",
+      "Product Manager": "Product Manager",
+      "Designer UX/UI": "Designer UX/UI",
+      "Analista de Dados": "Analista de Dados",
+      "Engenheiro DevOps": "Engenheiro DevOps",
+      "Analista de QA": "Analista de QA"
+    },
+    "nivel": {
+      "Estágio": "Estágio",
+      "Júnior": "Júnior",
+      "Pleno": "Pleno",
+      "Sênior": "Sênior",
+      "Especialista": "Especialista",
+      "Liderança": "Liderança"
+    },
+    "modelo": {
+      "Presencial": "Presencial",
+      "Híbrido": "Híbrido",
+      "Remoto": "Remoto"
+    },
+    "carga": {
+      "20 horas": "20 horas",
+      "30 horas": "30 horas",
+      "40 horas": "40 horas",
+      "44 horas": "44 horas"
+    },
+    "motivo": {
+      "Aumento do quadro": "Aumento do quadro",
+      "Substituição": "Substituição",
+      "Novo projeto": "Novo projeto",
+      "Backfill": "Backfill",
+      "Confidencial": "Confidencial"
+    },
+    "modalidade": {
+      "CLT": "CLT",
+      "PJ": "PJ",
+      "Estágio": "Estágio",
+      "Temporário": "Temporário",
+      "Cooperado": "Cooperado"
+    },
+    "beneficio": {
+      "Vale-refeição": "Vale-refeição",
+      "Vale-transporte": "Vale-transporte",
+      "Plano de saúde": "Plano de saúde",
+      "Plano odontológico": "Plano odontológico",
+      "Auxílio home-office": "Auxílio home-office",
+      "Day-off aniversário": "Day-off aniversário",
+      "Gympass": "Gympass",
+      "Bônus anual": "Bônus anual",
+      "Stock options": "Stock options",
+      "Auxílio creche": "Auxílio creche",
+      "Seguro de vida": "Seguro de vida",
+      "Horário flexível": "Horário flexível"
+    },
+    "processo": {
+      "Triagem de currículo": "Triagem de currículo",
+      "Entrevista com RH": "Entrevista com RH",
+      "Entrevista comportamental": "Entrevista comportamental",
+      "Teste técnico / Case": "Teste técnico / Case",
+      "Entrevista técnica": "Entrevista técnica",
+      "Entrevista com gestor": "Entrevista com gestor",
+      "Entrevista com liderança": "Entrevista com liderança",
+      "Dinâmica de grupo": "Dinâmica de grupo",
+      "Verificação de referências": "Verificação de referências",
+      "Proposta": "Proposta"
+    },
+    "exigencia": {
+      "Ensino superior obrigatório": "Ensino superior obrigatório",
+      "Comprovação de experiência": "Comprovação de experiência",
+      "Certificações profissionais": "Certificações profissionais"
+    },
+    "habilidade": {
+      "Comunicação clara": "Comunicação clara",
+      "Trabalho em equipe": "Trabalho em equipe",
+      "Pensamento analítico": "Pensamento analítico",
+      "Proatividade": "Proatividade",
+      "Mentoria": "Mentoria",
+      "Autonomia": "Autonomia",
+      "Organização": "Organização",
+      "Resolução de problemas": "Resolução de problemas",
+      "Adaptabilidade": "Adaptabilidade"
+    },
+    "tech": {
+      "APIs RESTful": "APIs RESTful",
+      "Testes automatizados": "Testes automatizados",
+      "Microsserviços": "Microsserviços",
+      "Observabilidade": "Observabilidade"
+    }
+  }
+}

@@ -1,6 +1,7 @@
 {
   "brand-primary":              { "$type": "color", "$value": "{color.brand.crp.primary.700}", "$description": "Âncora de marca: primary em superfície CLARA (Light). Consumido por mode/light (primary/sidebar-primary)." },
   "brand-primary-foreground":   { "$type": "color", "$value": "{color.neutral.50}", "$description": "Âncora: texto/ícone sobre o primary no Light." },
+  "brand-primary-text":         { "$type": "color", "$value": "{color.brand.crp.primary.700}", "$description": "Âncora: primary como TEXTO/ícone em superfície CLARA (outline/ghost/soft/link). CRP = shade 700 (= brand-primary; o azul passa AA sobre branco e sobre a tinta soft). Consumido por mode/light (primary-text/link)." },
   "brand-ring":                 { "$type": "color", "$value": "{color.brand.crp.primary.600}", "$description": "Âncora: anel de foco da marca no Light (shade 600). Consumido por mode/light (ring/sidebar-ring)." },
   "brand-primary-on-dark":      { "$type": "color", "$value": "{color.brand.crp.primary.600}", "$description": "Âncora: primary p/ o modo DARK (shade 600 → mais visível no fundo escuro que o 700, mantendo TEXTO BRANCO em AA). Consumido por mode/dark." },
   "brand-primary-on-dark-text": { "$type": "color", "$value": "{color.brand.crp.primary.400}", "$description": "Âncora: brand primary p/ TEXTO/links em superfície escura (shade 400 → AA como texto no card escuro). Consumido por mode/dark (link/primary-text)." },
