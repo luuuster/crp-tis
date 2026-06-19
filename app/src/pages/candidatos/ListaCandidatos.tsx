@@ -155,7 +155,7 @@ export function ListaCandidatos({
                     </div>
                   </TableCell>
                   <TableCell className="py-3 ty-body-sm text-muted-foreground">{c.vaga}</TableCell>
-                  <TableCell className="py-3"><Badge variant="ghost" className="bg-primary/10 ty-caption font-medium text-primary-text">{senLabel(c.senioridade)}</Badge></TableCell>
+                  <TableCell className="py-3"><Badge variant="ghost" className="bg-muted ty-caption font-medium text-muted-foreground">{senLabel(c.senioridade)}</Badge></TableCell>
                   <TableCell className="py-3"><Badge variant="ghost" className={cn('ty-caption font-semibold tabular-nums', scoreTint(c.score))}>{c.score}%</Badge></TableCell>
                   <TableCell className="py-3"><EtapaBadge value={c.etapa} /></TableCell>
                   <TableCell className="py-3 ty-body-sm text-muted-foreground">{c.atualizado}</TableCell>

@@ -91,7 +91,7 @@ export function CharlieRail({ open, onClose, step, msgs, onSuggestion, onSend, o
         </section>
       </div>
 
-      <div className="border-t border-border/40 p-3">
+      <div className="border-t border-border/40 p-3 pb-[calc(0.75rem_+_env(safe-area-inset-bottom))]">
         <div className="rounded-xl bg-muted/50 p-2 transition-colors focus-within:bg-background focus-within:ring-[3px] focus-within:ring-ring/50">
           <Label htmlFor="charlie-input" className="sr-only">{t('charlie.inputLabel')}</Label>
           <Textarea id="charlie-input" value={draft} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submit() } }} placeholder={t('charlie.inputPlaceholder')} className="min-h-10 resize-none border-0 bg-transparent p-1 shadow-none focus-visible:ring-0" />

@@ -75,7 +75,7 @@ function ReqLabel({ children }: { children: ReactNode }) {
   )
 }
 
-export function RegisterPage({ onBackToLogin, onRegistered }: { onBackToLogin?: () => void; onRegistered?: () => void }) {
+export function RegisterPage({ onBackToLogin, onRegistered, brand }: { onBackToLogin?: () => void; onRegistered?: () => void; brand?: string }) {
   const { t } = useTranslation('auth')
   const [showPwd, setShowPwd] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
@@ -137,6 +137,7 @@ export function RegisterPage({ onBackToLogin, onRegistered }: { onBackToLogin?: 
       title={t('registro.title')}
       subtitle={t('registro.subtitle')}
       maxWidth="md"
+      brand={brand}
       footer={
         <p className="text-sm text-muted-foreground">
           {t('registro.temConta')}{' '}

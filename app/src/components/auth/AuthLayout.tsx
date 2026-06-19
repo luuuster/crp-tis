@@ -21,6 +21,7 @@ export function AuthLayout({
   title,
   subtitle,
   maxWidth = 'sm',
+  brand,
   children,
   footer,
 }: {
@@ -29,18 +30,19 @@ export function AuthLayout({
   title: string
   subtitle: string
   maxWidth?: 'sm' | 'md'
+  brand?: string
   children: ReactNode
   footer?: ReactNode
 }) {
   return (
     <div className="grid min-h-dvh lg:grid-cols-2">
       {/* ≥ lg: painel lateral da marca */}
-      <BrandPanel headline={headline} subline={subline} variant="aside" />
+      <BrandPanel headline={headline} subline={subline} variant="aside" brand={brand} />
 
       {/* coluna do formulário (única visível < lg) */}
       <div className="flex flex-col">
         {/* < lg: faixa de marca no topo */}
-        <BrandPanel headline={headline} subline={subline} variant="banner" className="lg:hidden" />
+        <BrandPanel headline={headline} subline={subline} variant="banner" brand={brand} className="lg:hidden" />
 
         {/* < lg: form ancorado ao topo (logo abaixo do banner, sem boiar); ≥ lg: centralizado na coluna */}
         <main className="flex flex-1 items-start justify-center bg-background px-6 py-12 lg:items-center">
@@ -50,7 +52,7 @@ export function AuthLayout({
               MAX_W[maxWidth],
             )}
           >
-            <Logo className="mb-8" />
+            <Logo brand={brand} className="mb-8" />
 
             <div className="space-y-2">
               <h1 className="ty-h3">{title}</h1>

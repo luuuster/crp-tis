@@ -21,6 +21,7 @@ import { ExportButton } from '@/components/ExportButton'
 import { PageContainer, PageHeader, StatCard, StatusBadge, Paginacao, EmptyState, TableSkeleton, ErrorState, type BadgeTone } from '@/components/page'
 import { useMockData } from '@/lib/useMockData'
 import { Button } from '@/components/ui/button'
+import { Tip } from '@/components/ui/tooltip'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -59,11 +60,13 @@ const FUNCOES: { value: Funcao }[] = [
   { value: 'Gestor' },
 ]
 
-// Pílula de função: tom por função (variante -text, AA por tema). Cada função, um tom distinto.
+// Pílula de função: papel é CATEGORIA (não bom/ruim), então usa a paleta de DADOS (blue/violet/teal) —
+// hues fixos, distintos, que NÃO seguem a marca. Antes Administrador/Recrutador vestiam primary/secondary
+// (marca) e Gestor pegava emprestado o âmbar de "warning"; agora os três são categóricos e coerentes.
 const FUNCAO_TONE: Record<Funcao, BadgeTone> = {
-  'Administrador': 'primary',
-  'Recrutador': 'secondary',
-  'Gestor': 'warning',
+  'Administrador': 'blue',
+  'Recrutador': 'teal',
+  'Gestor': 'violet',
 }
 // Pílula de status (com ponto na cor corrente, via bg-current — herda a variante -text).
 const STATUS_TONE: Record<StatusU, BadgeTone> = {
@@ -305,13 +308,13 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
                     <TableCell className="py-3 ty-body-sm text-muted-foreground">{u.status === 'Inativo' && u.ultimoAcesso !== 'inativo' ? u.ultimoAcesso : u.status === 'Inativo' ? t('semAcesso') : u.ultimoAcesso}</TableCell>
                     <TableCell className="py-3 text-right">
                       <div className="flex justify-end gap-1">
-                        <Button variant="ghost" size="icon-sm" aria-label={t('acoes.editar', { nome: u.nome })} onClick={() => abrirEdicao(u)} className="text-muted-foreground hover:bg-primary/10 hover:text-primary-text"><Pencil /></Button>
+                        <Tip label={t('acoes.editar', { nome: u.nome })}><Button variant="ghost" size="icon-sm" aria-label={t('acoes.editar', { nome: u.nome })} onClick={() => abrirEdicao(u)} className="text-muted-foreground hover:bg-primary/10 hover:text-primary-text"><Pencil /></Button></Tip>
                         {u.status === 'Convite pendente' ? (
-                          <Button variant="ghost" size="icon-sm" aria-label={t('acoes.reenviar', { nome: u.nome })} onClick={() => reenviar(u)} className="text-muted-foreground hover:bg-primary/10 hover:text-primary-text"><MailCheck /></Button>
+                          <Tip label={t('acoes.reenviar', { nome: u.nome })}><Button variant="ghost" size="icon-sm" aria-label={t('acoes.reenviar', { nome: u.nome })} onClick={() => reenviar(u)} className="text-muted-foreground hover:bg-primary/10 hover:text-primary-text"><MailCheck /></Button></Tip>
                         ) : u.status === 'Inativo' ? (
-                          <Button variant="ghost" size="icon-sm" aria-label={t('acoes.reativar', { nome: u.nome })} onClick={() => setReativarU(u)} className="text-muted-foreground hover:bg-success/10 hover:text-success-text"><UserCheck /></Button>
+                          <Tip label={t('acoes.reativar', { nome: u.nome })}><Button variant="ghost" size="icon-sm" aria-label={t('acoes.reativar', { nome: u.nome })} onClick={() => setReativarU(u)} className="text-muted-foreground hover:bg-success/10 hover:text-success-text"><UserCheck /></Button></Tip>
                         ) : (
-                          <Button variant="ghost" size="icon-sm" aria-label={t('acoes.desativar', { nome: u.nome })} disabled={u.voce} onClick={() => setDesativar(u)} className="text-muted-foreground hover:bg-warning/10 hover:text-warning-text"><UserMinus /></Button>
+                          <Tip label={t('acoes.desativar', { nome: u.nome })}><Button variant="ghost" size="icon-sm" aria-label={t('acoes.desativar', { nome: u.nome })} disabled={u.voce} onClick={() => setDesativar(u)} className="text-muted-foreground hover:bg-warning/10 hover:text-warning-text"><UserMinus /></Button></Tip>
                         )}
                       </div>
                     </TableCell>
@@ -401,7 +404,7 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
           </div>
 
           {/* rodapé */}
-          <footer className="space-y-2 border-t border-border/40 p-4">
+          <footer className="space-y-2 border-t border-border/40 p-4 pb-[calc(1rem_+_env(safe-area-inset-bottom))]">
             <Button className="w-full" onClick={salvar} disabled={!podeSalvar}>
               {editing ? <><Pencil aria-hidden /> {t('sheet.salvarAlteracoes')}</> : <><UserPlus aria-hidden /> {t('sheet.cadastrarUsuario')}</>}
             </Button>

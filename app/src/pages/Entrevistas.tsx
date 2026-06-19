@@ -220,7 +220,7 @@ export function AgendamentoDetalhe({ ev, onReagendar, onCancelar }: {
       </div>
 
       {/* rodapé */}
-      <footer className="space-y-2 border-t border-border/40 p-4">
+      <footer className="space-y-2 border-t border-border/40 p-4 pb-[calc(1rem_+_env(safe-area-inset-bottom))]">
         <Button className="w-full" onClick={() => (online ? toast.success(t('detalhe.toastEntrando')) : toast.info(t('detalhe.toastLocalCopiado')))}>
           {online ? <><Video aria-hidden /> {t('detalhe.entrarChamada')}</> : <><MapPin aria-hidden /> {t('detalhe.verLocal')}</>}
         </Button>
@@ -423,7 +423,7 @@ export function AgendarEntrevista({ cand, vaga, inicial, onCancelar, onConfirmar
       </div>
 
       {/* rodapé */}
-      <footer className="space-y-2 border-t border-border/40 p-4">
+      <footer className="space-y-2 border-t border-border/40 p-4 pb-[calc(1rem_+_env(safe-area-inset-bottom))]">
         {reagendando ? (
           <ConfirmDialog
             trigger={<Button className="w-full" disabled={!valido}><CalendarCheck aria-hidden /> {t('agendar.confirmarReagendamento')}</Button>}

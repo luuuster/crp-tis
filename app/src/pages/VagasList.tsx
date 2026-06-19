@@ -23,6 +23,7 @@ import { type StatusVaga as Status } from '@/lib/types'
 import { BENEF, PROCESSO, mkGen, mkVaga, type Vaga } from './vagas.logic'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
+import { Tip } from '@/components/ui/tooltip'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -175,7 +176,7 @@ const VAGAS_INICIAL: Vaga[] = [
 // Pílula de status: mapa valor→TOM (token-driven, AA por tema). Renderizada via <StatusBadge>.
 const STATUS_TOM: Record<Status, BadgeTone> = {
   'Aberta': 'success',
-  'Rascunho': 'secondary',
+  'Rascunho': 'muted', // rascunho = não publicado → neutro (antes 'secondary'/marca)
   'Em pausa': 'warning',
   'Fechada': 'destructive',
 }
@@ -415,15 +416,15 @@ export function VagasList({ onAbrirVaga, onEditVaga, onVerVaga }: { onAbrirVaga:
                   <TableCell className="py-3">
                     <button type="button" onClick={(e) => { e.stopPropagation(); onVerVaga(v) }} className="rounded-sm text-left ty-body-sm font-medium text-foreground transition-colors hover:text-primary-text focus-visible:focus-ring">{v.vaga}</button>
                   </TableCell>
-                  <TableCell className="py-3"><Badge variant="ghost" className="bg-primary/10 ty-caption font-medium text-primary-text">{v.senioridade}</Badge></TableCell>
+                  <TableCell className="py-3"><Badge variant="ghost" className="bg-muted ty-caption font-medium text-muted-foreground">{v.senioridade}</Badge></TableCell>
                   <TableCell className="py-3 ty-body-sm text-muted-foreground">{v.modelo}</TableCell>
                   <TableCell className="py-3 text-right ty-body-sm font-medium tabular-nums text-foreground">{v.inscritos}</TableCell>
                   <TableCell className="py-3 text-right ty-body-sm font-semibold tabular-nums text-success-text">{v.aprovados}</TableCell>
                   <TableCell className="py-3"><StatusBadge value={statusLabel(t, v.status)} tones={{ [statusLabel(t, v.status)]: STATUS_TOM[v.status] }} /></TableCell>
                   <TableCell className="py-3 text-right">
                     <div className="flex justify-end gap-1">
-                      <Button variant="ghost" size="icon-sm" aria-label={t('acoes.editar', { vaga: v.vaga })} onClick={(e) => { e.stopPropagation(); onEditVaga(v) }} className="text-muted-foreground hover:bg-primary/10 hover:text-primary-text"><Pencil /></Button>
-                      <Button variant="ghost" size="icon-sm" aria-label={t('acoes.fechar', { vaga: v.vaga })} onClick={(e) => { e.stopPropagation(); setFechar(v) }} className="text-muted-foreground hover:bg-warning/10 hover:text-warning-text"><Lock /></Button>
+                      <Tip label={t('acoes.editar', { vaga: v.vaga })}><Button variant="ghost" size="icon-sm" aria-label={t('acoes.editar', { vaga: v.vaga })} onClick={(e) => { e.stopPropagation(); onEditVaga(v) }} className="text-muted-foreground hover:bg-primary/10 hover:text-primary-text"><Pencil /></Button></Tip>
+                      <Tip label={t('acoes.fechar', { vaga: v.vaga })}><Button variant="ghost" size="icon-sm" aria-label={t('acoes.fechar', { vaga: v.vaga })} onClick={(e) => { e.stopPropagation(); setFechar(v) }} className="text-muted-foreground hover:bg-warning/10 hover:text-warning-text"><Lock /></Button></Tip>
                     </div>
                   </TableCell>
                 </TableRow>

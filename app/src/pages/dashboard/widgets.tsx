@@ -162,7 +162,7 @@ function FunilWidget() {
                 </span>
               </div>
               <div className="h-2.5 overflow-hidden rounded-full bg-muted">
-                <div className="h-full rounded-full bg-primary motion-safe:transition-all motion-safe:duration-500" style={{ width: `${pct}%` }} />
+                <div className="h-full rounded-full bg-chart-1 motion-safe:transition-all motion-safe:duration-500" style={{ width: `${pct}%` }} />
               </div>
             </li>
           )

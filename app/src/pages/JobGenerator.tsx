@@ -187,8 +187,8 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
 
   return (
     <div className="ty-scale-16 flex h-dvh overflow-hidden bg-muted/40 text-foreground">
-      <Sidebar active="gerador" expanded={leftExpanded} onNavigate={onNavigate} onVagas={irParaLista} />
-      <MobileNav active="gerador" open={navOpen} onOpenChange={setMobileNavOpen} onNavigate={onNavigate} onVagas={irParaLista} />
+      <Sidebar active="gerador" expanded={leftExpanded} onNavigate={onNavigate} onVagas={irParaLista} brand={brand} />
+      <MobileNav active="gerador" open={navOpen} onOpenChange={setMobileNavOpen} onNavigate={onNavigate} onVagas={irParaLista} brand={brand} />
 
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         <TopBar onToggleMenu={toggleMenu} menuExpanded={isMobile ? mobileNavOpen : leftExpanded} isMobile={isMobile} onCharlie={toggleCharlie} charlieOpen={charlieOpen} onLogout={() => onNavigate?.('login')} brand={brand} mode={mode} onCycleBrand={onCycleBrand} onToggleMode={onToggleMode} screen={screen} crumbLabel={crumbLabel} onBackToList={irParaLista} />
@@ -221,7 +221,7 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
 
         {/* rodapé de ações — só no wizard (na lista as ações vivem na própria tela) */}
         {screen === 'wizard' && (
-        <footer className="border-t border-border/40 bg-card/80 backdrop-blur-sm">
+        <footer className="border-t border-border/40 bg-card/80 pb-[env(safe-area-inset-bottom)] backdrop-blur-sm">
           <div className="mx-auto flex max-w-5xl flex-col gap-2.5 px-5 py-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-3 lg:px-8">
             <div className="flex items-center gap-2">
               <ConfirmDialog
@@ -254,7 +254,7 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
 
         {/* rodapé de ações do DETALHE — mesmo slot/estilo do rodapé do wizard. */}
         {screen === 'detalhe' && (
-        <footer className="border-t border-border/40 bg-card/80 backdrop-blur-sm">
+        <footer className="border-t border-border/40 bg-card/80 pb-[env(safe-area-inset-bottom)] backdrop-blur-sm">
           <div className="mx-auto flex max-w-4xl items-center justify-between gap-3 px-5 py-3 lg:px-8">
             <Button variant="ghost" onClick={irParaLista} className="max-sm:flex-1"><ChevronLeft /> {t('footer.voltarLista')}</Button>
             <Button onClick={editarVagaSel} className="max-sm:flex-1"><Pencil /> {t('footer.editarVaga')}</Button>

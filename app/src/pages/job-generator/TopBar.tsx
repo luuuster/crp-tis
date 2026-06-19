@@ -8,6 +8,7 @@ import { focusRing } from '@/lib/focus'
 import { FLOAT } from '@/lib/surfaces'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import { Button } from '@/components/ui/button'
+import { Tip } from '@/components/ui/tooltip'
 import { Separator } from '@/components/ui/separator'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
@@ -26,9 +27,11 @@ export function TopBar({ onToggleMenu, menuExpanded, isMobile, onCharlie, charli
   const [confirmSair, setConfirmSair] = useState(false)
   return (
     <header className="flex h-16 shrink-0 items-center gap-3 border-b border-border/40 bg-card/70 px-4 backdrop-blur-sm lg:px-6">
-      <Button variant="ghost" size="icon" aria-label={menuLabel} aria-expanded={menuExpanded} onClick={onToggleMenu} className="text-muted-foreground hover:text-foreground">
-        {isMobile ? <Menu /> : <ChevronLeft className={cn('transition-transform', !menuExpanded && 'rotate-180')} />}
-      </Button>
+      <Tip label={menuLabel}>
+        <Button variant="ghost" size="icon" aria-label={menuLabel} aria-expanded={menuExpanded} onClick={onToggleMenu} className="text-muted-foreground hover:text-foreground">
+          {isMobile ? <Menu /> : <ChevronLeft className={cn('transition-transform', !menuExpanded && 'rotate-180')} />}
+        </Button>
+      </Tip>
       <nav aria-label={t('topbar.trilha')} className="hidden items-center gap-1.5 ty-caption font-medium tracking-wide text-muted-foreground uppercase sm:flex">
         <span>{t('topbar.workspace')}</span><span aria-hidden>/</span>
         {naLista ? (
@@ -42,8 +45,8 @@ export function TopBar({ onToggleMenu, menuExpanded, isMobile, onCharlie, charli
       </nav>
 
       <div className="ml-auto flex items-center gap-1.5">
-        {onCycleBrand && <Button variant="ghost" size="icon" aria-label={tc('marca', { marca: brand })} onClick={onCycleBrand}><Palette /></Button>}
-        {onToggleMode && <Button variant="ghost" size="icon" aria-label={mode === 'dark' ? tc('tema.claro') : tc('tema.escuro')} onClick={onToggleMode}>{mode === 'dark' ? <Sun /> : <Moon />}</Button>}
+        {onCycleBrand && <Tip label={tc('marca', { marca: brand })}><Button variant="ghost" size="icon" aria-label={tc('marca', { marca: brand })} onClick={onCycleBrand}><Palette /></Button></Tip>}
+        {onToggleMode && <Tip label={mode === 'dark' ? tc('tema.claro') : tc('tema.escuro')}><Button variant="ghost" size="icon" aria-label={mode === 'dark' ? tc('tema.claro') : tc('tema.escuro')} onClick={onToggleMode}>{mode === 'dark' ? <Sun /> : <Moon />}</Button></Tip>}
         <Separator orientation="vertical" className="mx-1 h-5" />
         {screen === 'wizard' && (
           <button type="button" data-charlie-trigger onClick={onCharlie} aria-pressed={charlieOpen} aria-label={t('topbar.falarCharlie')}
@@ -53,12 +56,14 @@ export function TopBar({ onToggleMenu, menuExpanded, isMobile, onCharlie, charli
           </button>
         )}
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button type="button" aria-label={t('topbar.conta.label')} className={cn('relative ml-1 rounded-full', focusRing)}>
-              <Avatar className="size-10"><AvatarFallback className="bg-primary text-xs font-semibold text-primary-foreground">FL</AvatarFallback></Avatar>
-              <span className="absolute right-0 bottom-0 size-2.5 rounded-full border-2 border-card bg-success" aria-hidden />
-            </button>
-          </DropdownMenuTrigger>
+          <Tip label={t('topbar.conta.label')}>
+            <DropdownMenuTrigger asChild>
+              <button type="button" aria-label={t('topbar.conta.label')} className={cn('relative ml-1 rounded-full', focusRing)}>
+                <Avatar className="size-10"><AvatarFallback className="bg-primary text-xs font-semibold text-primary-foreground">FL</AvatarFallback></Avatar>
+                <span className="absolute right-0 bottom-0 size-2.5 rounded-full border-2 border-card bg-success" aria-hidden />
+              </button>
+            </DropdownMenuTrigger>
+          </Tip>
           <DropdownMenuContent align="end" className={cn('w-60', FLOAT)}>
             <div className="flex items-center gap-2.5 px-2 py-1.5">
               <Avatar className="size-9"><AvatarFallback className="bg-primary text-xs font-semibold text-primary-foreground">FL</AvatarFallback></Avatar>

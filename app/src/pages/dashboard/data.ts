@@ -50,7 +50,7 @@ const soft = (token: string) => `color-mix(in oklab, ${token} 55%, var(--card))`
 export const STATUS_DONUT = [
   { label: 'Aberta', value: 18, cor: soft('var(--success)') },
   { label: 'Em pausa', value: 5, cor: soft('var(--warning)') },
-  { label: 'Rascunho', value: 6, cor: soft('var(--secondary)') },
+  { label: 'Rascunho', value: 6, cor: soft('var(--muted-foreground)') }, // rascunho = neutro (antes secondary/marca)
   { label: 'Fechada', value: 9, cor: soft('var(--destructive)') },
 ]
 export const STATUS_TOTAL = STATUS_DONUT.reduce((s, x) => s + x.value, 0)
@@ -66,7 +66,7 @@ export const DONUT_STOPS = (() => {
 
 export const STATUS_TONE: Record<Status, BadgeTone> = {
   'Aberta': 'success',
-  'Rascunho': 'secondary',
+  'Rascunho': 'muted', // rascunho = não publicado → neutro (antes 'secondary'/marca)
   'Em pausa': 'warning',
   'Fechada': 'destructive',
 }
@@ -81,11 +81,13 @@ export const VAGAS_RECENTES: { vaga: string; sr: string; inscritos: number; stat
 /* ───────── widgets EXTRAS do catálogo (não entram no layout padrão; o usuário adiciona se quiser) ───────── */
 
 // Origem dos candidatos — donut. Soma = 1.284 (bate com o KPI "Candidatos no funil"). `key` → i18n origem.*
+// Origem = CATEGORIA (não bom/ruim): paleta de DADOS (chart, fixa, não-marca) + neutro p/ "Outros".
+// Antes misturava marca (primary/secondary) com semântico emprestado (success/warning).
 export const ORIGEM = [
-  { key: 'linkedin', value: 540, cor: soft('var(--primary)') },
-  { key: 'indicacao', value: 270, cor: soft('var(--success)') },
-  { key: 'site', value: 230, cor: soft('var(--secondary)') },
-  { key: 'outros', value: 244, cor: soft('var(--warning)') },
+  { key: 'linkedin', value: 540, cor: soft('var(--chart-1)') },
+  { key: 'indicacao', value: 270, cor: soft('var(--chart-2)') },
+  { key: 'site', value: 230, cor: soft('var(--chart-6)') },
+  { key: 'outros', value: 244, cor: soft('var(--muted-foreground)') },
 ]
 export const ORIGEM_TOTAL = ORIGEM.reduce((s, x) => s + x.value, 0)
 export const ORIGEM_STOPS = (() => {

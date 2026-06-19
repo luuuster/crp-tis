@@ -14,10 +14,13 @@ import type { Etapa, ResultadoFase, StatusProc } from './types'
 
 // Pílula de etapa: mapa valor→TOM (token-driven, AA). O VALOR canônico pt-BR é mantido nos mapas/comparações;
 // só a EXIBIÇÃO é traduzida (lookup `etapa.${value}`). 'Em entrevista' usa o tom `warning` (âmbar).
+// Tons da ETAPA: semântico p/ desfecho (success/destructive/warning), neutro p/ "parado" (Banco) e a
+// paleta de DADOS (blue/violet) p/ as etapas intermediárias — antes Triagem/Entrevistado vestiam a MARCA
+// (secondary/primary), o que repintava o funil no rebrand e colidia com o verde de "Contratado".
 export const ETAPA_TOM: Record<Etapa, BadgeTone> = {
-  'Triagem': 'secondary',
+  'Triagem': 'blue',
   'Em entrevista': 'warning',
-  'Entrevistado': 'primary',
+  'Entrevistado': 'violet',
   'Contratado': 'success',
   'Banco de talentos': 'muted',
   'Reprovado': 'destructive',
@@ -60,8 +63,10 @@ export function useResultadoFaseLabel() {
   const { t } = useTranslation('candidatos')
   return (value: ResultadoFase) => t(`resultadoFase.${value}`)
 }
+// Barra do processo casada com o tom do badge (PROC_STATUS_TOM): 'Em andamento' = warning (âmbar), não
+// mais a marca (bg-primary) — a barra não pode "vestir" a marca para indicar progresso.
 export const PROC_BAR: Record<StatusProc, string> = {
-  'Em andamento': 'bg-primary', 'Contratado': 'bg-success', 'Reprovado': 'bg-destructive',
+  'Em andamento': 'bg-warning', 'Contratado': 'bg-success', 'Reprovado': 'bg-destructive',
 }
 export const FASE_VISUAL: Record<ResultadoFase, { bg: string; icon: ComponentType<{ className?: string }>; label: string }> = {
   'aprovado': { bg: 'bg-success/10 text-success-text', icon: CheckCircle2, label: 'Aprovado' },

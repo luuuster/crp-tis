@@ -17,11 +17,12 @@ import { Button } from '@/components/ui/button'
 import { LanguageSelect } from '@/components/LanguageSelect'
 import { Separator } from '@/components/ui/separator'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger, Tip } from '@/components/ui/tooltip'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import { Logo } from '@/components/auth/Logo'
 import logoMark from '@/assets/logo/logo-mark-white.svg'
+import logoMarkTrevo from '@/assets/logo/trevo-mark-white.svg'
 
 // `< md`: a Sidebar fixa some e o hambúrguer abre um DRAWER (overlay); `≥ md`: o hambúrguer só
 // recolhe/expande a largura do menu fixo. Este hook diz em qual mundo estamos.
@@ -61,15 +62,15 @@ function navHandle(key: string, label: string, onNavigate?: (v: string) => void,
   toast.info(`"${label}"`)
 }
 
-export function Sidebar({ active, expanded, onNavigate, onVagas }: { active: string; expanded: boolean; onNavigate?: (v: string) => void; onVagas?: () => void }) {
+export function Sidebar({ active, expanded, onNavigate, onVagas, brand }: { active: string; expanded: boolean; onNavigate?: (v: string) => void; onVagas?: () => void; brand?: string }) {
   const { t } = useTranslation('nav')
   // Transição SUAVE recolher↔expandir: a largura anima com easing; o conteúdo faz fade (não é render
   // condicional, o que dava "estalo"). `overflow-hidden` corta o excedente; o ícone fica FIXO.
   return (
     <aside className={cn('relative z-20 hidden h-dvh shrink-0 flex-col overflow-hidden bg-primary text-primary-foreground shadow-panel-l transition-[width] duration-300 ease-in-out md:flex', expanded ? 'w-[300px]' : 'w-16')}>
       <div className="relative flex h-16 shrink-0 items-center px-4">
-        <img src={logoMark} alt="" className={cn('absolute left-4 size-7 transition-opacity duration-300', expanded ? 'opacity-0' : 'opacity-100')} />
-        <Logo variant="onBrand" className={cn('h-7 w-auto transition-opacity duration-300', expanded ? 'opacity-100' : 'opacity-0')} alt="TIS Talent" />
+        <img src={brand === 'marca-b' ? logoMarkTrevo : logoMark} alt="" className={cn('absolute left-4 size-7 transition-opacity duration-300', expanded ? 'opacity-0' : 'opacity-100')} />
+        <Logo variant="onBrand" brand={brand} className={cn('h-7 w-auto transition-opacity duration-300', expanded ? 'opacity-100' : 'opacity-0')} />
       </div>
 
       <nav className="flex-1 space-y-5 overflow-x-hidden overflow-y-auto px-2.5 py-3" aria-label={t('principal')}>
@@ -107,7 +108,7 @@ export function Sidebar({ active, expanded, onNavigate, onVagas }: { active: str
   )
 }
 
-export function MobileNav({ active, open, onOpenChange, onNavigate, onVagas }: { active: string; open: boolean; onOpenChange: (v: boolean) => void; onNavigate?: (v: string) => void; onVagas?: () => void }) {
+export function MobileNav({ active, open, onOpenChange, onNavigate, onVagas, brand }: { active: string; open: boolean; onOpenChange: (v: boolean) => void; onNavigate?: (v: string) => void; onVagas?: () => void; brand?: string }) {
   const { t } = useTranslation('nav')
   const go = (key: string, label: string) => { onOpenChange(false); navHandle(key, label, onNavigate, onVagas) }
   return (
@@ -115,7 +116,7 @@ export function MobileNav({ active, open, onOpenChange, onNavigate, onVagas }: {
       <DialogPrimitive.Portal>
         <DialogPrimitive.Content className="fixed inset-0 z-50 flex w-full flex-col bg-primary text-primary-foreground outline-none motion-safe:duration-200 motion-safe:data-[state=open]:animate-in motion-safe:data-[state=open]:fade-in-0 motion-safe:data-[state=closed]:animate-out motion-safe:data-[state=closed]:fade-out-0 md:hidden">
           <div className="flex h-16 shrink-0 items-center justify-between px-5">
-            <Logo variant="onBrand" className="h-7 w-auto" alt="TIS Talent" />
+            <Logo variant="onBrand" brand={brand} className="h-7 w-auto" />
             <DialogPrimitive.Close aria-label={t('menu.fechar')} className={cn('flex size-9 items-center justify-center rounded-lg text-primary-foreground transition-colors hover:bg-primary-foreground/10', focusRingOnPrimary)}>
               <X className="size-5" aria-hidden />
             </DialogPrimitive.Close>
@@ -161,26 +162,30 @@ function ShellTopBar({ onToggleMenu, menuExpanded, isMobile, onLogout, brand, mo
   const [confirmSair, setConfirmSair] = useState(false)
   return (
     <header className="flex h-16 shrink-0 items-center gap-3 border-b border-border/40 bg-card/70 px-4 backdrop-blur-sm lg:px-6">
-      <Button variant="ghost" size="icon" aria-label={menuLabel} aria-expanded={menuExpanded} onClick={onToggleMenu} className="text-muted-foreground hover:text-foreground">
-        {isMobile ? <Menu /> : <ChevronLeft className={cn('transition-transform', !menuExpanded && 'rotate-180')} />}
-      </Button>
+      <Tip label={menuLabel}>
+        <Button variant="ghost" size="icon" aria-label={menuLabel} aria-expanded={menuExpanded} onClick={onToggleMenu} className="text-muted-foreground hover:text-foreground">
+          {isMobile ? <Menu /> : <ChevronLeft className={cn('transition-transform', !menuExpanded && 'rotate-180')} />}
+        </Button>
+      </Tip>
       <nav aria-label={t('trilha')} className="hidden items-center gap-1.5 ty-caption font-medium tracking-wide text-muted-foreground uppercase sm:flex">
         <span>{t('trilha')}</span><span aria-hidden>/</span><span className="text-foreground" aria-current="page">{crumb}</span>
       </nav>
 
       <div className="ml-auto flex items-center gap-1.5">
         <LanguageSelect size="icon" />
-        {onCycleBrand && <Button variant="ghost" size="icon" aria-label={tc('marca', { marca: brand })} onClick={onCycleBrand}><Palette /></Button>}
-        {onToggleMode && <Button variant="ghost" size="icon" aria-label={mode === 'dark' ? tc('tema.claro') : tc('tema.escuro')} onClick={onToggleMode}>{mode === 'dark' ? <Sun /> : <Moon />}</Button>}
+        {onCycleBrand && <Tip label={tc('marca', { marca: brand })}><Button variant="ghost" size="icon" aria-label={tc('marca', { marca: brand })} onClick={onCycleBrand}><Palette /></Button></Tip>}
+        {onToggleMode && <Tip label={mode === 'dark' ? tc('tema.claro') : tc('tema.escuro')}><Button variant="ghost" size="icon" aria-label={mode === 'dark' ? tc('tema.claro') : tc('tema.escuro')} onClick={onToggleMode}>{mode === 'dark' ? <Sun /> : <Moon />}</Button></Tip>}
         <Separator orientation="vertical" className="mx-1 h-5" />
         {headerAction}
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button type="button" aria-label={t('conta.label')} className={cn('relative ml-1 rounded-full', focusRing)}>
-              <Avatar className="size-10"><AvatarFallback className="bg-primary text-xs font-semibold text-primary-foreground">FL</AvatarFallback></Avatar>
-              <span className="absolute right-0 bottom-0 size-2.5 rounded-full border-2 border-card bg-success" aria-hidden />
-            </button>
-          </DropdownMenuTrigger>
+          <Tip label={t('conta.label')}>
+            <DropdownMenuTrigger asChild>
+              <button type="button" aria-label={t('conta.label')} className={cn('relative ml-1 rounded-full', focusRing)}>
+                <Avatar className="size-10"><AvatarFallback className="bg-primary text-xs font-semibold text-primary-foreground">FL</AvatarFallback></Avatar>
+                <span className="absolute right-0 bottom-0 size-2.5 rounded-full border-2 border-card bg-success" aria-hidden />
+              </button>
+            </DropdownMenuTrigger>
+          </Tip>
           <DropdownMenuContent align="end" className="w-56">
             <div className="flex items-center gap-3 p-2">
               <Avatar className="size-9"><AvatarFallback className="bg-primary text-xs font-semibold text-primary-foreground">FL</AvatarFallback></Avatar>
@@ -216,8 +221,8 @@ export function AppShell({ active, crumb, onNavigate, brand, mode, onCycleBrand,
   const toggleMenu = () => (isMobile ? setMobileOpen((o) => !o) : setExpanded((e) => !e))
   return (
     <div className="ty-scale-16 flex h-dvh overflow-hidden bg-muted/40 text-foreground">
-      <Sidebar active={active} expanded={expanded} onNavigate={onNavigate} />
-      <MobileNav active={active} open={navOpen} onOpenChange={setMobileOpen} onNavigate={onNavigate} />
+      <Sidebar active={active} expanded={expanded} onNavigate={onNavigate} brand={brand} />
+      <MobileNav active={active} open={navOpen} onOpenChange={setMobileOpen} onNavigate={onNavigate} brand={brand} />
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         <ShellTopBar onToggleMenu={toggleMenu} menuExpanded={isMobile ? mobileOpen : expanded} isMobile={isMobile} onLogout={() => onNavigate('login')} brand={brand} mode={mode} onCycleBrand={onCycleBrand} onToggleMode={onToggleMode} crumb={crumb} headerAction={headerAction} />
         <main className="relative min-h-0 flex-1 overflow-y-auto">{children}</main>

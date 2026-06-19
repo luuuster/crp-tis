@@ -116,7 +116,7 @@ export function DetailScreen({ crumb, width = '5xl', footer, children }: {
         {children}
       </div>
       {footer && (
-        <footer className="sticky bottom-0 z-10 border-t border-border/40 bg-card/80 backdrop-blur-sm">
+        <footer className="sticky bottom-0 z-10 border-t border-border/40 bg-card/80 pb-[env(safe-area-inset-bottom)] backdrop-blur-sm">
           <div className={cn('mx-auto flex flex-wrap items-center justify-between gap-3 px-5 py-3 lg:px-8', w)}>{footer}</div>
         </footer>
       )}
@@ -126,10 +126,19 @@ export function DetailScreen({ crumb, width = '5xl', footer, children }: {
 
 /* ─────────────────────────────── StatusBadge ─────────────────────────────── */
 
-// Vocabulário de tons do badge: os 4 de `toneBadge` (primary/secondary/destructive/success) + 'muted'
-// (neutro). Cada um já é AA nos 4 temas (fundo a 10% + texto -text); 'muted' usa o par muted-foreground.
-export const badgeTone = { ...toneBadge, muted: 'bg-muted text-muted-foreground' } as const
-export type BadgeTone = Tone | 'muted'
+// Vocabulário de tons do badge: os semânticos de `toneBadge` (primary/secondary/destructive/success/
+// warning) + 'muted' (neutro) + paleta de DADOS (blue/violet/teal). Cada um é AA nos 4 temas.
+// IMPORTANTE: primary/secondary são a MARCA — só p/ identidade/ação. Categoria/status/papel que precisa
+// de hue distinto usa a paleta de dados (tokens chart-*, fixos, NÃO seguem a marca) ou 'muted'; assim o
+// rebrand não repinta dado. Par soft/soft-foreground dos chart = AA em light e dark.
+export const badgeTone = {
+  ...toneBadge,
+  muted: 'bg-muted text-muted-foreground',
+  blue: 'bg-[var(--chart-1-soft)] text-[var(--chart-1-soft-foreground)]',
+  violet: 'bg-[var(--chart-2-soft)] text-[var(--chart-2-soft-foreground)]',
+  teal: 'bg-[var(--chart-6-soft)] text-[var(--chart-6-soft-foreground)]',
+} as const
+export type BadgeTone = Tone | 'muted' | 'blue' | 'violet' | 'teal'
 
 /**
  * Pílula de status/etapa token-driven. Antes cada página redeclarava um `Record<Status, 'bg-X/10 text-X-text'>`

@@ -192,9 +192,11 @@ export function buildDetalhe(c: { nome: string; vaga: string; data: string; scor
 }
 
 // Pílula de status: mapa valor→TOM (a renderização token-driven mora no StatusBadge).
+// 'Aprovado bot' = aprovação provisória da IA (aguarda o RH) → tom de DADOS (violet), distinto do verde
+// de 'Aprovado RH' (success). Antes era 'primary' (marca): no rebrand verde os dois viravam o MESMO verde.
 const STATUS_TONE: Record<StatusIA, BadgeTone> = {
   'Pendente': 'warning',
-  'Aprovado bot': 'primary',
+  'Aprovado bot': 'violet',
   'Aprovado RH': 'success',
   'Reprovado': 'destructive',
 }

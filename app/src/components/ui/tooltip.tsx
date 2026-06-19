@@ -52,4 +52,31 @@ function TooltipContent({
   )
 }
 
-export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }
+/**
+ * Tip — tooltip de conveniência p/ botões SÓ-ÍCONE: envolve o gatilho e revela um rótulo no hover/foco.
+ * Mantém o `aria-label` do gatilho como NOME acessível (o tooltip vira descrição via aria-describedby do
+ * Radix), então não há anúncio duplicado. `children` deve ser UM elemento focável que aceite ref
+ * (Button, ou um DropdownMenuTrigger asChild). Padrão `side="bottom"` (serve aos docks/topbars no topo).
+ */
+function Tip({
+  label,
+  side = "bottom",
+  sideOffset = 6,
+  children,
+}: {
+  label: React.ReactNode
+  side?: "top" | "right" | "bottom" | "left"
+  sideOffset?: number
+  children: React.ReactNode
+}) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>{children}</TooltipTrigger>
+      <TooltipContent side={side} sideOffset={sideOffset}>
+        {label}
+      </TooltipContent>
+    </Tooltip>
+  )
+}
+
+export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider, Tip }

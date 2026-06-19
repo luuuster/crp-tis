@@ -128,7 +128,7 @@ export function CharlieAssistente({ cands, vagas, onVerPerfil }: { cands: Candid
       </div>
 
       {/* rodapé */}
-      <footer className="border-t border-border/40 p-4">
+      <footer className="border-t border-border/40 p-4 pb-[calc(1rem_+_env(safe-area-inset-bottom))]">
         <p className="ty-caption text-muted-foreground">{t('charlie.rodape')}</p>
       </footer>
     </>
