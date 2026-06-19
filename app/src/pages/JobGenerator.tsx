@@ -16,7 +16,7 @@
  * o shell (sidebar + topbar + rodapés) e o roteamento de `screen`. Os subcomponentes (formulários,
  * primitivos de campo, Charlie, revisão, modelo/validação) vivem em ./job-generator/*.
  */
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { AlertTriangle, ArrowRight, ChevronLeft, Pencil, Rocket, Save, X } from 'lucide-react'
@@ -47,6 +47,8 @@ import {
   optLabeler,
   requiredBriefingOk,
   requiredPerfilOk,
+  reviewVaga,
+  contarCriticas,
 } from './job-generator'
 
 /* ────────────────────────────── página ────────────────────────────── */
@@ -73,6 +75,15 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
   const isMobile = useIsMobile()
   const [msgs, setMsgs] = useState<Msg[]>([])
   const [publishOpen, setPublishOpen] = useState(false)
+  // Publicar fica BLOQUEADO até a vaga ser revisada com o Charlie (botão "Revisar vaga com Charlie", passo 3)
+  // E até zerar as inconsistências CRÍTICAS que ele achar — salvo "Publicar mesmo assim" (override explícito).
+  const [revisado, setRevisado] = useState(false)
+  const [overridden, setOverridden] = useState(false)
+  // Achados da revisão do Charlie — calculados AO VIVO do briefing/perfil: corrigir o salário some com a
+  // crítica na hora (sem re-rodar). O `revisado` só controla quando o painel/análise aparece.
+  const findings = useMemo(() => reviewVaga(data, perfil), [data, perfil])
+  const criticas = contarCriticas(findings)
+  const canPublish = revisado && (criticas === 0 || overridden)
   // Validação SOFT por etapa: quando o usuário tenta avançar com obrigatórios em branco, ligamos o
   // destaque desta etapa (não trava — ver `avancar`). Some sozinho conforme preenche (é reativo).
   const [showErrors, setShowErrors] = useState<Record<number, boolean>>({})
@@ -84,12 +95,12 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
   const onTom = (t: Tom) => { setTom(t); setResumoOverride(null) }
   const voltar = () => setStep((s) => Math.max(1, s - 1))
   // Zera o wizard (sem navegar nem avisar) — base p/ entrar, recomeçar e voltar à lista.
-  const resetWizard = () => { setData(BRIEFING_INICIAL); setPerfil(PERFIL_INICIAL); setResumoOverride(null); setTom('Equilibrado'); setShowErrors({}); setStep(1); setEditingVaga(null) }
+  const resetWizard = () => { setData(BRIEFING_INICIAL); setPerfil(PERFIL_INICIAL); setResumoOverride(null); setTom('Equilibrado'); setShowErrors({}); setStep(1); setEditingVaga(null); setRevisado(false); setOverridden(false) }
   // Lista → wizard de CRIAÇÃO (do zero, editingVaga = null).
   const irParaWizard = () => { resetWizard(); setScreen('wizard') }
   // "Editar" abre o MESMO wizard, mas PREENCHIDO com a vaga e em modo edição (não a tela em branco).
   const editarVaga = (v: Vaga) => {
-    setData(v.briefing); setPerfil(v.perfil); setResumoOverride(null); setTom('Equilibrado'); setShowErrors({}); setStep(1)
+    setData(v.briefing); setPerfil(v.perfil); setResumoOverride(null); setTom('Equilibrado'); setShowErrors({}); setStep(1); setRevisado(false); setOverridden(false)
     setEditingVaga(v); setCharlieOpen(false); setScreen('wizard')
     toast.info(t('toast.editando', { cargo: v.briefing.cargo }))
   }
@@ -100,8 +111,6 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
   const irParaLista = () => { resetWizard(); setCharlieOpen(false); setVagaSel(null); setScreen('lista') }
   // Cancelar a criação só executa após a confirmação na modal (volta à lista).
   const resetAll = () => { const editando = !!editingVaga; irParaLista(); toast.info(editando ? t('toast.edicaoCancelada') : t('toast.criacaoCancelada')) }
-  // "Nova vaga" (no passo final): recomeça o wizard do zero, sem sair pra lista.
-  const novaVaga = () => { resetWizard(); toast.success(t('toast.novaIniciada')) }
 
   // mutuamente exclusivos: expandir o menu fecha o Charlie; abrir o Charlie recolhe o menu.
   const setLeft = (v: boolean) => { setLeftExpanded(v); if (v) setCharlieOpen(false) }
@@ -151,7 +160,7 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
   // Validação SOFT: ao tentar avançar com obrigatórios em branco, DESTACA + avisa (com ação "avançar
   // assim mesmo") + foca o 1º, mas NÃO trava — um 2º clique (ou a ação do aviso) prossegue.
   const avancar = () => {
-    if (step >= STEPS.length) { setPublishOpen(true); return }
+    if (step >= STEPS.length) { if (!canPublish) return; setPublishOpen(true); return } // só publica após revisar com o Charlie e sem crítica (ou override)
     if ((step === 1 || step === 2) && !stepComplete(step) && !showErrors[step]) {
       setShowErrors((p) => ({ ...p, [step]: true }))
       toast.warning(t('validacao.obrigatoriosEmBranco', { count: countMissing(step) }), {
@@ -205,7 +214,7 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
 
               {step === 1 && <BriefingForm data={data} set={set} showErrors={!!showErrors[1]} />}
               {step === 2 && <PerfilForm perfil={perfil} set={setPerf} showErrors={!!showErrors[2]} />}
-              {step === 3 && <ReviewStep data={data} perfil={perfil} tom={tom} onTom={onTom} set={set} resumoOverride={resumoOverride} onResumoChange={setResumoOverride} onResolve={onResolve} onPublish={avancar} onNova={novaVaga} ctaLabel={finalCtaLabel} />}
+              {step === 3 && <ReviewStep data={data} perfil={perfil} tom={tom} onTom={onTom} set={set} resumoOverride={resumoOverride} onResumoChange={setResumoOverride} onResolve={onResolve} onPublish={avancar} ctaLabel={finalCtaLabel} findings={findings} revisado={revisado} onRevisar={() => setRevisado(true)} canPublish={canPublish} overridden={overridden} onOverride={() => setOverridden(true)} />}
             </div>
           )}
         </main>
@@ -237,7 +246,7 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
               {step > 1 && <Button variant="ghost" onClick={voltar} className="max-sm:flex-1"><ChevronLeft /> {t('footer.voltar')}</Button>}
               {/* Último passo: publicar vive na coluna de Ações (desktop); no mobile fica AQUI no rodapé fixo. */}
               {step < STEPS.length && <Button onClick={avancar} className="max-sm:flex-1">{nextLabel} <ArrowRight /></Button>}
-              {step === STEPS.length && <Button onClick={avancar} className="max-sm:flex-1 lg:hidden"><Rocket /> {finalCtaLabel}</Button>}
+              {step === STEPS.length && <Button onClick={avancar} disabled={!canPublish} className="max-sm:flex-1 lg:hidden"><Rocket /> {finalCtaLabel}</Button>}
             </div>
           </div>
         </footer>

@@ -25,8 +25,8 @@
   },
   "steps": {
     "1": {
-      "title": "Briefing de la Vacante",
-      "eyebrow": "Briefing",
+      "title": "Resumen de la Vacante",
+      "eyebrow": "Resumen",
       "desc": "Datos institucionales y operativos"
     },
     "2": {
@@ -55,12 +55,12 @@
   "header": {
     "eyebrowEdicao": "Edición",
     "eyebrowCriacao": "Creación",
-    "etapaLinha": "{{modo}} · Paso {{num}} — {{eyebrow}}",
+    "etapaLinha": "{{modo}} · Paso {{num}}, {{eyebrow}}",
     "tituloEditar": "Editar vacante",
     "tituloNova": "Nueva vacante",
     "descEditarAntes": "Actualiza la información de ",
     "descEditarDepois": " y guarda los cambios. Charlie sigue disponible para refinar los campos.",
-    "descNova": "Estructura el briefing con calma. Cuando lo necesites, abre Charlie — te da sugerencias y refina los campos contigo."
+    "descNova": "Estructura el resumen de la vacante con calma. Cuando lo necesites, abre Charlie, que te da sugerencias y refina los campos contigo."
   },
   "crumb": {
     "vaga": "Vacante",
@@ -80,7 +80,7 @@
   },
   "validacao": {
     "campoObrigatorio": "Campo obligatorio",
-    "obrigatoriosEmBranco": "{{count}} campo(s) obligatorio(s) en blanco — los resalté en rojo.",
+    "obrigatoriosEmBranco": "{{count}} campo(s) obligatorio(s) en blanco, los resalté en rojo.",
     "obrigatoriosDescricao": "Puedes completarlos ahora o avanzar de todos modos.",
     "avancarAssimMesmo": "Avanzar de todos modos"
   },
@@ -123,7 +123,7 @@
     },
     "sobre": {
       "title": "Sobre la vacante",
-      "desc": "El contexto del desafío y el objetivo de la contratación — la apertura de la descripción."
+      "desc": "El contexto del desafío y el objetivo de la contratación, la apertura de la descripción."
     },
     "operacao": {
       "title": "Operación y rutina",
@@ -135,7 +135,7 @@
     },
     "processo": {
       "title": "Proceso de selección",
-      "desc": "Las etapas de la selección, en orden — lo que enfrentará quien se postule."
+      "desc": "Las etapas de la selección, en orden, lo que enfrentará quien se postule."
     },
     "requisitos": {
       "title": "Requisitos técnicos",
@@ -156,14 +156,14 @@
     "modelo": { "label": "Modelo", "placeholder": "Selecciona el modelo" },
     "cliente": { "label": "Cliente / Proyecto", "hint": "Cliente o proyecto interno al que pertenece la vacante.", "placeholder": "Nombre del cliente" },
     "gestor": { "label": "Responsable directo", "hint": "Persona a quien reporta la vacante.", "placeholder": "Nombre del responsable" },
-    "desafio": { "label": "Sobre el desafío", "hint": "El escenario en el que nace la vacante — el equipo/proyecto y el momento.", "placeholder": "Ex: Estamos expandindo o time de engenharia do TIS Talent AI Platform para sustentar o crescimento da plataforma." },
+    "desafio": { "label": "Sobre el desafío", "hint": "El escenario en el que nace la vacante, el equipo/proyecto y el momento.", "placeholder": "Ex: Estamos expandindo o time de engenharia do TIS Talent AI Platform para sustentar o crescimento da plataforma." },
     "objetivo": { "label": "Objetivo de la vacante", "hint": "Lo que esta contratación necesita lograr.", "placeholder": "Ex: Ampliar a capacidade de entrega de soluções backend de alta performance, garantindo escalabilidade e qualidade nas integrações da plataforma." },
-    "local": { "label": "Lugar de trabajo", "hint": "Ciudad/estado base (incluso en remoto/híbrido).", "placeholder": "Ciudad — Estado" },
+    "local": { "label": "Lugar de trabajo", "hint": "Ciudad/estado base (incluso en remoto/híbrido).", "placeholder": "Ciudad, Estado" },
     "horario": { "label": "Horario", "placeholder": "Selecciona un horario" },
     "carga": { "label": "Carga semanal", "placeholder": "Selecciona una carga semanal" },
     "motivo": { "label": "Motivo de apertura", "placeholder": "Selecciona el motivo" },
     "quantidade": { "label": "Cantidad de vacantes", "placeholder": "Selecciona la cantidad", "buscar": "Buscar número…" },
-    "budget": { "label": "Presupuesto", "hint": "Rango salarial previsto.", "placeholder": "R$ 8.000 — 10.000" },
+    "budget": { "label": "Presupuesto", "hint": "Rango salarial previsto.", "placeholder": "R$ 8.000 a 10.000" },
     "modalidade": { "label": "Modalidad de contrato", "placeholder": "Selecciona la modalidad" },
     "beneficios": { "label": "Beneficios", "addLabel": "beneficio", "buscar": "Buscar beneficio…", "vazio": "Ningún beneficio agregado." },
     "processo": { "label": "Etapas del proceso", "hint": "Selecciona las etapas y ordena la secuencia con las flechas.", "addLabel": "etapa", "buscar": "Buscar etapa…", "vazio": "Ninguna etapa agregada." }
@@ -174,11 +174,11 @@
     "exigenciasLegenda": "Requisitos formales",
     "formacao": { "label": "Formación / Escolaridad", "hint": "Nivel y áreas de formación aceptados.", "placeholder": "Ex: Superior completo em Ciência da Computação ou áreas correlatas." },
     "experiencia": { "label": "Experiencia obligatoria", "hint": "Tiempo y tipo de experiencia mínima exigida.", "placeholder": "Ex: Mínimo 3 anos em desenvolvimento backend com Python e APIs RESTful." },
-    "stackObrigatoria": { "label": "Stack técnico obligatorio", "hint": "Sin esto, el perfil no avanza en la preselección.", "addLabel": "tecnología", "buscar": "Buscar tecnología…", "vazio": "Ninguna tecnología — agrega o pídele a Charlie." },
+    "stackObrigatoria": { "label": "Stack técnico obligatorio", "hint": "Sin esto, el perfil no avanza en la preselección.", "addLabel": "tecnología", "buscar": "Buscar tecnología…", "vazio": "Ninguna tecnología, agrega o pídele a Charlie." },
     "conhecimentos": { "label": "Conocimientos deseables", "hint": "Suman a favor, pero no bloquean.", "addLabel": "conocimiento", "buscar": "Buscar conocimiento…", "vazio": "Agrega los diferenciales deseados." },
-    "responsabilidades": { "label": "Funciones y responsabilidades", "hint": "Una por frase — se convierten en viñetas en la descripción generada.", "placeholder": "Ex: Desenvolver e manter APIs RESTful. Realizar code reviews. Mentorar pessoas." },
+    "responsabilidades": { "label": "Funciones y responsabilidades", "hint": "Una por frase, se convierten en viñetas en la descripción generada.", "placeholder": "Ex: Desenvolver e manter APIs RESTful. Realizar code reviews. Mentorar pessoas." },
     "habilidades": { "label": "Habilidades blandas", "hint": "El tipo de persona que buscas (opcional).", "addLabel": "habilidad", "buscar": "Buscar habilidad…", "vazio": "Agrega las soft skills deseadas." },
-    "justificativa": { "label": "Justificación de la contratación", "hint": "Por qué existe esta vacante — contexto libre para la aprobación.", "placeholder": "Ex: Expansão do produto X para novo cliente — necessidade de reforço técnico no time de backend." }
+    "justificativa": { "label": "Justificación de la contratación", "hint": "Por qué existe esta vacante, contexto libre para la aprobación.", "placeholder": "Ex: Expansão do produto X para novo cliente, necessidade de reforço técnico no time de backend." }
   },
   "field": {
     "obrigatorioMarca": " *",
@@ -212,7 +212,7 @@
     "nome": "Charlie",
     "copiloto": "COPILOTO",
     "ativo": "ACTIVO",
-    "tituloSr": "Charlie — copiloto",
+    "tituloSr": "Charlie, copiloto",
     "descricaoSr": "Sugerencias y conversación para ayudarte a armar la vacante.",
     "copilotoAside": "Copiloto Charlie",
     "sugestoesAria": "Sugerencias",
@@ -231,7 +231,7 @@
     "limpar": "Borrar",
     "enviar": "Enviar",
     "saudacao": "¡Hola! Soy Charlie. Vi que marcaste {{nivel}} y {{modelo}} en {{local}}.{{budget}}",
-    "saudacaoBudget": " El presupuesto sigue en blanco — ¿quieres un rango de mercado?",
+    "saudacaoBudget": " El presupuesto sigue en blanco, ¿quieres un rango de mercado?",
     "respostaPadrao": "¡Recibido! En esta demo no completo de verdad, pero es aquí donde distribuiría lo que reconociera en los campos.",
     "haAgoSegundos": "Hace {{s}}s",
     "haAgoMinutos": "Hace {{min}}min"
@@ -245,16 +245,74 @@
       "Formal": "Formal"
     },
     "descricaoVaga": "Descripción de la vacante",
-    "melhorando": "Mejorando…",
-    "melhorarIA": "Mejorar con IA",
+    "melhorando": "Revisando…",
+    "melhorarIA": "Revisar la vacante con Charlie",
     "melhorarToast": "Charlie mejoró la descripción. Ajústala a mano si quieres.",
+    "reviseParaPublicar": "Revisa la vacante con Charlie para habilitar la publicación.",
+    "charlie": {
+      "titulo": "Revisión de Charlie",
+      "aguardando": "Ejecuta la revisión de Charlie para comprobar salario, jornada, experiencia y consistencia antes de publicar.",
+      "tudoCerto": "Todo en orden. No encontré inconsistencias para señalar.",
+      "resumoCriticas_one": "{{count}} inconsistencia crítica",
+      "resumoCriticas_other": "{{count}} inconsistencias críticas",
+      "resumoAvisos_one": "{{count}} punto a revisar",
+      "resumoAvisos_other": "{{count}} puntos a revisar",
+      "ajustar": "Ajustar",
+      "revisarNovamente": "Revisar de nuevo",
+      "bloqueadoCritica": "Hay una inconsistencia crítica en la vacante. Ajústala antes de publicar (o publica de todos modos).",
+      "publicarMesmoAssim": "Publicar de todos modos",
+      "salarioAbaixo": {
+        "titulo": "Salario por debajo del mercado",
+        "detalhe": "Para {{cargo}} {{nivel}}, el mercado ronda los {{mercado}}. Tu rango ({{sua}}) está por debajo del piso de {{piso}}, eso aleja a buenos candidatos. Revisa el presupuesto."
+      },
+      "salarioAcima": {
+        "titulo": "Salario por encima del mercado",
+        "detalhe": "Tu rango ({{sua}}) supera bastante el techo de mercado ({{teto}}) para {{cargo}} {{nivel}}. Si es intencional (skill escasa, contraoferta), está bien, solo confirma el presupuesto."
+      },
+      "salarioOk": {
+        "titulo": "Rango alineado con el mercado",
+        "detalhe": "{{sua}} está dentro de lo esperado para {{cargo}} {{nivel}} ({{mercado}}). 👍"
+      },
+      "salarioIlegivel": {
+        "titulo": "No pude leer el rango",
+        "detalhe": "No identifiqué valores en el presupuesto para comparar con el mercado ({{mercado}} para {{cargo}} {{nivel}}). Indica el rango en reales."
+      },
+      "faixaAmpla": {
+        "titulo": "Rango salarial demasiado amplio",
+        "detalhe": "{{sua}} es una ventana demasiado amplia y confunde al candidato sobre el nivel real de la vacante. Acota el rango."
+      },
+      "expAlta": {
+        "titulo": "Experiencia alta para el nivel",
+        "detalhe": "Exiges {{anos}} años de experiencia, mucho para una vacante {{nivel}} (lo habitual llega hasta {{max}}). Puede estrechar demasiado el embudo de candidatos."
+      },
+      "expBaixa": {
+        "titulo": "Experiencia baja para el nivel",
+        "detalhe": "{{anos}} año(s) de experiencia es poco para una vacante {{nivel}} (lo habitual empieza en {{min}}). Verifica si el nivel es correcto."
+      },
+      "poucosBeneficios": {
+        "titulo": "Pocos beneficios",
+        "detalhe": "Solo {{n}} beneficio(s) listado(s). Un paquete escaso reduce la competitividad de la vacante frente al mercado."
+      },
+      "estagioCarga": {
+        "titulo": "Jornada por encima del límite de prácticas",
+        "detalhe": "Las prácticas están limitadas a 30h semanales (Ley 11.788). {{carga}} supera el tope, reduce la jornada o ajusta la modalidad del contrato."
+      },
+      "cltCarga": {
+        "titulo": "Jornada baja para CLT",
+        "detalhe": "El CLT a tiempo completo suele ser 40h o 44h. {{carga}} es tiempo parcial, confirma si es intencional."
+      },
+      "pjBeneficios": {
+        "titulo": "Beneficios de CLT en vacante PJ",
+        "detalhe": "{{itens}} son beneficios típicos de CLT y normalmente no aplican a PJ. Revisa el paquete."
+      }
+    },
     "acoes": "Acciones",
     "scoreQualidade": "Puntaje de calidad",
     "aprovado": "Aprobada",
     "emRevisao": "En revisión",
     "prontaParaPublicar": "Vacante lista para publicar.",
     "resolvaPendencias": "Resuelve los pendientes para aprobar la vacante.",
-    "briefingIncompleto": "Briefing incompleto",
+    "briefingIncompleto": "Resumen incompleto",
     "perfilIncompleto": "Perfil incompleto",
     "textoAcimaLimite": "Texto superior a 2.000 caracteres",
     "resolver": "{{label}} · resolver",
@@ -268,14 +326,14 @@
     "copiado": "Copiado",
     "copiar": "Copiar",
     "postCopiado": "¡Texto de la publicación copiado!",
-    "erroCopiar": "No se pudo copiar — selecciona y copia manualmente.",
+    "erroCopiar": "No se pudo copiar, selecciona y copia manualmente.",
     "copiarPost": "Copiar texto de la publicación",
     "publicarManual": "Usa este contenido al publicar manualmente."
   },
   "charBadge": {
     "caracteres": "{{num}} caracteres",
-    "ideal": "— Ideal para el engagement (≤ {{limit}})",
-    "acima": "— Por encima de lo ideal (> {{limit}})"
+    "ideal": "Ideal para el engagement (≤ {{limit}})",
+    "acima": "Por encima de lo ideal (> {{limit}})"
   },
   "doc": {
     "descricaoVaga": "Descripción de la vacante",

@@ -25,8 +25,8 @@
   },
   "steps": {
     "1": {
-      "title": "Job Briefing",
-      "eyebrow": "Briefing",
+      "title": "Job Summary",
+      "eyebrow": "Summary",
       "desc": "Institutional and operational details"
     },
     "2": {
@@ -55,12 +55,12 @@
   "header": {
     "eyebrowEdicao": "Editing",
     "eyebrowCriacao": "Creating",
-    "etapaLinha": "{{modo}} · Step {{num}} — {{eyebrow}}",
+    "etapaLinha": "{{modo}} · Step {{num}}, {{eyebrow}}",
     "tituloEditar": "Edit job",
     "tituloNova": "New job",
     "descEditarAntes": "Update the information for ",
     "descEditarDepois": " and save your changes. Charlie is still around to help refine the fields.",
-    "descNova": "Build the briefing at your own pace. Whenever you need, open Charlie — he offers suggestions and refines the fields with you."
+    "descNova": "Build the summary at your own pace. Whenever you need, open Charlie, who offers suggestions and refines the fields with you."
   },
   "crumb": {
     "vaga": "Job",
@@ -80,7 +80,7 @@
   },
   "validacao": {
     "campoObrigatorio": "Required field",
-    "obrigatoriosEmBranco": "{{count}} required field(s) left blank — I highlighted them in red.",
+    "obrigatoriosEmBranco": "{{count}} required field(s) left blank, I highlighted them in red.",
     "obrigatoriosDescricao": "You can fill them in now or continue anyway.",
     "avancarAssimMesmo": "Continue anyway"
   },
@@ -123,7 +123,7 @@
     },
     "sobre": {
       "title": "About the job",
-      "desc": "The context of the challenge and the goal of the hire — the opening of the description."
+      "desc": "The context of the challenge and the goal of the hire, the opening of the description."
     },
     "operacao": {
       "title": "Operations & routine",
@@ -135,7 +135,7 @@
     },
     "processo": {
       "title": "Selection process",
-      "desc": "The stages of the selection, in order — what applicants will go through."
+      "desc": "The stages of the selection, in order, what applicants will go through."
     },
     "requisitos": {
       "title": "Technical requirements",
@@ -156,14 +156,14 @@
     "modelo": { "label": "Work model", "placeholder": "Select the model" },
     "cliente": { "label": "Client / Project", "hint": "Client or internal project this job belongs to.", "placeholder": "Client name" },
     "gestor": { "label": "Direct manager", "hint": "Person the job reports to.", "placeholder": "Manager name" },
-    "desafio": { "label": "About the challenge", "hint": "The scenario where the job is born — the team/project and the moment.", "placeholder": "Ex: Estamos expandindo o time de engenharia do TIS Talent AI Platform para sustentar o crescimento da plataforma." },
+    "desafio": { "label": "About the challenge", "hint": "The scenario where the job is born, the team/project and the moment.", "placeholder": "Ex: Estamos expandindo o time de engenharia do TIS Talent AI Platform para sustentar o crescimento da plataforma." },
     "objetivo": { "label": "Goal of the job", "hint": "What this hire needs to achieve.", "placeholder": "Ex: Ampliar a capacidade de entrega de soluções backend de alta performance, garantindo escalabilidade e qualidade nas integrações da plataforma." },
-    "local": { "label": "Work location", "hint": "Base city/state (even for remote/hybrid).", "placeholder": "City — State" },
+    "local": { "label": "Work location", "hint": "Base city/state (even for remote/hybrid).", "placeholder": "City, State" },
     "horario": { "label": "Schedule", "placeholder": "Select a schedule" },
     "carga": { "label": "Weekly hours", "placeholder": "Select weekly hours" },
     "motivo": { "label": "Reason for opening", "placeholder": "Select the reason" },
     "quantidade": { "label": "Number of openings", "placeholder": "Select the amount", "buscar": "Search number…" },
-    "budget": { "label": "Budget", "hint": "Expected salary range.", "placeholder": "R$ 8.000 — 10.000" },
+    "budget": { "label": "Budget", "hint": "Expected salary range.", "placeholder": "R$ 8.000 to 10.000" },
     "modalidade": { "label": "Contract type", "placeholder": "Select the contract type" },
     "beneficios": { "label": "Benefits", "addLabel": "benefit", "buscar": "Search benefit…", "vazio": "No benefits added." },
     "processo": { "label": "Process stages", "hint": "Select the stages and order the sequence with the arrows.", "addLabel": "stage", "buscar": "Search stage…", "vazio": "No stages added." }
@@ -174,11 +174,11 @@
     "exigenciasLegenda": "Formal requirements",
     "formacao": { "label": "Education / Schooling", "hint": "Accepted level and fields of study.", "placeholder": "Ex: Superior completo em Ciência da Computação ou áreas correlatas." },
     "experiencia": { "label": "Required experience", "hint": "Minimum amount and type of experience required.", "placeholder": "Ex: Mínimo 3 anos em desenvolvimento backend com Python e APIs RESTful." },
-    "stackObrigatoria": { "label": "Required tech stack", "hint": "Without it, the profile won't pass screening.", "addLabel": "technology", "buscar": "Search technology…", "vazio": "No technologies — add some or ask Charlie." },
+    "stackObrigatoria": { "label": "Required tech stack", "hint": "Without it, the profile won't pass screening.", "addLabel": "technology", "buscar": "Search technology…", "vazio": "No technologies, add some or ask Charlie." },
     "conhecimentos": { "label": "Nice-to-have knowledge", "hint": "Counts in their favor, but doesn't block.", "addLabel": "knowledge", "buscar": "Search knowledge…", "vazio": "Add the desired nice-to-haves." },
-    "responsabilidades": { "label": "Duties and responsibilities", "hint": "One per sentence — they become bullets in the generated description.", "placeholder": "Ex: Desenvolver e manter APIs RESTful. Realizar code reviews. Mentorar pessoas." },
+    "responsabilidades": { "label": "Duties and responsibilities", "hint": "One per sentence, they become bullets in the generated description.", "placeholder": "Ex: Desenvolver e manter APIs RESTful. Realizar code reviews. Mentorar pessoas." },
     "habilidades": { "label": "Soft skills", "hint": "The kind of person you're looking for (optional).", "addLabel": "skill", "buscar": "Search skill…", "vazio": "Add the desired soft skills." },
-    "justificativa": { "label": "Hiring justification", "hint": "Why this job exists — free context for approval.", "placeholder": "Ex: Expansão do produto X para novo cliente — necessidade de reforço técnico no time de backend." }
+    "justificativa": { "label": "Hiring justification", "hint": "Why this job exists, free context for approval.", "placeholder": "Ex: Expansão do produto X para novo cliente, necessidade de reforço técnico no time de backend." }
   },
   "field": {
     "obrigatorioMarca": " *",
@@ -212,7 +212,7 @@
     "nome": "Charlie",
     "copiloto": "COPILOT",
     "ativo": "ACTIVE",
-    "tituloSr": "Charlie — copilot",
+    "tituloSr": "Charlie, copilot",
     "descricaoSr": "Suggestions and chat to help you build the job.",
     "copilotoAside": "Charlie copilot",
     "sugestoesAria": "Suggestions",
@@ -231,7 +231,7 @@
     "limpar": "Clear",
     "enviar": "Send",
     "saudacao": "Hi! I'm Charlie. I saw you selected {{nivel}} and {{modelo}} in {{local}}.{{budget}}",
-    "saudacaoBudget": " The budget is still blank — want a market range?",
+    "saudacaoBudget": " The budget is still blank, want a market range?",
     "respostaPadrao": "Got it! In this demo I don't actually fill anything in, but this is where I'd distribute what I recognized across the fields.",
     "haAgoSegundos": "{{s}}s ago",
     "haAgoMinutos": "{{min}}min ago"
@@ -245,16 +245,74 @@
       "Formal": "Formal"
     },
     "descricaoVaga": "Job description",
-    "melhorando": "Enhancing…",
-    "melhorarIA": "Enhance with AI",
+    "melhorando": "Reviewing…",
+    "melhorarIA": "Review job with Charlie",
     "melhorarToast": "Charlie enhanced the description. Tweak it by hand if you like.",
+    "reviseParaPublicar": "Review the job with Charlie to unlock publishing.",
+    "charlie": {
+      "titulo": "Charlie's review",
+      "aguardando": "Run Charlie's review to check salary, hours, experience and consistency before publishing.",
+      "tudoCerto": "All good. I found no inconsistencies to flag.",
+      "resumoCriticas_one": "{{count}} critical inconsistency",
+      "resumoCriticas_other": "{{count}} critical inconsistencies",
+      "resumoAvisos_one": "{{count}} point to review",
+      "resumoAvisos_other": "{{count}} points to review",
+      "ajustar": "Adjust",
+      "revisarNovamente": "Review again",
+      "bloqueadoCritica": "There's a critical inconsistency in this job. Fix it before publishing (or publish anyway).",
+      "publicarMesmoAssim": "Publish anyway",
+      "salarioAbaixo": {
+        "titulo": "Salary below market",
+        "detalhe": "For {{cargo}} {{nivel}}, the market sits around {{mercado}}. Your range ({{sua}}) is below the {{piso}} floor, which drives away good candidates. Revisit the budget."
+      },
+      "salarioAcima": {
+        "titulo": "Salary above market",
+        "detalhe": "Your range ({{sua}}) goes well past the market ceiling ({{teto}}) for {{cargo}} {{nivel}}. If that's intentional (rare skill, counteroffer), fine, just confirm the budget."
+      },
+      "salarioOk": {
+        "titulo": "Range aligned with the market",
+        "detalhe": "{{sua}} is within what's expected for {{cargo}} {{nivel}} ({{mercado}}). 👍"
+      },
+      "salarioIlegivel": {
+        "titulo": "Couldn't read the range",
+        "detalhe": "I couldn't find any values in the budget to compare with the market ({{mercado}} for {{cargo}} {{nivel}}). Enter the range in reais."
+      },
+      "faixaAmpla": {
+        "titulo": "Salary range too wide",
+        "detalhe": "{{sua}} is too wide a window and confuses candidates about the real level of the job. Narrow the range."
+      },
+      "expAlta": {
+        "titulo": "Experience high for the level",
+        "detalhe": "You require {{anos}} years of experience, a lot for a {{nivel}} role (the usual goes up to {{max}}). It may narrow the candidate funnel too much."
+      },
+      "expBaixa": {
+        "titulo": "Experience low for the level",
+        "detalhe": "{{anos}} year(s) of experience is little for a {{nivel}} role (the usual starts at {{min}}). Check whether the level is right."
+      },
+      "poucosBeneficios": {
+        "titulo": "Few benefits",
+        "detalhe": "Only {{n}} benefit(s) listed. A lean package reduces the job's competitiveness against the market."
+      },
+      "estagioCarga": {
+        "titulo": "Hours above the internship limit",
+        "detalhe": "Internships are capped at 30h/week (Law 11.788). {{carga}} exceeds the limit, reduce the hours or adjust the contract type."
+      },
+      "cltCarga": {
+        "titulo": "Hours low for a CLT role",
+        "detalhe": "Full-time CLT is usually 40h or 44h. {{carga}} is part-time, confirm whether that's intentional."
+      },
+      "pjBeneficios": {
+        "titulo": "CLT benefits on a PJ role",
+        "detalhe": "{{itens}} are typical CLT benefits and usually don't apply to PJ. Review the package."
+      }
+    },
     "acoes": "Actions",
     "scoreQualidade": "Quality score",
     "aprovado": "Approved",
     "emRevisao": "Under review",
     "prontaParaPublicar": "Job ready to publish.",
     "resolvaPendencias": "Resolve the pending items to approve the job.",
-    "briefingIncompleto": "Briefing incomplete",
+    "briefingIncompleto": "Summary incomplete",
     "perfilIncompleto": "Profile incomplete",
     "textoAcimaLimite": "Text over 2,000 characters",
     "resolver": "{{label}} · resolve",
@@ -268,14 +326,14 @@
     "copiado": "Copied",
     "copiar": "Copy",
     "postCopiado": "Post text copied!",
-    "erroCopiar": "Couldn't copy — select and copy manually.",
+    "erroCopiar": "Couldn't copy, select and copy manually.",
     "copiarPost": "Copy post text",
     "publicarManual": "Use this content when publishing manually."
   },
   "charBadge": {
     "caracteres": "{{num}} characters",
-    "ideal": "— Ideal for engagement (≤ {{limit}})",
-    "acima": "— Above the ideal (> {{limit}})"
+    "ideal": "Ideal for engagement (≤ {{limit}})",
+    "acima": "Above the ideal (> {{limit}})"
   },
   "doc": {
     "descricaoVaga": "Job description",
