@@ -11,7 +11,8 @@
     "vagasAbertas": "Vagas abertas",
     "candidatosFunil": "Candidatos no funil",
     "contratacoesMes": "Contratações no mês",
-    "tempoMedioFechamento": "Tempo médio de fechamento"
+    "tempoMedioFechamento": "Tempo médio de fechamento",
+    "taxaAceitacao": "Taxa de aceitação"
   },
   "vagasPorStatus": {
     "titulo": "Vagas por status",
@@ -29,7 +30,8 @@
     "texto": "As contratações subiram <pct>{{pct}}</pct> no mês e o tempo de fechamento caiu {{dias}}. Veja quem está avançando no funil.",
     "pct": "12%",
     "dias": "4 dias",
-    "cta": "Ver banco de talentos"
+    "cta": "Ver banco de talentos",
+    "widgetTitulo": "Destaque da semana"
   },
   "contratacoesPorMes": {
     "titulo": "Contratações por mês",
@@ -53,13 +55,77 @@
     "Triagem": "Triagem",
     "Entrevista": "Entrevista",
     "Oferta": "Oferta",
-    "Contratados": "Contratados"
+    "Contratados": "Contratados",
+    "Fechamento": "Fechamento"
   },
   "vagasRecentes": {
     "titulo": "Vagas recentes",
     "desc": "Últimas aberturas e seu status",
     "verTodas": "Ver todas",
     "inscritos": "inscritos"
+  },
+  "origem": {
+    "linkedin": "LinkedIn",
+    "indicacao": "Indicação",
+    "site": "Site de carreiras",
+    "outros": "Outros"
+  },
+  "origemCandidatos": {
+    "titulo": "Origem dos candidatos",
+    "desc": "De onde vêm as candidaturas",
+    "centro": "candidatos"
+  },
+  "tempoPorEtapa": {
+    "titulo": "Tempo médio por etapa",
+    "desc": "Dias em cada etapa do funil",
+    "legenda": "Dias"
+  },
+  "proximasEntrevistas": {
+    "titulo": "Próximas entrevistas",
+    "desc": "Agenda dos próximos dias",
+    "verTodas": "Ver agenda",
+    "dia": {
+      "hoje": "Hoje",
+      "amanha": "Amanhã",
+      "quinta": "Quinta",
+      "sexta": "Sexta"
+    }
+  },
+  "personalizar": {
+    "entrar": "Personalizar",
+    "concluir": "Concluir",
+    "desc": "Monte sua dashboard: adicione, reordene e redimensione os widgets. As mudanças ficam salvas neste navegador.",
+    "adicionarWidget": "Adicionar widget",
+    "moverCima": "Mover para cima",
+    "moverBaixo": "Mover para baixo",
+    "remover": "Remover widget",
+    "tamanhoGrupo": "Tamanho do widget",
+    "tamanho": {
+      "sm": "Pequeno",
+      "md": "Médio",
+      "lg": "Grande",
+      "full": "Largura total"
+    },
+    "restaurarPadrao": "Restaurar padrão",
+    "restaurarTitulo": "Restaurar a dashboard padrão?",
+    "restaurarDesc": "Sua montagem atual será descartada e a dashboard volta ao layout de fábrica.",
+    "restaurarConfirmar": "Restaurar padrão"
+  },
+  "catalogo": {
+    "titulo": "Adicionar widget",
+    "desc": "Escolha o que mostrar na sua dashboard.",
+    "vazio": "Todos os widgets já estão na sua dashboard.",
+    "categoria": {
+      "kpi": "Indicador",
+      "grafico": "Gráfico",
+      "lista": "Lista",
+      "destaque": "Destaque"
+    }
+  },
+  "vazio": {
+    "titulo": "Sua dashboard está vazia",
+    "descView": "Clique em Personalizar para escolher os widgets que você quer ver.",
+    "descEdicao": "Adicione widgets do catálogo para montar sua dashboard."
   },
   "export": {
     "arquivo": "dashboard",

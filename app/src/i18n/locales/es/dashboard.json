@@ -11,7 +11,8 @@
     "vagasAbertas": "Vacantes abiertas",
     "candidatosFunil": "Candidatos en el embudo",
     "contratacoesMes": "Contrataciones del mes",
-    "tempoMedioFechamento": "Tiempo medio de cierre"
+    "tempoMedioFechamento": "Tiempo medio de cierre",
+    "taxaAceitacao": "Tasa de aceptación de ofertas"
   },
   "vagasPorStatus": {
     "titulo": "Vacantes por estado",
@@ -29,7 +30,8 @@
     "texto": "Las contrataciones subieron <pct>{{pct}}</pct> en el mes y el tiempo de cierre bajó {{dias}}. Mira quién avanza en el embudo.",
     "pct": "12%",
     "dias": "4 días",
-    "cta": "Ver banco de talentos"
+    "cta": "Ver banco de talentos",
+    "widgetTitulo": "Destacado de la semana"
   },
   "contratacoesPorMes": {
     "titulo": "Contrataciones por mes",
@@ -53,13 +55,77 @@
     "Triagem": "Preselección",
     "Entrevista": "Entrevista",
     "Oferta": "Oferta",
-    "Contratados": "Contratados"
+    "Contratados": "Contratados",
+    "Fechamento": "Cierre"
   },
   "vagasRecentes": {
     "titulo": "Vacantes recientes",
     "desc": "Últimas aperturas y su estado",
     "verTodas": "Ver todas",
     "inscritos": "inscritos"
+  },
+  "origem": {
+    "linkedin": "LinkedIn",
+    "indicacao": "Recomendación",
+    "site": "Sitio de empleos",
+    "outros": "Otros"
+  },
+  "origemCandidatos": {
+    "titulo": "Origen de los candidatos",
+    "desc": "De dónde vienen las postulaciones",
+    "centro": "candidatos"
+  },
+  "tempoPorEtapa": {
+    "titulo": "Tiempo medio por etapa",
+    "desc": "Días en cada etapa del embudo",
+    "legenda": "Días"
+  },
+  "proximasEntrevistas": {
+    "titulo": "Próximas entrevistas",
+    "desc": "Agenda de los próximos días",
+    "verTodas": "Ver agenda",
+    "dia": {
+      "hoje": "Hoy",
+      "amanha": "Mañana",
+      "quinta": "Jue",
+      "sexta": "Vie"
+    }
+  },
+  "personalizar": {
+    "entrar": "Personalizar",
+    "concluir": "Listo",
+    "desc": "Arma tu panel: agrega, reordena y redimensiona los widgets. Los cambios se guardan en este navegador.",
+    "adicionarWidget": "Agregar widget",
+    "moverCima": "Subir",
+    "moverBaixo": "Bajar",
+    "remover": "Quitar widget",
+    "tamanhoGrupo": "Tamaño del widget",
+    "tamanho": {
+      "sm": "Pequeño",
+      "md": "Mediano",
+      "lg": "Grande",
+      "full": "Ancho completo"
+    },
+    "restaurarPadrao": "Restablecer",
+    "restaurarTitulo": "¿Restablecer el panel predeterminado?",
+    "restaurarDesc": "Tu configuración actual se descartará y el panel vuelve al diseño de fábrica.",
+    "restaurarConfirmar": "Restablecer"
+  },
+  "catalogo": {
+    "titulo": "Agregar widget",
+    "desc": "Elige qué mostrar en tu panel.",
+    "vazio": "Todos los widgets ya están en tu panel.",
+    "categoria": {
+      "kpi": "Indicador",
+      "grafico": "Gráfico",
+      "lista": "Lista",
+      "destaque": "Destacado"
+    }
+  },
+  "vazio": {
+    "titulo": "Tu panel está vacío",
+    "descView": "Haz clic en Personalizar para elegir los widgets que quieres ver.",
+    "descEdicao": "Agrega widgets del catálogo para armar tu panel."
   },
   "export": {
     "arquivo": "dashboard",

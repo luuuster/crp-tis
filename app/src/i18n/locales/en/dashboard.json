@@ -11,7 +11,8 @@
     "vagasAbertas": "Open roles",
     "candidatosFunil": "Candidates in pipeline",
     "contratacoesMes": "Hires this month",
-    "tempoMedioFechamento": "Average time to fill"
+    "tempoMedioFechamento": "Average time to fill",
+    "taxaAceitacao": "Offer acceptance rate"
   },
   "vagasPorStatus": {
     "titulo": "Roles by status",
@@ -29,7 +30,8 @@
     "texto": "Hires are up <pct>{{pct}}</pct> this month and time to fill dropped by {{dias}}. See who's moving through the pipeline.",
     "pct": "12%",
     "dias": "4 days",
-    "cta": "View talent pool"
+    "cta": "View talent pool",
+    "widgetTitulo": "This week's highlight"
   },
   "contratacoesPorMes": {
     "titulo": "Hires per month",
@@ -53,13 +55,77 @@
     "Triagem": "Screening",
     "Entrevista": "Interview",
     "Oferta": "Offer",
-    "Contratados": "Hired"
+    "Contratados": "Hired",
+    "Fechamento": "Closing"
   },
   "vagasRecentes": {
     "titulo": "Recent roles",
     "desc": "Latest openings and their status",
     "verTodas": "View all",
     "inscritos": "applicants"
+  },
+  "origem": {
+    "linkedin": "LinkedIn",
+    "indicacao": "Referral",
+    "site": "Careers site",
+    "outros": "Other"
+  },
+  "origemCandidatos": {
+    "titulo": "Candidate sources",
+    "desc": "Where applications come from",
+    "centro": "candidates"
+  },
+  "tempoPorEtapa": {
+    "titulo": "Avg. time per stage",
+    "desc": "Days at each funnel stage",
+    "legenda": "Days"
+  },
+  "proximasEntrevistas": {
+    "titulo": "Upcoming interviews",
+    "desc": "Schedule for the next days",
+    "verTodas": "View schedule",
+    "dia": {
+      "hoje": "Today",
+      "amanha": "Tomorrow",
+      "quinta": "Thu",
+      "sexta": "Fri"
+    }
+  },
+  "personalizar": {
+    "entrar": "Customize",
+    "concluir": "Done",
+    "desc": "Build your dashboard: add, reorder and resize widgets. Changes are saved in this browser.",
+    "adicionarWidget": "Add widget",
+    "moverCima": "Move up",
+    "moverBaixo": "Move down",
+    "remover": "Remove widget",
+    "tamanhoGrupo": "Widget size",
+    "tamanho": {
+      "sm": "Small",
+      "md": "Medium",
+      "lg": "Large",
+      "full": "Full width"
+    },
+    "restaurarPadrao": "Reset to default",
+    "restaurarTitulo": "Reset to the default dashboard?",
+    "restaurarDesc": "Your current setup will be discarded and the dashboard returns to the factory layout.",
+    "restaurarConfirmar": "Reset to default"
+  },
+  "catalogo": {
+    "titulo": "Add widget",
+    "desc": "Choose what to show on your dashboard.",
+    "vazio": "All widgets are already on your dashboard.",
+    "categoria": {
+      "kpi": "Metric",
+      "grafico": "Chart",
+      "lista": "List",
+      "destaque": "Highlight"
+    }
+  },
+  "vazio": {
+    "titulo": "Your dashboard is empty",
+    "descView": "Click Customize to choose the widgets you want to see.",
+    "descEdicao": "Add widgets from the catalog to build your dashboard."
   },
   "export": {
     "arquivo": "dashboard",
