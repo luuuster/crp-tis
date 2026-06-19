@@ -2,7 +2,7 @@
   "crumbBanco": "Banco de talentos",
   "charlie": {
     "abrir": "Falar com Charlie",
-    "sheetTitulo": "Charlie — copiloto de talentos",
+    "sheetTitulo": "Charlie, copiloto de talentos",
     "sheetDescricao": "Selecione a vaga e o Charlie ranqueia os candidatos do banco por aderência.",
     "copiloto": "COPILOTO",
     "ativo": "ATIVO",
@@ -17,14 +17,14 @@
     "verPerfil": "Ver perfil",
     "rodape": "Sugestões do Charlie a partir do banco de talentos. Revise sempre antes de decidir.",
     "fala": {
-      "alta": "Achei candidatos com forte aderência a {{vaga}} — {{nome}} lidera com {{pct}}%.",
+      "alta": "Achei candidatos com forte aderência a {{vaga}}, {{nome}} lidera com {{pct}}%.",
       "media": "Encontrei opções razoáveis para {{vaga}}. Vale revisar os perfis abaixo.",
-      "baixa": "Aderência baixa no banco para {{vaga}} — considere abrir a vaga ou rever os requisitos."
+      "baixa": "Aderência baixa no banco para {{vaga}}, considere abrir a vaga ou rever os requisitos."
     }
   },
   "header": {
     "titulo": "Banco de talentos",
-    "descricao": "Veja todos os candidatos e em que etapa cada um está. Clique em um candidato para ver o histórico completo — quantos processos já participou e como foi em cada um."
+    "descricao": "Veja todos os candidatos e em que etapa cada um está. Clique em um candidato para ver o histórico completo, quantos processos já participou e como foi em cada um."
   },
   "kpi": {
     "total": "Total de candidatos",
@@ -81,7 +81,7 @@
     },
     "fase": "Fase {{n}}",
     "processosTitulo": "Processos seletivos",
-    "processosDesc": "{{count}} processo(s) — clique para ver a análise fase a fase.",
+    "processosDesc": "{{count}} processo(s), clique para ver a análise fase a fase.",
     "chegouA": "Chegou à",
     "faseDeAplicou": "fase {{atual}} de {{total}}",
     "aplicou": "aplicou {{data}}",

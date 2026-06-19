@@ -39,14 +39,12 @@
   "funcao": {
     "Administrador": "Administrator",
     "Recrutador": "Recruiter",
-    "Gestor": "Manager",
-    "Visualizador": "Viewer"
+    "Gestor": "Manager"
   },
   "funcaoDesc": {
     "Administrador": "Full access: users, settings and all jobs.",
     "Recrutador": "Creates and manages jobs, candidates and interviews.",
-    "Gestor": "Tracks jobs and approves candidates on their team.",
-    "Visualizador": "Read-only access to jobs and reports."
+    "Gestor": "Tracks jobs and approves candidates on their team."
   },
   "status": {
     "Ativo": "Active",

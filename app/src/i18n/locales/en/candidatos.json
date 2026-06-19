@@ -2,7 +2,7 @@
   "crumbBanco": "Talent pool",
   "charlie": {
     "abrir": "Talk to Charlie",
-    "sheetTitulo": "Charlie — talent copilot",
+    "sheetTitulo": "Charlie, talent copilot",
     "sheetDescricao": "Pick a role and Charlie ranks the talent pool by fit.",
     "copiloto": "COPILOT",
     "ativo": "ACTIVE",
@@ -17,14 +17,14 @@
     "verPerfil": "View profile",
     "rodape": "Charlie's suggestions come from the talent pool. Always review before deciding.",
     "fala": {
-      "alta": "I found candidates with a strong fit for {{vaga}} — {{nome}} leads with {{pct}}%.",
+      "alta": "I found candidates with a strong fit for {{vaga}}, {{nome}} leads with {{pct}}%.",
       "media": "I found some reasonable options for {{vaga}}. Worth reviewing the profiles below.",
-      "baixa": "Low fit in the pool for {{vaga}} — consider opening the role or revising the requirements."
+      "baixa": "Low fit in the pool for {{vaga}}, consider opening the role or revising the requirements."
     }
   },
   "header": {
     "titulo": "Talent pool",
-    "descricao": "See every candidate and which stage each one is in. Click a candidate to view their full history — how many processes they've taken part in and how each one went."
+    "descricao": "See every candidate and which stage each one is in. Click a candidate to view their full history, how many processes they've taken part in and how each one went."
   },
   "kpi": {
     "total": "Total candidates",
@@ -81,7 +81,7 @@
     },
     "fase": "Stage {{n}}",
     "processosTitulo": "Selection processes",
-    "processosDesc": "{{count}} process(es) — click to see the stage-by-stage analysis.",
+    "processosDesc": "{{count}} process(es), click to see the stage-by-stage analysis.",
     "chegouA": "Reached",
     "faseDeAplicou": "stage {{atual}} of {{total}}",
     "aplicou": "applied {{data}}",

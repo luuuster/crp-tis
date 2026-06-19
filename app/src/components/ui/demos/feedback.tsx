@@ -153,7 +153,7 @@ export const FEEDBACK_DEMOS: Demo[] = [
             <Avatar><AvatarFallback>DS</AvatarFallback></Avatar>
             <div className="space-y-1">
               <p className="text-sm font-semibold">CRP Design System</p>
-              <p className="text-sm text-muted-foreground">Tokens, componentes e a11y — multi-marca.</p>
+              <p className="text-sm text-muted-foreground">Tokens, componentes e a11y, multi-marca.</p>
             </div>
           </div>
         </HoverCardContent>

@@ -28,7 +28,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/ui/sheet'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogTitle } from '@/components/ui/alert-dialog'
 
-type Funcao = 'Administrador' | 'Recrutador' | 'Gestor' | 'Visualizador'
+type Funcao = 'Administrador' | 'Recrutador' | 'Gestor'
 type StatusU = 'Ativo' | 'Convite pendente' | 'Inativo'
 type TipoPessoa = 'Pessoa Física' | 'Pessoa Jurídica'
 type Usuario = { id: string; nome: string; email: string; funcao: Funcao; status: StatusU; ultimoAcesso: string; voce?: boolean; telefone?: string; cpf?: string; tipoPessoa?: TipoPessoa; nascimento?: string }
@@ -43,13 +43,13 @@ const USUARIOS_INICIAL: Usuario[] = [
   { id: '7', nome: 'Camila Rocha', email: 'camila.rocha@talentai.com', funcao: 'Recrutador', status: 'Convite pendente', ultimoAcesso: '—' },
   { id: '8', nome: 'Lucas Andrade', email: 'lucas.andrade@talentai.com', funcao: 'Recrutador', status: 'Ativo', ultimoAcesso: 'há 5 h' },
   { id: '9', nome: 'Patrícia Gomes', email: 'patricia.gomes@talentai.com', funcao: 'Administrador', status: 'Ativo', ultimoAcesso: 'ontem' },
-  { id: '10', nome: 'Thiago Moreira', email: 'thiago.moreira@talentai.com', funcao: 'Visualizador', status: 'Ativo', ultimoAcesso: 'há 2 dias' },
+  { id: '10', nome: 'Thiago Moreira', email: 'thiago.moreira@talentai.com', funcao: 'Recrutador', status: 'Ativo', ultimoAcesso: 'há 2 dias' },
   { id: '11', nome: 'Juliana Castro', email: 'juliana.castro@talentai.com', funcao: 'Recrutador', status: 'Inativo', ultimoAcesso: '10/05/2026' },
-  { id: '12', nome: 'André Pinto', email: 'andre.pinto@talentai.com', funcao: 'Visualizador', status: 'Convite pendente', ultimoAcesso: '—' },
+  { id: '12', nome: 'André Pinto', email: 'andre.pinto@talentai.com', funcao: 'Recrutador', status: 'Convite pendente', ultimoAcesso: '—' },
   { id: '13', nome: 'Fernanda Dias', email: 'fernanda.dias@talentai.com', funcao: 'Gestor', status: 'Ativo', ultimoAcesso: 'há 4 h' },
   { id: '14', nome: 'Roberto Silva', email: 'roberto.silva@talentai.com', funcao: 'Recrutador', status: 'Inativo', ultimoAcesso: '22/04/2026' },
   { id: '15', nome: 'Aline Costa', email: 'aline.costa@talentai.com', funcao: 'Recrutador', status: 'Convite pendente', ultimoAcesso: '—' },
-  { id: '16', nome: 'Marcelo Reis', email: 'marcelo.reis@talentai.com', funcao: 'Visualizador', status: 'Ativo', ultimoAcesso: 'há 6 dias' },
+  { id: '16', nome: 'Marcelo Reis', email: 'marcelo.reis@talentai.com', funcao: 'Recrutador', status: 'Ativo', ultimoAcesso: 'há 6 dias' },
 ]
 
 // Ordem das funções no select de convite/edição. Rótulo e descrição vêm do i18n (funcao.* / funcaoDesc.*).
@@ -57,7 +57,6 @@ const FUNCOES: { value: Funcao }[] = [
   { value: 'Administrador' },
   { value: 'Recrutador' },
   { value: 'Gestor' },
-  { value: 'Visualizador' },
 ]
 
 // Pílula de função: tom por função (variante -text, AA por tema). Cada função, um tom distinto.
@@ -65,7 +64,6 @@ const FUNCAO_TONE: Record<Funcao, BadgeTone> = {
   'Administrador': 'primary',
   'Recrutador': 'secondary',
   'Gestor': 'warning',
-  'Visualizador': 'muted',
 }
 // Pílula de status (com ponto na cor corrente, via bg-current — herda a variante -text).
 const STATUS_TONE: Record<StatusU, BadgeTone> = {
@@ -74,7 +72,7 @@ const STATUS_TONE: Record<StatusU, BadgeTone> = {
   'Inativo': 'muted',
 }
 
-const FUNCAO_FILTROS = ['Todas', 'Administrador', 'Recrutador', 'Gestor', 'Visualizador'] as const
+const FUNCAO_FILTROS = ['Todas', 'Administrador', 'Recrutador', 'Gestor'] as const
 const STATUS_FILTROS = ['Todos', 'Ativo', 'Convite pendente', 'Inativo'] as const
 const PER_PAGE = 10
 

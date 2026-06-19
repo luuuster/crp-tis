@@ -2,7 +2,7 @@
   "crumbBanco": "Banco de talentos",
   "charlie": {
     "abrir": "Hablar con Charlie",
-    "sheetTitulo": "Charlie — copiloto de talentos",
+    "sheetTitulo": "Charlie, copiloto de talentos",
     "sheetDescricao": "Elige la vacante y Charlie clasifica a los candidatos del banco por afinidad.",
     "copiloto": "COPILOTO",
     "ativo": "ACTIVO",
@@ -17,9 +17,9 @@
     "verPerfil": "Ver perfil",
     "rodape": "Las sugerencias de Charlie parten del banco de talentos. Revisa siempre antes de decidir.",
     "fala": {
-      "alta": "Encontré candidatos con fuerte afinidad para {{vaga}} — {{nome}} lidera con {{pct}}%.",
+      "alta": "Encontré candidatos con fuerte afinidad para {{vaga}}, {{nome}} lidera con {{pct}}%.",
       "media": "Encontré opciones razonables para {{vaga}}. Conviene revisar los perfiles de abajo.",
-      "baixa": "Baja afinidad en el banco para {{vaga}} — considera abrir la vacante o revisar los requisitos."
+      "baixa": "Baja afinidad en el banco para {{vaga}}, considera abrir la vacante o revisar los requisitos."
     }
   },
   "header": {
@@ -81,7 +81,7 @@
     },
     "fase": "Etapa {{n}}",
     "processosTitulo": "Procesos de selección",
-    "processosDesc": "{{count}} proceso(s) — haz clic para ver el análisis etapa por etapa.",
+    "processosDesc": "{{count}} proceso(s), haz clic para ver el análisis etapa por etapa.",
     "chegouA": "Llegó a la",
     "faseDeAplicou": "etapa {{atual}} de {{total}}",
     "aplicou": "se postuló {{data}}",

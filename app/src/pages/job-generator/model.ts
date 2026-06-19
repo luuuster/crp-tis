@@ -45,7 +45,7 @@ export const BRIEFING_INICIAL: Briefing = {
   cliente: 'TIS Talent AI Platform', gestor: 'Carlos Mendes',
   desafio: 'Estamos expandindo o time de engenharia do TIS Talent AI Platform para sustentar o crescimento da plataforma.',
   objetivo: 'Ampliar a capacidade de entrega de soluções backend de alta performance, garantindo escalabilidade e qualidade nas integrações da plataforma.',
-  local: 'São Paulo — SP', horario: '', carga: '', motivo: 'Aumento do quadro', quantidade: 1,
+  local: 'São Paulo, SP', horario: '', carga: '', motivo: 'Aumento do quadro', quantidade: 1,
   budget: '', modalidade: 'CLT', beneficios: ['Vale-refeição', 'Plano de saúde', 'Auxílio home-office', 'Day-off aniversário'],
   processoSeletivo: ['Entrevista comportamental', 'Entrevista técnica', 'Entrevista com RH'],
 }
@@ -55,10 +55,10 @@ export const BRIEFING_INICIAL: Briefing = {
  * ficam como fallback pt-BR (a UI exibe via t()). */
 export const SECTIONS = [
   { key: 'identidade', icon: Building2, title: 'Identidade da vaga', desc: 'Como essa posição se posiciona dentro da organização.', fields: ['cargo', 'nivel', 'modelo', 'cliente', 'gestor'] as (keyof Briefing)[] },
-  { key: 'sobre', icon: Rocket, title: 'Sobre a vaga', desc: 'O contexto do desafio e o objetivo da contratação — a abertura da descrição.', fields: ['desafio', 'objetivo'] as (keyof Briefing)[] },
+  { key: 'sobre', icon: Rocket, title: 'Sobre a vaga', desc: 'O contexto do desafio e o objetivo da contratação, a abertura da descrição.', fields: ['desafio', 'objetivo'] as (keyof Briefing)[] },
   { key: 'operacao', icon: CalendarClock, title: 'Operação & rotina', desc: 'Onde, quando e em que ritmo essa pessoa vai trabalhar.', fields: ['local', 'horario', 'carga', 'motivo', 'quantidade'] as (keyof Briefing)[] },
   { key: 'investimento', icon: Wallet, title: 'Investimento', desc: 'A faixa salarial e benefícios que tornam essa vaga competitiva.', fields: ['budget', 'modalidade', 'beneficios'] as (keyof Briefing)[] },
-  { key: 'processo', icon: ListChecks, title: 'Processo seletivo', desc: 'As etapas da seleção, na ordem — o que quem se candidata vai enfrentar.', fields: ['processoSeletivo'] as (keyof Briefing)[] },
+  { key: 'processo', icon: ListChecks, title: 'Processo seletivo', desc: 'As etapas da seleção, na ordem, o que quem se candidata vai enfrentar.', fields: ['processoSeletivo'] as (keyof Briefing)[] },
 ] as const
 
 export const isFilledVal = (v: unknown) =>
@@ -110,7 +110,7 @@ export function melhorarDesafio(d: Briefing): string {
   return `O ${d.cliente} está em plena expansão e busca reforço técnico para sustentar o próximo ciclo de crescimento. É a chance de construir junto: novas integrações, mais escala e decisões de arquitetura que vão moldar a evolução da plataforma.`
 }
 export function melhorarObjetivo(_d: Briefing, p: Perfil): string {
-  return `Elevar a capacidade de entrega de soluções backend${p.stackObrigatoria[0] ? ` em ${p.stackObrigatoria[0]}` : ''}, garantindo escalabilidade, segurança e alta performance — com impacto direto na qualidade das integrações e na experiência de quem usa a plataforma.`
+  return `Elevar a capacidade de entrega de soluções backend${p.stackObrigatoria[0] ? ` em ${p.stackObrigatoria[0]}` : ''}, garantindo escalabilidade, segurança e alta performance, com impacto direto na qualidade das integrações e na experiência de quem usa a plataforma.`
 }
 
 
@@ -156,17 +156,17 @@ export function buildPostText(d: Briefing, p: Perfil, desc: import('@/lib/vaga')
   L.push('🚀 SOBRE O DESAFIO')
   if (d.desafio?.trim()) L.push(d.desafio.trim())
   if (d.objetivo?.trim()) L.push(`OBJETIVO: ${d.objetivo.trim()}`)
-  L.push('', '— O QUE VOCÊ VAI FAZER', ...desc.responsabilidades.map((r) => `• ${r}`))
-  L.push('', '— O QUE BUSCAMOS')
+  L.push('', 'O QUE VOCÊ VAI FAZER', ...desc.responsabilidades.map((r) => `• ${r}`))
+  L.push('', 'O QUE BUSCAMOS')
   if (p.formacao.trim()) L.push(`✅ FORMAÇÃO: ${p.formacao.trim()}`)
   if (p.experiencia.trim()) L.push(`✅ EXPERIÊNCIA: ${p.experiencia.trim()}`)
   if (p.stackObrigatoria.length) L.push(`✅ STACK TÉCNICA: ${p.stackObrigatoria.join(', ')}`)
-  if (p.conhecimentosDesejaveis.length) L.push('', '— DIFERENCIAIS', p.conhecimentosDesejaveis.join(', '))
-  if (p.habilidades.length) L.push('', '— PERFIL COMPORTAMENTAL', `Buscamos alguém com ${p.habilidades.join(', ')}.`)
-  L.push('', '— REMUNERAÇÃO E CONDIÇÕES')
+  if (p.conhecimentosDesejaveis.length) L.push('', 'DIFERENCIAIS', p.conhecimentosDesejaveis.join(', '))
+  if (p.habilidades.length) L.push('', 'PERFIL COMPORTAMENTAL', `Buscamos alguém com ${p.habilidades.join(', ')}.`)
+  L.push('', 'REMUNERAÇÃO E CONDIÇÕES')
   if (d.budget) L.push(`Orçamento: ${d.budget}`)
   if (d.carga) L.push(`Regime: ${d.carga}`)
-  if (d.processoSeletivo.length) L.push('', '— PROCESSO SELETIVO', d.processoSeletivo.map((e, i) => `${i + 1}. ${e}`).join('; '))
+  if (d.processoSeletivo.length) L.push('', 'PROCESSO SELETIVO', d.processoSeletivo.map((e, i) => `${i + 1}. ${e}`).join('; '))
   L.push('', 'Link:', CANDIDATE_LINK)
   return L.join('\n')
 }

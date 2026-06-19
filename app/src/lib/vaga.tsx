@@ -27,7 +27,7 @@ export type GeneratedDesc = { titulo: string; resumo: string; responsabilidades:
 export function buildDesc(d: Briefing, p: Perfil, tom: Tom = 'Equilibrado'): GeneratedDesc {
   const resumo = {
     Equilibrado: `Buscamos ${d.cargo} ${d.nivel} para atuar em modelo ${d.modelo}, em ${d.local}, integrando o time do projeto ${d.cliente} e reportando-se a ${d.gestor}.`,
-    Descontraído: `Bora construir junto? Procuramos uma pessoa ${d.cargo} ${d.nivel} pra somar com o time do ${d.cliente} em ${d.local} — modelo ${d.modelo}, sem burocracia.`,
+    Descontraído: `Bora construir junto? Procuramos uma pessoa ${d.cargo} ${d.nivel} pra somar com o time do ${d.cliente} em ${d.local}, modelo ${d.modelo}, sem burocracia.`,
     Formal: `A organização seleciona profissional para a posição de ${d.cargo} ${d.nivel}, em regime ${d.modelo}, com base em ${d.local}, vinculado(a) ao projeto ${d.cliente} sob gestão de ${d.gestor}.`,
   }[tom]
   const resp = p.responsabilidades.split(/[.;\n]+/).map((s) => s.trim()).filter(Boolean).map((s) => s.charAt(0).toUpperCase() + s.slice(1))
@@ -110,7 +110,7 @@ export function VagaDocumento({ data, perfil, tom = 'Equilibrado' }: { data: Bri
       <DocSection title="Requisitos" items={desc.requisitos} />
       <DocSection title="Operação & condições" items={operacao} />
       {data.processoSeletivo.length > 0 && <DocSection title="Processo seletivo" items={data.processoSeletivo} />}
-      {/* Benefícios — chips, último bloco; fio sutil separa do resto. */}
+      {/* Benefícios, chips, último bloco; fio sutil separa do resto. */}
       <section aria-labelledby={benefId} className="space-y-3 border-t border-border/50 pt-6">
         <h3 id={benefId} className="flex items-baseline gap-2 ty-label text-foreground" style={{ fontWeight: 'var(--font-weight-semibold)' }}>Benefícios<span className="ty-caption tabular-nums text-muted-foreground">{desc.beneficios.length}</span></h3>
         <ul className="flex flex-wrap gap-2">

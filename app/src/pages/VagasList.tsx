@@ -39,8 +39,8 @@ const VAGAS_INICIAL: Vaga[] = [
       cargo: 'Desenvolvedor Full Stack', nivel: 'Pleno/Sênior', modelo: 'Remoto',
       cliente: 'TIS Talent AI Platform', gestor: 'Carlos Mendes',
       desafio: 'O TIS Talent AI Platform está evoluindo sua experiência de ponta a ponta e precisa de reforço para acelerar a entrega de novas funcionalidades web.',
-      objetivo: 'Entregar features completas — do banco à interface — com qualidade, performance e boa experiência para quem usa a plataforma.',
-      local: 'São Paulo — SP (100% remoto)', horario: '09h às 18h', carga: '40h semanais', motivo: 'Aumento do quadro', quantidade: 2,
+      objetivo: 'Entregar features completas, do banco à interface, com qualidade, performance e boa experiência para quem usa a plataforma.',
+      local: 'São Paulo, SP (100% remoto)', horario: '09h às 18h', carga: '40h semanais', motivo: 'Aumento do quadro', quantidade: 2,
       budget: 'R$ 9.000 a R$ 14.000', modalidade: 'CLT', beneficios: BENEF, processoSeletivo: PROCESSO,
     },
     {
@@ -61,7 +61,7 @@ const VAGAS_INICIAL: Vaga[] = [
       cliente: 'TIS Talent AI Platform', gestor: 'Marina Albuquerque',
       desafio: 'Queremos elevar a maturidade de design da plataforma e tornar as jornadas de recrutamento mais simples e humanas.',
       objetivo: 'Conduzir a pesquisa e o design de experiências consistentes, acessíveis e orientadas a dados em todo o produto.',
-      local: 'São Paulo — SP (100% remoto)', horario: '09h às 18h', carga: '40h semanais', motivo: 'Nova posição', quantidade: 1,
+      local: 'São Paulo, SP (100% remoto)', horario: '09h às 18h', carga: '40h semanais', motivo: 'Nova posição', quantidade: 1,
       budget: 'R$ 8.000 a R$ 12.000', modalidade: 'CLT', beneficios: BENEF, processoSeletivo: PROCESSO,
     },
     {
@@ -82,7 +82,7 @@ const VAGAS_INICIAL: Vaga[] = [
       cliente: 'TIS Talent AI Platform', gestor: 'Rafael Tavares',
       desafio: 'A plataforma cresceu e precisa de liderança de produto para priorizar com clareza e conectar negócio, design e engenharia.',
       objetivo: 'Definir e executar a estratégia de produto de uma área crítica, maximizando o valor entregue e o impacto no negócio.',
-      local: 'São Paulo — SP', horario: '09h às 18h', carga: '40h semanais', motivo: 'Aumento do quadro', quantidade: 1,
+      local: 'São Paulo, SP', horario: '09h às 18h', carga: '40h semanais', motivo: 'Aumento do quadro', quantidade: 1,
       budget: 'R$ 14.000 a R$ 20.000', modalidade: 'CLT', beneficios: BENEF, processoSeletivo: PROCESSO,
     },
     {
@@ -103,7 +103,7 @@ const VAGAS_INICIAL: Vaga[] = [
       cliente: 'TIS Talent AI Platform', gestor: 'Carlos Mendes',
       desafio: 'Os modelos de IA da plataforma dependem de dados confiáveis; precisamos fortalecer a engenharia de dados que os alimenta.',
       objetivo: 'Construir e manter pipelines de dados robustos, escaláveis e observáveis para sustentar analytics e modelos de IA.',
-      local: 'São Paulo — SP', horario: '09h às 18h', carga: '40h semanais', motivo: 'Aumento do quadro', quantidade: 1,
+      local: 'São Paulo, SP', horario: '09h às 18h', carga: '40h semanais', motivo: 'Aumento do quadro', quantidade: 1,
       budget: 'R$ 10.000 a R$ 15.000', modalidade: 'CLT', beneficios: BENEF, processoSeletivo: PROCESSO,
     },
     {
@@ -124,7 +124,7 @@ const VAGAS_INICIAL: Vaga[] = [
       cliente: 'TIS Talent AI Platform', gestor: 'Marina Albuquerque',
       desafio: 'Conforme a plataforma ganha escala, precisamos garantir qualidade de forma sistemática e cada vez mais automatizada.',
       objetivo: 'Assegurar a qualidade das entregas por meio de testes manuais e automatizados, prevenindo regressões.',
-      local: 'São Paulo — SP', horario: '09h às 18h', carga: '40h semanais', motivo: 'Nova posição', quantidade: 1,
+      local: 'São Paulo, SP', horario: '09h às 18h', carga: '40h semanais', motivo: 'Nova posição', quantidade: 1,
       budget: 'R$ 4.000 a R$ 6.000', modalidade: 'CLT', beneficios: BENEF, processoSeletivo: PROCESSO,
     },
     {
@@ -145,7 +145,7 @@ const VAGAS_INICIAL: Vaga[] = [
       cliente: 'TIS Talent AI Platform', gestor: 'Carlos Mendes',
       desafio: 'Estamos expandindo o time de engenharia do TIS Talent AI Platform para sustentar o crescimento da plataforma.',
       objetivo: 'Ampliar a capacidade de entrega de soluções backend de alta performance, garantindo escalabilidade e qualidade nas integrações da plataforma.',
-      local: 'São Paulo — SP', horario: '09h às 18h', carga: '40h semanais', motivo: 'Aumento do quadro', quantidade: 1,
+      local: 'São Paulo, SP', horario: '09h às 18h', carga: '40h semanais', motivo: 'Aumento do quadro', quantidade: 1,
       budget: 'R$ 8.000 a R$ 12.000', modalidade: 'CLT', beneficios: ['Vale-refeição', 'Plano de saúde', 'Auxílio home-office', 'Day-off aniversário'], processoSeletivo: ['Entrevista comportamental', 'Entrevista técnica', 'Entrevista com RH'],
     },
     {
@@ -253,7 +253,7 @@ export function VagaDetalhe({ vaga }: { vaga: Vaga }) {
         />
       </section>
 
-      {/* documento completo da vaga — TODAS as informações (briefing + perfil) */}
+      {/* documento completo da vaga, TODAS as informações (briefing + perfil) */}
       <VagaDocumento data={vaga.briefing} perfil={vaga.perfil} />
     </div>
   )
@@ -336,7 +336,7 @@ export function VagasList({ onAbrirVaga, onEditVaga, onVerVaga }: { onAbrirVaga:
         desc={<Trans t={t} i18nKey="header.descricao" components={{ 0: <span className="font-medium text-foreground" /> }} />}
       />
 
-      {/* KPIs — números reais derivados da lista */}
+      {/* KPIs, números reais derivados da lista */}
       <section aria-label={t('kpi.regiao')} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard icon={Briefcase} label={t('kpi.abertas')} value={abertas} loading={loading} />
         <StatCard icon={Users} label={t('kpi.inscritos')} value={inscritos} loading={loading} />
@@ -344,7 +344,7 @@ export function VagasList({ onAbrirVaga, onEditVaga, onVerVaga }: { onAbrirVaga:
         <StatCard icon={Clock} label={t('kpi.emProcesso')} value={emProcesso} loading={loading} />
       </section>
 
-      {/* Lista — filtros DENTRO do card, na barra de ferramentas da tabela */}
+      {/* Lista, filtros DENTRO do card, na barra de ferramentas da tabela */}
       <section aria-labelledby="lista-vagas" className={cn(CARD, 'overflow-hidden')}>
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/50 p-4 sm:p-5">
           <h2 id="lista-vagas" className="flex items-center gap-2 ty-body-lg text-foreground" style={{ fontWeight: 'var(--font-weight-bold)' }}>
@@ -369,7 +369,7 @@ export function VagasList({ onAbrirVaga, onEditVaga, onVerVaga }: { onAbrirVaga:
               <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">{t('tabela.status')}</TableHead>
               <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase text-right">{t('tabela.acoes')}</TableHead>
             </TableRow>
-            {/* Linha de FILTRO — barra de ferramentas (td, não th: não são cabeçalhos de coluna). Busca
+            {/* Linha de FILTRO, barra de ferramentas (td, não th: não são cabeçalhos de coluna). Busca
                 alinhada à coluna Vaga, status à coluna Status. */}
             <TableRow className="bg-muted/20 hover:bg-muted/20">
               <TableCell className="py-2"><ColFilter value={dataF} onChange={(v) => { setDataF(v); resetPage() }} options={datas} label={t('filtro.data')} format={fmtTodas} /></TableCell>
@@ -432,7 +432,7 @@ export function VagasList({ onAbrirVaga, onEditVaga, onVerVaga }: { onAbrirVaga:
           </TableBody>
         </Table>
 
-        {/* Paginação — barra abaixo da tabela (10 itens por página) */}
+        {/* Paginação, barra abaixo da tabela (10 itens por página) */}
         {filtradas.length > 0 && (
           <div className="px-4 pb-4 sm:px-5 sm:pb-5">
             <Paginacao page={page} total={totalPages} inicio={inicio} shown={pageItems.length} totalItems={totalItems} onPage={setPage} />

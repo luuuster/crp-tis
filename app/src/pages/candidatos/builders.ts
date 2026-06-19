@@ -44,7 +44,7 @@ export function desafioTecnico(ctx: ProcCtx, resultado: ResultadoFase): Desafio 
 }
 
 export function ofertaProposta(aprovado: boolean, seed: number): CampoDetalhe[] {
-  const faixas = ['R$ 4.500 — R$ 6.000', 'R$ 7.000 — R$ 9.500', 'R$ 10.000 — R$ 14.000']
+  const faixas = ['R$ 4.500 a R$ 6.000', 'R$ 7.000 a R$ 9.500', 'R$ 10.000 a R$ 14.000']
   return [
     { label: 'Faixa salarial', valor: pick(faixas, seed) },
     { label: 'Benefícios', valor: 'VR/VA · plano de saúde · auxílio home office' },
@@ -130,7 +130,7 @@ export function camposDaFase(n: number, aprovado: boolean, seed: number): CampoD
 }
 export function buildDetalheFase(n: number, resultado: ResultadoFase, seed: number, ctx: ProcCtx): DetalheFase {
   if (resultado === 'pendente') {
-    return { resumo: 'Etapa ainda não iniciada — será realizada quando o candidato avançar até aqui.', campos: [], criterios: [], destaques: [], atencao: [] }
+    return { resumo: 'Etapa ainda não iniciada, será realizada quando o candidato avançar até aqui.', campos: [], criterios: [], destaques: [], atencao: [] }
   }
   const r = RESUMO_FASE[n] ?? RESUMO_FASE[3]
   const resumo = resultado === 'reprovado' ? r.ko : resultado === 'em andamento' ? r.and : r.ok

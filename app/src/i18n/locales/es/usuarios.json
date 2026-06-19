@@ -39,14 +39,12 @@
   "funcao": {
     "Administrador": "Administrador",
     "Recrutador": "Reclutador",
-    "Gestor": "Gestor",
-    "Visualizador": "Visualizador"
+    "Gestor": "Gestor"
   },
   "funcaoDesc": {
     "Administrador": "Acceso total: usuarios, configuración y todas las vacantes.",
     "Recrutador": "Crea y gestiona vacantes, candidatos y entrevistas.",
-    "Gestor": "Da seguimiento a las vacantes y aprueba candidatos de su equipo.",
-    "Visualizador": "Solo lectura de vacantes e informes."
+    "Gestor": "Da seguimiento a las vacantes y aprueba candidatos de su equipo."
   },
   "status": {
     "Ativo": "Activo",

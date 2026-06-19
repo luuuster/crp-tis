@@ -86,7 +86,7 @@ function EventoChip({ ev, onOpen }: { ev: Evento; onOpen: (ev: Evento) => void }
           <span className="truncate text-foreground">{ev.cand}</span>
         </button>
       </TooltipTrigger>
-      <TooltipContent>{`${ev.hora} · ${ev.cand} — ${ev.vaga}`}</TooltipContent>
+      <TooltipContent>{`${ev.hora} · ${ev.cand}, ${ev.vaga}`}</TooltipContent>
     </Tooltip>
   )
 }
@@ -194,7 +194,7 @@ export function AgendamentoDetalhe({ ev, onReagendar, onCancelar }: {
           <InfoItem icon={CalendarDays} label={t('detalhe.data')} valor={fmtData(ev)} />
           <InfoItem icon={Clock} label={t('detalhe.horario')} valor={`${ev.hora} · ${duracaoDe(ev)}`} />
           <InfoItem icon={online ? Video : MapPin} label={t('detalhe.formato')} valor={online ? t('detalhe.online') : t('detalhe.presencial')} />
-          {/* Entrevistadores: cada um em sua própria linha (nome + papel) — legível com vários no painel. */}
+          {/* Entrevistadores: cada um em sua própria linha (nome + papel), legível com vários no painel. */}
           <div className="flex gap-3 rounded-lg bg-muted/30 p-3">
             {intvs.length > 1
               ? <Users className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden />
@@ -296,7 +296,7 @@ export function AgendarEntrevista({ cand, vaga, inicial, onCancelar, onConfirmar
           <DatePicker id="ag-data" value={data} onChange={setData} />
         </div>
 
-        {/* entrevistadores (internos) — 1 a 4. A disponibilidade abaixo cruza as agendas de todos. */}
+        {/* entrevistadores (internos), 1 a 4. A disponibilidade abaixo cruza as agendas de todos. */}
         <fieldset className="space-y-2">
           <legend className="flex items-center gap-2 ty-label-sm font-medium text-foreground">
             {t('agendar.entrevistadores')} <span className="ty-caption font-normal text-muted-foreground">{t('agendar.contador', { n: entrevistadores.length })}</span>
@@ -559,7 +559,7 @@ export function Entrevistas({ onNavigate, brand, mode, onCycleBrand, onToggleMod
             </div>
           </section>
 
-          {/* próximas entrevistas + candidatos aguardando — busca própria em cada painel + paginação (10/página) */}
+          {/* próximas entrevistas + candidatos aguardando, busca própria em cada painel + paginação (10/página) */}
           <div className="grid gap-4 lg:grid-cols-2">
             <Panel icon={CalendarDays} title={t('proximas.title')} desc={t('proximas.desc', { n: proximas.length, mes: mesLongo(mes) })}>
               <div className="relative mb-4">
@@ -631,7 +631,7 @@ export function Entrevistas({ onNavigate, brand, mode, onCycleBrand, onToggleMod
           </div>
         </PageContainer>
 
-        {/* painel lateral — agendar ou ver o detalhe do agendamento (modal lateral) */}
+        {/* painel lateral, agendar ou ver o detalhe do agendamento (modal lateral) */}
         <Sheet open={!!agendar || !!detalhe} onOpenChange={(aberto) => { if (!aberto) { setAgendar(null); setDetalhe(null) } }}>
           <SheetContent side="right" className="w-full gap-0 p-0 sm:max-w-md">
             {agendar ? (

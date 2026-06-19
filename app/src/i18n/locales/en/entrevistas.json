@@ -51,9 +51,9 @@
     "entrevistador": "Interviewer",
     "linkReuniao": "Meeting link (Teams)",
     "local": "Location",
-    "localValor": "Room 3 · 4th floor — São Paulo office",
+    "localValor": "Room 3 · 4th floor, São Paulo office",
     "etapa": "Stage",
-    "etapaValor": "Interview — hiring process",
+    "etapaValor": "Interview, hiring process",
     "entrarChamada": "Join the call",
     "verLocal": "View location",
     "toastEntrando": "Joining the call… (demo)",
@@ -82,8 +82,8 @@
     "horariosUm": "Open times on the interviewer's calendar.",
     "horariosVarios": "Times when all {{n}} interviewers are free at once.",
     "slotOcupadoTitle": "Busy: {{nomes}}",
-    "slotLivreAria": "{{slot}} — free",
-    "slotOcupadoAria": "{{slot}} — busy",
+    "slotLivreAria": "{{slot}}, free",
+    "slotOcupadoAria": "{{slot}}, busy",
     "duracao": "Duration",
     "formato": "Format",
     "formatoOnline": "Online (Teams)",
@@ -112,6 +112,6 @@
     "agendada_one": "Interview with {{cand}} scheduled for {{data}} at {{hora}} · {{count}} interviewer{{via}}.",
     "agendada_other": "Interview with {{cand}} scheduled for {{data}} at {{hora}} · {{count}} interviewers{{via}}.",
     "viaTeams": " · Teams meeting created and invite sent",
-    "cancelada": "Interview with {{cand}} canceled — returned to the queue."
+    "cancelada": "Interview with {{cand}} canceled, returned to the queue."
   }
 }

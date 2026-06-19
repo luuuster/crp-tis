@@ -39,14 +39,12 @@
   "funcao": {
     "Administrador": "Administrador",
     "Recrutador": "Recrutador",
-    "Gestor": "Gestor",
-    "Visualizador": "Visualizador"
+    "Gestor": "Gestor"
   },
   "funcaoDesc": {
     "Administrador": "Acesso total: usuários, configurações e todas as vagas.",
     "Recrutador": "Cria e gerencia vagas, candidatos e entrevistas.",
-    "Gestor": "Acompanha vagas e aprova candidatos do seu time.",
-    "Visualizador": "Apenas leitura de vagas e relatórios."
+    "Gestor": "Acompanha vagas e aprova candidatos do seu time."
   },
   "status": {
     "Ativo": "Ativo",

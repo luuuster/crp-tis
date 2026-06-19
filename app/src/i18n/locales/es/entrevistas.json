@@ -51,9 +51,9 @@
     "entrevistador": "Entrevistador(a)",
     "linkReuniao": "Enlace de la reunión (Teams)",
     "local": "Lugar",
-    "localValor": "Sala 3 · 4.º piso — Oficina de São Paulo",
+    "localValor": "Sala 3 · 4.º piso, Oficina de São Paulo",
     "etapa": "Etapa",
-    "etapaValor": "Entrevista — proceso de selección",
+    "etapaValor": "Entrevista, proceso de selección",
     "entrarChamada": "Unirse a la llamada",
     "verLocal": "Ver lugar",
     "toastEntrando": "Uniéndose a la llamada… (demo)",
@@ -82,8 +82,8 @@
     "horariosUm": "Horarios libres en la agenda del entrevistador.",
     "horariosVarios": "Horarios en que los {{n}} entrevistadores están libres al mismo tiempo.",
     "slotOcupadoTitle": "Ocupado: {{nomes}}",
-    "slotLivreAria": "{{slot}} — libre",
-    "slotOcupadoAria": "{{slot}} — ocupado",
+    "slotLivreAria": "{{slot}}, libre",
+    "slotOcupadoAria": "{{slot}}, ocupado",
     "duracao": "Duración",
     "formato": "Formato",
     "formatoOnline": "En línea (Teams)",
@@ -112,6 +112,6 @@
     "agendada_one": "Entrevista con {{cand}} programada para el {{data}} a las {{hora}} · {{count}} entrevistador{{via}}.",
     "agendada_other": "Entrevista con {{cand}} programada para el {{data}} a las {{hora}} · {{count}} entrevistadores{{via}}.",
     "viaTeams": " · reunión de Teams creada e invitación enviada",
-    "cancelada": "Entrevista con {{cand}} cancelada — volvió a la cola."
+    "cancelada": "Entrevista con {{cand}} cancelada, volvió a la cola."
   }
 }
