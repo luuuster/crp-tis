@@ -68,7 +68,11 @@ export function LoginPage({ onLogin, onCreateAccount }: { onLogin?: () => void; 
   }, [])
 
   // Some o erro de credencial assim que o usuário edita qualquer campo.
+  // KNOWN: RHF × React Compiler — a subscrição `form.watch(cb)` não é memoizável e o compilador PULA
+  // este componente ("Compilation Skipped"). useWatch força a compilação e aí ele tropeça noutros internals
+  // do RHF (form.handleSubmit/spread = ref em render). Mantemos a subscrição; o skip é perf-hint, não bug.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/incompatible-library
     const sub = form.watch(() => setFormError(null))
     return () => sub.unsubscribe()
   }, [form])

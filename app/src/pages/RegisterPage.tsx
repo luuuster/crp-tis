@@ -98,6 +98,10 @@ export function RegisterPage({ onBackToLogin, onRegistered }: { onBackToLogin?: 
   }, [])
 
   // Checklist ao vivo: 4 regras da senha + coincidência (atualiza enquanto digita).
+  // KNOWN: RHF × React Compiler — `form.watch` não é memoizável e o compilador PULA este componente
+  // ("Compilation Skipped"). Trocar por useWatch força a compilação e aí ele tropeça em outros internals
+  // do RHF (form.handleSubmit/spread = ref em render). Mantemos a API estável; o skip é perf-hint, não bug.
+  // eslint-disable-next-line react-hooks/incompatible-library
   const pwd = form.watch('password') || ''
   const confirm = form.watch('confirmPassword') || ''
   const checks = [
