@@ -1,5 +1,15 @@
 # CRP Design System — `@crp/design-tokens`
 
+> ## 🖥️ Quer rodar o **APP** (TalentAI)? → vá para [`app/`](app/)
+> **Este README é só do Design System (os tokens).** O app React fica na pasta **[`app/`](app/README.md)**.
+> Rodar:
+> ```bash
+> npm install && npm run build   # 1) na RAIZ: gera o dist/ dos tokens (o app importa @crp/design-tokens/tokens.css)
+> cd app && npm install && npm run dev   # 2) sobe o app em http://localhost:5173
+> ```
+> ⚠️ O passo 1 (`npm run build` na raiz) **não é opcional** — sem ele a pasta `dist/` não existe e o app quebra ao subir.
+> O [`preview/index.html`](preview/index.html) citado abaixo é só a **vitrine dos tokens** (Botões/Texto/Charts), **não** o app.
+
 Pipeline de **Single Source of Truth (SSOT)** para os tokens do produto CRP.
 
 ```

@@ -2,7 +2,7 @@
  * Detalhe de UM processo seletivo — tela dedicada: cabeçalho + progresso + linha do tempo das fases
  * (com observação por fase) + o "porquê" completo da reprovação. É a análise aprofundada de um processo.
  */
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { CheckCircle2, ChevronLeft, MessageSquareText, XCircle } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
@@ -15,7 +15,10 @@ import { AvaliacaoIAConteudo } from '../EntrevistasIA'
 import type { Candidato, Processo } from './types'
 import { notaBar, FASE_VISUAL, FASE_LABEL_COLOR, PROC_BAR, ProcStatusBadge, useResultadoFaseLabel } from './styles'
 
-export function ProcessoDetalhe({ c, p, onVoltar }: { c: Candidato; p: Processo; onVoltar: () => void }) {
+// `acoes`/`acoesInicio` (opcionais): ações extras no rodapé (ex.: aprovar/reprovar e "ver currículo" do funil).
+// `acoesInicio` fica à ESQUERDA, junto do "Voltar"; `acoes` à direita. A tela de Candidatos não passa nada —
+// footer fica só com "Voltar".
+export function ProcessoDetalhe({ c, p, onVoltar, acoes, acoesInicio }: { c: Candidato; p: Processo; onVoltar: () => void; acoes?: ReactNode; acoesInicio?: ReactNode }) {
   const { t } = useTranslation('candidatos')
   const faseLabel = useResultadoFaseLabel()
   const pct = Math.round((p.faseAtual / p.totalFases) * 100)
@@ -29,7 +32,15 @@ export function ProcessoDetalhe({ c, p, onVoltar }: { c: Candidato; p: Processo;
     <DetailScreen
       width="6xl"
       crumb={<>{t('proc.crumbBanco')} · <span className="font-medium text-foreground">{c.nome}</span></>}
-      footer={<Button variant="ghost" onClick={onVoltar}><ChevronLeft aria-hidden /> {t('proc.voltar')}</Button>}
+      footer={
+        <>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button variant="ghost" onClick={onVoltar}><ChevronLeft aria-hidden /> {t('proc.voltar')}</Button>
+            {acoesInicio}
+          </div>
+          {acoes && <div className="flex flex-wrap items-center gap-2">{acoes}</div>}
+        </>
+      }
     >
         {/* cabeçalho do processo */}
         <header className={cn(CARD, 'p-6')}>

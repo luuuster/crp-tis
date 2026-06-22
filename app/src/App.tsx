@@ -21,12 +21,13 @@ const Entrevistas = lazy(() => import('@/pages/Entrevistas').then((m) => ({ defa
 const EntrevistasIA = lazy(() => import('@/pages/EntrevistasIA').then((m) => ({ default: m.EntrevistasIA })))
 const Candidatos = lazy(() => import('@/pages/Candidatos').then((m) => ({ default: m.Candidatos })))
 const Usuarios = lazy(() => import('@/pages/Usuarios').then((m) => ({ default: m.Usuarios })))
+const Pipeline = lazy(() => import('@/pages/Pipeline').then((m) => ({ default: m.Pipeline })))
 
 type Brand = 'crp' | 'marca-b'
 type Mode = 'light' | 'dark'
-type View = 'login' | 'register' | 'dashboard' | 'componentes' | 'gerador' | 'entrevistas' | 'entrevistas-ia' | 'candidatos' | 'usuarios'
+type View = 'login' | 'register' | 'dashboard' | 'componentes' | 'gerador' | 'entrevistas' | 'entrevistas-ia' | 'candidatos' | 'pipeline' | 'usuarios'
 
-const VIEWS: View[] = ['login', 'register', 'dashboard', 'componentes', 'gerador', 'entrevistas', 'entrevistas-ia', 'candidatos', 'usuarios']
+const VIEWS: View[] = ['login', 'register', 'dashboard', 'componentes', 'gerador', 'entrevistas', 'entrevistas-ia', 'candidatos', 'pipeline', 'usuarios']
 
 // Persistência leve em localStorage: um F5 não desloga nem reseta tema/marca — restaura a última
 // view (e brand/mode). Lê com guarda (valida contra a lista) e tolera storage indisponível.
@@ -76,7 +77,7 @@ export function App() {
     }
   }, [view, brand, mode])
 
-  const loggedIn = view === 'dashboard' || view === 'componentes' || view === 'gerador' || view === 'entrevistas' || view === 'entrevistas-ia' || view === 'candidatos' || view === 'usuarios'
+  const loggedIn = view === 'dashboard' || view === 'componentes' || view === 'gerador' || view === 'entrevistas' || view === 'entrevistas-ia' || view === 'candidatos' || view === 'pipeline' || view === 'usuarios'
 
   // Navegação central. Ao ir para a aba "Vagas" vindo de OUTRA tela, remonta o Gerador (bump no `key`)
   // para cair sempre na LISTA — mesmo que o usuário tenha deixado o wizard "Nova vaga" aberto antes de
@@ -196,6 +197,17 @@ export function App() {
             <TabsContent value="usuarios" forceMount className="m-0 outline-none data-[state=inactive]:hidden">
               <Suspense fallback={<PageFallback />}>
                 <Usuarios
+                  onNavigate={(v) => navigate(v as View)}
+                  brand={brand}
+                  mode={mode}
+                  onCycleBrand={() => setBrand((b) => (b === 'crp' ? 'marca-b' : 'crp'))}
+                  onToggleMode={() => setMode((m) => (m === 'dark' ? 'light' : 'dark'))}
+                />
+              </Suspense>
+            </TabsContent>
+            <TabsContent value="pipeline" forceMount className="m-0 outline-none data-[state=inactive]:hidden">
+              <Suspense fallback={<PageFallback />}>
+                <Pipeline
                   onNavigate={(v) => navigate(v as View)}
                   brand={brand}
                   mode={mode}

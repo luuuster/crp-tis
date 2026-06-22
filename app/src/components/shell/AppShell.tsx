@@ -5,7 +5,7 @@
  */
 import { useEffect, useState, type ReactNode } from 'react'
 import {
-  Blocks, Bot, CalendarDays, ChevronLeft, ClipboardList, LayoutDashboard, LogOut, Menu, Moon, Palette, Sun, UserRound, Users, X,
+  Blocks, Bot, CalendarDays, ChevronLeft, ClipboardList, LayoutDashboard, LogOut, Menu, Moon, Palette, Sun, UserRound, Users, Workflow, X,
 } from 'lucide-react'
 import { Dialog as DialogPrimitive } from 'radix-ui'
 import { toast } from 'sonner'
@@ -46,6 +46,7 @@ export const NAV_GROUPS = [
     { key: 'entrevistas-ia', icon: Bot },
     { key: 'entrevistas', icon: CalendarDays },
     { key: 'candidatos', icon: UserRound },
+    { key: 'pipeline', icon: Workflow },
   ] },
   { key: 'sistema', items: [
     { key: 'usuarios', icon: Users },
@@ -54,7 +55,7 @@ export const NAV_GROUPS = [
 ] as const
 
 // Views REAIS (navegáveis); o resto é demonstrativo (toast). 'gerador' pode ter override (onVagas) p/ resetar a lista.
-const REAL_VIEWS = new Set(['dashboard', 'gerador', 'entrevistas', 'entrevistas-ia', 'candidatos', 'usuarios', 'componentes'])
+const REAL_VIEWS = new Set(['dashboard', 'gerador', 'entrevistas', 'entrevistas-ia', 'candidatos', 'pipeline', 'usuarios', 'componentes'])
 function navHandle(key: string, label: string, onNavigate?: (v: string) => void, onVagas?: () => void) {
   if (key === 'gerador' && onVagas) { onVagas(); return }
   if (REAL_VIEWS.has(key)) { onNavigate?.(key); return }

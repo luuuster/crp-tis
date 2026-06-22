@@ -10,6 +10,7 @@ import { Entrevistas, AgendamentoDetalhe, AgendarEntrevista, type Evento } from 
 import { EntrevistasIA, CandidatoDetalhe, AvaliacaoIAConteudo, buildDetalhe, type Candidato } from './pages/EntrevistasIA'
 import { Candidatos, CandidatoPerfil, ProcessoDetalhe, buildProcessos, type Candidato as CandidatoBanco } from './pages/Candidatos'
 import { Usuarios } from './pages/Usuarios'
+import { Pipeline } from './pages/Pipeline'
 import { JobGenerator } from './pages/JobGenerator'
 import { Showcase } from './pages/Showcase'
 import { TooltipProvider } from './components/ui/tooltip'
@@ -98,6 +99,9 @@ describe('axe — zero violações por página', () => {
   })
   it('Usuarios — cadastro (Sheet aberto)', async () => {
     await expectNoViolationsOpen(<TooltipProvider><Usuarios onNavigate={() => {}} /></TooltipProvider>, 'Cadastro de usuário')
+  })
+  it('Pipeline (funil de contratação)', async () => {
+    await expectNoViolations(<TooltipProvider><Pipeline onNavigate={() => {}} /></TooltipProvider>)
   })
   it('JobGenerator (lista de vagas)', async () => {
     await expectNoViolations(<TooltipProvider><JobGenerator onNavigate={() => {}} /></TooltipProvider>)

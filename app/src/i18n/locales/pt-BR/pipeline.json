@@ -1,0 +1,90 @@
+{
+  "header": {
+    "titulo": "Funil de contratação",
+    "descricao": "Todo o fluxo de seleção numa tela. A IA entrevista e mede a compatibilidade com a vaga; daí em diante, cada etapa tem a sua própria forma de avançar o candidato."
+  },
+  "total": "{{n}} candidatos no funil",
+  "resultado": "{{n}} de {{total}} candidatos",
+  "boardAria": "Colunas do funil — role na horizontal para ver todas",
+  "fase": {
+    "ia": "Entrevista por IA",
+    "rh": "Entrevista com RH",
+    "teste": "Teste técnico / Case",
+    "gestor": "Entrevista com gestor",
+    "proposta": "Proposta",
+    "contratado": "Contratado",
+    "reprovado": "Reprovado"
+  },
+  "contagem": "{{n}} candidato(s) em {{fase}}",
+  "vazio": "Nenhum candidato aqui",
+  "carregando": "Carregando funil…",
+  "compatLabel": "de compatibilidade",
+  "analise": {
+    "ia": "Análise do currículo",
+    "rh": "Análise da entrevista de RH",
+    "teste": "Análise do teste técnico",
+    "gestor": "Análise da entrevista com o gestor",
+    "proposta": "Análise para a proposta",
+    "contratado": "Análise final",
+    "reprovado": "Análise final"
+  },
+  "analiseEtapa_one": "{{assunto}} · há {{count}} dia",
+  "analiseEtapa_other": "{{assunto}} · há {{count}} dias",
+  "tempoEtapa_one": "Há {{count}} dia nesta etapa",
+  "tempoEtapa_other": "Há {{count}} dias nesta etapa",
+  "agendar": "Agendar entrevista",
+  "reagendar": "Reagendar",
+  "agendadaPara": "Agendada: {{quando}}",
+  "verCurriculo": "Ver currículo",
+  "acao": {
+    "verProcesso": "Ver processo de {{nome}}"
+  },
+  "decisao": {
+    "aprovar": "Aprovar",
+    "reprovar": "Reprovar"
+  },
+  "finalizar": {
+    "botao": "Entrevista finalizada",
+    "titulo": "Entrevista finalizada — {{nome}}",
+    "desc": "Registre a entrevista e gere uma nova análise da IA.",
+    "overline": "Entrevista finalizada",
+    "intro": "Registre como foi a conversa com o candidato. A IA gera uma nova análise a partir das suas anotações e do arquivo anexado.",
+    "notasLabel": "Anotações da entrevista",
+    "notasPlaceholder": "Como foi a entrevista? Principais pontos, impressões, pontos fortes e de atenção…",
+    "arquivoLabel": "Anexar arquivo",
+    "arquivoPlaceholder": "Clique para enviar gravação, transcrição ou notas",
+    "removerArquivo": "Remover arquivo",
+    "analisar": "Analisar com IA",
+    "analisando": "A IA está analisando a entrevista…",
+    "resultadoTitulo": "Nova análise da IA",
+    "resultadoDesc": "Gerada a partir da sua entrada, avaliando {{nome}} para a vaga de {{vaga}}.",
+    "entradaTitulo": "Anotações consideradas pela IA"
+  },
+  "filtro": {
+    "buscar": "Buscar candidato…",
+    "buscarAria": "Buscar candidato por nome ou vaga",
+    "todasVagas": "Todas as vagas",
+    "vagaAria": "Filtrar por vaga",
+    "todasEtapas": "Todas as etapas",
+    "nEtapas_one": "{{count}} etapa",
+    "nEtapas_other": "{{count}} etapas",
+    "etapaAria": "Filtrar por etapa",
+    "limparEtapas": "Limpar etapas",
+    "limpar": "Limpar filtros"
+  },
+  "ordenar": {
+    "aria": "Ordenar {{fase}}",
+    "titulo": "Ordenar por",
+    "compatDesc": "Maior compatibilidade",
+    "compatAsc": "Menor compatibilidade",
+    "recente": "Análise mais recente",
+    "antiga": "Análise mais antiga"
+  },
+  "toast": {
+    "avancou": "{{nome}} avançou para {{fase}}.",
+    "reprovado": "{{nome}} foi movido para Reprovado.",
+    "agendada": "Entrevista de {{nome}} agendada para {{quando}}.",
+    "contratado": "{{nome}} foi contratado! 🎉",
+    "curriculo": "O currículo é ilustrativo nesta demo."
+  }
+}
