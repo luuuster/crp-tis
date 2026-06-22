@@ -1,0 +1,90 @@
+{
+  "header": {
+    "titulo": "Hiring pipeline",
+    "descricao": "The whole selection flow on one screen. AI interviews and scores the match with the role; from there, each stage has its own way to advance the candidate."
+  },
+  "total": "{{n}} candidates in the pipeline",
+  "resultado": "{{n}} of {{total}} candidates",
+  "boardAria": "Pipeline columns — scroll horizontally to see all",
+  "fase": {
+    "ia": "AI interview",
+    "rh": "HR interview",
+    "teste": "Technical test / Case",
+    "gestor": "Hiring manager interview",
+    "proposta": "Offer",
+    "contratado": "Hired",
+    "reprovado": "Rejected"
+  },
+  "contagem": "{{n}} candidate(s) in {{fase}}",
+  "vazio": "No candidates here",
+  "carregando": "Loading pipeline…",
+  "compatLabel": "compatibility",
+  "analise": {
+    "ia": "Resume analysis",
+    "rh": "HR interview analysis",
+    "teste": "Technical test analysis",
+    "gestor": "Hiring manager interview analysis",
+    "proposta": "Offer-stage analysis",
+    "contratado": "Final analysis",
+    "reprovado": "Final analysis"
+  },
+  "analiseEtapa_one": "{{assunto}} · {{count}} day ago",
+  "analiseEtapa_other": "{{assunto}} · {{count}} days ago",
+  "tempoEtapa_one": "{{count}} day in this stage",
+  "tempoEtapa_other": "{{count}} days in this stage",
+  "agendar": "Schedule interview",
+  "reagendar": "Reschedule",
+  "agendadaPara": "Scheduled: {{quando}}",
+  "verCurriculo": "View resume",
+  "acao": {
+    "verProcesso": "View {{nome}}'s process"
+  },
+  "decisao": {
+    "aprovar": "Approve",
+    "reprovar": "Reject"
+  },
+  "finalizar": {
+    "botao": "Interview completed",
+    "titulo": "Interview completed — {{nome}}",
+    "desc": "Log the interview and generate a new AI analysis.",
+    "overline": "Interview completed",
+    "intro": "Log how the conversation with the candidate went. AI generates a new analysis from your notes and the attached file.",
+    "notasLabel": "Interview notes",
+    "notasPlaceholder": "How was the interview? Key points, impressions, strengths and concerns…",
+    "arquivoLabel": "Attach file",
+    "arquivoPlaceholder": "Click to upload a recording, transcript or notes",
+    "removerArquivo": "Remove file",
+    "analisar": "Analyze with AI",
+    "analisando": "AI is analyzing the interview…",
+    "resultadoTitulo": "New AI analysis",
+    "resultadoDesc": "Generated from your input, assessing {{nome}} for the {{vaga}} role.",
+    "entradaTitulo": "Notes considered by the AI"
+  },
+  "filtro": {
+    "buscar": "Search candidate…",
+    "buscarAria": "Search candidate by name or role",
+    "todasVagas": "All roles",
+    "vagaAria": "Filter by role",
+    "todasEtapas": "All stages",
+    "nEtapas_one": "{{count}} stage",
+    "nEtapas_other": "{{count}} stages",
+    "etapaAria": "Filter by stage",
+    "limparEtapas": "Clear stages",
+    "limpar": "Clear filters"
+  },
+  "ordenar": {
+    "aria": "Sort {{fase}}",
+    "titulo": "Sort by",
+    "compatDesc": "Highest match",
+    "compatAsc": "Lowest match",
+    "recente": "Most recent analysis",
+    "antiga": "Oldest analysis"
+  },
+  "toast": {
+    "avancou": "{{nome}} advanced to {{fase}}.",
+    "reprovado": "{{nome}} moved to Rejected.",
+    "agendada": "{{nome}}'s interview scheduled for {{quando}}.",
+    "contratado": "{{nome}} was hired! 🎉",
+    "curriculo": "The resume is illustrative in this demo."
+  }
+}

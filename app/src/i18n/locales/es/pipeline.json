@@ -1,0 +1,90 @@
+{
+  "header": {
+    "titulo": "Embudo de contratación",
+    "descricao": "Todo el flujo de selección en una pantalla. La IA entrevista y mide la compatibilidad con la vacante; a partir de ahí, cada etapa tiene su propia forma de avanzar al candidato."
+  },
+  "total": "{{n}} candidatos en el embudo",
+  "resultado": "{{n}} de {{total}} candidatos",
+  "boardAria": "Columnas del embudo — desplázate en horizontal para verlas todas",
+  "fase": {
+    "ia": "Entrevista por IA",
+    "rh": "Entrevista con RR. HH.",
+    "teste": "Prueba técnica / Caso",
+    "gestor": "Entrevista con el responsable",
+    "proposta": "Oferta",
+    "contratado": "Contratado",
+    "reprovado": "Rechazado"
+  },
+  "contagem": "{{n}} candidato(s) en {{fase}}",
+  "vazio": "Ningún candidato aquí",
+  "carregando": "Cargando embudo…",
+  "compatLabel": "de compatibilidad",
+  "analise": {
+    "ia": "Análisis del currículum",
+    "rh": "Análisis de la entrevista de RR. HH.",
+    "teste": "Análisis de la prueba técnica",
+    "gestor": "Análisis de la entrevista con el responsable",
+    "proposta": "Análisis para la oferta",
+    "contratado": "Análisis final",
+    "reprovado": "Análisis final"
+  },
+  "analiseEtapa_one": "{{assunto}} · hace {{count}} día",
+  "analiseEtapa_other": "{{assunto}} · hace {{count}} días",
+  "tempoEtapa_one": "Hace {{count}} día en esta etapa",
+  "tempoEtapa_other": "Hace {{count}} días en esta etapa",
+  "agendar": "Agendar entrevista",
+  "reagendar": "Reagendar",
+  "agendadaPara": "Agendada: {{quando}}",
+  "verCurriculo": "Ver currículum",
+  "acao": {
+    "verProcesso": "Ver el proceso de {{nome}}"
+  },
+  "decisao": {
+    "aprovar": "Aprobar",
+    "reprovar": "Rechazar"
+  },
+  "finalizar": {
+    "botao": "Entrevista finalizada",
+    "titulo": "Entrevista finalizada — {{nome}}",
+    "desc": "Registra la entrevista y genera un nuevo análisis de IA.",
+    "overline": "Entrevista finalizada",
+    "intro": "Registra cómo fue la conversación con el candidato. La IA genera un nuevo análisis a partir de tus notas y el archivo adjunto.",
+    "notasLabel": "Notas de la entrevista",
+    "notasPlaceholder": "¿Cómo fue la entrevista? Puntos clave, impresiones, fortalezas y aspectos a revisar…",
+    "arquivoLabel": "Adjuntar archivo",
+    "arquivoPlaceholder": "Haz clic para subir una grabación, transcripción o notas",
+    "removerArquivo": "Quitar archivo",
+    "analisar": "Analizar con IA",
+    "analisando": "La IA está analizando la entrevista…",
+    "resultadoTitulo": "Nuevo análisis de IA",
+    "resultadoDesc": "Generado a partir de tu entrada, evaluando a {{nome}} para la vacante de {{vaga}}.",
+    "entradaTitulo": "Notas consideradas por la IA"
+  },
+  "filtro": {
+    "buscar": "Buscar candidato…",
+    "buscarAria": "Buscar candidato por nombre o vacante",
+    "todasVagas": "Todas las vacantes",
+    "vagaAria": "Filtrar por vacante",
+    "todasEtapas": "Todas las etapas",
+    "nEtapas_one": "{{count}} etapa",
+    "nEtapas_other": "{{count}} etapas",
+    "etapaAria": "Filtrar por etapa",
+    "limparEtapas": "Limpiar etapas",
+    "limpar": "Limpiar filtros"
+  },
+  "ordenar": {
+    "aria": "Ordenar {{fase}}",
+    "titulo": "Ordenar por",
+    "compatDesc": "Mayor compatibilidad",
+    "compatAsc": "Menor compatibilidad",
+    "recente": "Análisis más reciente",
+    "antiga": "Análisis más antiguo"
+  },
+  "toast": {
+    "avancou": "{{nome}} avanzó a {{fase}}.",
+    "reprovado": "{{nome}} se movió a Rechazado.",
+    "agendada": "Entrevista de {{nome}} agendada para {{quando}}.",
+    "contratado": "¡{{nome}} fue contratado! 🎉",
+    "curriculo": "El currículum es ilustrativo en esta demo."
+  }
+}
