@@ -145,10 +145,12 @@
     "Reprovado": "Rejected"
   },
   "senioridade": {
+    "Estágio": "Internship",
     "Júnior": "Junior",
     "Pleno": "Mid-level",
-    "Pleno/Sênior": "Mid/Senior",
     "Sênior": "Senior",
+    "Especialista": "Specialist",
+    "Liderança": "Leadership",
     "Qualquer": "Any"
   },
   "statusProc": {

@@ -145,10 +145,12 @@
     "Reprovado": "Rechazado"
   },
   "senioridade": {
+    "Estágio": "Prácticas",
     "Júnior": "Júnior",
     "Pleno": "Semisénior",
-    "Pleno/Sênior": "Semisénior/Sénior",
     "Sênior": "Sénior",
+    "Especialista": "Especialista",
+    "Liderança": "Liderazgo",
     "Qualquer": "Cualquiera"
   },
   "statusProc": {

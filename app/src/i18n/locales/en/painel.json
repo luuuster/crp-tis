@@ -1,0 +1,71 @@
+{
+  "conta": {
+    "label": "Your account",
+    "irMural": "Go to the job board",
+    "editarPerfil": "Edit profile",
+    "editarCurriculo": "Edit resume",
+    "sair": "Sign out",
+    "perfilEmBreve": "Profile editing is coming soon.",
+    "curriculoEmBreve": "Resume editing is coming soon.",
+    "sairConfirm": {
+      "titulo": "Sign out of your account?",
+      "descricao": "You'll return to the sign-in screen.",
+      "voltar": "Back",
+      "sair": "Sign out"
+    }
+  },
+  "header": {
+    "titulo": "Open positions",
+    "subtitulo": "Find the right job and apply in minutes.",
+    "resultados_one": "{{count}} job found",
+    "resultados_other": "{{count}} jobs found"
+  },
+  "busca": {
+    "placeholder": "Search by role",
+    "aria": "Search jobs",
+    "limpar": "Clear search"
+  },
+  "filtro": {
+    "modelo": "Work model",
+    "nivel": "Level",
+    "todosModelos": "All models",
+    "todosNiveis": "All levels",
+    "somentePcd": "Disability-inclusive",
+    "limpar": "Clear filters"
+  },
+  "ordenar": {
+    "label": "Sort by",
+    "recentes": "Most recent",
+    "antigas": "Least recent"
+  },
+  "localFiltro": {
+    "titulo": "Work location",
+    "pais": "Country",
+    "estado": "State",
+    "cidade": "City",
+    "todosPaises": "All countries",
+    "todosEstados": "All states",
+    "todasCidades": "All cities",
+    "limpar": "Clear",
+    "aplicar": "Apply"
+  },
+  "card": {
+    "publicadaEm": "Posted on {{data}}",
+    "expiraEm_one": "Expires in {{count}} day",
+    "expiraEm_other": "Expires in {{count}} days",
+    "expiraHoje": "Expires today",
+    "pcd": "Disability-inclusive",
+    "vagas_one": "{{count}} opening",
+    "vagas_other": "{{count}} openings",
+    "beneficios_one": "{{count}} benefit",
+    "beneficios_other": "{{count}} benefits",
+    "naoInformado": "Not informed",
+    "verDetalhes": "View job details",
+    "verDetalhesAria": "View job details: {{cargo}}"
+  },
+  "vazio": {
+    "titulo": "No jobs found",
+    "descricao": "Try adjusting your search or clearing the filters.",
+    "limpar": "Clear filters"
+  }
+}

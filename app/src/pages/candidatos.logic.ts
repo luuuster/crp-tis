@@ -32,13 +32,15 @@ export function areaInfo(vaga: string): { skills: string[]; curso: string; cargo
   return { skills: ['Comunicação', 'Organização', 'Excel avançado', 'Gestão de tempo'], curso: 'Administração', cargoBase: 'Profissional' }
 }
 
-export const SEN_ORDEM: Record<string, number> = { 'Júnior': 1, 'Pleno': 2, 'Pleno/Sênior': 2.5, 'Sênior': 3 }
+// Ordem dos níveis (escala única e canônica de senioridade — espelha NIVEIS do Gerador de Vagas, que é
+// a fonte da verdade da criação de vaga). Sem composto "Pleno/Sênior": a vaga tem UM nível só.
+export const SEN_ORDEM: Record<string, number> = { 'Estágio': 0, 'Júnior': 1, 'Pleno': 2, 'Sênior': 3, 'Especialista': 4, 'Liderança': 5 }
 // Quão perto a senioridade do candidato está da desejada (0–1). "Qualquer" = neutro.
 export function senioridadeScore(alvo: string, cand: string): number {
   if (alvo === 'Qualquer') return 0.7
   if (alvo === cand) return 1
   const dist = Math.abs((SEN_ORDEM[alvo] ?? 2) - (SEN_ORDEM[cand] ?? 2))
-  return dist <= 0.5 ? 0.75 : dist <= 1 ? 0.5 : 0.25
+  return dist <= 1 ? 0.5 : 0.25
 }
 
 // Ranqueia TODO o banco pela aderência à vaga-alvo. Determinístico (skills da área + senioridade +

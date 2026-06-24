@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
 import { contrastOnStack, aaThreshold } from './wcag'
-import { login, gotoRegister, setTheme, gotoMenu, abrirVaga, type Brand, type Mode } from './helpers'
+import { login, setTheme, gotoMenu, abrirVaga, type Brand, type Mode } from './helpers'
 import { BRANDS, MODES } from './themes'
 
 // AUDITORIA DE CONTRASTE por PIXEL REAL (WCAG 1.4.3): para cada texto VISÍVEL, mede a cor renderizada
@@ -10,10 +10,10 @@ import { BRANDS, MODES } from './themes'
 
 
 // setTheme ANTES de navegar p/ a aba: o Gerador é full-screen e cobre os toggles flutuantes de tema.
-// Os toggles de marca/tema são GLOBAIS (App.tsx) — existem no Login E no Cadastro.
+// Os toggles de marca/tema são GLOBAIS (App.tsx). O Cadastro saiu daqui: virou do candidato (porta 5172,
+// /cadastro, dev-only) — fora do alcance do preview do recrutador. A11y do form é coberta no jsdom (RegisterPage).
 const SURFACES: { name: string; go: (p: Page, b: Brand, m: Mode) => Promise<void> }[] = [
   { name: 'Login', go: async (p, b, m) => { await p.goto('/'); await setTheme(p, b, m) } },
-  { name: 'Cadastro', go: async (p, b, m) => { await gotoRegister(p); await setTheme(p, b, m) } },
   // Login já cai na Dashboard (AppShell); navegação das telas internas é pelo MENU (sidebar), não pelo dock.
   { name: 'Dashboard', go: async (p, b, m) => { await login(p); await setTheme(p, b, m) } },
   { name: 'Vagas', go: async (p, b, m) => { await login(p); await setTheme(p, b, m); await gotoMenu(p, 'Vagas') } },

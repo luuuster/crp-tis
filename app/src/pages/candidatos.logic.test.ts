@@ -62,11 +62,9 @@ describe('senioridadeScore', () => {
   it('alvo === candidato → 1', () => {
     expect(senioridadeScore('Pleno', 'Pleno')).toBe(1)
   })
-  it('distância 0.5 → 0.75', () => {
-    expect(senioridadeScore('Pleno', 'Pleno/Sênior')).toBe(0.75)
-  })
-  it('distância 1 → 0.5', () => {
+  it('distância 1 (níveis adjacentes) → 0.5', () => {
     expect(senioridadeScore('Pleno', 'Sênior')).toBe(0.5)
+    expect(senioridadeScore('Estágio', 'Júnior')).toBe(0.5)
   })
   it('distância 2 → 0.25', () => {
     expect(senioridadeScore('Júnior', 'Sênior')).toBe(0.25)

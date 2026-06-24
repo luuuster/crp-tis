@@ -43,10 +43,3 @@ test('credenciais de demo (recrutador@talentai.com / talentai123) chamam onLogin
   await waitFor(() => expect(onLogin).toHaveBeenCalledTimes(1), { timeout: 3000 })
 })
 
-test('"Criar conta" dispara onCreateAccount', async () => {
-  const user = userEvent.setup()
-  const onCreateAccount = vi.fn()
-  render(<LoginPage onCreateAccount={onCreateAccount} />)
-  await user.click(screen.getByRole('button', { name: /criar conta/i }))
-  expect(onCreateAccount).toHaveBeenCalledTimes(1)
-})

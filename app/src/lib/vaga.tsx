@@ -69,7 +69,7 @@ function DocSection({ title, items }: { title: string; items: string[] }) {
  * informações: título, resumo, sobre o desafio, objetivo, responsabilidades, requisitos, operação &
  * condições, processo seletivo e benefícios.
  */
-export function VagaDocumento({ data, perfil, tom = 'Equilibrado' }: { data: Briefing; perfil: Perfil; tom?: Tom }) {
+export function VagaDocumento({ data, perfil, tom = 'Equilibrado', beneficioEmoji }: { data: Briefing; perfil: Perfil; tom?: Tom; beneficioEmoji?: (b: string) => string }) {
   const titleId = useId()
   const benefId = useId()
   const desc = buildDesc(data, perfil, tom)
@@ -113,9 +113,20 @@ export function VagaDocumento({ data, perfil, tom = 'Equilibrado' }: { data: Bri
       {/* Benefícios, chips, último bloco; fio sutil separa do resto. */}
       <section aria-labelledby={benefId} className="space-y-3 border-t border-border/50 pt-6">
         <h3 id={benefId} className="flex items-baseline gap-2 ty-label text-foreground" style={{ fontWeight: 'var(--font-weight-semibold)' }}>Benefícios<span className="ty-caption tabular-nums text-muted-foreground">{desc.beneficios.length}</span></h3>
-        <ul className="flex flex-wrap gap-2">
-          {desc.beneficios.map((b) => <li key={b} className="rounded-full bg-muted px-3 py-1 ty-body-sm text-foreground">{b}</li>)}
-        </ul>
+        {beneficioEmoji ? (
+          // Lista com emoji (1 por benefício) — usada na vaga pública do candidato. O emoji é decorativo.
+          <ul className="grid gap-2.5 sm:grid-cols-2">
+            {desc.beneficios.map((b) => (
+              <li key={b} className="flex items-center gap-2.5 ty-body-sm text-foreground">
+                <span aria-hidden className="text-base leading-none">{beneficioEmoji(b)}</span> {b}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <ul className="flex flex-wrap gap-2">
+            {desc.beneficios.map((b) => <li key={b} className="rounded-full bg-muted px-3 py-1 ty-body-sm text-foreground">{b}</li>)}
+          </ul>
+        )}
       </section>
     </article>
   )

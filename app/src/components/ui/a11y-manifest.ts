@@ -212,10 +212,6 @@ export const A11Y_MANIFEST: Record<string, A11yEntry> = {
     verifiedBy: ['axe-closed', 'axe-open', 'keyboard', 'contrast'], demoId: 'menubar',
     openTrigger: 'Arquivo', openVia: 'click',
   }),
-  'native-select': E({
-    component: 'native-select', kind: 'control', ariaPattern: 'select nativo', roles: ['combobox'], keyboard: ['Setas trocam'],
-    states: ['default', 'disabled'], verifiedBy: ['axe-closed', 'contrast'], demoId: 'native-select',
-  }),
   'navigation-menu': E({
     component: 'navigation-menu', kind: 'overlay', ariaPattern: 'navegação com submenus', roles: ['navigation', 'menu'],
     keyboard: ['Setas navegam', 'Enter abre', 'Esc fecha'], states: ['aberto'],

@@ -51,7 +51,8 @@ const emailDe = (nome: string) =>
 // A etapa do funil vira a faseAtual do processo (5 fases: Triagem IA, RH, Teste, Gestor, Proposta). O
 // mkProcesso já marca fase<atual=aprovado, =atual=em andamento, >atual=pendente → é o "libera o passo
 // anterior conforme avança". senioridade/email/data são sintetizados (mock), estáveis pelo nome.
-const senioridadeDe = (c: Card) => NIVEIS[hashNum(c.nome) % NIVEIS.length]
+const nivelDaVaga = (vaga: string) => NIVEIS[hashNum(vaga) % NIVEIS.length] // nível é da VAGA: mesma vaga = mesmo nível p/ todos os candidatos dela
+const senioridadeDe = (c: Card) => nivelDaVaga(c.vaga)
 const PROC_STATUS: Record<FaseId, StatusProc> = {
   ia: 'Em andamento', rh: 'Em andamento', teste: 'Em andamento', gestor: 'Em andamento', proposta: 'Em andamento',
   contratado: 'Contratado', reprovado: 'Reprovado',
@@ -117,7 +118,7 @@ function CardItem({ c, onAbrir, onAgendar }: { c: Card; onAbrir?: (c: Card) => v
         <span className={cn('flex size-9 shrink-0 items-center justify-center rounded-full ty-caption font-semibold', tintFor(c.nome))} aria-hidden>{iniciais(c.nome)}</span>
         <div className="min-w-0 flex-1">
           <button type="button" onClick={(e) => { e.stopPropagation(); onAbrir?.(c) }} aria-label={t('acao.verProcesso', { nome: c.nome })} className="block max-w-full truncate rounded-sm text-left ty-body-sm font-semibold text-foreground transition-colors group-hover/card:text-primary-text focus-visible:focus-ring">{c.nome}</button>
-          <p className="truncate ty-caption text-muted-foreground">{c.vaga}</p>
+          <p className="truncate ty-caption text-muted-foreground">{c.vaga} · {nivelDaVaga(c.vaga)}</p>
         </div>
       </div>
       {/* Compatibilidade — cada etapa é uma análise da IA, então a pílula é consistente em TODAS as colunas. */}
@@ -219,7 +220,7 @@ function EtapaFiltro({ etapas, onToggle, onLimpar }: { etapas: FaseId[]; onToggl
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" aria-label={t('filtro.etapaAria')} className="h-9 w-auto min-w-[9rem] justify-between gap-2 font-normal">
+        <Button variant="outline" aria-label={t('filtro.etapaAria')} className="h-[var(--button-height-md)] w-auto min-w-[9rem] justify-between gap-2 font-normal">
           <span className="truncate">{label}</span>
           <ChevronDown className="size-4 shrink-0 text-muted-foreground" aria-hidden />
         </Button>
@@ -252,10 +253,12 @@ function EtapaFiltro({ etapas, onToggle, onLimpar }: { etapas: FaseId[]; onToggl
   )
 }
 
-// Barra de filtros do board: busca (nome/vaga) + Vaga + Etapa (multi). "Limpar filtros" some quando nada ativo.
-function Filtros({ busca, onBusca, vaga, onVaga, vagas, etapas, onToggleEtapa, onLimparEtapas, ativos, onLimpar }: {
+// Barra de filtros do board: busca (nome/vaga) + Vaga + Nível (da vaga) + Etapa (multi). Tudo no tamanho de
+// controle padrão do DS (--button-height-md = 40px). "Limpar filtros" some quando nada ativo.
+function Filtros({ busca, onBusca, vaga, onVaga, vagas, nivel, onNivel, niveis, etapas, onToggleEtapa, onLimparEtapas, ativos, onLimpar }: {
   busca: string; onBusca: (v: string) => void
   vaga: string; onVaga: (v: string) => void; vagas: string[]
+  nivel: string; onNivel: (v: string) => void; niveis: string[]
   etapas: FaseId[]; onToggleEtapa: (id: FaseId) => void; onLimparEtapas: () => void
   ativos: boolean; onLimpar: () => void
 }) {
@@ -264,17 +267,24 @@ function Filtros({ busca, onBusca, vaga, onVaga, vagas, etapas, onToggleEtapa, o
     <div className="flex shrink-0 flex-wrap items-center gap-2 px-5 pb-4 lg:px-8">
       <div className="relative min-w-[12rem] flex-1 sm:max-w-xs">
         <Search className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
-        <Input value={busca} onChange={(e) => onBusca(e.target.value)} placeholder={t('filtro.buscar')} aria-label={t('filtro.buscarAria')} className="h-9 pl-8 ty-body-sm font-normal" />
+        <Input value={busca} onChange={(e) => onBusca(e.target.value)} placeholder={t('filtro.buscar')} aria-label={t('filtro.buscarAria')} className="h-[var(--button-height-md)] pl-8 ty-body-sm font-normal" />
       </div>
       <Select value={vaga} onValueChange={onVaga}>
-        <SelectTrigger size="sm" aria-label={t('filtro.vagaAria')} className="h-9 w-auto min-w-[9rem] font-normal"><SelectValue>{vaga === 'todas' ? t('filtro.todasVagas') : vaga}</SelectValue></SelectTrigger>
+        <SelectTrigger aria-label={t('filtro.vagaAria')} className="h-[var(--button-height-md)] w-auto min-w-[9rem] font-normal"><SelectValue>{vaga === 'todas' ? t('filtro.todasVagas') : vaga}</SelectValue></SelectTrigger>
         <SelectContent>
           <SelectItem value="todas">{t('filtro.todasVagas')}</SelectItem>
           {vagas.map((v) => <SelectItem key={v} value={v}>{v}</SelectItem>)}
         </SelectContent>
       </Select>
+      <Select value={nivel} onValueChange={onNivel}>
+        <SelectTrigger aria-label={t('filtro.nivelAria')} className="h-[var(--button-height-md)] w-auto min-w-[9rem] font-normal"><SelectValue>{nivel === 'todos' ? t('filtro.todosNiveis') : nivel}</SelectValue></SelectTrigger>
+        <SelectContent>
+          <SelectItem value="todos">{t('filtro.todosNiveis')}</SelectItem>
+          {niveis.map((n) => <SelectItem key={n} value={n}>{n}</SelectItem>)}
+        </SelectContent>
+      </Select>
       <EtapaFiltro etapas={etapas} onToggle={onToggleEtapa} onLimpar={onLimparEtapas} />
-      {ativos && <Button variant="ghost" size="sm" onClick={onLimpar} className="gap-1.5"><X className="size-4" aria-hidden /> {t('filtro.limpar')}</Button>}
+      {ativos && <Button variant="ghost" onClick={onLimpar} className="h-[var(--button-height-md)] gap-1.5"><X className="size-4" aria-hidden /> {t('filtro.limpar')}</Button>}
     </div>
   )
 }
@@ -307,6 +317,7 @@ export function Pipeline({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
   const [finalizando, setFinalizando] = useState<Card | null>(null) // candidato no Sheet "Entrevista finalizada"
   const [busca, setBusca] = useState('')
   const [vaga, setVaga] = useState('todas')
+  const [nivel, setNivel] = useState('todos')
   const [etapas, setEtapas] = useState<FaseId[]>([])
 
   // Decisão tomada no rodapé do processo → move o card no funil e volta para o board.
@@ -336,14 +347,16 @@ export function Pipeline({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
 
   // ---- filtros (puros). A ordenação NÃO mora aqui: é por coluna (ver Coluna/ColunaSort). ----
   const vagas = Array.from(new Set(cards.map((c) => c.vaga))).sort((a, b) => a.localeCompare(b))
+  const niveis = NIVEIS.filter((n) => cards.some((c) => nivelDaVaga(c.vaga) === n)) // só os níveis presentes, na ordem da escala
   const q = busca.trim().toLowerCase()
   const passa = (c: Card) =>
-    (q === '' || c.nome.toLowerCase().includes(q) || c.vaga.toLowerCase().includes(q)) && (vaga === 'todas' || c.vaga === vaga)
+    (q === '' || c.nome.toLowerCase().includes(q) || c.vaga.toLowerCase().includes(q)) &&
+    (vaga === 'todas' || c.vaga === vaga) && (nivel === 'todos' || nivelDaVaga(c.vaga) === nivel)
   const visiveis = cards.filter(passa)
   const fasesVisiveis = etapas.length === 0 ? FASES : FASES.filter((f) => etapas.includes(f.id))
-  const ativos = q !== '' || vaga !== 'todas' || etapas.length > 0
+  const ativos = q !== '' || vaga !== 'todas' || nivel !== 'todos' || etapas.length > 0
   const toggleEtapa = (id: FaseId) => setEtapas((cur) => (cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id]))
-  const limpar = () => { setBusca(''); setVaga('todas'); setEtapas([]) }
+  const limpar = () => { setBusca(''); setVaga('todas'); setNivel('todos'); setEtapas([]) }
 
   return (
     <AppShell active="pipeline" crumb={crumb} onNavigate={handleNav} brand={brand} mode={mode} onCycleBrand={onCycleBrand} onToggleMode={onToggleMode}>
@@ -376,6 +389,7 @@ export function Pipeline({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
             <Filtros
               busca={busca} onBusca={setBusca}
               vaga={vaga} onVaga={setVaga} vagas={vagas}
+              nivel={nivel} onNivel={setNivel} niveis={niveis}
               etapas={etapas} onToggleEtapa={toggleEtapa} onLimparEtapas={() => setEtapas([])}
               ativos={ativos} onLimpar={limpar}
             />

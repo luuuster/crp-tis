@@ -10,6 +10,8 @@
   "packageManager": "npm@11.11.0",
   "scripts": {
     "dev": "vite",
+    "dev:candidato": "vite --config vite.candidato.config.ts",
+    "dev:mapa": "vite --config vite.mapa.config.ts",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",

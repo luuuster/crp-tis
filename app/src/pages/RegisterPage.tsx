@@ -16,6 +16,7 @@ import { toast } from 'sonner'
 
 import { cn } from '@/lib/utils'
 import { focusRing } from '@/lib/focus'
+import { PWD_RULES, senhaForte } from '@/lib/password'
 import { AuthLayout } from '@/components/auth/AuthLayout'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -34,22 +35,13 @@ import {
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const MAX_MB = 5
 
-// Regras da senha — alimentam o checklist AO VIVO e a validação do zod (fonte única).
-// `key` aponta p/ o rótulo no namespace 'auth' (regras.*); o rótulo é resolvido via t() na UI.
-const PWD_RULES = [
-  { key: 'minChars', test: (v: string) => v.length >= 8 },
-  { key: 'maiuscula', test: (v: string) => /[A-Z]/.test(v) },
-  { key: 'numero', test: (v: string) => /[0-9]/.test(v) },
-  { key: 'especial', test: (v: string) => /[^A-Za-z0-9]/.test(v) },
-] as const
-
 // Schema parametrizado por `t` — mensagens do zod saem do namespace 'auth' (chrome de UI).
 function makeRegisterSchema(t: TFunction<'auth'>) {
   return z
     .object({
       nome: z.string().trim().min(1, t('validacao.nomeObrigatorio')),
       email: z.string().min(1, t('validacao.emailObrigatorio')).refine((v) => EMAIL_RE.test(v), t('validacao.emailInvalido')),
-      password: z.string().refine((v) => PWD_RULES.every((r) => r.test(v)), t('validacao.senhaRequisitos')),
+      password: z.string().refine(senhaForte, t('validacao.senhaRequisitos')),
       confirmPassword: z.string().min(1, t('validacao.confirmeSenha')),
       aceiteTermos: z.boolean().refine((v) => v === true, {
         message: t('validacao.aceiteTermos'),

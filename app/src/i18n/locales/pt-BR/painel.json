@@ -1,0 +1,71 @@
+{
+  "conta": {
+    "label": "Sua conta",
+    "irMural": "Ir para o mural de vagas",
+    "editarPerfil": "Editar perfil",
+    "editarCurriculo": "Editar currículo",
+    "sair": "Sair",
+    "perfilEmBreve": "A edição de perfil chega em breve.",
+    "curriculoEmBreve": "A edição de currículo chega em breve.",
+    "sairConfirm": {
+      "titulo": "Sair da sua conta?",
+      "descricao": "Você voltará para a tela de acesso.",
+      "voltar": "Voltar",
+      "sair": "Sair"
+    }
+  },
+  "header": {
+    "titulo": "Vagas abertas",
+    "subtitulo": "Encontre a vaga certa e candidate-se em minutos.",
+    "resultados_one": "{{count}} vaga encontrada",
+    "resultados_other": "{{count}} vagas encontradas"
+  },
+  "busca": {
+    "placeholder": "Buscar por cargo",
+    "aria": "Buscar vagas",
+    "limpar": "Limpar busca"
+  },
+  "filtro": {
+    "modelo": "Modelo de trabalho",
+    "nivel": "Nível",
+    "todosModelos": "Todos os modelos",
+    "todosNiveis": "Todos os níveis",
+    "somentePcd": "Afirmativas para PcD",
+    "limpar": "Limpar filtros"
+  },
+  "ordenar": {
+    "label": "Ordenar por",
+    "recentes": "Mais recentes",
+    "antigas": "Menos recentes"
+  },
+  "localFiltro": {
+    "titulo": "Local de trabalho",
+    "pais": "País",
+    "estado": "Estado",
+    "cidade": "Cidade",
+    "todosPaises": "Todos os países",
+    "todosEstados": "Todos os estados",
+    "todasCidades": "Todas as cidades",
+    "limpar": "Limpar",
+    "aplicar": "Aplicar"
+  },
+  "card": {
+    "publicadaEm": "Publicada em {{data}}",
+    "expiraEm_one": "Expira em {{count}} dia",
+    "expiraEm_other": "Expira em {{count}} dias",
+    "expiraHoje": "Expira hoje",
+    "pcd": "Também p/ PcD",
+    "vagas_one": "{{count}} vaga",
+    "vagas_other": "{{count}} vagas",
+    "beneficios_one": "{{count}} benefício",
+    "beneficios_other": "{{count}} benefícios",
+    "naoInformado": "Não informado",
+    "verDetalhes": "Ver detalhes da vaga",
+    "verDetalhesAria": "Ver detalhes da vaga: {{cargo}}"
+  },
+  "vazio": {
+    "titulo": "Nenhuma vaga encontrada",
+    "descricao": "Tente ajustar a busca ou limpar os filtros.",
+    "limpar": "Limpar filtros"
+  }
+}

@@ -13,6 +13,17 @@ export default defineConfig({
   server: {
     fs: { allow: [resolve(import.meta.dirname, '..')] },
   },
+  // Multi-página: a plataforma tem DUAS entradas — recrutador (index.html) e candidato (candidato.html).
+  // Um `vite build` emite as duas. No dev elas rodam em portas separadas (ver vite.candidato.config.ts).
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(import.meta.dirname, 'index.html'),
+        candidato: resolve(import.meta.dirname, 'candidato.html'),
+        mapa: resolve(import.meta.dirname, 'mapa.html'),
+      },
+    },
+  },
   // Testes (Vitest): jsdom + Testing Library. css:false não processa Tailwind nos testes
   // (mais rápido e sem ruído) — os testes checam COMPORTAMENTO, não pixels.
   test: {
