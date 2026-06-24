@@ -10,6 +10,7 @@
     "placeholder": { "email": "tucorreo@ejemplo.com", "senha": "••••••••" },
     "dica": "Enviamos una contraseña provisional a tu correo cuando te postulaste.",
     "demo": "Demo: usa cualquier correo y la contraseña provisional {{senha}}.",
+    "esqueci": "Olvidé mi contraseña",
     "entrar": "Entrar",
     "entrando": "Entrando…",
     "mostrarSenha": "Mostrar contraseña",
@@ -26,6 +27,38 @@
     "pendente": "pendiente",
     "definir": "Definir contraseña y entrar",
     "definindo": "Definiendo…"
+  },
+  "recuperar": {
+    "title": "Recuperar acceso",
+    "subtitle": "Indica el correo de tu cuenta y te enviaremos un enlace para restablecer tu contraseña.",
+    "label": { "email": "Correo electrónico" },
+    "enviar": "Enviar enlace de recuperación",
+    "enviando": "Enviando…",
+    "voltar": "Volver al inicio de sesión"
+  },
+  "enviado": {
+    "title": "Revisa tu correo",
+    "subtitle": "Si existe una cuenta para {{email}}, recibirás en breve un enlace para restablecer la contraseña.",
+    "subtitleGenerico": "Si existe una cuenta, recibirás en breve un enlace para restablecer la contraseña.",
+    "dica": "¿No lo recibiste? Revisa la carpeta de spam o reenvíalo en unos minutos.",
+    "reenviar": "Reenviar correo",
+    "reenviado": "Correo reenviado.",
+    "voltar": "Volver al inicio de sesión",
+    "demo": "Demo: sin correo real. Haz clic abajo para simular el enlace y restablecer la contraseña.",
+    "redefinirDemo": "Restablecer contraseña ahora"
+  },
+  "redefinir": {
+    "title": "Restablecer contraseña",
+    "subtitle": "Crea una nueva contraseña para acceder a tu cuenta.",
+    "definir": "Restablecer contraseña y entrar",
+    "definindo": "Restableciendo…",
+    "voltar": "Volver al inicio de sesión"
+  },
+  "redefinido": {
+    "title": "¡Contraseña restablecida!",
+    "subtitle": "Todo listo: tu nueva contraseña ya está activa.",
+    "dica": "Ya puedes acceder a tu cuenta con la nueva contraseña.",
+    "entrar": "Ir a mi panel"
   },
   "regras": {
     "minChars": "Mínimo de 8 caracteres",

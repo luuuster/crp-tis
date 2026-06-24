@@ -125,12 +125,17 @@ sincronizada via History API).
 graph TB
     subgraph ENTRADA["Entrada"]
         Cadastro["/cadastro<br/>nome · e-mail · senha · CV"] --> Acesso
-        Acesso["/acesso · login<br/>(senha provisória)"] --> Troca["Trocar senha"]
+        Acesso["/acesso · login<br/>(senha provisória)"] --> Troca["Trocar senha (1º acesso)"]
+        Acesso -.->|esqueci a senha| Recuperar["/acesso/recuperar<br/>informa o e-mail"]
+        Recuperar --> Enviado["/acesso/recuperar/enviado<br/>link de recuperação enviado"]
+        Enviado -.->|abre o link do e-mail| Redefinir["/redefinir_senha<br/>cria a nova senha"]
+        Redefinir --> RedefinidoOk["✅ /redefinir_senha/sucesso<br/>senha redefinida"]
         LinkPub["🔗 Link público da vaga"]
     end
 
     Acesso -->|sessão| Painel
     Troca -->|sessão| Painel["/painel · mural de vagas<br/>busca · filtros · ordenação · cards · paginação"]
+    RedefinidoOk -->|sessão| Painel
 
     subgraph PAGINA["/descricao_da_vaga?vaga=ID"]
         Vaga["Página da vaga"] --> AbaDesc["Aba · Descrição<br/>documento da vaga + sobre a empresa"]
@@ -152,8 +157,8 @@ graph TB
 
     classDef gate fill:#fde68a,stroke:#b45309,color:#7c2d12;
     classDef done fill:#dcfce7,stroke:#15803d,color:#14532d;
-    class Acesso,Troca gate;
-    class Sucesso,SegOk done;
+    class Acesso,Troca,Recuperar,Enviado,Redefinir gate;
+    class Sucesso,SegOk,RedefinidoOk done;
 ```
 
 ### Chrome por área

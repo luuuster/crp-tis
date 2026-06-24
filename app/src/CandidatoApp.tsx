@@ -36,6 +36,9 @@ export function CandidatoApp() {
   // na montagem. (toLowerCase: /ACESSO, /Cadastro etc. também batem — senão cai no app do recrutador.)
   const path = window.location.pathname.toLowerCase()
   const acesso = path.startsWith('/acesso')
+  // Redefinir senha: rota própria do fluxo "esqueci a senha" (alvo do link do e-mail) — renderiza o CandidatoAcesso,
+  // que deriva a etapa pela URL. Fica fora de /acesso porque, no produto, viria de um link externo com token.
+  const redefinir = path.startsWith('/redefinir')
   const cadastro = path.startsWith('/cadastro')
   const painel = path.startsWith('/painel')
   // Link PÚBLICO da vaga (ex.: divulgada no LinkedIn): abre a vaga SEM exigir login — visão de quem ainda não
@@ -59,7 +62,7 @@ export function CandidatoApp() {
             <CandidatoPainel brand={brand} mode={mode} onCycleBrand={cycleBrand} onToggleMode={toggleMode} onSair={() => { sairCandidato(); window.location.href = '/acesso' }} />
           ) : cadastro ? (
             <RegisterPage brand={brand} onBackToLogin={() => { window.location.href = '/acesso' }} onRegistered={() => { window.location.href = '/acesso' }} />
-          ) : acesso ? (
+          ) : acesso || redefinir ? (
             <CandidatoAcesso brand={brand} />
           ) : (
             <InscricaoVaga brand={brand} vaga={vagaSel} publico={linkpublico} />
