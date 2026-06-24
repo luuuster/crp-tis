@@ -8,12 +8,13 @@
  * multi-marca, claro/escuro e WCAG 2.2 AA (passos em ordem real; losangos/setas decorativos com aria-hidden;
  * cor sempre acompanhada de rótulo).
  */
-import { Fragment } from 'react'
+import { Fragment, type ReactNode } from 'react'
 import type { LucideIcon } from 'lucide-react'
 import {
-  ArrowRight, BadgeCheck, Bot, Brain, CalendarCheck, CalendarClock, ChevronDown, ClipboardList, Clock, FilePlus2,
-  FileSignature, FileText, FlaskConical, Handshake, HelpCircle, Inbox, KeyRound, LayoutGrid, Link2, LogIn, Megaphone,
-  MessagesSquare, RefreshCw, RotateCcw, Send, Share2, Sparkles, Trophy, UserCheck, UserPlus, Users, X,
+  ArrowRight, BadgeCheck, Bot, Brain, CalendarCheck, CalendarClock, CheckCircle2, ChevronDown, ClipboardList, Clock,
+  FilePlus2, FileSignature, FileText, FlaskConical, Handshake, HelpCircle, Inbox, KeyRound, LayoutGrid, Link2, LogIn,
+  Mail, MailCheck, Megaphone, MessagesSquare, RefreshCw, RotateCcw, Send, Share2, Sparkles, Trophy, UserCheck,
+  UserPlus, Users, X,
 } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
@@ -73,12 +74,35 @@ const FLOW: FlowNode[] = [
   { kind: 'success', label: 'Contratado 🎉', icon: Trophy },
 ]
 
-// Caixa de passo (início/processo/sucesso). Oval nas pontas, retângulo no meio.
-function NodeBox({ icon: Icon, label, tom, oval = false, className }: { icon: LucideIcon; label: string; tom: Tone; oval?: boolean; className?: string }) {
+// Caixa de passo (início/processo/sucesso). Oval nas pontas, retângulo no meio. `compact` p/ as raias
+// (passos menores, cabem mais por linha).
+function NodeBox({ icon: Icon, label, tom, oval = false, compact = false, className }: { icon: LucideIcon; label: string; tom: Tone; oval?: boolean; compact?: boolean; className?: string }) {
   return (
-    <div className={cn('flex items-center gap-2.5 px-4 py-3 shadow-sm ring-1 ring-surface-ring', oval ? 'rounded-full' : 'rounded-xl', toneBadge[tom], className)}>
-      <Icon className="size-4.5 shrink-0" aria-hidden />
-      <span className="ty-body-sm font-medium text-foreground">{label}</span>
+    <div className={cn('flex shrink-0 items-center shadow-sm ring-1 ring-surface-ring', oval ? 'rounded-full' : 'rounded-xl', compact ? 'gap-2 px-3 py-2' : 'gap-2.5 px-4 py-3', toneBadge[tom], className)}>
+      <Icon className={cn('shrink-0', compact ? 'size-4' : 'size-4.5')} aria-hidden />
+      <span className={cn('font-medium text-foreground', compact ? 'ty-caption' : 'ty-body-sm')}>{label}</span>
+    </div>
+  )
+}
+
+// Acento de cor da raia (sempre acompanhado do rótulo da condição — cor nunca é o único sinal).
+const BAR: Record<Tone, string> = {
+  primary: 'bg-primary', secondary: 'bg-secondary', success: 'bg-success', warning: 'bg-warning', destructive: 'bg-destructive',
+}
+
+// "Raia" (swimlane): condição à esquerda + trilha de passos à direita que NÃO quebra no meio da seta —
+// rola na horizontal quando fica larga (igual à árvore da IA). Acento colorido por tom à esquerda.
+function Raia({ cond, tom, children }: { cond: string; tom: Tone; children: ReactNode }) {
+  return (
+    <div className="flex items-stretch overflow-hidden rounded-xl bg-card/40 ring-1 ring-surface-ring">
+      <span aria-hidden className={cn('w-1 shrink-0', BAR[tom])} />
+      <div className="flex w-40 shrink-0 items-center px-3.5 py-3">
+        <span className="ty-caption font-semibold text-muted-foreground">{cond}</span>
+      </div>
+      <span aria-hidden className="w-px shrink-0 bg-border/60" />
+      <div className="flex min-w-0 flex-1 items-center gap-2.5 overflow-x-auto px-4 py-3">
+        {children}
+      </div>
     </div>
   )
 }
@@ -127,33 +151,41 @@ function AcessoCandidato() {
   return (
     <section aria-labelledby="acesso-cand" className="mt-12">
       <h2 id="acesso-cand" className="ty-h4 text-foreground">Acesso do candidato</h2>
-      <p className="mt-1 ty-body-sm text-muted-foreground">Como o candidato entra na plataforma — cadastro, login e o 1º acesso.</p>
-      <div className="mt-5 flex flex-col gap-4">
-        <div className="flex flex-wrap items-center gap-3">
-          <NodeBox icon={UserPlus} label="/cadastro" tom="secondary" />
-          <Seta label="cria conta" />
-          <NodeBox icon={LogIn} label="/acesso · login" tom="secondary" />
-        </div>
-        {/* Desfechos a partir do /acesso */}
-        <div className="flex flex-col gap-3 border-l border-border/60 pl-4">
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="ty-caption font-medium text-muted-foreground">conta cadastrada</span>
-            <Seta />
-            <NodeBox icon={LayoutGrid} label="/painel" tom="success" />
-          </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="ty-caption font-medium text-muted-foreground">senha provisória · 1º acesso</span>
-            <Seta />
-            <NodeBox icon={KeyRound} label="Trocar a senha" tom="warning" />
-            <Seta />
-            <NodeBox icon={LayoutGrid} label="/painel" tom="success" />
-          </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="ty-caption font-medium text-muted-foreground">senha incorreta</span>
-            <Seta />
-            <NodeBox icon={X} label="Erro — tenta de novo" tom="destructive" />
-          </div>
-        </div>
+      <p className="mt-1 ty-body-sm text-muted-foreground">Como o candidato entra na plataforma — cadastro, login, 1º acesso e recuperação de senha.</p>
+
+      {/* Entrada */}
+      <div className="mt-5 flex flex-wrap items-center gap-3">
+        <NodeBox icon={UserPlus} label="/cadastro" tom="secondary" compact />
+        <Seta label="cria conta" />
+        <NodeBox icon={LogIn} label="/acesso · login" tom="secondary" compact />
+      </div>
+
+      {/* Desfechos a partir do login — uma raia por condição */}
+      <p className="mt-6 mb-2.5 ty-label-sm uppercase tracking-wide text-muted-foreground">A partir de /acesso · login</p>
+      <div className="space-y-2.5">
+        <Raia cond="conta cadastrada" tom="success">
+          <NodeBox icon={LayoutGrid} label="/painel" tom="success" compact />
+        </Raia>
+        <Raia cond="senha provisória · 1º acesso" tom="warning">
+          <NodeBox icon={KeyRound} label="Trocar a senha" tom="warning" compact />
+          <Seta />
+          <NodeBox icon={LayoutGrid} label="/painel" tom="success" compact />
+        </Raia>
+        {/* Esqueci a senha — sub-fluxo com rotas próprias (deep-link + link do e-mail) */}
+        <Raia cond="esqueceu a senha" tom="secondary">
+          <NodeBox icon={Mail} label="/acesso/recuperar" tom="secondary" compact />
+          <Seta label="envia link" />
+          <NodeBox icon={MailCheck} label="/acesso/recuperar/enviado" tom="secondary" compact />
+          <Seta label="abre o link" />
+          <NodeBox icon={KeyRound} label="/redefinir_senha" tom="warning" compact />
+          <Seta />
+          <NodeBox icon={CheckCircle2} label="/redefinir_senha/sucesso" tom="success" compact />
+          <Seta />
+          <NodeBox icon={LayoutGrid} label="/painel" tom="success" compact />
+        </Raia>
+        <Raia cond="senha incorreta" tom="destructive">
+          <NodeBox icon={X} label="Erro — tenta de novo" tom="destructive" compact />
+        </Raia>
       </div>
     </section>
   )
@@ -164,24 +196,25 @@ function CicloVida() {
   return (
     <section aria-labelledby="ciclo-vaga" className="mt-12">
       <h2 id="ciclo-vaga" className="ty-h4 text-foreground">Ciclo de vida da vaga</h2>
-      <p className="mt-1 ty-body-sm text-muted-foreground">Estados da vaga no sistema, do rascunho ao encerramento.</p>
-      <div className="mt-5 flex flex-col gap-5">
-        <div className="flex flex-wrap items-center gap-3">
-          <NodeBox icon={FileText} label="Rascunho" tom="warning" />
+      <p className="mt-1 ty-body-sm text-muted-foreground">Estados da vaga no sistema (estado de origem → transições), do rascunho ao encerramento.</p>
+      <div className="mt-5 space-y-2.5">
+        <Raia cond="Rascunho" tom="warning">
           <Seta label="publicar" />
-          <NodeBox icon={Megaphone} label="Ativa · prazo definido" tom="success" />
+          <NodeBox icon={Megaphone} label="Ativa · prazo definido" tom="success" compact />
+        </Raia>
+        {/* Ativa tem duas saídas: o prazo expira (automático) ou o recrutador fecha (manual) */}
+        <Raia cond="Ativa" tom="success">
           <Seta label="prazo expira" />
-          <NodeBox icon={Clock} label="Expirada" tom="warning" />
-        </div>
-        <div className="flex flex-wrap items-center gap-3 pl-1">
-          <span className="ty-caption text-muted-foreground">de Ativa</span>
+          <NodeBox icon={Clock} label="Expirada" tom="warning" compact />
+          <span aria-hidden className="mx-1 h-8 w-px shrink-0 bg-border/60" />
           <Seta label="fechar manualmente" />
-          <NodeBox icon={X} label="Fechada" tom="destructive" />
-        </div>
-        <div className="flex items-start gap-2.5 rounded-lg bg-muted/40 px-3.5 py-2.5 ring-1 ring-surface-ring">
-          <RotateCcw className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden />
-          <span className="ty-body-sm text-muted-foreground"><strong className="font-medium text-foreground">Editar e republicar:</strong> uma vaga expirada ou fechada pode ser editada e volta a <em>Ativa</em> com um novo prazo.</span>
-        </div>
+          <NodeBox icon={X} label="Fechada" tom="destructive" compact />
+        </Raia>
+        {/* Loop: editar e republicar volta ao estado Ativa com um novo prazo */}
+        <Raia cond="Expirada ou Fechada" tom="secondary">
+          <Seta label="editar e republicar" />
+          <NodeBox icon={RotateCcw} label="volta a Ativa · novo prazo" tom="success" compact />
+        </Raia>
       </div>
     </section>
   )

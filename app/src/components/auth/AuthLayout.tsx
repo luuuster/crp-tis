@@ -6,7 +6,7 @@
  * A página só fornece title/subtitle/headline/subline, o conteúdo do <form> (children) e o footer
  * de troca de tela. Tudo token-driven; animação de entrada preservada.
  */
-import type { ReactNode } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
 
 import { cn } from '@/lib/utils'
 import { BrandPanel } from './BrandPanel'
@@ -24,6 +24,7 @@ export function AuthLayout({
   brand,
   children,
   footer,
+  focusKey,
 }: {
   headline: string
   subline: string
@@ -33,7 +34,18 @@ export function AuthLayout({
   brand?: string
   children: ReactNode
   footer?: ReactNode
+  /**
+   * A11y de fluxos multi-passo (ex.: acesso → recuperar → redefinir): quando muda, o foco vai para o título
+   * da tela, fazendo o leitor de tela anunciar a nova etapa (mudança de contexto sem recarregar a página).
+   * `undefined` (Login/Cadastro de tela única) = comportamento original, sem mover foco.
+   */
+  focusKey?: string | number
 }) {
+  const titleRef = useRef<HTMLHeadingElement>(null)
+  useEffect(() => {
+    if (focusKey === undefined) return
+    titleRef.current?.focus()
+  }, [focusKey])
   return (
     <div className="grid min-h-dvh lg:grid-cols-2">
       {/* ≥ lg: painel lateral da marca */}
@@ -55,7 +67,9 @@ export function AuthLayout({
             <Logo brand={brand} className="mb-8" />
 
             <div className="space-y-2">
-              <h1 className="ty-h3">{title}</h1>
+              {/* tabIndex=-1 só quando há focusKey: alvo de foco programático na troca de etapa (sem virar
+                  tab-stop normal). outline-none: foco é programático, não precisa do anel visível no h1. */}
+              <h1 ref={titleRef} tabIndex={focusKey === undefined ? undefined : -1} className="ty-h3 outline-none">{title}</h1>
               <p className="ty-body-sm text-muted-foreground">{subtitle}</p>
             </div>
 

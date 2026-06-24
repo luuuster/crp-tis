@@ -10,6 +10,7 @@
     "placeholder": { "email": "youremail@example.com", "senha": "••••••••" },
     "dica": "We sent a temporary password to your e-mail when you applied.",
     "demo": "Demo: use any e-mail and the temporary password {{senha}}.",
+    "esqueci": "Forgot my password",
     "entrar": "Sign in",
     "entrando": "Signing in…",
     "mostrarSenha": "Show password",
@@ -26,6 +27,38 @@
     "pendente": "pending",
     "definir": "Set password and continue",
     "definindo": "Setting…"
+  },
+  "recuperar": {
+    "title": "Recover access",
+    "subtitle": "Enter your account e-mail and we'll send you a link to reset your password.",
+    "label": { "email": "E-mail" },
+    "enviar": "Send recovery link",
+    "enviando": "Sending…",
+    "voltar": "Back to login"
+  },
+  "enviado": {
+    "title": "Check your e-mail",
+    "subtitle": "If there's an account for {{email}}, you'll receive a password reset link shortly.",
+    "subtitleGenerico": "If there's an account, you'll receive a password reset link shortly.",
+    "dica": "Didn't get it? Check your spam folder or resend in a few minutes.",
+    "reenviar": "Resend e-mail",
+    "reenviado": "E-mail resent.",
+    "voltar": "Back to login",
+    "demo": "Demo: no real e-mail. Click below to simulate the link and reset the password.",
+    "redefinirDemo": "Reset password now"
+  },
+  "redefinir": {
+    "title": "Reset password",
+    "subtitle": "Create a new password to sign in to your account.",
+    "definir": "Reset password and continue",
+    "definindo": "Resetting…",
+    "voltar": "Back to login"
+  },
+  "redefinido": {
+    "title": "Password reset!",
+    "subtitle": "All set — your new password is now active.",
+    "dica": "You can now sign in to your account with the new password.",
+    "entrar": "Go to my dashboard"
   },
   "regras": {
     "minChars": "At least 8 characters",

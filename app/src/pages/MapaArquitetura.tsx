@@ -10,7 +10,7 @@
 import type { LucideIcon } from 'lucide-react'
 import {
   Blocks, Bot, Brain, Briefcase, Building2, Calendar, Compass, FileText, FolderTree, KanbanSquare, KeyRound,
-  LayoutDashboard, LayoutGrid, Link2, Network, Search, Settings, Tag, UserPlus, UserRound, Users,
+  LayoutDashboard, LayoutGrid, Link2, LockKeyhole, Network, Search, Settings, Tag, UserPlus, UserRound, Users,
 } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
@@ -100,7 +100,15 @@ const CANDIDATO: Produto = {
         { icon: UserPlus, path: '/cadastro', desc: 'Nome, e-mail, senha e currículo' },
         {
           icon: KeyRound, path: '/acesso', desc: 'Login (senha provisória)',
-          subs: [{ path: '/acesso/trocar-senha', desc: 'Trocar a senha provisória' }],
+          subs: [
+            { path: '/acesso/trocar-senha', desc: 'Trocar a senha provisória (1º acesso)' },
+            { path: '/acesso/recuperar', desc: 'Esqueci a senha — informa o e-mail' },
+            { path: '/acesso/recuperar/enviado', desc: 'Link de recuperação enviado' },
+          ],
+        },
+        {
+          icon: LockKeyhole, path: '/redefinir_senha', desc: 'Redefinir senha (alvo do link do e-mail)',
+          subs: [{ path: '/redefinir_senha/sucesso', desc: 'Senha redefinida → painel' }],
         },
         { icon: Link2, path: '/linkpublico', desc: 'Vaga divulgada (LinkedIn etc.) — abre sem login' },
       ],

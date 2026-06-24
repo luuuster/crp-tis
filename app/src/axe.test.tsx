@@ -54,7 +54,12 @@ async function expectNoViolationsOpen(ui: React.ReactElement, gatilho: string | 
 
 // Alguns componentes (CandidatoPainel, modal logado) escrevem a sessão do candidato em localStorage.
 // Limpa entre os testes p/ o estado "deslogado" (formulário público) não vazar de um teste pro outro.
-afterEach(() => { try { localStorage.clear() } catch { /* jsdom sempre tem, mas por garantia */ } })
+afterEach(() => {
+  try { localStorage.clear() } catch { /* jsdom sempre tem, mas por garantia */ }
+  // CandidatoAcesso deriva a etapa da URL (fluxo "esqueci a senha"): reseta p/ "/" (= login) entre testes
+  // pra a rota de um teste não vazar pro próximo.
+  try { window.history.pushState({}, '', '/') } catch { /* idem */ }
+})
 
 describe('axe — zero violações por página', () => {
   it('App (estado inicial: login)', async () => {
@@ -148,6 +153,24 @@ describe('axe — zero violações por página', () => {
     await expectNoViolations(<SegundaEtapa nome="Teste Candidato" vaga="Desenvolvedor Backend · Pleno" onConcluir={() => {}} onSair={() => {}} />)
   })
   it('CandidatoAcesso (login do candidato)', async () => {
+    await expectNoViolations(<CandidatoAcesso />)
+  })
+  // Fluxo "esqueci a senha" — cada etapa tem rota própria; o CandidatoAcesso deriva a etapa da URL,
+  // então auditamos cada tela fixando o pathname antes de renderizar. (afterEach reseta p/ "/".)
+  it('CandidatoAcesso — recuperar senha (pede e-mail)', async () => {
+    window.history.pushState({}, '', '/acesso/recuperar')
+    await expectNoViolations(<CandidatoAcesso />)
+  })
+  it('CandidatoAcesso — e-mail enviado (confirmação)', async () => {
+    window.history.pushState({}, '', '/acesso/recuperar/enviado')
+    await expectNoViolations(<CandidatoAcesso />)
+  })
+  it('CandidatoAcesso — redefinir senha (nova senha)', async () => {
+    window.history.pushState({}, '', '/redefinir_senha')
+    await expectNoViolations(<CandidatoAcesso />)
+  })
+  it('CandidatoAcesso — senha redefinida (sucesso)', async () => {
+    window.history.pushState({}, '', '/redefinir_senha/sucesso')
     await expectNoViolations(<CandidatoAcesso />)
   })
   it('CandidatoPainel (mural de vagas do candidato)', async () => {
