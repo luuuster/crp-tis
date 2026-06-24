@@ -65,6 +65,8 @@
     "buscarAria": "Buscar candidato por nombre o vacante",
     "todasVagas": "Todas las vacantes",
     "vagaAria": "Filtrar por vacante",
+    "todosNiveis": "Todos los niveles",
+    "nivelAria": "Filtrar por nivel de la vacante",
     "todasEtapas": "Todas las etapas",
     "nEtapas_one": "{{count}} etapa",
     "nEtapas_other": "{{count}} etapas",

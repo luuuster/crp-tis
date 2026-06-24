@@ -1,0 +1,92 @@
+{
+  "header": {
+    "titulo": "Inscripción en la vacante",
+    "subtitulo": "Toma menos de 2 minutos. Tus datos se tratan con confidencialidad."
+  },
+  "form": {
+    "nome": "Nombre completo",
+    "nomePlaceholder": "Tu nombre completo",
+    "cpf": "DNI / NIF",
+    "cpfPlaceholder": "Tu DNI o NIF",
+    "email": "Correo electrónico",
+    "emailPlaceholder": "tucorreo@ejemplo.com",
+    "emailAjuda": "Usaremos tu correo solo para hablar sobre esta candidatura.",
+    "telefone": "Teléfono",
+    "telefonePlaceholder": "+34 600 00 00 00",
+    "curriculo": "Currículum (PDF)",
+    "curriculoEnviar": "Arrastra el PDF aquí o haz clic para subir",
+    "curriculoDica": "Solo PDF · hasta {{max}} MB",
+    "curriculoAnexado": "Currículum adjunto",
+    "curriculoRemover": "Quitar currículum",
+    "opcional": "opcional",
+    "obrigatorio": "(obligatorio)",
+    "enviar": "Enviar candidatura",
+    "enviando": "Enviando candidatura…"
+  },
+  "captcha": {
+    "label": "Verificación anti-robot",
+    "instrucao": "Escribe los caracteres mostrados en la imagen.",
+    "placeholder": "Escribe el código",
+    "atualizar": "Generar un código nuevo",
+    "codigoAria": "Código de verificación: {{codigo}}"
+  },
+  "validacao": {
+    "nomeObrigatorio": "Indica tu nombre completo.",
+    "emailObrigatorio": "Indica tu correo electrónico.",
+    "emailInvalido": "Correo electrónico no válido.",
+    "telefoneObrigatorio": "Indica tu teléfono.",
+    "telefoneInvalido": "Teléfono no válido.",
+    "captchaObrigatorio": "Escribe el código de verificación.",
+    "captchaInvalido": "El código no coincide. Inténtalo de nuevo.",
+    "curriculoObrigatorio": "Adjunta tu currículum en PDF.",
+    "curriculoFormato": "El currículum debe ser un archivo PDF.",
+    "curriculoTamanho": "El archivo supera los {{max}} MB."
+  },
+  "logado": {
+    "titulo": "Confirmar candidatura",
+    "subtitulo": "Para {{vaga}}. Revisa tu currículum y postúlate.",
+    "curriculoLabel": "Currículum",
+    "doPerfil": "Currículum de tu perfil",
+    "perfilNome": "mi-curriculum.pdf",
+    "enviarOutro": "Subir otro currículum",
+    "novoCurriculo": "Nuevo currículum",
+    "usarPerfil": "Usar el currículum del perfil",
+    "cancelar": "Cancelar",
+    "candidatar": "Postularme a la vacante",
+    "enviando": "Enviando…"
+  },
+  "sucesso": {
+    "titulo": "¡Candidatura enviada!",
+    "descricao": "Recibimos tu candidatura para {{vaga}}. Te avisaremos por correo sobre los próximos pasos.",
+    "emailAviso": "Enviamos una contraseña provisional a tu correo. Úsala para acceder a tu cuenta y seguir tu candidatura.",
+    "segundaEtapa": "Ir a la segunda etapa",
+    "acessar": "Acceder a mi cuenta",
+    "outra": "Enviar otra candidatura",
+    "verVagas": "Ver otras vacantes"
+  },
+  "segunda": {
+    "titulo": "Segunda etapa",
+    "subtitulo": "Responde a las preguntas siguientes para continuar con tu proceso.",
+    "vagaLabel": "Vacante",
+    "saudacao": "Hola, <b>{{nome}}</b>. Responde con el mayor detalle posible. Tus respuestas se evaluarán para la siguiente etapa.",
+    "respostaPlaceholder": "Escribe tu respuesta aquí…",
+    "captchaAviso": "Completa la verificación anti-robot para habilitar el envío.",
+    "enviar": "Enviar respuestas",
+    "enviando": "Enviando respuestas…",
+    "toast": "¡Respuestas enviadas con éxito!",
+    "sucessoTitulo": "¡Respuestas enviadas!",
+    "sucessoDescricao": "Recibimos tus respuestas. Nuestro equipo las evaluará y te avisaremos por correo sobre los próximos pasos.",
+    "validacao": {
+      "obrigatoria": "Responde a esta pregunta."
+    }
+  },
+  "toast": {
+    "enviada": "¡Candidatura enviada con éxito!"
+  },
+  "rodape": {
+    "demo": "Esto es una demostración.",
+    "voltar": "Volver a la app",
+    "candidatar": "Postularme a la vacante",
+    "voltarDescricao": "Volver a la descripción"
+  }
+}

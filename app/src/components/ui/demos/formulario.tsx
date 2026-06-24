@@ -11,7 +11,6 @@ import { Switch } from '@/components/ui/switch'
 import { Slider } from '@/components/ui/slider'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/input-otp'
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
@@ -140,20 +139,6 @@ export const FORMULARIO_DEMOS: Demo[] = [
             <SelectItem value="design">Design</SelectItem>
           </SelectContent>
         </Select>
-      </div>
-    ),
-  },
-  {
-    id: 'native-select', component: 'native-select', section: 'formulario', title: 'Native Select',
-    desc: 'Select nativo do navegador, estilizado.',
-    Render: () => (
-      <div className="grid max-w-xs gap-2">
-        <Label htmlFor="d-pais">País</Label>
-        <NativeSelect id="d-pais" defaultValue="br">
-          <NativeSelectOption value="br">Brasil</NativeSelectOption>
-          <NativeSelectOption value="pt">Portugal</NativeSelectOption>
-          <NativeSelectOption value="es">Espanha</NativeSelectOption>
-        </NativeSelect>
       </div>
     ),
   },

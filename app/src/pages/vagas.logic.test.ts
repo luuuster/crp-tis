@@ -6,7 +6,7 @@ import { type Briefing, type Perfil } from '@/lib/vaga'
 const meta = { id: '99', data: '01/01/2026', inscritos: 12, aprovados: 3, status: 'Aberta' as const }
 
 const briefing: Briefing = {
-  cargo: 'Desenvolvedor Full Stack', nivel: 'Pleno/Sênior', modelo: 'Remoto',
+  cargo: 'Desenvolvedor Full Stack', nivel: 'Sênior', modelo: 'Remoto',
   cliente: 'TIS Talent AI Platform', gestor: 'Carlos Mendes',
   desafio: 'Desafio de teste.', objetivo: 'Objetivo de teste.',
   local: 'São Paulo — SP', horario: '09h às 18h', carga: '40h semanais', motivo: 'Aumento do quadro', quantidade: 2,

@@ -1,0 +1,92 @@
+{
+  "header": {
+    "titulo": "Apply for this job",
+    "subtitulo": "Takes less than 2 minutes. Your data is handled confidentially."
+  },
+  "form": {
+    "nome": "Full name",
+    "nomePlaceholder": "Your full name",
+    "cpf": "ID / Tax number",
+    "cpfPlaceholder": "Your ID or tax number",
+    "email": "E-mail",
+    "emailPlaceholder": "youremail@example.com",
+    "emailAjuda": "We'll use your e-mail only to talk about this application.",
+    "telefone": "Phone",
+    "telefonePlaceholder": "+1 555 123 4567",
+    "curriculo": "Resume (PDF)",
+    "curriculoEnviar": "Drag the PDF here or click to upload",
+    "curriculoDica": "PDF only · up to {{max}} MB",
+    "curriculoAnexado": "Resume attached",
+    "curriculoRemover": "Remove resume",
+    "opcional": "optional",
+    "obrigatorio": "(required)",
+    "enviar": "Submit application",
+    "enviando": "Submitting application…"
+  },
+  "captcha": {
+    "label": "Anti-robot check",
+    "instrucao": "Type the characters shown in the image.",
+    "placeholder": "Type the code",
+    "atualizar": "Generate a new code",
+    "codigoAria": "Verification code: {{codigo}}"
+  },
+  "validacao": {
+    "nomeObrigatorio": "Enter your full name.",
+    "emailObrigatorio": "Enter your e-mail.",
+    "emailInvalido": "Invalid e-mail.",
+    "telefoneObrigatorio": "Enter your phone number.",
+    "telefoneInvalido": "Invalid phone number.",
+    "captchaObrigatorio": "Type the verification code.",
+    "captchaInvalido": "The code doesn't match. Try again.",
+    "curriculoObrigatorio": "Attach your resume as a PDF.",
+    "curriculoFormato": "The resume must be a PDF file.",
+    "curriculoTamanho": "The file is larger than {{max}} MB."
+  },
+  "logado": {
+    "titulo": "Confirm application",
+    "subtitulo": "For {{vaga}}. Check your resume and apply.",
+    "curriculoLabel": "Resume",
+    "doPerfil": "Resume from your profile",
+    "perfilNome": "my-resume.pdf",
+    "enviarOutro": "Upload a different resume",
+    "novoCurriculo": "New resume",
+    "usarPerfil": "Use the profile resume",
+    "cancelar": "Cancel",
+    "candidatar": "Apply for this job",
+    "enviando": "Submitting…"
+  },
+  "sucesso": {
+    "titulo": "Application sent!",
+    "descricao": "We received your application for {{vaga}}. You'll be notified by e-mail about the next steps.",
+    "emailAviso": "We sent a temporary password to your e-mail. Use it to access your account and follow your application.",
+    "segundaEtapa": "Go to the second stage",
+    "acessar": "Access my account",
+    "outra": "Submit another application",
+    "verVagas": "View other jobs"
+  },
+  "segunda": {
+    "titulo": "Second stage",
+    "subtitulo": "Answer the questions below so we can move your process forward.",
+    "vagaLabel": "Job",
+    "saudacao": "Hi, <b>{{nome}}</b>. Answer with as much detail as possible. Your answers will be reviewed for the next stage.",
+    "respostaPlaceholder": "Type your answer here…",
+    "captchaAviso": "Complete the anti-robot check to enable submission.",
+    "enviar": "Submit answers",
+    "enviando": "Submitting answers…",
+    "toast": "Answers submitted successfully!",
+    "sucessoTitulo": "Answers submitted!",
+    "sucessoDescricao": "We received your answers. Our team will review them and notify you by e-mail about the next steps.",
+    "validacao": {
+      "obrigatoria": "Please answer this question."
+    }
+  },
+  "toast": {
+    "enviada": "Application submitted successfully!"
+  },
+  "rodape": {
+    "demo": "This is a demo.",
+    "voltar": "Back to the app",
+    "candidatar": "Apply for this job",
+    "voltarDescricao": "Back to job description"
+  }
+}

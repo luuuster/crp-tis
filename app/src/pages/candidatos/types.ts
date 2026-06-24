@@ -6,6 +6,10 @@
 import type { Detalhe } from '../EntrevistasIA'
 import type { Candidato, Etapa } from '../candidatos.logic'
 export type { Candidato, Etapa, Match } from '../candidatos.logic'
+// Níveis de senioridade: FONTE ÚNICA = o Gerador de Vagas (a lista da criação de vaga). Re-exportado aqui
+// pra o Banco de talentos e o Funil consumirem a MESMA lista — sem divergência (ex.: composto "Pleno/Sênior").
+import { NIVEIS } from '../job-generator/model'
+export { NIVEIS }
 
 // ---------- Processos seletivos (histórico do candidato) ----------
 
@@ -32,15 +36,15 @@ export type PerfilVaga = { resumo: string; experiencia: string; requisitos: Requ
 export type Processo = { id: string; titulo: string; status: StatusProc; faseAtual: number; totalFases: number; data: string; fases: Fase[]; perfilVaga: PerfilVaga; reprovacao?: Reprovacao }
 
 export const CANDIDATOS_INICIAL: Candidato[] = [
-  { id: '1', nome: 'Mariana Lopes', email: 'mariana.lopes@email.com', vaga: 'Desenvolvedor Full Stack', senioridade: 'Pleno/Sênior', etapa: 'Contratado', score: 92, atualizado: 'há 3 dias' },
+  { id: '1', nome: 'Mariana Lopes', email: 'mariana.lopes@email.com', vaga: 'Desenvolvedor Full Stack', senioridade: 'Sênior', etapa: 'Contratado', score: 92, atualizado: 'há 3 dias' },
   { id: '2', nome: 'Jair Carmona', email: 'jair.carmona@email.com', vaga: 'Desenvolvedor Backend', senioridade: 'Pleno', etapa: 'Entrevistado', score: 82, atualizado: 'ontem' },
   { id: '3', nome: 'Diego Teixeira', email: 'diego.teixeira@email.com', vaga: 'Product Manager', senioridade: 'Sênior', etapa: 'Em entrevista', score: 68, atualizado: 'há 2 h' },
-  { id: '4', nome: 'Rodrigo Alves', email: 'rodrigo.alves@email.com', vaga: 'UX Designer III', senioridade: 'Pleno/Sênior', etapa: 'Em entrevista', score: 74, atualizado: 'há 5 h' },
+  { id: '4', nome: 'Rodrigo Alves', email: 'rodrigo.alves@email.com', vaga: 'UX Designer III', senioridade: 'Sênior', etapa: 'Em entrevista', score: 74, atualizado: 'há 5 h' },
   { id: '5', nome: 'Carla Mendonça', email: 'carla.mendonca@email.com', vaga: 'Engenheiro de Dados', senioridade: 'Pleno', etapa: 'Entrevistado', score: 88, atualizado: 'ontem' },
   { id: '6', nome: 'Felipe Santos', email: 'felipe.santos@email.com', vaga: 'Analista de QA', senioridade: 'Júnior', etapa: 'Triagem', score: 65, atualizado: 'há 1 dia' },
   { id: '7', nome: 'Bianca Ferreira', email: 'bianca.ferreira@email.com', vaga: 'Desenvolvedor Backend', senioridade: 'Sênior', etapa: 'Contratado', score: 95, atualizado: 'há 1 semana' },
   { id: '8', nome: 'Gustavo Pereira', email: 'gustavo.pereira@email.com', vaga: 'Product Manager', senioridade: 'Sênior', etapa: 'Reprovado', score: 58, atualizado: 'há 4 dias' },
-  { id: '9', nome: 'Larissa Castro', email: 'larissa.castro@email.com', vaga: 'Cientista de Dados', senioridade: 'Pleno/Sênior', etapa: 'Entrevistado', score: 84, atualizado: 'ontem' },
+  { id: '9', nome: 'Larissa Castro', email: 'larissa.castro@email.com', vaga: 'Cientista de Dados', senioridade: 'Sênior', etapa: 'Entrevistado', score: 84, atualizado: 'ontem' },
   { id: '10', nome: 'Vitor Hugo', email: 'vitor.hugo@email.com', vaga: 'DevOps Engineer', senioridade: 'Sênior', etapa: 'Em entrevista', score: 79, atualizado: 'há 3 h' },
   { id: '11', nome: 'Aline Ramos', email: 'aline.ramos@email.com', vaga: 'Tech Lead Frontend', senioridade: 'Sênior', etapa: 'Contratado', score: 90, atualizado: 'há 2 semanas' },
   { id: '12', nome: 'Daniel Moreira', email: 'daniel.moreira@email.com', vaga: 'Desenvolvedor Mobile', senioridade: 'Pleno', etapa: 'Banco de talentos', score: 62, atualizado: 'há 1 mês' },
@@ -64,7 +68,6 @@ export const PER_PAGE = 10
 // ---------- Pools de texto do domínio (dados sintéticos, determinísticos por seed) ----------
 
 export const FASES_PADRAO = ['Triagem de currículo por IA', 'Entrevista com RH', 'Teste técnico', 'Entrevista com o gestor', 'Proposta']
-export const NIVEIS = ['Júnior', 'Pleno', 'Pleno/Sênior', 'Sênior']
 export const DATAS_ANTIGAS = ['há 3 meses', 'há 6 meses', 'há 9 meses', 'há 1 ano']
 export const MOTIVO_REPROVA = [
   'Não atingiu o nível técnico esperado para a senioridade da vaga.',
@@ -176,7 +179,7 @@ export const DESTAQUE_POR_FASE: Record<number, string[]> = {
     'Modelo de trabalho (híbrido) acordado entre as partes.',
   ],
 }
-export const EXP_EXIGIDA: Record<string, string> = { 'Júnior': '6 meses a 2 anos', 'Pleno': '2 a 4 anos', 'Pleno/Sênior': '3 a 6 anos', 'Sênior': '5+ anos' }
+export const EXP_EXIGIDA: Record<string, string> = { 'Estágio': 'sem experiência / cursando', 'Júnior': '6 meses a 2 anos', 'Pleno': '2 a 4 anos', 'Sênior': '5+ anos', 'Especialista': '8+ anos de especialização', 'Liderança': '8+ anos, com gestão de times' }
 
 // Critérios avaliados em cada etapa — viram a "Avaliação por critério" (barra de nota por item).
 export const CRITERIOS_POR_FASE: Record<number, string[]> = {

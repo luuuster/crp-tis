@@ -1,0 +1,50 @@
+{
+  "marca": {
+    "headline": "Tu camino empieza aquí.",
+    "subline": "Sigue tus candidaturas y mantén tu perfil siempre a mano."
+  },
+  "login": {
+    "title": "Acceder a mi cuenta",
+    "subtitle": "Usa el correo de tu candidatura y la contraseña provisional que te enviamos.",
+    "label": { "email": "Correo electrónico", "senha": "Contraseña provisional" },
+    "placeholder": { "email": "tucorreo@ejemplo.com", "senha": "••••••••" },
+    "dica": "Enviamos una contraseña provisional a tu correo cuando te postulaste.",
+    "demo": "Demo: usa cualquier correo y la contraseña provisional {{senha}}.",
+    "entrar": "Entrar",
+    "entrando": "Entrando…",
+    "mostrarSenha": "Mostrar contraseña",
+    "ocultarSenha": "Ocultar contraseña"
+  },
+  "troca": {
+    "title": "Crea tu contraseña",
+    "subtitle": "Es tu primer acceso. Define una contraseña propia para continuar.",
+    "label": { "nova": "Nueva contraseña", "confirmar": "Confirmar nueva contraseña" },
+    "placeholder": "••••••••",
+    "requisitos": "Requisitos de la contraseña",
+    "contador": "{{met}} de {{total}} requisitos cumplidos",
+    "cumprido": "cumplido",
+    "pendente": "pendiente",
+    "definir": "Definir contraseña y entrar",
+    "definindo": "Definiendo…"
+  },
+  "regras": {
+    "minChars": "Mínimo de 8 caracteres",
+    "maiuscula": "Una letra mayúscula",
+    "numero": "Un número",
+    "especial": "Un carácter especial",
+    "coincidem": "Las contraseñas coinciden"
+  },
+  "validacao": {
+    "emailObrigatorio": "Indica tu correo electrónico.",
+    "emailInvalido": "Correo electrónico no válido.",
+    "senhaObrigatoria": "Indica la contraseña provisional.",
+    "senhaIncorreta": "Correo o contraseña provisional incorrectos.",
+    "senhaRequisitos": "La contraseña no cumple todos los requisitos.",
+    "confirmeSenha": "Confirma la nueva contraseña.",
+    "naoCoincidem": "Las contraseñas no coinciden."
+  },
+  "rodape": {
+    "semConta": "¿No tienes una cuenta?",
+    "criarConta": "Crear cuenta"
+  }
+}

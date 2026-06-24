@@ -1,0 +1,71 @@
+{
+  "conta": {
+    "label": "Tu cuenta",
+    "irMural": "Ir al tablón de vacantes",
+    "editarPerfil": "Editar perfil",
+    "editarCurriculo": "Editar currículum",
+    "sair": "Salir",
+    "perfilEmBreve": "La edición de perfil llega pronto.",
+    "curriculoEmBreve": "La edición de currículum llega pronto.",
+    "sairConfirm": {
+      "titulo": "¿Salir de tu cuenta?",
+      "descricao": "Volverás a la pantalla de acceso.",
+      "voltar": "Volver",
+      "sair": "Salir"
+    }
+  },
+  "header": {
+    "titulo": "Vacantes abiertas",
+    "subtitulo": "Encuentra la vacante ideal y postúlate en minutos.",
+    "resultados_one": "{{count}} vacante encontrada",
+    "resultados_other": "{{count}} vacantes encontradas"
+  },
+  "busca": {
+    "placeholder": "Buscar por puesto",
+    "aria": "Buscar vacantes",
+    "limpar": "Limpiar búsqueda"
+  },
+  "filtro": {
+    "modelo": "Modelo de trabajo",
+    "nivel": "Nivel",
+    "todosModelos": "Todos los modelos",
+    "todosNiveis": "Todos los niveles",
+    "somentePcd": "Afirmativas para PcD",
+    "limpar": "Limpiar filtros"
+  },
+  "ordenar": {
+    "label": "Ordenar por",
+    "recentes": "Más recientes",
+    "antigas": "Menos recientes"
+  },
+  "localFiltro": {
+    "titulo": "Lugar de trabajo",
+    "pais": "País",
+    "estado": "Estado",
+    "cidade": "Ciudad",
+    "todosPaises": "Todos los países",
+    "todosEstados": "Todos los estados",
+    "todasCidades": "Todas las ciudades",
+    "limpar": "Limpiar",
+    "aplicar": "Aplicar"
+  },
+  "card": {
+    "publicadaEm": "Publicada el {{data}}",
+    "expiraEm_one": "Vence en {{count}} día",
+    "expiraEm_other": "Vence en {{count}} días",
+    "expiraHoje": "Vence hoy",
+    "pcd": "También para PcD",
+    "vagas_one": "{{count}} vacante",
+    "vagas_other": "{{count}} vacantes",
+    "beneficios_one": "{{count}} beneficio",
+    "beneficios_other": "{{count}} beneficios",
+    "naoInformado": "No informado",
+    "verDetalhes": "Ver detalles de la vacante",
+    "verDetalhesAria": "Ver detalles de la vacante: {{cargo}}"
+  },
+  "vazio": {
+    "titulo": "No se encontraron vacantes",
+    "descricao": "Intenta ajustar la búsqueda o limpiar los filtros.",
+    "limpar": "Limpiar filtros"
+  }
+}

@@ -37,7 +37,7 @@ const VAGAS_INICIAL: Vaga[] = [
   mkVaga(
     { id: '1', data: '10/01/2026', inscritos: 80, aprovados: 15, status: 'Aberta' },
     {
-      cargo: 'Desenvolvedor Full Stack', nivel: 'Pleno/Sênior', modelo: 'Remoto',
+      cargo: 'Desenvolvedor Full Stack', nivel: 'Sênior', modelo: 'Remoto',
       cliente: 'TIS Talent AI Platform', gestor: 'Carlos Mendes',
       desafio: 'O TIS Talent AI Platform está evoluindo sua experiência de ponta a ponta e precisa de reforço para acelerar a entrega de novas funcionalidades web.',
       objetivo: 'Entregar features completas, do banco à interface, com qualidade, performance e boa experiência para quem usa a plataforma.',
@@ -58,7 +58,7 @@ const VAGAS_INICIAL: Vaga[] = [
   mkVaga(
     { id: '2', data: '10/01/2026', inscritos: 34, aprovados: 6, status: 'Rascunho' },
     {
-      cargo: 'UX Designer III', nivel: 'Pleno/Sênior', modelo: 'Remoto',
+      cargo: 'UX Designer III', nivel: 'Sênior', modelo: 'Remoto',
       cliente: 'TIS Talent AI Platform', gestor: 'Marina Albuquerque',
       desafio: 'Queremos elevar a maturidade de design da plataforma e tornar as jornadas de recrutamento mais simples e humanas.',
       objetivo: 'Conduzir a pesquisa e o design de experiências consistentes, acessíveis e orientadas a dados em todo o produto.',
@@ -163,7 +163,7 @@ const VAGAS_INICIAL: Vaga[] = [
   // --- vagas adicionais (template genérico, detalhe completo) — povoam a lista p/ demonstrar a paginação ---
   mkGen({ id: '7', data: '05/01/2026', inscritos: 41, aprovados: 7, status: 'Aberta' }, 'Desenvolvedor Mobile', 'Pleno', 'Remoto', 'Carlos Mendes', 'R$ 8.000 a R$ 12.000', ['React Native', 'TypeScript', 'iOS', 'Android', 'Git'], 'Desenvolver e manter aplicativos móveis. Integrar APIs e otimizar performance. Garantir qualidade com testes. Colaborar com design e produto.'),
   mkGen({ id: '8', data: '05/01/2026', inscritos: 18, aprovados: 3, status: 'Rascunho' }, 'Scrum Master', 'Sênior', 'Híbrido', 'Rafael Tavares', 'R$ 11.000 a R$ 16.000', ['Scrum', 'Kanban', 'Facilitação', 'Jira', 'Métricas ágeis'], 'Facilitar cerimônias ágeis e remover impedimentos. Apoiar a melhoria contínua do time. Acompanhar métricas de fluxo. Promover a cultura ágil.'),
-  mkGen({ id: '9', data: '03/01/2026', inscritos: 52, aprovados: 10, status: 'Aberta' }, 'Cientista de Dados', 'Pleno/Sênior', 'Remoto', 'Carlos Mendes', 'R$ 12.000 a R$ 18.000', ['Python', 'SQL', 'Machine Learning', 'Pandas', 'MLOps'], 'Desenvolver e validar modelos de machine learning. Analisar dados e gerar insights. Colocar modelos em produção. Colaborar com engenharia de dados.'),
+  mkGen({ id: '9', data: '03/01/2026', inscritos: 52, aprovados: 10, status: 'Aberta' }, 'Cientista de Dados', 'Sênior', 'Remoto', 'Carlos Mendes', 'R$ 12.000 a R$ 18.000', ['Python', 'SQL', 'Machine Learning', 'Pandas', 'MLOps'], 'Desenvolver e validar modelos de machine learning. Analisar dados e gerar insights. Colocar modelos em produção. Colaborar com engenharia de dados.'),
   mkGen({ id: '10', data: '03/01/2026', inscritos: 29, aprovados: 5, status: 'Em pausa' }, 'Analista de Marketing', 'Pleno', 'Presencial', 'Marina Albuquerque', 'R$ 5.000 a R$ 8.000', ['SEO', 'Mídia paga', 'Analytics', 'Conteúdo', 'CRM'], 'Planejar e executar campanhas de marketing. Acompanhar métricas e otimizar resultados. Produzir conteúdo. Apoiar a estratégia de growth.'),
   mkGen({ id: '11', data: '02/01/2026', inscritos: 37, aprovados: 6, status: 'Aberta' }, 'DevOps Engineer', 'Sênior', 'Remoto', 'Carlos Mendes', 'R$ 13.000 a R$ 19.000', ['Kubernetes', 'Terraform', 'AWS', 'CI/CD', 'Observabilidade'], 'Automatizar pipelines de build e deploy. Manter a infraestrutura como código. Garantir confiabilidade e observabilidade. Apoiar as squads em produção.'),
   mkGen({ id: '12', data: '02/01/2026', inscritos: 14, aprovados: 2, status: 'Rascunho' }, 'Designer de Produto', 'Júnior', 'Híbrido', 'Marina Albuquerque', 'R$ 4.500 a R$ 7.000', ['Figma', 'Protótipos', 'Design System', 'Pesquisa', 'Acessibilidade'], 'Apoiar a criação de fluxos e telas. Manter componentes no design system. Participar de testes com usuários. Garantir acessibilidade nas entregas.'),

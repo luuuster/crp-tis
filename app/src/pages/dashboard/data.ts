@@ -74,7 +74,7 @@ export const VAGAS_RECENTES: { vaga: string; sr: string; inscritos: number; stat
   { vaga: 'Desenvolvedor Backend', sr: 'Pleno', inscritos: 63, status: 'Aberta' },
   { vaga: 'Tech Lead Frontend', sr: 'Sênior', inscritos: 61, status: 'Aberta' },
   { vaga: 'Product Manager', sr: 'Sênior', inscritos: 56, status: 'Em pausa' },
-  { vaga: 'UX Designer III', sr: 'Pleno/Sênior', inscritos: 34, status: 'Rascunho' },
+  { vaga: 'UX Designer III', sr: 'Sênior', inscritos: 34, status: 'Rascunho' },
   { vaga: 'Engenheiro de Dados', sr: 'Pleno', inscritos: 47, status: 'Fechada' },
 ]
 

@@ -1,0 +1,50 @@
+{
+  "marca": {
+    "headline": "Sua jornada começa aqui.",
+    "subline": "Acompanhe suas candidaturas e mantenha seu perfil sempre por perto."
+  },
+  "login": {
+    "title": "Acessar minha conta",
+    "subtitle": "Use o e-mail da sua candidatura e a senha provisória que enviamos.",
+    "label": { "email": "E-mail", "senha": "Senha provisória" },
+    "placeholder": { "email": "seuemail@exemplo.com", "senha": "••••••••" },
+    "dica": "Enviamos uma senha provisória ao seu e-mail quando você se candidatou.",
+    "demo": "Demo: use qualquer e-mail e a senha provisória {{senha}}.",
+    "entrar": "Entrar",
+    "entrando": "Entrando…",
+    "mostrarSenha": "Mostrar senha",
+    "ocultarSenha": "Ocultar senha"
+  },
+  "troca": {
+    "title": "Crie a sua senha",
+    "subtitle": "É o seu primeiro acesso. Defina uma senha só sua para continuar.",
+    "label": { "nova": "Nova senha", "confirmar": "Confirmar nova senha" },
+    "placeholder": "••••••••",
+    "requisitos": "Requisitos da senha",
+    "contador": "{{met}} de {{total}} requisitos cumpridos",
+    "cumprido": "cumprido",
+    "pendente": "pendente",
+    "definir": "Definir senha e entrar",
+    "definindo": "Definindo…"
+  },
+  "regras": {
+    "minChars": "Mínimo de 8 caracteres",
+    "maiuscula": "Uma letra maiúscula",
+    "numero": "Um número",
+    "especial": "Um caractere especial",
+    "coincidem": "As senhas coincidem"
+  },
+  "validacao": {
+    "emailObrigatorio": "Informe seu e-mail.",
+    "emailInvalido": "E-mail inválido.",
+    "senhaObrigatoria": "Informe a senha provisória.",
+    "senhaIncorreta": "E-mail ou senha provisória incorretos.",
+    "senhaRequisitos": "A senha não cumpre todos os requisitos.",
+    "confirmeSenha": "Confirme a nova senha.",
+    "naoCoincidem": "As senhas não coincidem."
+  },
+  "rodape": {
+    "semConta": "Não tem uma conta?",
+    "criarConta": "Criar conta"
+  }
+}

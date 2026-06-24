@@ -13,13 +13,6 @@ export async function login(page: Page) {
   await expect(page.getByRole('button', { name: 'Sua conta' })).toBeVisible()
 }
 
-// Login → "Criar conta" → tela de cadastro (espera o 1º campo aparecer).
-export async function gotoRegister(page: Page) {
-  await page.goto('/')
-  await page.getByRole('button', { name: 'Criar conta' }).click()
-  await expect(page.getByLabel(/Nome completo/)).toBeVisible()
-}
-
 // Marca + tema: toggles GLOBAIS ([data-brand] + .dark no <html>). Vivem em DOIS lugares conforme a tela:
 // - dock flutuante (login/cadastro/Componentes): "Trocar para…" / "Mudar para tema…"
 // - topbar do AppShell (Dashboard, Banco, Usuários, Gerador…): "Trocar marca (atual: …)" / "Tema claro|escuro"

@@ -28,12 +28,7 @@ test('alterna o tema aplicando a classe .dark no <html>', async () => {
   expect(document.documentElement.classList.contains('dark')).toBe(false)
 })
 
-test('navega de login para cadastro pelo "Criar conta"', async () => {
-  const user = userEvent.setup()
-  render(<App />)
-  await user.click(screen.getByRole('button', { name: /criar conta/i }))
-  expect(await screen.findByRole('heading', { name: /crie sua conta/i })).toBeInTheDocument()
-})
+// Recrutador NÃO tem cadastro (o "Criar conta" é do candidato, na porta 5172 — /cadastro).
 
 // silencia o ruído esperado do recharts em jsdom (dimensões 0) caso alguma view o monte
 vi.spyOn(console, 'warn').mockImplementation(() => {})

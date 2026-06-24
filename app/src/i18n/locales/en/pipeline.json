@@ -65,6 +65,8 @@
     "buscarAria": "Search candidate by name or role",
     "todasVagas": "All roles",
     "vagaAria": "Filter by role",
+    "todosNiveis": "All levels",
+    "nivelAria": "Filter by role level",
     "todasEtapas": "All stages",
     "nEtapas_one": "{{count}} stage",
     "nEtapas_other": "{{count}} stages",

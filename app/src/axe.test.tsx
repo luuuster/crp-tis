@@ -1,5 +1,6 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, afterEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import axe from 'axe-core'
 
 import { App } from './App'
@@ -11,6 +12,11 @@ import { EntrevistasIA, CandidatoDetalhe, AvaliacaoIAConteudo, buildDetalhe, typ
 import { Candidatos, CandidatoPerfil, ProcessoDetalhe, buildProcessos, type Candidato as CandidatoBanco } from './pages/Candidatos'
 import { Usuarios } from './pages/Usuarios'
 import { Pipeline } from './pages/Pipeline'
+import { InscricaoVaga } from './pages/InscricaoVaga'
+import { SegundaEtapa } from './pages/SegundaEtapa'
+import { CandidatoAcesso } from './pages/CandidatoAcesso'
+import { CandidatoPainel } from './pages/CandidatoPainel'
+import { PainelSkeleton } from './components/PainelSkeleton'
 import { JobGenerator } from './pages/JobGenerator'
 import { Showcase } from './pages/Showcase'
 import { TooltipProvider } from './components/ui/tooltip'
@@ -46,12 +52,16 @@ async function expectNoViolationsOpen(ui: React.ReactElement, gatilho: string | 
   expect(result.violations, `violações axe:\n${resumo}`).toHaveLength(0)
 }
 
+// Alguns componentes (CandidatoPainel, modal logado) escrevem a sessão do candidato em localStorage.
+// Limpa entre os testes p/ o estado "deslogado" (formulário público) não vazar de um teste pro outro.
+afterEach(() => { try { localStorage.clear() } catch { /* jsdom sempre tem, mas por garantia */ } })
+
 describe('axe — zero violações por página', () => {
   it('App (estado inicial: login)', async () => {
     await expectNoViolations(<App />)
   })
   it('LoginPage', async () => {
-    await expectNoViolations(<LoginPage onLogin={() => {}} onCreateAccount={() => {}} />)
+    await expectNoViolations(<LoginPage onLogin={() => {}} />)
   })
   it('RegisterPage', async () => {
     await expectNoViolations(<RegisterPage onBackToLogin={() => {}} onRegistered={() => {}} />)
@@ -102,6 +112,62 @@ describe('axe — zero violações por página', () => {
   })
   it('Pipeline (funil de contratação)', async () => {
     await expectNoViolations(<TooltipProvider><Pipeline onNavigate={() => {}} /></TooltipProvider>)
+  })
+  it('InscricaoVaga (página pública do candidato — aba descrição)', async () => {
+    await expectNoViolations(<InscricaoVaga onSair={() => {}} />)
+  })
+  it('InscricaoVaga — formulário de inscrição', async () => {
+    const user = userEvent.setup()
+    render(<InscricaoVaga onSair={() => {}} />)
+    await user.click(screen.getByRole('button', { name: /candidatar/i })) // rodapé leva ao formulário
+    await screen.findByLabelText(/nome completo/i) // garante que o formulário montou
+    const result = await axe.run(document.body, { rules: { 'color-contrast': { enabled: false } } })
+    const resumo = result.violations
+      .map((v) => `[${v.impact}] ${v.id}: ${v.help} → ${v.nodes.slice(0, 3).map((n) => n.target.join(' ')).join(' | ')}`)
+      .join('\n')
+    expect(result.violations, `violações axe:\n${resumo}`).toHaveLength(0)
+  })
+  it('InscricaoVaga — modal "Confirmar candidatura" (candidato logado)', async () => {
+    localStorage.setItem('candidato.email', 'ana.souza@exemplo.com') // simula logado
+    try {
+      const user = userEvent.setup()
+      // Logado, o header mostra a conta (ContaMenu usa Tooltip) — precisa do provider, igual ao CandidatoApp.
+      render(<TooltipProvider><InscricaoVaga /></TooltipProvider>)
+      await user.click(screen.getByRole('button', { name: /candidatar/i })) // logado: abre o modal, não o form
+      await screen.findByRole('dialog')
+      const result = await axe.run(document.body, { rules: { 'color-contrast': { enabled: false } } })
+      const resumo = result.violations
+        .map((v) => `[${v.impact}] ${v.id}: ${v.help} → ${v.nodes.slice(0, 3).map((n) => n.target.join(' ')).join(' | ')}`)
+        .join('\n')
+      expect(result.violations, `violações axe:\n${resumo}`).toHaveLength(0)
+    } finally {
+      localStorage.removeItem('candidato.email') // não vaza p/ os outros testes
+    }
+  })
+  it('SegundaEtapa (questionário do processo)', async () => {
+    await expectNoViolations(<SegundaEtapa nome="Teste Candidato" vaga="Desenvolvedor Backend · Pleno" onConcluir={() => {}} onSair={() => {}} />)
+  })
+  it('CandidatoAcesso (login do candidato)', async () => {
+    await expectNoViolations(<CandidatoAcesso />)
+  })
+  it('CandidatoPainel (mural de vagas do candidato)', async () => {
+    await expectNoViolations(
+      <TooltipProvider><CandidatoPainel brand="crp" mode="light" onCycleBrand={() => {}} onToggleMode={() => {}} onSair={() => {}} /></TooltipProvider>,
+    )
+  })
+  it('PainelSkeleton (esqueleto de carregamento do mural)', async () => {
+    await expectNoViolations(<PainelSkeleton />)
+  })
+  it('CandidatoPainel — filtro "Local de trabalho" aberto (popover portaled)', async () => {
+    const user = userEvent.setup()
+    render(<TooltipProvider><CandidatoPainel brand="crp" mode="light" onCycleBrand={() => {}} onToggleMode={() => {}} onSair={() => {}} /></TooltipProvider>)
+    await user.click(screen.getByRole('button', { name: /local de trabalho/i }))
+    await screen.findByText('Aplicar') // garante que o popover montou (conteúdo é portaled)
+    const result = await axe.run(document.body, { rules: { 'color-contrast': { enabled: false } } })
+    const resumo = result.violations
+      .map((v) => `[${v.impact}] ${v.id}: ${v.help} → ${v.nodes.slice(0, 3).map((n) => n.target.join(' ')).join(' | ')}`)
+      .join('\n')
+    expect(result.violations, `violações axe:\n${resumo}`).toHaveLength(0)
   })
   it('JobGenerator (lista de vagas)', async () => {
     await expectNoViolations(<TooltipProvider><JobGenerator onNavigate={() => {}} /></TooltipProvider>)

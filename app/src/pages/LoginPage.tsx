@@ -45,7 +45,7 @@ function makeLoginSchema(t: TFunction<'auth'>) {
 }
 type LoginValues = z.infer<ReturnType<typeof makeLoginSchema>>
 
-export function LoginPage({ onLogin, onCreateAccount, brand }: { onLogin?: () => void; onCreateAccount?: () => void; brand?: string }) {
+export function LoginPage({ onLogin, brand }: { onLogin?: () => void; brand?: string }) {
   const { t } = useTranslation('auth')
   const [showPwd, setShowPwd] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
@@ -98,18 +98,6 @@ export function LoginPage({ onLogin, onCreateAccount, brand }: { onLogin?: () =>
       subtitle={t('login.subtitle')}
       maxWidth="sm"
       brand={brand}
-      footer={
-        <p className="text-sm text-muted-foreground">
-          {t('login.semConta')}{' '}
-          <button
-            type="button"
-            onClick={() => onCreateAccount?.()}
-            className={`font-medium text-link underline-offset-4 hover:underline ${focusRing}`}
-          >
-            {t('login.criarConta')}
-          </button>
-        </p>
-      }
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5" noValidate>

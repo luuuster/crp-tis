@@ -1,0 +1,50 @@
+{
+  "marca": {
+    "headline": "Your journey starts here.",
+    "subline": "Track your applications and keep your profile close at hand."
+  },
+  "login": {
+    "title": "Access my account",
+    "subtitle": "Use your application e-mail and the temporary password we sent you.",
+    "label": { "email": "E-mail", "senha": "Temporary password" },
+    "placeholder": { "email": "youremail@example.com", "senha": "••••••••" },
+    "dica": "We sent a temporary password to your e-mail when you applied.",
+    "demo": "Demo: use any e-mail and the temporary password {{senha}}.",
+    "entrar": "Sign in",
+    "entrando": "Signing in…",
+    "mostrarSenha": "Show password",
+    "ocultarSenha": "Hide password"
+  },
+  "troca": {
+    "title": "Create your password",
+    "subtitle": "This is your first access. Set a password of your own to continue.",
+    "label": { "nova": "New password", "confirmar": "Confirm new password" },
+    "placeholder": "••••••••",
+    "requisitos": "Password requirements",
+    "contador": "{{met}} of {{total}} requirements met",
+    "cumprido": "met",
+    "pendente": "pending",
+    "definir": "Set password and continue",
+    "definindo": "Setting…"
+  },
+  "regras": {
+    "minChars": "At least 8 characters",
+    "maiuscula": "One uppercase letter",
+    "numero": "One number",
+    "especial": "One special character",
+    "coincidem": "Passwords match"
+  },
+  "validacao": {
+    "emailObrigatorio": "Enter your e-mail.",
+    "emailInvalido": "Invalid e-mail.",
+    "senhaObrigatoria": "Enter the temporary password.",
+    "senhaIncorreta": "Incorrect e-mail or temporary password.",
+    "senhaRequisitos": "The password doesn't meet all requirements.",
+    "confirmeSenha": "Confirm the new password.",
+    "naoCoincidem": "Passwords don't match."
+  },
+  "rodape": {
+    "semConta": "Don't have an account?",
+    "criarConta": "Create account"
+  }
+}

@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 import { fmt, scan } from './axe'
-import { login, gotoRegister, setTheme, gotoMenu, abrirVaga } from './helpers'
+import { login, setTheme, gotoMenu, abrirVaga } from './helpers'
 import { BRANDS, MODES } from './themes'
 
 // axe ESTRUTURAL no DOM renderizado (ARIA, roles, labels, heading-order) — nas 4 combinações
@@ -23,13 +23,8 @@ test.describe('axe estrutural — telas de auth', () => {
         const r = await scan(page)
         expect(r.violations, fmt(r.violations)).toEqual([])
       })
-
-      test(`Cadastro · ${brand} · ${mode}`, async ({ page }) => {
-        await gotoRegister(page)
-        await setTheme(page, brand, mode)
-        const r = await scan(page)
-        expect(r.violations, fmt(r.violations)).toEqual([])
-      })
+      // Cadastro saiu do recrutador (virou do candidato, porta 5172 — dev-only, fora do preview).
+      // A11y estrutural do form fica coberta no jsdom (axe.test.tsx → RegisterPage).
     }
 })
 
