@@ -56,7 +56,7 @@
     "@tokens-studio/sd-transforms": "^2.0.3",
     "culori": "^4.0.1",
     "lucide-static": "^1.18.0",
-    "style-dictionary": "^5.4.4",
+    "style-dictionary": "^5.5.0",
     "tailwindcss": "^4.0.0"
   },
   "publishConfig": {
