@@ -5,21 +5,16 @@
  */
 import { useEffect, useState, type ReactNode } from 'react'
 import {
-  Bot, CalendarDays, ChevronLeft, ClipboardList, LayoutDashboard, LogOut, Menu, Moon, Palette, Sun, UserRound, Users, Workflow, X,
+  Bot, CalendarDays, ClipboardList, LayoutDashboard, UserRound, Users, Workflow, X,
 } from 'lucide-react'
 import { Dialog as DialogPrimitive } from 'radix-ui'
 import { toast } from 'sonner'
 import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/lib/utils'
-import { focusRing, focusRingOnPrimary } from '@/lib/focus'
-import { Button } from '@/components/ui/button'
-import { LanguageSelect } from '@/components/LanguageSelect'
-import { Separator } from '@/components/ui/separator'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Tooltip, TooltipContent, TooltipTrigger, Tip } from '@/components/ui/tooltip'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { ConfirmDialog } from '@/components/confirm-dialog'
+import { focusRingOnPrimary } from '@/lib/focus'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { TopBarMenuButton, TopBarActions, TopBarAccount } from './topbar-parts'
 import { Logo } from '@/components/auth/Logo'
 import logoMark from '@/assets/logo/logo-mark-white.svg'
 import logoMarkTrevo from '@/assets/logo/trevo-mark-white.svg'
@@ -69,8 +64,14 @@ export function Sidebar({ active, expanded, onNavigate, onVagas, brand }: { acti
   return (
     <aside className={cn('relative z-20 hidden h-dvh shrink-0 flex-col overflow-hidden bg-primary text-primary-foreground shadow-panel-l transition-[width] duration-300 ease-in-out md:flex', expanded ? 'w-[300px]' : 'w-16')}>
       <div className="relative flex h-16 shrink-0 items-center px-4">
-        <img src={brand === 'marca-b' ? logoMarkTrevo : logoMark} alt="" className={cn('absolute left-4 size-7 transition-opacity duration-300', expanded ? 'opacity-0' : 'opacity-100')} />
-        <Logo variant="onBrand" brand={brand} className={cn('h-7 w-auto transition-opacity duration-300', expanded ? 'opacity-100' : 'opacity-0')} />
+        {/* Logo clicável: volta para a Dashboard (início do workspace), padrão de produto. */}
+        <button
+          type="button" onClick={() => onNavigate?.('dashboard')} aria-label={t('menu.irInicio')}
+          className={cn('group relative -ml-1 flex h-9 items-center rounded-lg px-1 transition-colors hover:bg-primary-foreground/10', focusRingOnPrimary)}
+        >
+          <img src={brand === 'marca-b' ? logoMarkTrevo : logoMark} alt="" className={cn('absolute left-1 size-7 transition-opacity duration-300', expanded ? 'opacity-0' : 'opacity-100')} />
+          <Logo variant="onBrand" brand={brand} className={cn('h-7 w-auto transition-opacity duration-300', expanded ? 'opacity-100' : 'opacity-0')} />
+        </button>
       </div>
 
       <nav className="flex-1 space-y-5 overflow-x-hidden overflow-y-auto px-2.5 py-3" aria-label={t('principal')}>
@@ -151,61 +152,26 @@ export function MobileNav({ active, open, onOpenChange, onNavigate, onVagas, bra
   )
 }
 
-// Topbar "simples" do shell (sem o Charlie do Gerador): toggle do menu + trilha + tema/marca + conta.
+// Topbar "simples" do shell (sem o Charlie do Gerador): toggle do menu + trilha + ações + conta.
+// As peças (botão de menu, ações, conta) vêm de ./topbar-parts — compartilhadas com a topbar do Gerador.
 function ShellTopBar({ onToggleMenu, menuExpanded, isMobile, onLogout, brand, mode, onCycleBrand, onToggleMode, crumb, headerAction }: {
   onToggleMenu: () => void; menuExpanded: boolean; isMobile?: boolean; onLogout: () => void
   brand?: string; mode?: string; onCycleBrand?: () => void; onToggleMode?: () => void; crumb: string; headerAction?: ReactNode
 }) {
   const { t } = useTranslation('nav')
-  const { t: tc } = useTranslation('common')
   const menuLabel = isMobile ? (menuExpanded ? t('menu.fechar') : t('menu.abrir')) : menuExpanded ? t('menu.recolher') : t('menu.expandir')
-  const [confirmSair, setConfirmSair] = useState(false)
   return (
     <header className="flex h-16 shrink-0 items-center gap-3 border-b border-border/40 bg-card/70 px-4 backdrop-blur-sm lg:px-6">
-      <Tip label={menuLabel}>
-        <Button variant="ghost" size="icon" aria-label={menuLabel} aria-expanded={menuExpanded} onClick={onToggleMenu} className="text-muted-foreground hover:text-foreground">
-          {isMobile ? <Menu /> : <ChevronLeft className={cn('transition-transform', !menuExpanded && 'rotate-180')} />}
-        </Button>
-      </Tip>
+      <TopBarMenuButton label={menuLabel} menuExpanded={menuExpanded} isMobile={isMobile} onToggle={onToggleMenu} />
       <nav aria-label={t('trilha')} className="hidden items-center gap-1.5 ty-caption font-medium tracking-wide text-muted-foreground uppercase sm:flex">
         <span>{t('trilha')}</span><span aria-hidden>/</span><span className="text-foreground" aria-current="page">{crumb}</span>
       </nav>
 
       <div className="ml-auto flex items-center gap-1.5">
-        <LanguageSelect size="icon" />
-        {onCycleBrand && <Tip label={tc('marca', { marca: brand })}><Button variant="ghost" size="icon" aria-label={tc('marca', { marca: brand })} onClick={onCycleBrand}><Palette /></Button></Tip>}
-        {onToggleMode && <Tip label={mode === 'dark' ? tc('tema.claro') : tc('tema.escuro')}><Button variant="ghost" size="icon" aria-label={mode === 'dark' ? tc('tema.claro') : tc('tema.escuro')} onClick={onToggleMode}>{mode === 'dark' ? <Sun /> : <Moon />}</Button></Tip>}
-        <Separator orientation="vertical" className="mx-1 h-5" />
+        <TopBarActions brand={brand} mode={mode} onCycleBrand={onCycleBrand} onToggleMode={onToggleMode} />
         {headerAction}
-        <DropdownMenu>
-          <Tip label={t('conta.label')}>
-            <DropdownMenuTrigger asChild>
-              <button type="button" aria-label={t('conta.label')} className={cn('relative ml-1 rounded-full', focusRing)}>
-                <Avatar className="size-10"><AvatarFallback className="bg-primary text-xs font-semibold text-primary-foreground">FL</AvatarFallback></Avatar>
-                <span className="absolute right-0 bottom-0 size-2.5 rounded-full border-2 border-card bg-success" aria-hidden />
-              </button>
-            </DropdownMenuTrigger>
-          </Tip>
-          <DropdownMenuContent align="end" className="w-56">
-            <div className="flex items-center gap-3 p-2">
-              <Avatar className="size-9"><AvatarFallback className="bg-primary text-xs font-semibold text-primary-foreground">FL</AvatarFallback></Avatar>
-              <div className="min-w-0">
-                <p className="truncate ty-body-sm font-medium text-foreground">Frank Lima</p>
-                <p className="truncate ty-caption text-muted-foreground">recrutador@talentai.com</p>
-              </div>
-            </div>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onSelect={() => toast.info(t('conta.contaDemo'))}><UserRound /> {t('conta.minha')}</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onSelect={() => setConfirmSair(true)} className="text-destructive-text focus:bg-destructive/10 focus:text-destructive-text"><LogOut /> {t('conta.sair')}</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <TopBarAccount onLogout={onLogout} />
       </div>
-      <ConfirmDialog
-        open={confirmSair} onOpenChange={setConfirmSair} icon={LogOut} tone="primary" confirmVariant="default"
-        title={t('sairConfirm.titulo')} description={t('sairConfirm.descricao')}
-        cancelLabel={t('sairConfirm.voltar')} confirmLabel={t('sairConfirm.sair')} onConfirm={onLogout}
-      />
     </header>
   )
 }

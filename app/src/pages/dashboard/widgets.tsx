@@ -180,7 +180,7 @@ function VagasRecentesWidget({ onNavigate }: WidgetProps) {
     <Panel
       title={t('vagasRecentes.titulo')}
       desc={t('vagasRecentes.desc')}
-      action={<Button variant="ghost" size="sm" className="text-primary-text hover:bg-primary/10 hover:text-primary-text" onClick={() => onNavigate('gerador')}>{t('vagasRecentes.verTodas')} <ArrowRight aria-hidden /></Button>}
+      action={<Button variant="primary-soft" size="sm" onClick={() => onNavigate('gerador')}>{t('vagasRecentes.verTodas')} <ArrowRight aria-hidden /></Button>}
     >
       <ul>
         {VAGAS_RECENTES.map((v) => (
@@ -257,7 +257,7 @@ function ProximasEntrevistasWidget({ onNavigate }: WidgetProps) {
     <Panel
       title={t('proximasEntrevistas.titulo')}
       desc={t('proximasEntrevistas.desc')}
-      action={<Button variant="ghost" size="sm" className="text-primary-text hover:bg-primary/10 hover:text-primary-text" onClick={() => onNavigate('entrevistas')}>{t('proximasEntrevistas.verTodas')} <ArrowRight aria-hidden /></Button>}
+      action={<Button variant="primary-soft" size="sm" onClick={() => onNavigate('entrevistas')}>{t('proximasEntrevistas.verTodas')} <ArrowRight aria-hidden /></Button>}
     >
       <ul>
         {PROXIMAS_ENTREVISTAS.map((e) => (

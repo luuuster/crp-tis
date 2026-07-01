@@ -16,6 +16,7 @@ import { InscricaoVaga } from './pages/InscricaoVaga'
 import { SegundaEtapa } from './pages/SegundaEtapa'
 import { CandidatoAcesso } from './pages/CandidatoAcesso'
 import { CandidatoPainel } from './pages/CandidatoPainel'
+import { CandidatoCandidaturas } from './pages/CandidatoCandidaturas'
 import { PainelSkeleton } from './components/PainelSkeleton'
 import { JobGenerator } from './pages/JobGenerator'
 import { Showcase } from './pages/Showcase'
@@ -176,6 +177,16 @@ describe('axe — zero violações por página', () => {
   it('CandidatoPainel (mural de vagas do candidato)', async () => {
     await expectNoViolations(
       <TooltipProvider><CandidatoPainel brand="crp" mode="light" onCycleBrand={() => {}} onToggleMode={() => {}} onSair={() => {}} /></TooltipProvider>,
+    )
+  })
+  it('CandidatoCandidaturas (minhas candidaturas — em andamento)', async () => {
+    await expectNoViolations(
+      <TooltipProvider><CandidatoCandidaturas tipo="andamento" brand="crp" mode="light" onCycleBrand={() => {}} onToggleMode={() => {}} onSair={() => {}} /></TooltipProvider>,
+    )
+  })
+  it('CandidatoCandidaturas (candidaturas finalizadas)', async () => {
+    await expectNoViolations(
+      <TooltipProvider><CandidatoCandidaturas tipo="finalizadas" brand="crp" mode="light" onCycleBrand={() => {}} onToggleMode={() => {}} onSair={() => {}} /></TooltipProvider>,
     )
   })
   it('PainelSkeleton (esqueleto de carregamento do mural)', async () => {

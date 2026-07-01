@@ -14,6 +14,7 @@ export type Briefing = {
   cargo: string; nivel: string; modelo: string; cliente: string; gestor: string
   desafio: string; objetivo: string
   local: string; horario: string; carga: string; motivo: string; quantidade: number
+  prazo: number // dias que a vaga fica aberta para candidaturas (definido pelo RH na criação)
   budget: string; modalidade: string; beneficios: string[]; processoSeletivo: string[]
 }
 export type Perfil = {

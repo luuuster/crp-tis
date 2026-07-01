@@ -89,7 +89,7 @@ describe('redline', () => {
   });
   it('com localização da fiber: componente + origem + identidade', () => {
     const c = [{ components: ['Stepper', 'JobGenerator'], source: 'pages/JobGenerator.tsx:759', tag: 'button',
-      text: 'Briefing da Vaga', selector: 'button.flex.w-full', kind: 'raio', prop: 'border-radius',
+      text: 'Resumo da Vaga', selector: 'button.flex.w-full', kind: 'raio', prop: 'border-radius',
       from: '4px', to: '12px', token: 'var(--radius-xl)' }];
     const { markdown, ai } = M.buildRedline(c);
     assert.match(markdown, /<Stepper> › <JobGenerator>/);

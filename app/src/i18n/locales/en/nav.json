@@ -16,12 +16,13 @@
     "fechar": "Close menu",
     "recolher": "Collapse menu",
     "expandir": "Expand menu",
+    "irInicio": "Go to Dashboard",
     "descricao": "Access the workspace areas."
   },
   "demoToast": "\"{{item}}\" is not part of this demo.",
   "conta": {
     "label": "Your account",
-    "minha": "My account",
+    "minha": "Edit profile",
     "contaDemo": "Account (demo).",
     "sair": "Sign out"
   },

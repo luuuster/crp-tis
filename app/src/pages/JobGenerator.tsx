@@ -234,7 +234,7 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
               {/* "Salvar rascunho" só faz sentido criando OU editando uma vaga que ainda é rascunho. */}
               {(!isEditing || editingDraft) && (
                 <ConfirmDialog
-                  trigger={<Button variant="ghost" className="bg-secondary/10 text-secondary-text hover:bg-secondary/15 hover:text-secondary-text max-sm:flex-1"><Save /> {t('footer.salvarRascunho')}</Button>}
+                  trigger={<Button variant="secondary-soft" className="max-sm:flex-1"><Save /> {t('footer.salvarRascunho')}</Button>}
                   icon={Save} tone="secondary"
                   title={t('dialog.salvarRascunhoTitulo')}
                   description={t('dialog.salvarRascunhoDescricao')}

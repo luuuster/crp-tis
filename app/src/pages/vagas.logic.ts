@@ -30,7 +30,7 @@ export function mkGen(meta: { id: string; data: string; inscritos: number; aprov
       cargo, nivel, modelo, cliente: 'TIS Talent AI Platform', gestor,
       desafio: `O time responsável por ${cargo.toLowerCase()} está crescendo para acompanhar a evolução da plataforma e entregar mais valor com qualidade.`,
       objetivo: `Reforçar a área com uma pessoa ${nivel} para elevar a capacidade de entrega, mantendo escalabilidade, qualidade e boas práticas.`,
-      local: 'São Paulo, SP', horario: '09h às 18h', carga: '40h semanais', motivo: 'Aumento do quadro', quantidade: 1,
+      local: 'São Paulo, SP', horario: '09h às 18h', carga: '40h semanais', motivo: 'Aumento do quadro', quantidade: 1, prazo: 30,
       budget, modalidade: 'CLT', beneficios: BENEF, processoSeletivo: PROCESSO,
     },
     {

@@ -15,7 +15,7 @@ const scan = (page: Parameters<typeof login>[0]) =>
 test.use({ viewport: { width: 390, height: 844 } })
 
 test.describe('a11y mobile — Gerador (390px)', () => {
-  test('Passo 1 — Briefing', async ({ page }) => {
+  test('Passo 1 — Resumo da vaga', async ({ page }) => {
     await login(page)
     await setTheme(page, 'crp', 'light')
     await gotoMenu(page, 'Vagas')

@@ -32,9 +32,8 @@
   "analiseEtapa_other": "{{assunto}} · hace {{count}} días",
   "tempoEtapa_one": "Hace {{count}} día en esta etapa",
   "tempoEtapa_other": "Hace {{count}} días en esta etapa",
-  "agendar": "Agendar entrevista",
-  "reagendar": "Reagendar",
   "agendadaPara": "Agendada: {{quando}}",
+  "reagendar": "Reagendar",
   "verCurriculo": "Ver currículum",
   "acao": {
     "verProcesso": "Ver el proceso de {{nome}}"
@@ -85,7 +84,7 @@
   "toast": {
     "avancou": "{{nome}} avanzó a {{fase}}.",
     "reprovado": "{{nome}} se movió a Rechazado.",
-    "agendada": "Entrevista de {{nome}} agendada para {{quando}}.",
+    "reagendada": "Entrevista de {{nome}} reprogramada para {{quando}}.",
     "contratado": "¡{{nome}} fue contratado! 🎉",
     "curriculo": "El currículum es ilustrativo en esta demo."
   }

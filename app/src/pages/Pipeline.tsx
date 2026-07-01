@@ -3,7 +3,7 @@
  * candidatos. Clicar no card abre o PROCESSO completo do candidato (o MESMO stepper "Etapas do processo" da
  * tela de Candidatos): conforme o candidato avança no funil, as etapas anteriores ficam liberadas para o
  * recrutador acompanhar o que já foi feito (passo 1 = a análise da IA). A decisão (aprovar/reprovar) fica no
- * rodapé do detalhe. Nas etapas de entrevista (RH/gestor) o card também tem tempo na etapa + agendar.
+ * rodapé do detalhe. Nas etapas de entrevista (RH/gestor) o card também mostra o tempo na etapa.
  * Filtros no topo (busca/vaga/etapa); ordenação por coluna (popover). Altura fixa: board rola na horizontal.
  */
 import { useState } from 'react'
@@ -16,7 +16,7 @@ import { iniciais } from '@/lib/format'
 import { hashNum } from '@/lib/hash'
 import { tintFor } from '@/lib/avatar'
 import { AppShell } from '@/components/shell/AppShell'
-import { ErrorState, badgeTone } from '@/components/page'
+import { ErrorState, PageHeader, badgeTone } from '@/components/page'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Spinner } from '@/components/ui/spinner'
@@ -42,6 +42,13 @@ const dataDe = (c: Card) => {
   const d = new Date()
   d.setDate(d.getDate() - diasDe(c))
   return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`
+}
+// "dd/mm/aaaa hh:mm" do card → Evento (pré-preenche o formulário de reagendamento). m é 0-indexado.
+const eventoDoCard = (c: Card): Evento | undefined => {
+  if (!c.agendamento) return undefined
+  const [data, hora] = c.agendamento.split(' ')
+  const [d, m, y] = data.split('/').map(Number)
+  return { y, m: m - 1, d, hora, cand: c.nome, vaga: c.vaga, tipo: 'Online' }
 }
 const emailDe = (nome: string) =>
   // NFD separa o acento da letra-base; [^a-z\s] tira o acento (e qualquer pontuação) → "José Antônio" = jose.antonio
@@ -108,9 +115,9 @@ const ordenarCards = (cards: Card[], ordens: OrdemCol[]) => {
 // Card = informação do candidato. O card INTEIRO é clicável (abre o processo); o nome é um <button> real p/
 // teclado, e os botões internos (agendar) param a propagação. IA: compatibilidade + recência da análise;
 // demais: tempo na etapa (+ agendar nas etapas de entrevista).
-function CardItem({ c, onAbrir, onAgendar }: { c: Card; onAbrir?: (c: Card) => void; onAgendar?: (c: Card) => void }) {
+function CardItem({ c, onAbrir, onReagendar }: { c: Card; onAbrir?: (c: Card) => void; onReagendar?: (c: Card) => void }) {
   const { t } = useTranslation('pipeline')
-  const agendavel = FASE[c.fase].gate === 'agendar' && !!onAgendar // RH / gestor: entrevista que se agenda
+  const interview = FASE[c.fase].gate === 'agendar' // RH / gestor: etapas de entrevista (agendamento inicial é por fora; aqui o RH reagenda)
   return (
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions -- card clicável p/ mouse; o teclado vai pelo <button> do nome
     <li onClick={() => onAbrir?.(c)} className="group/card cursor-pointer rounded-xl bg-card p-3 shadow-sm ring-1 ring-surface-ring transition-shadow hover:shadow-md hover:ring-primary/30">
@@ -131,16 +138,14 @@ function CardItem({ c, onAbrir, onAgendar }: { c: Card; onAbrir?: (c: Card) => v
       <p className="mt-1 flex items-center gap-1.5 ty-caption font-semibold text-foreground">
         <Clock className="size-3 shrink-0" aria-hidden /> {t('analiseEtapa', { assunto: t(`analise.${c.fase}` as 'analise.ia'), count: diasDe(c) })}
       </p>
-      {agendavel && (
+      {interview && (
         <div className="mt-2 space-y-1.5">
           <p className="flex items-center gap-1.5 ty-caption text-muted-foreground"><Hourglass className="size-3.5 shrink-0" aria-hidden /> {t('tempoEtapa', { count: diasNaEtapa(c) })}</p>
-          {c.agendamento ? (
+          {c.agendamento && (
             <>
               <p className="flex items-center gap-1.5 ty-caption font-medium text-foreground"><CalendarClock className="size-3.5 shrink-0 text-primary-text" aria-hidden /> {t('agendadaPara', { quando: c.agendamento })}</p>
-              <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); onAgendar!(c) }} className="h-8 w-full gap-1.5 ty-caption"><CalendarPlus className="size-3.5 shrink-0" aria-hidden /> {t('reagendar')}</Button>
+              {onReagendar && <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); onReagendar(c) }} className="h-8 w-full gap-1.5 ty-caption"><CalendarPlus className="size-3.5 shrink-0" aria-hidden /> {t('reagendar')}</Button>}
             </>
-          ) : (
-            <Button variant="default" size="sm" onClick={(e) => { e.stopPropagation(); onAgendar!(c) }} className="h-8 w-full gap-1.5 ty-caption"><CalendarPlus className="size-3.5 shrink-0" aria-hidden /> {t('agendar')}</Button>
           )}
         </div>
       )}
@@ -185,7 +190,7 @@ function ColunaSort({ ordens, onToggle, label }: { ordens: OrdemCol[]; onToggle:
 }
 
 // Coluna do board: cabeçalho (rótulo + contagem + ordenar) fixo + lista de cards que ROLA na vertical.
-function Coluna({ fase, cards, onAbrir, onAgendar }: { fase: (typeof FASES)[number]; cards: Card[]; onAbrir?: (c: Card) => void; onAgendar?: (c: Card) => void }) {
+function Coluna({ fase, cards, onAbrir, onReagendar }: { fase: (typeof FASES)[number]; cards: Card[]; onAbrir?: (c: Card) => void; onReagendar?: (c: Card) => void }) {
   const { t } = useTranslation('pipeline')
   const [ordens, setOrdens] = useState<OrdemCol[]>(['compatDesc'])
   // Alterna um critério; ao marcar, tira o oposto da MESMA dimensão (só um maior/menor, um recente/antiga).
@@ -205,7 +210,7 @@ function Coluna({ fase, cards, onAbrir, onAgendar }: { fase: (typeof FASES)[numb
       {cards.length === 0 ? (
         <p className="px-3 py-8 text-center ty-caption text-muted-foreground">{t('vazio')}</p>
       ) : (
-        <ul className="min-h-0 flex-1 space-y-2.5 overflow-y-auto p-2.5">{ordenados.map((c) => <CardItem key={c.id} c={c} onAbrir={onAbrir} onAgendar={onAgendar} />)}</ul>
+        <ul className="min-h-0 flex-1 space-y-2.5 overflow-y-auto p-2.5">{ordenados.map((c) => <CardItem key={c.id} c={c} onAbrir={onAbrir} onReagendar={onReagendar} />)}</ul>
       )}
     </section>
   )
@@ -310,10 +315,10 @@ export function Pipeline({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
   onNavigate: (v: string) => void; brand?: string; mode?: string; onCycleBrand?: () => void; onToggleMode?: () => void
 }) {
   const { t } = useTranslation('pipeline')
-  const { t: te } = useTranslation('entrevistas') // títulos sr-only do Sheet de agendamento (reusados)
+  const { t: te } = useTranslation('entrevistas') // títulos sr-only do Sheet de reagendamento (reusados)
   const { data: cards, setData, loading, error, retry } = useMockData<Card[]>('pipeline', () => CARDS_INICIAL, [])
   const [vendo, setVendo] = useState<Card | null>(null) // candidato aberto no processo (stepper)
-  const [agendando, setAgendando] = useState<Card | null>(null) // candidato no Sheet de agendar entrevista
+  const [reagendando, setReagendando] = useState<Card | null>(null) // candidato no Sheet de reagendar entrevista
   const [finalizando, setFinalizando] = useState<Card | null>(null) // candidato no Sheet "Entrevista finalizada"
   const [busca, setBusca] = useState('')
   const [vaga, setVaga] = useState('todas')
@@ -332,13 +337,13 @@ export function Pipeline({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
     setVendo(null)
   }
 
-  // Confirmar agendamento (Sheet) → registra a data/hora no card e fecha. Evento.m é 0-indexado.
-  const confirmarAgendamento = (ev: Evento) => {
-    if (!agendando) return
+  // Reagendar (Sheet, ação do RH) → atualiza a data/hora da entrevista do card. Evento.m é 0-indexado.
+  const confirmarReagendamento = (ev: Evento) => {
+    if (!reagendando) return
     const quando = `${String(ev.d).padStart(2, '0')}/${String(ev.m + 1).padStart(2, '0')}/${ev.y} ${ev.hora}`
-    setData((cs) => cs.map((x) => (x.id === agendando.id ? { ...x, agendamento: quando } : x)))
-    toast.success(t('toast.agendada', { nome: agendando.nome, quando }))
-    setAgendando(null)
+    setData((cs) => cs.map((x) => (x.id === reagendando.id ? { ...x, agendamento: quando } : x)))
+    toast.success(t('toast.reagendada', { nome: reagendando.nome, quando }))
+    setReagendando(null)
   }
 
   // Clicar no menu fecha o processo antes de navegar (mesmo padrão da tela de Entrevistas IA).
@@ -367,23 +372,22 @@ export function Pipeline({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
           c={candidatoProc(vendo)}
           p={processoDe(vendo)}
           onVoltar={() => setVendo(null)}
-          acoesInicio={<Button variant="ghost" onClick={() => toast.info(t('toast.curriculo'))} className="bg-secondary/10 text-secondary-text hover:bg-secondary/15 hover:text-secondary-text"><FileText aria-hidden /> {t('verCurriculo')}</Button>}
+          acoesInicio={<Button variant="secondary-soft" onClick={() => toast.info(t('toast.curriculo'))}><FileText aria-hidden /> {t('verCurriculo')}</Button>}
           acoes={<Decisao c={vendo} onDecidir={decidir} onFinalizar={(c) => setFinalizando(c)} />}
         />
       ) : (
         // h-full (não min-h-full): a página ocupa EXATAMENTE a tela — nada de rolagem vertical na página.
         <div className="flex h-full flex-col">
-          <header className="shrink-0 px-5 pt-6 pb-4 lg:px-8">
-            <h1 className="flex items-center gap-2.5 font-heading text-3xl font-bold tracking-tight text-foreground">
-              <Workflow className="size-7 shrink-0 text-primary-text" aria-hidden /> {t('header.titulo')}
-            </h1>
-            <p className="mt-1.5 max-w-2xl ty-body text-muted-foreground">{t('header.descricao')}</p>
+          {/* Header canônico (PageHeader) dentro do layout full-height próprio do kanban (h-full, sem
+              PageContainer, que adicionaria padding/scroll vertical incompatível com o board). */}
+          <div className="shrink-0 px-5 pt-6 pb-4 lg:px-8">
+            <PageHeader icon={Workflow} title={t('header.titulo')} desc={t('header.descricao')} />
             {!loading && !error && (
               <p className="mt-1 ty-caption tabular-nums text-muted-foreground">
                 {ativos ? t('resultado', { n: visiveis.length, total: cards.length }) : t('total', { n: cards.length })}
               </p>
             )}
-          </header>
+          </div>
 
           {!loading && !error && (
             <Filtros
@@ -404,20 +408,20 @@ export function Pipeline({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
             // min-h-0 mantém a altura presa. tabIndex+role=group: rolável e focável pelo teclado (WCAG 2.1.1).
             // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- região rolável precisa ser focável
             <div className="flex min-h-0 flex-1 gap-4 overflow-x-auto px-5 pb-8 lg:px-8" tabIndex={0} role="group" aria-label={t('boardAria')}>
-              {fasesVisiveis.map((f) => <Coluna key={f.id} fase={f} cards={visiveis.filter((c) => c.fase === f.id)} onAbrir={(c) => setVendo(c)} onAgendar={(c) => setAgendando(c)} />)}
+              {fasesVisiveis.map((f) => <Coluna key={f.id} fase={f} cards={visiveis.filter((c) => c.fase === f.id)} onAbrir={(c) => setVendo(c)} onReagendar={(c) => setReagendando(c)} />)}
             </div>
           )}
         </div>
       )}
 
-      {/* Sheet lateral de agendamento — o MESMO componente da tela de Entrevistas (conteúdo envolto no Sheet). */}
-      <Sheet open={!!agendando} onOpenChange={(aberto) => { if (!aberto) setAgendando(null) }}>
+      {/* Sheet de reagendamento (ação do RH) — o MESMO formulário da tela de Entrevistas, pré-preenchido. */}
+      <Sheet open={!!reagendando} onOpenChange={(aberto) => { if (!aberto) setReagendando(null) }}>
         <SheetContent side="right" className="w-full gap-0 p-0 sm:max-w-md">
-          {agendando && (
+          {reagendando && (
             <>
-              <SheetTitle className="sr-only">{te('sheet.tituloAgendar', { cand: agendando.nome })}</SheetTitle>
+              <SheetTitle className="sr-only">{te('sheet.tituloReagendar', { cand: reagendando.nome })}</SheetTitle>
               <SheetDescription className="sr-only">{te('sheet.descAgendar')}</SheetDescription>
-              <AgendarEntrevista cand={agendando.nome} vaga={agendando.vaga} onCancelar={() => setAgendando(null)} onConfirmar={confirmarAgendamento} />
+              <AgendarEntrevista cand={reagendando.nome} vaga={reagendando.vaga} inicial={eventoDoCard(reagendando)} onCancelar={() => setReagendando(null)} onConfirmar={confirmarReagendamento} />
             </>
           )}
         </SheetContent>

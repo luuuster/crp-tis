@@ -24,16 +24,6 @@
     "vaziaBusca": "No interviews found for this search.",
     "vazia": "No interviews scheduled this month."
   },
-  "fila": {
-    "title": "Candidates awaiting scheduling",
-    "desc": "{{n}} in queue",
-    "buscar": "Search candidate by name…",
-    "buscarAria": "Search candidate by name",
-    "vaziaBusca": "No candidates found for this search.",
-    "vazia": "No candidates in the queue.",
-    "aguardando": "{{vaga}} · waiting {{desde}}",
-    "agendar": "Schedule"
-  },
   "formato": {
     "Online": "Online",
     "Presencial": "In person"

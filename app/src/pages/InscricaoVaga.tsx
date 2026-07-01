@@ -46,7 +46,7 @@ const VAGA_EXEMPLO: VagaInscricao = {
     cargo: 'Desenvolvedor Backend', nivel: 'Pleno', modelo: 'Remoto', cliente: 'TIS Talent AI Platform', gestor: 'Carlos Mendes',
     desafio: 'Evoluir os serviços de backend que sustentam o motor de recomendação de candidatos, com foco em performance, observabilidade e qualidade.',
     objetivo: 'Entregar APIs estáveis e bem testadas, reduzir a latência das integrações e ampliar a cobertura de testes automatizados do time.',
-    local: 'São Paulo — SP (remoto)', horario: '09h às 18h', carga: '40h semanais', motivo: 'Aumento do quadro', quantidade: 1,
+    local: 'São Paulo — SP (remoto)', horario: '09h às 18h', carga: '40h semanais', motivo: 'Aumento do quadro', quantidade: 1, prazo: 30,
     budget: 'R$ 8.000 a R$ 12.000', modalidade: 'CLT',
     beneficios: ['Vale-refeição', 'Plano de saúde', 'Plano odontológico', 'Auxílio home-office', 'Day-off no aniversário', 'Bônus anual'],
     processoSeletivo: ['Inscrição e triagem por IA', 'Entrevista com RH', 'Teste técnico', 'Entrevista com o gestor', 'Proposta'],
@@ -403,14 +403,16 @@ export function InscricaoVaga({ vaga = VAGA_EXEMPLO, brand, onSair, publico = fa
                           <span className="font-normal text-muted-foreground"> · {(cvFile.size / 1024).toFixed(0)} KB</span>
                         </p>
                       </div>
-                      <button
+                      <Button
                         type="button"
+                        variant="ghost"
+                        size="icon-sm"
                         onClick={() => { setCvFile(null); setCvError(null) }}
                         aria-label={t('form.curriculoRemover')}
-                        className={cn('grid size-8 shrink-0 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive-text', focusRing)}
+                        className="shrink-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive-text"
                       >
                         <X className="size-4" />
-                      </button>
+                      </Button>
                     </div>
                   )}
                   {cvError && <p id="cv-error" className="ty-body-sm text-destructive-text" role="alert">{cvError}</p>}

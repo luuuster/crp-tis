@@ -9,8 +9,9 @@
  */
 import type { LucideIcon } from 'lucide-react'
 import {
-  Blocks, Bot, Brain, Briefcase, Building2, Calendar, Compass, FileText, FolderTree, KanbanSquare, KeyRound,
-  LayoutDashboard, LayoutGrid, Link2, LockKeyhole, Network, Search, Settings, Tag, UserPlus, UserRound, Users,
+  Blocks, Bot, Brain, Briefcase, Building2, Calendar, CheckCircle2, ClipboardList, Compass, FileText, FolderTree,
+  KanbanSquare, KeyRound, LayoutDashboard, LayoutGrid, Link2, LockKeyhole, Network, Search, Settings, Tag, UserPlus,
+  UserRound, Users,
 } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
@@ -39,7 +40,7 @@ const RECRUTADOR: Produto = {
           icon: Briefcase, path: '/vagas', desc: 'Lista de vagas (busca + cards)',
           subs: [
             { path: '/vagas/nova', desc: 'Wizard de criação' },
-            { path: '/vagas/nova/briefing', desc: 'Passo 1 — briefing' },
+            { path: '/vagas/nova/resumo', desc: 'Passo 1 — resumo da vaga' },
             { path: '/vagas/nova/perfil', desc: 'Passo 2 — perfil' },
             { path: '/vagas/nova/revisar', desc: 'Passo 3 — revisar, tom de voz e publicar' },
             { path: '/vagas/charlie', desc: 'Copiloto Charlie (IA): sugestões + revisão' },
@@ -54,9 +55,8 @@ const RECRUTADOR: Produto = {
         {
           icon: Calendar, path: '/calendario', desc: 'Calendário mensal de entrevistas',
           subs: [
-            { path: '/calendario/agendar', desc: 'Agendar entrevista' },
             { path: '/calendario/proximas', desc: 'Próximas entrevistas' },
-            { path: '/calendario/aguardando', desc: 'Aguardando agendamento' },
+            { path: '/calendario/reagendar', desc: 'Reagendar / cancelar (RH)' },
           ],
         },
         {
@@ -68,7 +68,7 @@ const RECRUTADOR: Produto = {
           ],
         },
         {
-          icon: KanbanSquare, path: '/funil', desc: 'Kanban de 5 colunas',
+          icon: KanbanSquare, path: '/funil', desc: 'Kanban de 5 colunas (reagendar nas etapas de entrevista)',
           subs: [{ path: '/funil/:id', desc: 'Detalhe do card — aprovar/reprovar move o card' }],
         },
       ],
@@ -114,9 +114,11 @@ const CANDIDATO: Produto = {
       ],
     },
     {
-      nome: 'Mural (logado)',
+      nome: 'Área logada (abas)',
       itens: [
-        { icon: LayoutGrid, path: '/painel', desc: 'Busca, filtros, ordenação, cards e paginação' },
+        { icon: LayoutGrid, path: '/painel', desc: 'Mural de vagas — busca, filtros, ordenação, cards e paginação' },
+        { icon: ClipboardList, path: '/candidaturas', desc: 'Minhas candidaturas — em andamento (busca + progresso no funil)' },
+        { icon: CheckCircle2, path: '/candidaturas_finalizadas', desc: 'Finalizadas — resultado (aprovada/não selecionada) + feedback' },
       ],
     },
     {
@@ -148,7 +150,7 @@ const CAMADAS: { icon: LucideIcon; titulo: string; desc: string }[] = [
   { icon: FolderTree, titulo: 'Organização', desc: 'Por público no topo (Recrutador × Candidato) e por tarefa dentro de cada um. Estrutura hierárquica (árvore).' },
   { icon: Tag, titulo: 'Rótulos', desc: 'Nomes de menu e rotas claros e consistentes — ex.: “Banco de talentos”, /funil, /descricao/inscricao.' },
   { icon: Compass, titulo: 'Navegação', desc: 'Recrutador navega por abas (Workspace · Sistema); candidato por rotas e links. A trilha da rota é o breadcrumb.' },
-  { icon: Search, titulo: 'Busca', desc: 'Busca por cargo no mural (/painel) e por candidato no Banco de talentos (/banco-de-talentos).' },
+  { icon: Search, titulo: 'Busca', desc: 'Busca por cargo no mural e nas candidaturas (/painel, /candidaturas) e por candidato no Banco de talentos (/banco-de-talentos).' },
 ]
 
 // ── Árvore do site map (caixas + conectores) ─────────────────────────────────────────────────────────
@@ -204,7 +206,7 @@ function TreeBox({ node }: { node: TreeData }) {
     : node.kind === 'grupo' ? 'bg-muted text-foreground'
     : 'bg-card text-foreground' // item
   return (
-    <div title={node.label} className={cn('flex shrink-0 flex-col items-center gap-1 rounded-lg px-3 py-2.5 text-center shadow-sm', node.kind === 'item' ? 'w-44' : 'w-40', node.kind !== 'aux' && 'ring-1 ring-surface-ring', tint)}>
+    <div title={node.label} className={cn('flex shrink-0 flex-col items-center gap-1 rounded-lg px-2.5 py-2.5 text-center shadow-sm', node.kind === 'item' ? 'w-40' : 'w-36', node.kind !== 'aux' && 'ring-1 ring-surface-ring', tint)}>
       {Icon && <Icon className="size-4.5" aria-hidden />}
       {node.kind === 'item' ? (
         <>
@@ -235,7 +237,7 @@ function TreeNode({ node, pos }: { node: TreeData; pos: Pos }) {
   const left = pos === 'mid' || pos === 'last'
   const right = pos === 'mid' || pos === 'first'
   return (
-    <li className={cn('relative flex shrink-0 flex-col items-center px-3', top && 'pt-6')}>
+    <li className={cn('relative flex shrink-0 flex-col items-center px-2', top && 'pt-6')}>
       {top && <span aria-hidden className="absolute top-0 left-1/2 h-6 w-px -translate-x-1/2 bg-border" />}
       {left && <span aria-hidden className="absolute top-0 left-0 h-px w-1/2 bg-border" />}
       {right && <span aria-hidden className="absolute top-0 right-0 h-px w-1/2 bg-border" />}
@@ -287,10 +289,15 @@ export function MapaArquitetura() {
           {/* Árvores (uma por produto) — caixas + conectores; rola na horizontal quando fica largo. */}
           <div className="mt-6 space-y-6">
             {[produtoNode(RECRUTADOR, '/login'), produtoNode(CANDIDATO)].map((raiz) => (
-              <div key={raiz.label} className={cn(CARD, 'overflow-x-auto p-5 sm:p-6')}>
-                <ul aria-label={`Site map — ${raiz.label}`} className="mx-auto flex w-max justify-center pt-1">
-                  <TreeNode node={raiz} pos="root" />
-                </ul>
+              // A árvore do Recrutador é larga (9 folhas numa linha) — rola na horizontal quando não cabe.
+              // O fade nas bordas (mask, no wrapper interno p/ não desbotar o chrome do card) sinaliza
+              // "há mais conteúdo p/ rolar" em vez de parecer cortado; simétrico e theme-agnóstico.
+              <div key={raiz.label} className={cn(CARD, 'p-5 sm:p-6')}>
+                <div className="overflow-x-auto [--fade:1.75rem] [-webkit-mask-image:linear-gradient(to_right,transparent,#000_var(--fade),#000_calc(100%-var(--fade)),transparent)] [mask-image:linear-gradient(to_right,transparent,#000_var(--fade),#000_calc(100%-var(--fade)),transparent)]">
+                  <ul aria-label={`Site map — ${raiz.label}`} className="mx-auto flex w-max justify-center px-1 pt-1">
+                    <TreeNode node={raiz} pos="root" />
+                  </ul>
+                </div>
               </div>
             ))}
           </div>

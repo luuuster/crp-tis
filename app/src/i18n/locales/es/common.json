@@ -2,6 +2,8 @@
   "idioma": "Idioma",
   "abrirCalendario": "Abrir calendario",
   "exportar": "Exportar",
+  "exportarAvisoTitulo": "Exportar — funcionalidad en evaluación",
+  "exportarAviso": "Este recurso aún debe discutirse con el equipo para evaluar la viabilidad de la implementación.",
   "tentarNovamente": "Reintentar",
   "buscar": "Buscar",
   "acao": {
@@ -12,7 +14,8 @@
     "fechar": "Cerrar",
     "editar": "Editar",
     "limpar": "Limpiar",
-    "limparFiltros": "Limpiar filtros"
+    "limparFiltros": "Limpiar filtros",
+    "entendi": "Entendido"
   },
   "filtro": { "todas": "Todas", "todos": "Todos" },
   "vazio": { "descricaoFiltro": "Ajusta la búsqueda o los filtros para ver más resultados." },

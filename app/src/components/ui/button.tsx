@@ -23,9 +23,16 @@ const buttonVariants = cva(
         // Outline destrutivo: borda E texto na MESMA cor (--destructive-text, AA nos 4 temas),
         // hover com tinta destrutiva sutil. Substitui o className inline hand-rolled do "Cancelar".
         "destructive-outline":
-          "border border-destructive-text bg-background text-destructive-text shadow-xs hover:bg-destructive/10 hover:text-destructive-text dark:border-destructive-text dark:bg-input/30",
+          "border border-destructive-text bg-background text-destructive-text shadow-xs hover:bg-destructive/10 hover:text-destructive-text dark:border-destructive-text dark:bg-input/30 dark:hover:bg-destructive/15",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        // Tonais (soft): tinta da MARCA suave (bg-cor/10 + texto -text, AA nos 4 temas) para ação
+        // TERCIÁRIA / realce leve (ex.: "Ver currículo", "Salvar rascunho", "Ver todas"). Fonte única
+        // p/ o estilo que antes era hand-rolled via className em várias telas.
+        "primary-soft":
+          "bg-primary/10 text-primary-text hover:bg-primary/15 hover:text-primary-text",
+        "secondary-soft":
+          "bg-secondary/10 text-secondary-text hover:bg-secondary/15 hover:text-secondary-text",
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-link underline-offset-4 hover:underline",

@@ -151,7 +151,7 @@ function mkVaga(s: Spec, i: number): VagaPublica {
   const briefing: Briefing = {
     cargo: s.cargo, nivel: s.nivel, modelo: s.modelo, cliente: EMPRESA, gestor: GESTORES[i % GESTORES.length],
     desafio: a.desafio, objetivo: a.objetivo,
-    local: localLabel(s), horario: '09h às 18h', carga: '40h semanais', motivo: 'Aumento do quadro', quantidade,
+    local: localLabel(s), horario: '09h às 18h', carga: '40h semanais', motivo: 'Aumento do quadro', quantidade, prazo: s.prazo ?? PRAZO_PADRAO_DIAS,
     budget: s.budget ?? BUDGET[s.nivel], modalidade: s.modalidade,
     beneficios: BENEFICIOS_POOL.slice(0, 6),
     processoSeletivo: [PROCESSO_POOL[0], PROCESSO_POOL[1], PROCESSO_POOL[3], PROCESSO_POOL[5], PROCESSO_POOL[9]],

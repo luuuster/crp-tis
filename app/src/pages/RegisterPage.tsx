@@ -309,14 +309,16 @@ export function RegisterPage({ onBackToLogin, onRegistered, brand }: { onBackToL
                     <span className="font-normal text-muted-foreground"> · {(cvFile.size / 1024).toFixed(0)} KB</span>
                   </p>
                 </div>
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
+                  size="icon-sm"
                   onClick={() => { setCvFile(null); setCvError(null) }}
                   aria-label={t('registro.curriculo.remover')}
-                  className="grid size-8 shrink-0 place-items-center rounded-md text-muted-foreground outline-none transition-colors hover:bg-destructive/10 hover:text-destructive-text focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                  className="shrink-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive-text"
                 >
                   <X className="size-4" />
-                </button>
+                </Button>
               </div>
             )}
             {cvError && <p id="cv-error" className="ty-body-sm text-destructive-text" role="alert">{cvError}</p>}

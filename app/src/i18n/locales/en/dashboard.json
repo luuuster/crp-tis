@@ -93,6 +93,7 @@
   },
   "personalizar": {
     "entrar": "Customize",
+    "aviso": "This feature still needs to be discussed with the team to assess whether the implementation is feasible.",
     "concluir": "Done",
     "desc": "Build your dashboard: add, reorder and resize widgets. Changes are saved in this browser.",
     "adicionarWidget": "Add widget",

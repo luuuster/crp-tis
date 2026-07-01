@@ -117,7 +117,7 @@ function maskData(v: string) {
 function ColFilter({ value, onChange, options, label, renderLabel }: { value: string; onChange: (v: string) => void; options: readonly string[]; label: string; renderLabel: (v: string) => string }) {
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger size="sm" aria-label={label} className="w-full font-normal"><SelectValue>{renderLabel(value)}</SelectValue></SelectTrigger>
+      <SelectTrigger aria-label={label} className="w-full font-normal"><SelectValue>{renderLabel(value)}</SelectValue></SelectTrigger>
       <SelectContent>{options.map((o) => <SelectItem key={o} value={o}>{renderLabel(o)}</SelectItem>)}</SelectContent>
     </Select>
   )
@@ -245,6 +245,7 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
             <Button onClick={abrirConvite}><UserPlus aria-hidden /> {t('lista.cadastrar')}</Button>
           </div>
 
+          <div className="hidden md:block">
           <Table className="[&_:is(th,td):first-child]:pl-5 [&_:is(th,td):last-child]:pr-5">
             <TableHeader>
               <TableRow className="hover:bg-transparent">
@@ -260,7 +261,7 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
                 <TableCell className="py-2">
                   <div className="relative">
                     <Search className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" aria-hidden />
-                    <Input value={q} onChange={(e) => { setQ(e.target.value); resetPage() }} placeholder={t('filtro.buscarPlaceholder')} aria-label={t('filtro.buscarLabel')} className="h-8 pl-8 ty-body-sm font-normal" />
+                    <Input value={q} onChange={(e) => { setQ(e.target.value); resetPage() }} placeholder={t('filtro.buscarPlaceholder')} aria-label={t('filtro.buscarLabel')} className="h-[var(--button-height-md)] pl-8 ty-body-sm font-normal" />
                   </div>
                 </TableCell>
                 <TableCell className="py-2"><ColFilter value={funcaoF} onChange={(v) => { setFuncaoF(v as (typeof FUNCAO_FILTROS)[number]); resetPage() }} options={FUNCAO_FILTROS} label={t('filtro.porFuncao')} renderLabel={labelFiltroFuncao} /></TableCell>
@@ -323,10 +324,64 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
               )}
             </TableBody>
           </Table>
+          </div>
+
+          {/* Mobile (<md): filtros + cards no lugar da tabela (mesmo estado/handlers). */}
+          <div className="space-y-3 p-4 md:hidden">
+            <div className="relative">
+              <Search className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
+              <Input value={q} onChange={(e) => { setQ(e.target.value); resetPage() }} placeholder={t('filtro.buscarPlaceholder')} aria-label={t('filtro.buscarLabel')} className="h-[var(--button-height-md)] pl-9 ty-body-sm font-normal" />
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <ColFilter value={funcaoF} onChange={(v) => { setFuncaoF(v as (typeof FUNCAO_FILTROS)[number]); resetPage() }} options={FUNCAO_FILTROS} label={t('filtro.porFuncao')} renderLabel={labelFiltroFuncao} />
+              <ColFilter value={statusF} onChange={(v) => { setStatusF(v as (typeof STATUS_FILTROS)[number]); resetPage() }} options={STATUS_FILTROS} label={t('filtro.porStatus')} renderLabel={labelFiltroStatus} />
+            </div>
+            {loading ? null : error ? (
+              <ErrorState onRetry={retry} />
+            ) : filtrados.length === 0 ? (
+              <EmptyState icon={Search} title={t('lista.vazio')} description={tc('vazio.descricaoFiltro')} action={filtrosAtivos ? <Button variant="outline" size="sm" onClick={limparFiltros}>{tc('acao.limparFiltros')}</Button> : undefined} />
+            ) : (
+              <ul className="space-y-3">
+                {pageItems.map((u) => (
+                  <li key={u.id} className={cn(CARD, 'space-y-3 p-4')}>
+                    <div className="flex items-center gap-3">
+                      <span className={cn('flex size-9 shrink-0 items-center justify-center rounded-full ty-caption font-semibold', tintFor(u.nome))} aria-hidden>{iniciais(u.nome)}</span>
+                      <div className="min-w-0 flex-1">
+                        <p className="flex items-center gap-1.5 truncate ty-body-sm font-medium text-foreground">
+                          {u.nome}
+                          {u.voce && <span className="rounded-full bg-primary/10 px-1.5 py-0.5 ty-caption font-medium text-primary-text">{t('voce')}</span>}
+                        </p>
+                        <p className="truncate ty-caption text-muted-foreground">{u.email}</p>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <StatusBadge value={labelFuncao(u.funcao)} tones={{ [labelFuncao(u.funcao)]: FUNCAO_TONE[u.funcao] }} />
+                      <StatusBadge dot value={labelStatus(u.status)} tones={{ [labelStatus(u.status)]: STATUS_TONE[u.status] }} />
+                    </div>
+                    <div className="flex items-center justify-between gap-2 border-t border-border/50 pt-3">
+                      <span className="ty-caption text-muted-foreground">{u.status === 'Inativo' && u.ultimoAcesso !== 'inativo' ? u.ultimoAcesso : u.status === 'Inativo' ? t('semAcesso') : u.ultimoAcesso}</span>
+                      <div className="flex gap-1">
+                        <Tip label={t('acoes.editar', { nome: u.nome })}><Button variant="ghost" size="icon-sm" aria-label={t('acoes.editar', { nome: u.nome })} onClick={() => abrirEdicao(u)} className="text-muted-foreground hover:bg-primary/10 hover:text-primary-text"><Pencil /></Button></Tip>
+                        {u.status === 'Convite pendente' ? (
+                          <Tip label={t('acoes.reenviar', { nome: u.nome })}><Button variant="ghost" size="icon-sm" aria-label={t('acoes.reenviar', { nome: u.nome })} onClick={() => reenviar(u)} className="text-muted-foreground hover:bg-primary/10 hover:text-primary-text"><MailCheck /></Button></Tip>
+                        ) : u.status === 'Inativo' ? (
+                          <Tip label={t('acoes.reativar', { nome: u.nome })}><Button variant="ghost" size="icon-sm" aria-label={t('acoes.reativar', { nome: u.nome })} onClick={() => setReativarU(u)} className="text-muted-foreground hover:bg-success/10 hover:text-success-text"><UserCheck /></Button></Tip>
+                        ) : (
+                          <Tip label={t('acoes.desativar', { nome: u.nome })}><Button variant="ghost" size="icon-sm" aria-label={t('acoes.desativar', { nome: u.nome })} disabled={u.voce} onClick={() => setDesativar(u)} className="text-muted-foreground hover:bg-warning/10 hover:text-warning-text"><UserMinus /></Button></Tip>
+                        )}
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
 
           {/* Paginação — barra abaixo da tabela (10 itens por página) */}
           {filtrados.length > 0 && (
-            <Paginacao page={page} total={totalPages} inicio={inicio} shown={pageItems.length} totalItems={filtrados.length} onPage={setPage} />
+            <div className="px-4 pb-4 sm:px-5 sm:pb-5">
+              <Paginacao page={page} total={totalPages} inicio={inicio} shown={pageItems.length} totalItems={filtrados.length} onPage={setPage} />
+            </div>
           )}
         </section>
       </PageContainer>

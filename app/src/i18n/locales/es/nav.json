@@ -16,12 +16,13 @@
     "fechar": "Cerrar menú",
     "recolher": "Contraer menú",
     "expandir": "Expandir menú",
+    "irInicio": "Ir al Panel",
     "descricao": "Accede a las áreas del workspace."
   },
   "demoToast": "\"{{item}}\" no forma parte de esta demo.",
   "conta": {
     "label": "Tu cuenta",
-    "minha": "Mi cuenta",
+    "minha": "Editar perfil",
     "contaDemo": "Cuenta (demo).",
     "sair": "Cerrar sesión"
   },

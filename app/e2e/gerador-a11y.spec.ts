@@ -17,7 +17,7 @@ const scan = (page: Parameters<typeof login>[0]) =>
 test.describe('a11y Gerador (best-practice)', () => {
   for (const brand of BRANDS)
     for (const mode of MODES) {
-      test(`Passo 1 — Briefing · ${brand} · ${mode}`, async ({ page }) => {
+      test(`Passo 1 — Resumo da vaga · ${brand} · ${mode}`, async ({ page }) => {
         await login(page)
         await setTheme(page, brand, mode)
         await gotoMenu(page, 'Vagas')

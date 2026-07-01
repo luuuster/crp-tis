@@ -93,6 +93,7 @@
   },
   "personalizar": {
     "entrar": "Personalizar",
+    "aviso": "Este recurso aún debe discutirse con el equipo para evaluar la viabilidad de la implementación.",
     "concluir": "Listo",
     "desc": "Arma tu panel: agrega, reordena y redimensiona los widgets. Los cambios se guardan en este navegador.",
     "adicionarWidget": "Agregar widget",

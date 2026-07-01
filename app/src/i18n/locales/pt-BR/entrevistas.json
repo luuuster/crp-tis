@@ -24,16 +24,6 @@
     "vaziaBusca": "Nenhuma entrevista encontrada para essa busca.",
     "vazia": "Nenhuma entrevista agendada neste mês."
   },
-  "fila": {
-    "title": "Candidatos aguardando agendamento",
-    "desc": "{{n}} na fila",
-    "buscar": "Buscar candidato pelo nome…",
-    "buscarAria": "Buscar candidato pelo nome",
-    "vaziaBusca": "Nenhum candidato encontrado para essa busca.",
-    "vazia": "Nenhum candidato na fila.",
-    "aguardando": "{{vaga}} · aguardando {{desde}}",
-    "agendar": "Agendar"
-  },
   "formato": {
     "Online": "Online",
     "Presencial": "Presencial"

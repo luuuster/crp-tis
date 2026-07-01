@@ -15,6 +15,7 @@ import { ExportButton } from '@/components/ExportButton'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import { PageContainer, PageHeader } from '@/components/page'
 import { Button } from '@/components/ui/button'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { CONTRATACOES, FUNIL, KPIS, NOME, STATUS_DONUT } from './dashboard/data'
 import { DashboardCanvas } from './dashboard/DashboardCanvas'
 import { useDashboardLayout } from './dashboard/useDashboardLayout'
@@ -69,7 +70,13 @@ export function Dashboard({ onNavigate, brand, mode, onCycleBrand, onToggleMode 
               ) : (
                 <>
                   <ExportButton onExport={handleExport} />
-                  <Button variant="outline" onClick={() => setEditMode(true)}><LayoutGrid aria-hidden /> {t('personalizar.entrar')}</Button>
+                  {/* Personalizar (mockup): só aviso no hover/foco — precisa ser validado com o time. */}
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="outline" onClick={() => setEditMode(true)}><LayoutGrid aria-hidden /> {t('personalizar.entrar')}</Button>
+                    </TooltipTrigger>
+                    <TooltipContent tone="destructive" className="max-w-xs text-center">{t('personalizar.aviso')}</TooltipContent>
+                  </Tooltip>
                   <Button onClick={() => onNavigate?.('gerador')}><Plus aria-hidden /> {t('abrirVaga')}</Button>
                 </>
               )}

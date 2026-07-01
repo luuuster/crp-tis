@@ -74,7 +74,7 @@ graph TB
     VLista --> VDet["Detalhe da vaga (read-only)"]
     VDet --> VEdit["Editar"]
     VLista --> VNova["➕ Nova vaga (wizard)"]
-    VNova --> W1["1 · Briefing"] --> W2["2 · Perfil"] --> W3["3 · Revisar e publicar"]
+    VNova --> W1["1 · Resumo da vaga"] --> W2["2 · Perfil"] --> W3["3 · Revisar e publicar"]
     W3 -->|publica| VPub[("📢 Vaga publicada")]
 
     %% Entrevistas IA (triagem)

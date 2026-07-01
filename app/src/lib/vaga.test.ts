@@ -4,7 +4,7 @@ import { buildDesc, type Briefing, type Perfil } from './vaga'
 
 const briefing = (over: Partial<Briefing> = {}): Briefing => ({
   cargo: 'Dev', nivel: 'Pleno', modelo: 'Remoto', cliente: 'Projeto X', gestor: 'Maria',
-  desafio: '', objetivo: '', local: 'São Paulo', horario: '', carga: '', motivo: '', quantidade: 1,
+  desafio: '', objetivo: '', local: 'São Paulo', horario: '', carga: '', motivo: '', quantidade: 1, prazo: 30,
   budget: '', modalidade: '', beneficios: [], processoSeletivo: [], ...over,
 })
 const perfil = (over: Partial<Perfil> = {}): Perfil => ({

@@ -32,9 +32,8 @@
   "analiseEtapa_other": "{{assunto}} · {{count}} days ago",
   "tempoEtapa_one": "{{count}} day in this stage",
   "tempoEtapa_other": "{{count}} days in this stage",
-  "agendar": "Schedule interview",
-  "reagendar": "Reschedule",
   "agendadaPara": "Scheduled: {{quando}}",
+  "reagendar": "Reschedule",
   "verCurriculo": "View resume",
   "acao": {
     "verProcesso": "View {{nome}}'s process"
@@ -85,7 +84,7 @@
   "toast": {
     "avancou": "{{nome}} advanced to {{fase}}.",
     "reprovado": "{{nome}} moved to Rejected.",
-    "agendada": "{{nome}}'s interview scheduled for {{quando}}.",
+    "reagendada": "{{nome}}'s interview rescheduled for {{quando}}.",
     "contratado": "{{nome}} was hired! 🎉",
     "curriculo": "The resume is illustrative in this demo."
   }

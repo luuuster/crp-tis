@@ -1,7 +1,7 @@
 {
   "header": {
     "titulo": "Vacantes",
-    "descricao": "Visualiza las vacantes registradas en la TalentAI Data API y haz seguimiento de inscritos, aprobados y estado. Haz clic en <0>Abrir vacante</0> para crear una nueva mediante el paso a paso."
+    "descricao": "Consulta todas las vacantes y haz seguimiento de inscritos, aprobados y estado. Haz clic en <0>Abrir vacante</0> para crear una nueva mediante el paso a paso."
   },
   "kpi": {
     "regiao": "Indicadores",

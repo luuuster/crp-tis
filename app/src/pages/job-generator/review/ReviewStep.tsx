@@ -207,7 +207,7 @@ export function ReviewStep({ data, perfil, tom, onTom, set, resumoOverride, onRe
             </button>
           )}
           {/* Disparo da revisão do Charlie — persona secundária da marca (roxo CRP / azul MarcaB). */}
-          <Button variant="ghost" isLoading={revisando} onClick={revisar} className="w-full bg-secondary/10 text-secondary-text hover:bg-secondary/15 hover:text-secondary-text">
+          <Button variant="secondary-soft" isLoading={revisando} onClick={revisar} className="w-full">
             {!revisando && <Wand2 aria-hidden />}
             {revisando ? t('review.melhorando') : revisado ? t('review.charlie.revisarNovamente') : t('review.melhorarIA')}
           </Button>
