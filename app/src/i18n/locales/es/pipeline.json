@@ -34,6 +34,7 @@
   "tempoEtapa_other": "Hace {{count}} días en esta etapa",
   "agendadaPara": "Agendada: {{quando}}",
   "reagendar": "Reagendar",
+  "reagendarAviso": "Este recurso aún debe discutirse con el equipo para evaluar la viabilidad de la implementación.",
   "verCurriculo": "Ver currículum",
   "acao": {
     "verProcesso": "Ver el proceso de {{nome}}"

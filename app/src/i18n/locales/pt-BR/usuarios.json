@@ -38,8 +38,8 @@
   },
   "funcao": {
     "Administrador": "Administrador",
-    "Recrutador": "Recrutador",
-    "Gestor": "Gestor"
+    "Recrutador": "Operador RH",
+    "Gestor": "Gestor RH"
   },
   "funcaoDesc": {
     "Administrador": "Acesso total: usuários, configurações e todas as vagas.",

@@ -1,0 +1,36 @@
+{
+  "trilha": "Editar perfil",
+  "titulo": "Editar perfil",
+  "subtitulo": "Atualize seus dados de contato e a sua senha de acesso.",
+  "funcaoValor": "Administrador",
+  "trocarFoto": "Trocar foto",
+  "foto": {
+    "remover": "Remover foto",
+    "erroFormato": "Selecione um arquivo de imagem.",
+    "erroTamanho": "A imagem deve ter no máximo {{max}} MB."
+  },
+  "dados": {
+    "titulo": "Dados pessoais",
+    "desc": "Como você aparece para o time e por onde a plataforma fala com você.",
+    "emailBloqueado": "Somente administradores podem alterar o e-mail."
+  },
+  "senha": {
+    "titulo": "Alterar senha",
+    "desc": "Deixe em branco para manter a senha atual.",
+    "atual": "Senha atual",
+    "nova": "Nova senha",
+    "confirmar": "Confirmar nova senha",
+    "erroConfirma": "As senhas não coincidem.",
+    "requisitos": {
+      "titulo": "A senha deve conter:",
+      "tamanho": "Pelo menos 8 caracteres",
+      "maiuscula": "Uma letra maiúscula",
+      "minuscula": "Uma letra minúscula",
+      "numero": "Um número",
+      "especial": "Um caractere especial (!@#$…)"
+    }
+  },
+  "salvar": "Salvar alterações",
+  "cancelar": "Cancelar",
+  "salvo": "Perfil atualizado."
+}

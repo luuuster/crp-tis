@@ -34,6 +34,7 @@
   "tempoEtapa_other": "{{count}} days in this stage",
   "agendadaPara": "Scheduled: {{quando}}",
   "reagendar": "Reschedule",
+  "reagendarAviso": "This feature still needs to be discussed with the team to assess whether the implementation is feasible.",
   "verCurriculo": "View resume",
   "acao": {
     "verProcesso": "View {{nome}}'s process"

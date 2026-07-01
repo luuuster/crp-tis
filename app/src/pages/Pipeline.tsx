@@ -23,6 +23,7 @@ import { Spinner } from '@/components/ui/spinner'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/ui/sheet'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useMockData } from '@/lib/useMockData'
 import { CARDS_INICIAL, FASE, FASES, aprovar, reprovar, type Card, type FaseId } from './pipeline/data'
 import { buildDetalhe } from './EntrevistasIA'
@@ -144,7 +145,15 @@ function CardItem({ c, onAbrir, onReagendar }: { c: Card; onAbrir?: (c: Card) =>
           {c.agendamento && (
             <>
               <p className="flex items-center gap-1.5 ty-caption font-medium text-foreground"><CalendarClock className="size-3.5 shrink-0 text-primary-text" aria-hidden /> {t('agendadaPara', { quando: c.agendamento })}</p>
-              {onReagendar && <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); onReagendar(c) }} className="h-8 w-full gap-1.5 ty-caption"><CalendarPlus className="size-3.5 shrink-0" aria-hidden /> {t('reagendar')}</Button>}
+              {onReagendar && (
+                /* Aviso de implementação (mockup): reagendar ainda precisa ser validado — tooltip vermelho no hover/foco. */
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); onReagendar(c) }} className="h-8 w-full gap-1.5 ty-caption"><CalendarPlus className="size-3.5 shrink-0" aria-hidden /> {t('reagendar')}</Button>
+                  </TooltipTrigger>
+                  <TooltipContent tone="destructive" className="max-w-xs text-center">{t('reagendarAviso')}</TooltipContent>
+                </Tooltip>
+              )}
             </>
           )}
         </div>
