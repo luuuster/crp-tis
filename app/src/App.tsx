@@ -19,12 +19,13 @@ const EntrevistasIA = lazy(() => import('@/pages/EntrevistasIA').then((m) => ({ 
 const Candidatos = lazy(() => import('@/pages/Candidatos').then((m) => ({ default: m.Candidatos })))
 const Usuarios = lazy(() => import('@/pages/Usuarios').then((m) => ({ default: m.Usuarios })))
 const Pipeline = lazy(() => import('@/pages/Pipeline').then((m) => ({ default: m.Pipeline })))
+const EditarPerfil = lazy(() => import('@/pages/EditarPerfil').then((m) => ({ default: m.EditarPerfil })))
 
 // O cadastro é do CANDIDATO (porta 5172 — /cadastro). Recrutadores são provisionados internamente, então
 // o app do recrutador não tem tela de "Criar conta".
-type View = 'login' | 'dashboard' | 'gerador' | 'entrevistas' | 'entrevistas-ia' | 'candidatos' | 'pipeline' | 'usuarios'
+type View = 'login' | 'dashboard' | 'gerador' | 'entrevistas' | 'entrevistas-ia' | 'candidatos' | 'pipeline' | 'usuarios' | 'perfil'
 
-const VIEWS: View[] = ['login', 'dashboard', 'gerador', 'entrevistas', 'entrevistas-ia', 'candidatos', 'pipeline', 'usuarios']
+const VIEWS: View[] = ['login', 'dashboard', 'gerador', 'entrevistas', 'entrevistas-ia', 'candidatos', 'pipeline', 'usuarios', 'perfil']
 
 const PageFallback = () => (
   <div className="grid min-h-dvh place-items-center" role="status" aria-label="Carregando página">
@@ -47,7 +48,7 @@ export function App() {
     }
   }, [view])
 
-  const loggedIn = view === 'dashboard' || view === 'gerador' || view === 'entrevistas' || view === 'entrevistas-ia' || view === 'candidatos' || view === 'pipeline' || view === 'usuarios'
+  const loggedIn = view === 'dashboard' || view === 'gerador' || view === 'entrevistas' || view === 'entrevistas-ia' || view === 'candidatos' || view === 'pipeline' || view === 'usuarios' || view === 'perfil'
 
   // Navegação central. Ao ir para a aba "Vagas" vindo de OUTRA tela, remonta o Gerador (bump no `key`)
   // para cair sempre na LISTA — mesmo que o usuário tenha deixado o wizard "Nova vaga" aberto antes de
@@ -98,6 +99,11 @@ export function App() {
             <TabsContent value="pipeline" forceMount className="m-0 outline-none data-[state=inactive]:hidden">
               <Suspense fallback={<PageFallback />}>
                 <Pipeline onNavigate={(v) => navigate(v as View)} brand={brand} mode={mode} onCycleBrand={cycleBrand} onToggleMode={toggleMode} />
+              </Suspense>
+            </TabsContent>
+            <TabsContent value="perfil" forceMount className="m-0 outline-none data-[state=inactive]:hidden">
+              <Suspense fallback={<PageFallback />}>
+                <EditarPerfil onNavigate={(v) => navigate(v as View)} brand={brand} mode={mode} onCycleBrand={cycleBrand} onToggleMode={toggleMode} />
               </Suspense>
             </TabsContent>
           </ErrorBoundary>

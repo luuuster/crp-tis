@@ -38,8 +38,8 @@
   },
   "funcao": {
     "Administrador": "Administrator",
-    "Recrutador": "Recruiter",
-    "Gestor": "Manager"
+    "Recrutador": "HR Operator",
+    "Gestor": "HR Manager"
   },
   "funcaoDesc": {
     "Administrador": "Full access: users, settings and all jobs.",

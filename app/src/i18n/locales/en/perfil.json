@@ -1,0 +1,36 @@
+{
+  "trilha": "Edit profile",
+  "titulo": "Edit profile",
+  "subtitulo": "Update your contact details and your sign-in password.",
+  "funcaoValor": "Administrator",
+  "trocarFoto": "Change photo",
+  "foto": {
+    "remover": "Remove photo",
+    "erroFormato": "Select an image file.",
+    "erroTamanho": "The image must be at most {{max}} MB."
+  },
+  "dados": {
+    "titulo": "Personal details",
+    "desc": "How you appear to the team and how the platform reaches you.",
+    "emailBloqueado": "Only administrators can change the email."
+  },
+  "senha": {
+    "titulo": "Change password",
+    "desc": "Leave blank to keep your current password.",
+    "atual": "Current password",
+    "nova": "New password",
+    "confirmar": "Confirm new password",
+    "erroConfirma": "The passwords don't match.",
+    "requisitos": {
+      "titulo": "The password must contain:",
+      "tamanho": "At least 8 characters",
+      "maiuscula": "An uppercase letter",
+      "minuscula": "A lowercase letter",
+      "numero": "A number",
+      "especial": "A special character (!@#$…)"
+    }
+  },
+  "salvar": "Save changes",
+  "cancelar": "Cancel",
+  "salvo": "Profile updated."
+}

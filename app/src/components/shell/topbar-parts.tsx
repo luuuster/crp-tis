@@ -19,8 +19,9 @@ import { Tip } from '@/components/ui/tooltip'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 
-// Usuário-demo único da casca (mockup) — fonte única p/ as duas topbars (sem nome hardcoded divergente).
-export const DEMO_USER = { nome: 'Frank Lima', email: 'recrutador@talentai.com', iniciais: 'FL' } as const
+// Usuário-demo único da casca (mockup) — fonte única p/ as duas topbars e a tela de Editar perfil.
+// Alinhado ao "você" (Frank Lima) da lista de Usuários. Administrador → pode editar e-mail/cargo.
+export const DEMO_USER = { nome: 'Frank Lima', email: 'frank.lima@talentai.com', iniciais: 'FL', telefone: '(11) 98765-4321', cpf: '123.456.789-00', tipoPessoa: 'Pessoa Física', nascimento: '12/03/1990', funcao: 'Administrador' } as const
 
 // Botão recolher/expandir (Menu no mobile, ChevronLeft no desktop). Estilo ÚNICO p/ as duas topbars;
 // o rótulo vem pronto do chamador (cada topbar usa seu próprio namespace de tradução).
@@ -52,7 +53,8 @@ export function TopBarActions({ brand, mode, onCycleBrand, onToggleMode }: {
 }
 
 // Avatar + menu de conta (com confirmação de saída). Rótulos no namespace 'nav' (canônico da casca).
-export function TopBarAccount({ onLogout }: { onLogout: () => void }) {
+// onEditarPerfil (opcional) abre a tela de perfil; sem ele, cai num toast de demo.
+export function TopBarAccount({ onLogout, onEditarPerfil }: { onLogout: () => void; onEditarPerfil?: () => void }) {
   const { t } = useTranslation('nav')
   const [confirmSair, setConfirmSair] = useState(false)
   return (
@@ -75,9 +77,9 @@ export function TopBarAccount({ onLogout }: { onLogout: () => void }) {
             </div>
           </div>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onSelect={() => toast.info(t('conta.contaDemo'))}><UserRound /> {t('conta.minha')}</DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => (onEditarPerfil ? onEditarPerfil() : toast.info(t('conta.contaDemo')))}><UserRound /> {t('conta.minha')}</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onSelect={() => setConfirmSair(true)} className="text-destructive-text focus:bg-destructive/10 focus:text-destructive-text"><LogOut /> {t('conta.sair')}</DropdownMenuItem>
+          <DropdownMenuItem variant="destructive" onSelect={() => setConfirmSair(true)}><LogOut /> {t('conta.sair')}</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       <ConfirmDialog

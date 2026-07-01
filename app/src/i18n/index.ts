@@ -21,6 +21,7 @@ import ptPipeline from './locales/pt-BR/pipeline.json'
 import ptInscricao from './locales/pt-BR/inscricao.json'
 import ptAcesso from './locales/pt-BR/acesso.json'
 import ptPainel from './locales/pt-BR/painel.json'
+import ptPerfil from './locales/pt-BR/perfil.json'
 import enCommon from './locales/en/common.json'
 import enNav from './locales/en/nav.json'
 import enAuth from './locales/en/auth.json'
@@ -35,6 +36,7 @@ import enPipeline from './locales/en/pipeline.json'
 import enInscricao from './locales/en/inscricao.json'
 import enAcesso from './locales/en/acesso.json'
 import enPainel from './locales/en/painel.json'
+import enPerfil from './locales/en/perfil.json'
 import esCommon from './locales/es/common.json'
 import esNav from './locales/es/nav.json'
 import esAuth from './locales/es/auth.json'
@@ -49,6 +51,7 @@ import esPipeline from './locales/es/pipeline.json'
 import esInscricao from './locales/es/inscricao.json'
 import esAcesso from './locales/es/acesso.json'
 import esPainel from './locales/es/painel.json'
+import esPerfil from './locales/es/perfil.json'
 
 export const LOCALES = ['pt-BR', 'en', 'es'] as const
 export type Locale = (typeof LOCALES)[number]
@@ -56,9 +59,9 @@ export const LOCALE_LABEL: Record<Locale, string> = { 'pt-BR': 'Português', en:
 
 // pt-BR é a árvore de referência (a tipagem deriva dela — ver i18next.d.ts).
 export const resources = {
-  'pt-BR': { common: ptCommon, nav: ptNav, auth: ptAuth, dashboard: ptDashboard, vagas: ptVagas, usuarios: ptUsuarios, candidatos: ptCandidatos, 'entrevistas-ia': ptEntrevistasIa, entrevistas: ptEntrevistas, gerador: ptGerador, pipeline: ptPipeline, inscricao: ptInscricao, acesso: ptAcesso, painel: ptPainel },
-  en: { common: enCommon, nav: enNav, auth: enAuth, dashboard: enDashboard, vagas: enVagas, usuarios: enUsuarios, candidatos: enCandidatos, 'entrevistas-ia': enEntrevistasIa, entrevistas: enEntrevistas, gerador: enGerador, pipeline: enPipeline, inscricao: enInscricao, acesso: enAcesso, painel: enPainel },
-  es: { common: esCommon, nav: esNav, auth: esAuth, dashboard: esDashboard, vagas: esVagas, usuarios: esUsuarios, candidatos: esCandidatos, 'entrevistas-ia': esEntrevistasIa, entrevistas: esEntrevistas, gerador: esGerador, pipeline: esPipeline, inscricao: esInscricao, acesso: esAcesso, painel: esPainel },
+  'pt-BR': { common: ptCommon, nav: ptNav, auth: ptAuth, dashboard: ptDashboard, vagas: ptVagas, usuarios: ptUsuarios, candidatos: ptCandidatos, 'entrevistas-ia': ptEntrevistasIa, entrevistas: ptEntrevistas, gerador: ptGerador, pipeline: ptPipeline, inscricao: ptInscricao, acesso: ptAcesso, painel: ptPainel, perfil: ptPerfil },
+  en: { common: enCommon, nav: enNav, auth: enAuth, dashboard: enDashboard, vagas: enVagas, usuarios: enUsuarios, candidatos: enCandidatos, 'entrevistas-ia': enEntrevistasIa, entrevistas: enEntrevistas, gerador: enGerador, pipeline: enPipeline, inscricao: enInscricao, acesso: enAcesso, painel: enPainel, perfil: enPerfil },
+  es: { common: esCommon, nav: esNav, auth: esAuth, dashboard: esDashboard, vagas: esVagas, usuarios: esUsuarios, candidatos: esCandidatos, 'entrevistas-ia': esEntrevistasIa, entrevistas: esEntrevistas, gerador: esGerador, pipeline: esPipeline, inscricao: esInscricao, acesso: esAcesso, painel: esPainel, perfil: esPerfil },
 } as const
 
 function isLocale(v: unknown): v is Locale {
@@ -79,7 +82,7 @@ void i18n.use(initReactI18next).init({
   lng: storedLocale(),
   fallbackLng: 'pt-BR',
   defaultNS: 'common',
-  ns: ['common', 'nav', 'auth', 'dashboard', 'vagas', 'usuarios', 'candidatos', 'entrevistas-ia', 'entrevistas', 'gerador', 'pipeline', 'inscricao', 'acesso', 'painel'],
+  ns: ['common', 'nav', 'auth', 'dashboard', 'vagas', 'usuarios', 'candidatos', 'entrevistas-ia', 'entrevistas', 'gerador', 'pipeline', 'inscricao', 'acesso', 'painel', 'perfil'],
   interpolation: { escapeValue: false },
   returnNull: false,
   react: { useSuspense: false },

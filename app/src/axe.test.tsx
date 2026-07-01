@@ -11,6 +11,7 @@ import { Entrevistas, AgendamentoDetalhe, AgendarEntrevista, type Evento } from 
 import { EntrevistasIA, CandidatoDetalhe, AvaliacaoIAConteudo, buildDetalhe, type Candidato } from './pages/EntrevistasIA'
 import { Candidatos, CandidatoPerfil, ProcessoDetalhe, buildProcessos, type Candidato as CandidatoBanco } from './pages/Candidatos'
 import { Usuarios } from './pages/Usuarios'
+import { EditarPerfil } from './pages/EditarPerfil'
 import { Pipeline } from './pages/Pipeline'
 import { InscricaoVaga } from './pages/InscricaoVaga'
 import { SegundaEtapa } from './pages/SegundaEtapa'
@@ -115,6 +116,9 @@ describe('axe — zero violações por página', () => {
   })
   it('Usuarios — cadastro (Sheet aberto)', async () => {
     await expectNoViolationsOpen(<TooltipProvider><Usuarios onNavigate={() => {}} /></TooltipProvider>, 'Cadastro de usuário')
+  })
+  it('EditarPerfil', async () => {
+    await expectNoViolations(<TooltipProvider><EditarPerfil onNavigate={() => {}} /></TooltipProvider>)
   })
   it('Pipeline (funil de contratação)', async () => {
     await expectNoViolations(<TooltipProvider><Pipeline onNavigate={() => {}} /></TooltipProvider>)

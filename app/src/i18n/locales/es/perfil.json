@@ -1,0 +1,36 @@
+{
+  "trilha": "Editar perfil",
+  "titulo": "Editar perfil",
+  "subtitulo": "Actualiza tus datos de contacto y tu contraseña de acceso.",
+  "funcaoValor": "Administrador",
+  "trocarFoto": "Cambiar foto",
+  "foto": {
+    "remover": "Quitar foto",
+    "erroFormato": "Selecciona un archivo de imagen.",
+    "erroTamanho": "La imagen debe pesar como máximo {{max}} MB."
+  },
+  "dados": {
+    "titulo": "Datos personales",
+    "desc": "Cómo apareces ante el equipo y por dónde te contacta la plataforma.",
+    "emailBloqueado": "Solo los administradores pueden cambiar el correo."
+  },
+  "senha": {
+    "titulo": "Cambiar contraseña",
+    "desc": "Déjalo en blanco para mantener la contraseña actual.",
+    "atual": "Contraseña actual",
+    "nova": "Nueva contraseña",
+    "confirmar": "Confirmar nueva contraseña",
+    "erroConfirma": "Las contraseñas no coinciden.",
+    "requisitos": {
+      "titulo": "La contraseña debe contener:",
+      "tamanho": "Al menos 8 caracteres",
+      "maiuscula": "Una letra mayúscula",
+      "minuscula": "Una letra minúscula",
+      "numero": "Un número",
+      "especial": "Un carácter especial (!@#$…)"
+    }
+  },
+  "salvar": "Guardar cambios",
+  "cancelar": "Cancelar",
+  "salvo": "Perfil actualizado."
+}

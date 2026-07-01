@@ -191,7 +191,7 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
       <MobileNav active="gerador" open={navOpen} onOpenChange={setMobileNavOpen} onNavigate={onNavigate} onVagas={irParaLista} brand={brand} />
 
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-        <TopBar onToggleMenu={toggleMenu} menuExpanded={isMobile ? mobileNavOpen : leftExpanded} isMobile={isMobile} onCharlie={toggleCharlie} charlieOpen={charlieOpen} onLogout={() => onNavigate?.('login')} brand={brand} mode={mode} onCycleBrand={onCycleBrand} onToggleMode={onToggleMode} screen={screen} crumbLabel={crumbLabel} onBackToList={irParaLista} />
+        <TopBar onToggleMenu={toggleMenu} menuExpanded={isMobile ? mobileNavOpen : leftExpanded} isMobile={isMobile} onCharlie={toggleCharlie} charlieOpen={charlieOpen} onLogout={() => onNavigate?.('login')} onEditarPerfil={() => onNavigate?.('perfil')} brand={brand} mode={mode} onCycleBrand={onCycleBrand} onToggleMode={onToggleMode} screen={screen} crumbLabel={crumbLabel} onBackToList={irParaLista} />
 
         {/* relative: ancora os filhos `sr-only` (position:absolute) AQUI, senão eles escapam p/ o <html>
             e esticam o documento (espaço em branco rolável abaixo do app). */}

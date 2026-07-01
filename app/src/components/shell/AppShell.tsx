@@ -154,8 +154,8 @@ export function MobileNav({ active, open, onOpenChange, onNavigate, onVagas, bra
 
 // Topbar "simples" do shell (sem o Charlie do Gerador): toggle do menu + trilha + ações + conta.
 // As peças (botão de menu, ações, conta) vêm de ./topbar-parts — compartilhadas com a topbar do Gerador.
-function ShellTopBar({ onToggleMenu, menuExpanded, isMobile, onLogout, brand, mode, onCycleBrand, onToggleMode, crumb, headerAction }: {
-  onToggleMenu: () => void; menuExpanded: boolean; isMobile?: boolean; onLogout: () => void
+function ShellTopBar({ onToggleMenu, menuExpanded, isMobile, onLogout, onEditarPerfil, brand, mode, onCycleBrand, onToggleMode, crumb, headerAction }: {
+  onToggleMenu: () => void; menuExpanded: boolean; isMobile?: boolean; onLogout: () => void; onEditarPerfil?: () => void
   brand?: string; mode?: string; onCycleBrand?: () => void; onToggleMode?: () => void; crumb: string; headerAction?: ReactNode
 }) {
   const { t } = useTranslation('nav')
@@ -170,7 +170,7 @@ function ShellTopBar({ onToggleMenu, menuExpanded, isMobile, onLogout, brand, mo
       <div className="ml-auto flex items-center gap-1.5">
         <TopBarActions brand={brand} mode={mode} onCycleBrand={onCycleBrand} onToggleMode={onToggleMode} />
         {headerAction}
-        <TopBarAccount onLogout={onLogout} />
+        <TopBarAccount onLogout={onLogout} onEditarPerfil={onEditarPerfil} />
       </div>
     </header>
   )
@@ -190,7 +190,7 @@ export function AppShell({ active, crumb, onNavigate, brand, mode, onCycleBrand,
       <Sidebar active={active} expanded={expanded} onNavigate={onNavigate} brand={brand} />
       <MobileNav active={active} open={navOpen} onOpenChange={setMobileOpen} onNavigate={onNavigate} brand={brand} />
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-        <ShellTopBar onToggleMenu={toggleMenu} menuExpanded={isMobile ? mobileOpen : expanded} isMobile={isMobile} onLogout={() => onNavigate('login')} brand={brand} mode={mode} onCycleBrand={onCycleBrand} onToggleMode={onToggleMode} crumb={crumb} headerAction={headerAction} />
+        <ShellTopBar onToggleMenu={toggleMenu} menuExpanded={isMobile ? mobileOpen : expanded} isMobile={isMobile} onLogout={() => onNavigate('login')} onEditarPerfil={() => onNavigate('perfil')} brand={brand} mode={mode} onCycleBrand={onCycleBrand} onToggleMode={onToggleMode} crumb={crumb} headerAction={headerAction} />
         <main className="relative min-h-0 flex-1 overflow-y-auto">{children}</main>
       </div>
     </div>

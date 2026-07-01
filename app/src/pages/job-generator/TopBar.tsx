@@ -5,8 +5,8 @@ import { cn } from '@/lib/utils'
 import { focusRing } from '@/lib/focus'
 import { TopBarMenuButton, TopBarActions, TopBarAccount } from '@/components/shell/topbar-parts'
 
-export function TopBar({ onToggleMenu, menuExpanded, isMobile, onCharlie, charlieOpen, onLogout, brand, mode, onCycleBrand, onToggleMode, screen = 'lista', crumbLabel, onBackToList }: {
-  onToggleMenu: () => void; menuExpanded: boolean; isMobile?: boolean; onCharlie: () => void; charlieOpen: boolean; onLogout: () => void
+export function TopBar({ onToggleMenu, menuExpanded, isMobile, onCharlie, charlieOpen, onLogout, onEditarPerfil, brand, mode, onCycleBrand, onToggleMode, screen = 'lista', crumbLabel, onBackToList }: {
+  onToggleMenu: () => void; menuExpanded: boolean; isMobile?: boolean; onCharlie: () => void; charlieOpen: boolean; onLogout: () => void; onEditarPerfil?: () => void
   brand?: string; mode?: string; onCycleBrand?: () => void; onToggleMode?: () => void
   screen?: 'lista' | 'detalhe' | 'wizard'; crumbLabel?: string; onBackToList?: () => void
 }) {
@@ -39,7 +39,7 @@ export function TopBar({ onToggleMenu, menuExpanded, isMobile, onCharlie, charli
             <span className="hidden sm:inline">{t('topbar.falarCharlie')}</span>
           </button>
         )}
-        <TopBarAccount onLogout={onLogout} />
+        <TopBarAccount onLogout={onLogout} onEditarPerfil={onEditarPerfil} />
       </div>
     </header>
   )

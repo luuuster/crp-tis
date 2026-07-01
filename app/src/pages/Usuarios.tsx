@@ -15,6 +15,7 @@ import { CARD } from '@/lib/surfaces'
 import { iniciais } from '@/lib/format'
 import { tintFor } from '@/lib/avatar'
 import { exportCsv } from '@/lib/exportCsv'
+import { maskCPF, maskCNPJ, maskTel, maskData } from '@/lib/masks'
 import { usePagination } from '@/lib/usePagination'
 import { AppShell } from '@/components/shell/AppShell'
 import { ExportButton } from '@/components/ExportButton'
@@ -79,37 +80,6 @@ const FUNCAO_FILTROS = ['Todas', 'Administrador', 'Recrutador', 'Gestor'] as con
 const STATUS_FILTROS = ['Todos', 'Ativo', 'Convite pendente', 'Inativo'] as const
 const PER_PAGE = 10
 
-// Máscaras BR (formatam enquanto digita): mantêm só dígitos e inserem a pontuação no formato esperado.
-function soDigitos(v: string, max: number) { return v.replace(/\D/g, '').slice(0, max) }
-function maskCPF(v: string) {
-  const d = soDigitos(v, 11)
-  if (d.length > 9) return `${d.slice(0, 3)}.${d.slice(3, 6)}.${d.slice(6, 9)}-${d.slice(9)}`
-  if (d.length > 6) return `${d.slice(0, 3)}.${d.slice(3, 6)}.${d.slice(6)}`
-  if (d.length > 3) return `${d.slice(0, 3)}.${d.slice(3)}`
-  return d
-}
-function maskCNPJ(v: string) {
-  const d = soDigitos(v, 14)
-  if (d.length > 12) return `${d.slice(0, 2)}.${d.slice(2, 5)}.${d.slice(5, 8)}/${d.slice(8, 12)}-${d.slice(12)}`
-  if (d.length > 8) return `${d.slice(0, 2)}.${d.slice(2, 5)}.${d.slice(5, 8)}/${d.slice(8)}`
-  if (d.length > 5) return `${d.slice(0, 2)}.${d.slice(2, 5)}.${d.slice(5)}`
-  if (d.length > 2) return `${d.slice(0, 2)}.${d.slice(2)}`
-  return d
-}
-function maskTel(v: string) {
-  const d = soDigitos(v, 11)
-  if (d.length === 0) return ''
-  if (d.length < 3) return `(${d}`
-  if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`
-  if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`
-  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`
-}
-function maskData(v: string) {
-  const d = soDigitos(v, 8)
-  if (d.length <= 2) return d
-  if (d.length <= 4) return `${d.slice(0, 2)}/${d.slice(2)}`
-  return `${d.slice(0, 2)}/${d.slice(2, 4)}/${d.slice(4)}`
-}
 
 
 // Filtro de coluna (select compacto) — colunas Função e Status. `renderLabel` exibe o rótulo traduzido,

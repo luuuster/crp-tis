@@ -38,8 +38,8 @@
   },
   "funcao": {
     "Administrador": "Administrador",
-    "Recrutador": "Reclutador",
-    "Gestor": "Gestor"
+    "Recrutador": "Operador RR. HH.",
+    "Gestor": "Gestor RR. HH."
   },
   "funcaoDesc": {
     "Administrador": "Acceso total: usuarios, configuración y todas las vacantes.",
