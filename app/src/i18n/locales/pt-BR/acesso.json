@@ -11,6 +11,7 @@
     "dica": "Enviamos uma senha provisória ao seu e-mail quando você se candidatou.",
     "demo": "Demo: use qualquer e-mail e a senha provisória {{senha}}.",
     "esqueci": "Esqueci minha senha",
+    "lembrar": "Lembrar de mim",
     "entrar": "Entrar",
     "entrando": "Entrando…",
     "mostrarSenha": "Mostrar senha",
@@ -78,6 +79,7 @@
   },
   "rodape": {
     "semConta": "Não tem uma conta?",
-    "criarConta": "Criar conta"
+    "criarConta": "Criar conta",
+    "criarContaAviso": "Este recurso ainda precisa ser discutido com o time para avaliar a viabilidade da implementação."
   }
 }

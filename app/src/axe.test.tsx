@@ -158,7 +158,7 @@ describe('axe — zero violações por página', () => {
     await expectNoViolations(<SegundaEtapa nome="Teste Candidato" vaga="Desenvolvedor Backend · Pleno" onConcluir={() => {}} onSair={() => {}} />)
   })
   it('CandidatoAcesso (login do candidato)', async () => {
-    await expectNoViolations(<CandidatoAcesso />)
+    await expectNoViolations(<TooltipProvider><CandidatoAcesso /></TooltipProvider>)
   })
   // Fluxo "esqueci a senha" — cada etapa tem rota própria; o CandidatoAcesso deriva a etapa da URL,
   // então auditamos cada tela fixando o pathname antes de renderizar. (afterEach reseta p/ "/".)

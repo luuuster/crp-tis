@@ -11,6 +11,7 @@
     "dica": "We sent a temporary password to your e-mail when you applied.",
     "demo": "Demo: use any e-mail and the temporary password {{senha}}.",
     "esqueci": "Forgot my password",
+    "lembrar": "Remember me",
     "entrar": "Sign in",
     "entrando": "Signing in…",
     "mostrarSenha": "Show password",
@@ -78,6 +79,7 @@
   },
   "rodape": {
     "semConta": "Don't have an account?",
-    "criarConta": "Create account"
+    "criarConta": "Create account",
+    "criarContaAviso": "This feature still needs to be discussed with the team to assess whether the implementation is feasible."
   }
 }
