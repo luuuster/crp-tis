@@ -56,7 +56,7 @@ const RECRUTADOR: Produto = {
           icon: Calendar, path: '/calendario', desc: 'Calendário mensal de entrevistas',
           subs: [
             { path: '/calendario/proximas', desc: 'Próximas entrevistas' },
-            { path: '/calendario/reagendar', desc: 'Reagendar / cancelar (RH)' },
+            { path: '/calendario/reagendar', desc: 'Reagendar (a partir das datas informadas pelo candidato) / cancelar (RH)' },
           ],
         },
         {
@@ -111,6 +111,7 @@ const CANDIDATO: Produto = {
           subs: [{ path: '/redefinir_senha/sucesso', desc: 'Senha redefinida → painel' }],
         },
         { icon: Link2, path: '/linkpublico', desc: 'Vaga divulgada (LinkedIn etc.) — abre sem login' },
+        { icon: Calendar, path: '/agendar', desc: 'Auto-agendamento da entrevista (link do convite, sem login) — identifica-se, escolhe datas/períodos e o assistente cruza com a agenda da equipe' },
       ],
     },
     {

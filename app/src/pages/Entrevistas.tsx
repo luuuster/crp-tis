@@ -7,7 +7,7 @@
 import { useState, type ComponentType } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-  CalendarCheck, CalendarDays, CalendarOff, CalendarPlus, CalendarX2, Check, ChevronLeft, ChevronRight, Clock,
+  CalendarCheck, CalendarClock, CalendarDays, CalendarOff, CalendarPlus, CalendarX2, Check, ChevronLeft, ChevronRight, Clock,
   Link2, MapPin, Pencil, Search, User, Users, Video,
 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -16,7 +16,8 @@ import { cn } from '@/lib/utils'
 import { CARD } from '@/lib/surfaces'
 import { iniciais } from '@/lib/format'
 import { usePagination } from '@/lib/usePagination'
-import { dataLonga, dataMedia, mesAbrev, mesLongo, semanaCurta } from '@/lib/datetime'
+import { dataLonga, dataMedia, diaSemanaNome, mesAbrev, mesLongo, semanaCurta } from '@/lib/datetime'
+import { disponibilidadeDe } from '@/lib/disponibilidade'
 import { AppShell } from '@/components/shell/AppShell'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -25,7 +26,6 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/ui/sheet'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { DatePicker } from '@/components/ui/date-picker'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { PageContainer, PageHeader, Panel, Paginacao } from '@/components/page'
 import { ConfirmDialog } from '@/components/confirm-dialog'
@@ -61,7 +61,6 @@ const EVENTOS: Evento[] = [
 const PER_PAGE = 10
 
 const fmtData = (ev: Evento) => dataLonga(ev.y, ev.m, ev.d)
-const paraInput = (y: number, m: number, d: number) => `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`
 // 'yyyy-MM-dd' → 'dd/MM/yyyy' p/ exibição (mesmo formato que o usuário vê no campo de data).
 const fmtBR = (iso: string) => { const [y, m, d] = iso.split('-'); return `${d}/${m}/${y}` }
 
@@ -245,8 +244,10 @@ export function AgendarEntrevista({ cand, vaga, inicial, onCancelar, onConfirmar
   const { t } = useTranslation('entrevistas')
   const { t: tc } = useTranslation('common')
   const reagendando = !!inicial
-  const [data, setData] = useState(inicial ? paraInput(inicial.y, inicial.m, inicial.d) : '')
-  const [hora, setHora] = useState(inicial?.hora ?? '')
+  // Data/hora começam VAZIAS mesmo no reagendamento: a data sai das que o candidato informou (chips abaixo),
+  // não do agendamento antigo. entrevistadores/tipo seguem pré-preenchidos do evento.
+  const [data, setData] = useState('')
+  const [hora, setHora] = useState('')
   const [duracao, setDuracao] = useState('45 min')
   const [tipo, setTipo] = useState<Tipo>(inicial?.tipo ?? 'Online')
   // 1 a 4 entrevistadores internos. A disponibilidade mostrada é a INTERSEÇÃO (só quando TODOS estão livres).
@@ -264,6 +265,9 @@ export function AgendarEntrevista({ cand, vaga, inicial, onCancelar, onConfirmar
   const proximaLivre = semHorario ? proximaDataLivre(entrevistadores, data) : '' // sugestão: próxima data com disponibilidade
   const horaOk = hora !== '' && livrePara(hora) // o slot escolhido continua livre p/ a seleção atual?
   const valido = data !== '' && entrevistadores.length > 0 && horaOk
+  // Datas + períodos que o candidato informou no auto-agendamento (mock por candidato). Clicar numa data
+  // salta o reagendamento para ela — remarcar respeitando o que o candidato disse que pode.
+  const dispCand = disponibilidadeDe(cand)
 
   const confirmar = () => {
     if (!valido) return
@@ -285,9 +289,30 @@ export function AgendarEntrevista({ cand, vaga, inicial, onCancelar, onConfirmar
 
       {/* formulário (rolável) */}
       <div className="flex-1 space-y-5 overflow-y-auto p-5">
-        <div className="space-y-1.5">
-          <Label htmlFor="ag-data">{t('agendar.data')}</Label>
-          <DatePicker id="ag-data" value={data} onChange={setData} />
+        {/* Datas + períodos informados pelo candidato no auto-agendamento — clicar numa data salta o reagendamento para ela. */}
+        <div className="space-y-2 rounded-lg bg-muted/30 p-3">
+          <div className="flex items-center gap-2">
+            <CalendarClock className="size-4 shrink-0 text-primary-text" aria-hidden />
+            <span className="ty-label-sm font-medium text-foreground">{t('agendar.dispCandidato')}</span>
+          </div>
+          <p className="ty-caption text-muted-foreground">{t('agendar.dispCandidatoDica')}</p>
+          <div className="flex flex-wrap gap-1.5">
+            {dispCand.datas.map((dia) => (
+              <button
+                key={dia.iso}
+                type="button"
+                onClick={() => { setData(dia.iso); setHora('') }}
+                aria-pressed={data === dia.iso}
+                className={cn('rounded-full px-2.5 py-1 ty-caption font-medium transition-colors focus-visible:focus-ring',
+                  data === dia.iso ? 'bg-primary text-primary-foreground' : 'bg-primary/10 text-primary-text hover:bg-primary/15')}
+              >
+                {diaSemanaNome(dia.dia)} {String(dia.d).padStart(2, '0')}/{String(dia.m + 1).padStart(2, '0')}
+              </button>
+            ))}
+          </div>
+          <p className="ty-caption text-muted-foreground">
+            {t('agendar.dispPeriodos')}: {dispCand.periodos.map((p) => t(`agendar.periodo.${p}` as 'agendar.periodo.manha')).join(', ')}
+          </p>
         </div>
 
         {/* entrevistadores (internos), 1 a 4. A disponibilidade abaixo cruza as agendas de todos. */}

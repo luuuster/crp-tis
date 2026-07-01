@@ -1,0 +1,51 @@
+{
+  "titulo": "Agendar entrevista",
+  "subtitulo": "Elige los mejores días y horarios. Los cruzamos con la agenda del equipo.",
+  "assistente": {
+    "nome": "Asistente de agenda",
+    "online": "en línea",
+    "papel": "Agenda de entrevistas"
+  },
+  "identificacao": {
+    "nome": "Nombre completo",
+    "nomePlaceholder": "Como en tu currículum",
+    "email": "Correo",
+    "emailPlaceholder": "tu@correo.com",
+    "continuar": "Continuar"
+  },
+  "logAria": "Conversación de agenda",
+  "conector": " y ",
+  "periodo": {
+    "manha": "Mañana",
+    "tarde": "Tarde"
+  },
+  "periodoFaixa": {
+    "manha": "De 09:00 a 12:00",
+    "tarde": "De 13:00 a 17:00"
+  },
+  "bot": {
+    "saudacaoInicial": "¡Hola! 👋 Soy el asistente de agenda. Antes de empezar, dime tu nombre y correo para localizar tu candidatura.",
+    "encontrado": "¡Listo, {{nome}}! Encontré tu candidatura para {{vaga}}.",
+    "perguntaDias": "¿Qué días te vienen mejor? Puedes elegir más de uno.",
+    "perguntaPeriodos": "¿Y en qué franjas estás disponible esos días?",
+    "cruzando": "¡Perfecto! Cruzando tu disponibilidad con la agenda de {{pessoas}}…",
+    "ofereceHorarios": "Estos son los horarios en que RR. HH. puede recibirte. Toca el que prefieras:",
+    "semHorarios": "No encontré horarios en común esos días. ¿Qué tal elegir otros días o franjas?",
+    "confirmado": "¡Listo! Tu entrevista de {{vaga}} quedó agendada para {{quando}}. Recibirás los detalles por correo. 🎉"
+  },
+  "composer": {
+    "diasAria": "Días disponibles",
+    "periodosAria": "Franjas disponibles",
+    "horariosAria": "Horarios sugeridos",
+    "confirmarDias": "Confirmar días",
+    "confirmarPeriodos": "Confirmar franjas",
+    "recomecar": "Elegir otros días",
+    "slotAria": "Agendar {{quando}}"
+  },
+  "sucesso": {
+    "titulo": "Entrevista agendada",
+    "quando": "{{dia}}, {{data}} a las {{hora}}",
+    "nota": "Guardamos los días y horarios que indicaste. Si algo cambia, nuestro equipo puede reagendar respetando tu disponibilidad.",
+    "recomecar": "Agendar otro horario"
+  }
+}

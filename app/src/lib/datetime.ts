@@ -17,6 +17,15 @@ export const mesAbrev = (m: number) => cap(fmt({ month: 'short' }, new Date(2020
 /** Dias da semana curtos, começando na SEGUNDA: ["Seg","Ter",…,"Dom"] (2024-01-01 foi uma segunda). */
 export const semanaCurta = () => Array.from({ length: 7 }, (_, i) => cap(fmt({ weekday: 'short' }, new Date(2024, 0, 1 + i)).replace('.', '')))
 
+/** Nome curto do dia da semana por índice getDay (0=Dom … 6=Sáb), capitalizado, sem ponto: "Qua". (2024-01-07 foi um domingo.) */
+export const diaSemanaCurto = (d: number) => cap(fmt({ weekday: 'short' }, new Date(2024, 0, 7 + d)).replace('.', ''))
+
+/** Nome longo do dia da semana por índice getDay (0=Dom … 6=Sáb), capitalizado: "Quarta-feira". */
+export const diaSemanaLongo = (d: number) => cap(fmt({ weekday: 'long' }, new Date(2024, 0, 7 + d)))
+
+/** Nome de exibição do dia (sem o sufixo "-feira" do pt-BR): "Segunda" / "Monday" / "Lunes". */
+export const diaSemanaNome = (d: number) => cap(fmt({ weekday: 'long' }, new Date(2024, 0, 7 + d)).replace(/-feira$/i, ''))
+
 /** Data longa: "segunda-feira, 16 de junho de 2026" / "Monday, June 16, 2026" / "lunes, 16 de junio de 2026". */
 export const dataLonga = (y: number, m: number, d: number) => fmt({ weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }, new Date(y, m, d))
 

@@ -9,7 +9,7 @@ import baseConfig from './vite.config'
 
 // Rotas de navegação do app do candidato (SPA): a raiz e as rotas das abas servem candidato.html. O React
 // lê o pathname e abre a aba certa (ver InscricaoVaga). Mantido em sync com TAB_PATH lá.
-const ROTAS_CANDIDATO = new Set(['/', '/index.html', '/descricao_da_vaga', '/inscricao_da_vaga', '/linkpublico', '/linkpublico/inscricao_na_vaga', '/linkpublico/inscricao_na_vaga/inscricao_enviada', '/acesso', '/acesso/recuperar', '/acesso/recuperar/enviado', '/redefinir_senha', '/redefinir_senha/sucesso', '/cadastro', '/painel', '/candidaturas', '/candidaturas_finalizadas'])
+const ROTAS_CANDIDATO = new Set(['/', '/index.html', '/descricao_da_vaga', '/inscricao_da_vaga', '/linkpublico', '/linkpublico/inscricao_na_vaga', '/linkpublico/inscricao_na_vaga/inscricao_enviada', '/acesso', '/acesso/recuperar', '/acesso/recuperar/enviado', '/redefinir_senha', '/redefinir_senha/sucesso', '/cadastro', '/painel', '/candidaturas', '/candidaturas_finalizadas', '/agendar', '/agendar_entrevista'])
 
 // Reescreve as rotas de navegação → "/candidato.html" ANTES dos middlewares internos do Vite (registro
 // direto = pré-ordem), pra a raiz e os deep-links das abas servirem o app do candidato (e não o recrutador).

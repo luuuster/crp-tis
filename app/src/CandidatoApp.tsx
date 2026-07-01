@@ -24,6 +24,8 @@ const RegisterPage = lazy(() => import('@/pages/RegisterPage').then((m) => ({ de
 const CandidatoPainel = lazy(() => import('@/pages/CandidatoPainel').then((m) => ({ default: m.CandidatoPainel })))
 // Área logada: minhas candidaturas (acompanhamento das vagas a que já se candidatou).
 const CandidatoCandidaturas = lazy(() => import('@/pages/CandidatoCandidaturas').then((m) => ({ default: m.CandidatoCandidaturas })))
+// Auto-agendamento da entrevista (link externo, sem login): candidato conversa com o assistente e marca o horário.
+const AgendarEntrevistaCandidato = lazy(() => import('@/pages/AgendarEntrevistaCandidato').then((m) => ({ default: m.AgendarEntrevistaCandidato })))
 
 const PageFallback = () => (
   <div className="grid min-h-dvh place-items-center" role="status" aria-label="Carregando página">
@@ -51,6 +53,8 @@ export function CandidatoApp() {
   // Link PÚBLICO da vaga (ex.: divulgada no LinkedIn): abre a vaga SEM exigir login — visão de quem ainda não
   // tem conta (formulário público de inscrição), mesmo que haja sessão nesta porta.
   const linkpublico = path.startsWith('/linkpublico')
+  // Auto-agendamento (link externo do convite): tela pública de chat para o candidato marcar a própria entrevista.
+  const agendar = path.startsWith('/agendar')
   // Vaga aberta em NOVA ABA pelo mural: id na URL (?vaga=<id>). Sem id (link público direto) → exemplo padrão.
   const vagaId = new URLSearchParams(window.location.search).get('vaga')
   const vagaSel = vagaId ? vagaPorId(vagaId) : undefined
@@ -75,6 +79,8 @@ export function CandidatoApp() {
             <RegisterPage brand={brand} onBackToLogin={() => { window.location.href = '/acesso' }} onRegistered={() => { window.location.href = '/acesso' }} />
           ) : acesso || redefinir ? (
             <CandidatoAcesso brand={brand} />
+          ) : agendar ? (
+            <AgendarEntrevistaCandidato brand={brand} />
           ) : (
             <InscricaoVaga brand={brand} vaga={vagaSel} publico={linkpublico} />
           )}

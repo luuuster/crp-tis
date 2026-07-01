@@ -1,0 +1,51 @@
+{
+  "titulo": "Schedule interview",
+  "subtitulo": "Pick the best days and times. We'll match them with the team's calendar.",
+  "assistente": {
+    "nome": "Scheduling assistant",
+    "online": "online",
+    "papel": "Interview scheduling"
+  },
+  "identificacao": {
+    "nome": "Full name",
+    "nomePlaceholder": "As on your resume",
+    "email": "Email",
+    "emailPlaceholder": "you@email.com",
+    "continuar": "Continue"
+  },
+  "logAria": "Scheduling conversation",
+  "conector": " and ",
+  "periodo": {
+    "manha": "Morning",
+    "tarde": "Afternoon"
+  },
+  "periodoFaixa": {
+    "manha": "From 09:00 to 12:00",
+    "tarde": "From 13:00 to 17:00"
+  },
+  "bot": {
+    "saudacaoInicial": "Hi! 👋 I'm the scheduling assistant. Before we start, tell me your name and email so I can find your application.",
+    "encontrado": "All set, {{nome}}! I found your application for {{vaga}}.",
+    "perguntaDias": "Which days work best for you? You can pick more than one.",
+    "perguntaPeriodos": "And which times of day are you available on those days?",
+    "cruzando": "Great! Matching your availability with {{pessoas}}'s calendar…",
+    "ofereceHorarios": "These are the times HR can meet with you. Tap the one you prefer:",
+    "semHorarios": "I couldn't find common times on those days. How about choosing other days or periods?",
+    "confirmado": "All set! Your {{vaga}} interview is booked for {{quando}}. You'll get the details by email. 🎉"
+  },
+  "composer": {
+    "diasAria": "Available weekdays",
+    "periodosAria": "Available periods",
+    "horariosAria": "Suggested times",
+    "confirmarDias": "Confirm days",
+    "confirmarPeriodos": "Confirm periods",
+    "recomecar": "Pick other days",
+    "slotAria": "Book {{quando}}"
+  },
+  "sucesso": {
+    "titulo": "Interview scheduled",
+    "quando": "{{dia}}, {{data}} at {{hora}}",
+    "nota": "We saved the days and times you shared. If anything changes, our team can reschedule while respecting your availability.",
+    "recomecar": "Schedule another time"
+  }
+}

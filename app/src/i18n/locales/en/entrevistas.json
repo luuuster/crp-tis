@@ -57,6 +57,13 @@
   "agendar": {
     "overlineReagendar": "Reschedule interview",
     "overlineAgendar": "Schedule interview",
+    "dispCandidato": "Availability shared by the candidate",
+    "dispCandidatoDica": "Choose one of the dates the candidate indicated.",
+    "dispPeriodos": "Periods",
+    "periodo": {
+      "manha": "Morning",
+      "tarde": "Afternoon"
+    },
     "data": "Date",
     "entrevistadores": "Interviewers",
     "contador": "({{n}}/4)",
