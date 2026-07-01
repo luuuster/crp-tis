@@ -9,19 +9,7 @@
       "recolher": "Contraer menú",
       "expandir": "Expandir menú"
     },
-    "falarCharlie": "Hablar con Charlie",
-    "conta": {
-      "label": "Tu cuenta",
-      "minha": "Mi cuenta",
-      "contaDemo": "Cuenta (demo).",
-      "sair": "Cerrar sesión"
-    },
-    "sairConfirm": {
-      "titulo": "¿Cerrar sesión de tu cuenta?",
-      "descricao": "Se cerrará tu sesión. Los cambios sin guardar se perderán.",
-      "voltar": "Volver",
-      "sair": "Cerrar sesión"
-    }
+    "falarCharlie": "Hablar con Charlie"
   },
   "steps": {
     "1": {
@@ -163,6 +151,7 @@
     "carga": { "label": "Carga semanal", "placeholder": "Selecciona una carga semanal" },
     "motivo": { "label": "Motivo de apertura", "placeholder": "Selecciona el motivo" },
     "quantidade": { "label": "Cantidad de vacantes", "placeholder": "Selecciona la cantidad", "buscar": "Buscar número…" },
+    "prazo": { "label": "Tiempo de publicación", "hint": "Cuánto tiempo la vacante queda abierta para candidaturas.", "placeholder": "Selecciona el plazo", "dias": "{{count}} días" },
     "budget": { "label": "Presupuesto", "hint": "Rango salarial previsto.", "placeholder": "R$ 8.000 a 10.000" },
     "modalidade": { "label": "Modalidad de contrato", "placeholder": "Selecciona la modalidad" },
     "beneficios": { "label": "Beneficios", "addLabel": "beneficio", "buscar": "Buscar beneficio…", "vazio": "Ningún beneficio agregado." },

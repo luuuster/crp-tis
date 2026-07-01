@@ -290,7 +290,7 @@ export function CandidatoDetalhe({ c, onVoltar, onAprovar, onReprovar }: { c: Ca
         <>
           <div className="flex flex-wrap items-center gap-2">
             <Button variant="ghost" onClick={onVoltar}><ChevronLeft aria-hidden /> {t('detalhe.voltarLista')}</Button>
-            <Button variant="ghost" className="bg-secondary/10 text-secondary-text hover:bg-secondary/15 hover:text-secondary-text" onClick={() => toast.info(t('toast.curriculo'))}><FileText aria-hidden /> {t('detalhe.abrirCurriculo')}</Button>
+            <Button variant="secondary-soft" onClick={() => toast.info(t('toast.curriculo'))}><FileText aria-hidden /> {t('detalhe.abrirCurriculo')}</Button>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <ConfirmDialog
@@ -502,7 +502,7 @@ export function AvaliacaoIAConteudo({ d, email, vaga, statusLabel }: {
       <div>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h4 className="flex items-center gap-2 ty-body-sm font-semibold text-foreground"><FileSearch className="size-4 text-muted-foreground" aria-hidden /> {t('detalhe.analiseTitulo')}</h4>
-          <Button variant="ghost" size="sm" className="bg-secondary/10 text-secondary-text hover:bg-secondary/15 hover:text-secondary-text" onClick={() => toast.info(t('toast.curriculo'))}><FileText aria-hidden /> {t('detalhe.abrirCurriculo')}</Button>
+          <Button variant="secondary-soft" size="sm" onClick={() => toast.info(t('toast.curriculo'))}><FileText aria-hidden /> {t('detalhe.abrirCurriculo')}</Button>
         </div>
         <p className="mt-2 ty-body-sm leading-relaxed text-muted-foreground">{d.analiseCandidato}</p>
         <div className="mt-3 flex flex-wrap gap-2">
@@ -682,6 +682,7 @@ export function EntrevistasIA({ onNavigate, brand, mode, onCycleBrand, onToggleM
               </div>
             </div>
 
+            <div className="hidden md:block">
             <Table className="[&_:is(th,td):first-child]:pl-5 [&_:is(th,td):last-child]:pr-5">
               <TableHeader>
                 <TableRow className="hover:bg-transparent">
@@ -755,6 +756,47 @@ export function EntrevistasIA({ onNavigate, brand, mode, onCycleBrand, onToggleM
                 )}
               </TableBody>
             </Table>
+            </div>
+
+            {/* Mobile (<md): filtros + cards com checkbox (as ações em lote ficam na toolbar acima). */}
+            <div className="space-y-3 p-4 md:hidden">
+              <div className="relative">
+                <Search className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
+                <Input value={q} onChange={(e) => { setQ(e.target.value); resetPage() }} placeholder={t('filtro.buscarPlaceholder')} aria-label={t('filtro.buscarAria')} className="h-9 pl-9 ty-body-sm font-normal" />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <ColFilter value={vagaF} onChange={(v) => { setVagaF(v); resetPage() }} options={vagas} label={t('filtro.vagaAria')} renderLabel={vagaOptionLabel} />
+                <ColFilter value={statusF} onChange={(v) => { setStatusF(v as (typeof STATUS_FILTROS)[number]); resetPage() }} options={STATUS_FILTROS} label={t('filtro.statusAria')} renderLabel={statusOptionLabel} />
+              </div>
+              {loading ? null : error ? (
+                <ErrorState onRetry={retry} />
+              ) : filtrados.length === 0 ? (
+                <EmptyState icon={Search} title={t('lista.vazio')} description={tc('vazio.descricaoFiltro')} action={filtrosAtivos ? <Button variant="outline" size="sm" onClick={limparFiltros}>{tc('acao.limparFiltros')}</Button> : undefined} />
+              ) : (
+                <ul className="space-y-3">
+                  {pageItems.map((c) => (
+                    <li key={c.id} className={cn(CARD, 'space-y-3 p-4', sel.has(c.id) && 'ring-primary/40')}>
+                      <div className="flex items-center gap-3">
+                        <Checkbox checked={sel.has(c.id)} onCheckedChange={(v) => toggleOne(c.id, v === true)} disabled={!acionavel(c.status)} aria-label={t('filtro.selecionarAria', { nome: c.nome })} />
+                        <span className={cn('flex size-9 shrink-0 items-center justify-center rounded-full ty-caption font-semibold', tintFor(c.nome))} aria-hidden>{iniciais(c.nome)}</span>
+                        <div className="min-w-0 flex-1">
+                          <button type="button" onClick={() => setVendo(c)} className="block max-w-full truncate rounded-sm text-left ty-body-sm font-medium text-foreground transition-colors hover:text-primary-text focus-visible:focus-ring">{c.nome}</button>
+                          <p className="truncate ty-caption text-muted-foreground">{c.email}</p>
+                        </div>
+                        <Badge variant="ghost" className={cn('shrink-0 gap-1 ty-caption font-semibold tabular-nums', scoreTint(c.score))}><Sparkles className="size-3" aria-hidden /> {c.score}%</Badge>
+                      </div>
+                      <div className="flex items-center justify-between gap-2 border-t border-border/50 pt-3 ty-caption text-muted-foreground">
+                        <span className="truncate">{c.vaga}</span>
+                        <div className="flex shrink-0 items-center gap-2">
+                          <span className="tabular-nums">{c.data}</span>
+                          <StatusPill value={c.status} />
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
 
             {/* Paginação — barra abaixo da tabela (10 itens por página) */}
             {filtrados.length > 0 && (

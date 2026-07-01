@@ -1,13 +1,13 @@
 /**
- * Entrevistas — calendário mensal + próximas entrevistas + candidatos aguardando agendamento.
- * Clicar em "Agendar" abre a TELA DE AGENDAMENTO (formulário); clicar numa entrevista (lista ou chip do
- * calendário) abre o DETALHE do agendamento. Agendar/cancelar/reagendar mexem no estado (fila ↔ próximas).
+ * Entrevistas — calendário mensal + próximas entrevistas. Clicar numa entrevista (lista ou chip do
+ * calendário) abre o DETALHE do agendamento (ver/reagendar/cancelar). O agendamento inicial é feito por
+ * outra funcionalidade — esta tela acompanha e ajusta as entrevistas já marcadas.
  * Reconstruído no DS (AppShell, CARD, .ty-*, tokens) — nada de cor/borda à mão. Demo: dados mockados.
  */
 import { useState, type ComponentType } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-  CalendarCheck, CalendarDays, CalendarOff, CalendarPlus, CalendarX2, Check, ChevronLeft, ChevronRight, Clock, Inbox,
+  CalendarCheck, CalendarDays, CalendarOff, CalendarPlus, CalendarX2, Check, ChevronLeft, ChevronRight, Clock,
   Link2, MapPin, Pencil, Search, User, Users, Video,
 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -36,7 +36,6 @@ const ANOS = [2025, 2026, 2027]
 
 type Tipo = 'Online' | 'Presencial'
 export type Evento = { y: number; m: number; d: number; hora: string; cand: string; vaga: string; tipo: Tipo; entrevistadores?: string[] }
-type Fila = { cand: string; vaga: string; desde: string }
 // m = índice 0-11 (5 = junho). Eventos do mês corrente da demo (junho/2026).
 const EVENTOS: Evento[] = [
   { y: 2026, m: 5, d: 16, hora: '09:00', cand: 'João Pereira', vaga: 'Desenvolvedor Backend', tipo: 'Online' },
@@ -59,11 +58,6 @@ const EVENTOS: Evento[] = [
   { y: 2026, m: 5, d: 29, hora: '15:30', cand: 'Thiago Barros', vaga: 'Arquiteto de Software', tipo: 'Online' },
 ]
 
-const AGUARDANDO: Fila[] = [
-  { cand: 'Rafael Tavares', vaga: 'DevOps Engineer', desde: 'há 2 dias' },
-  { cand: 'Letícia Gomes', vaga: 'Cientista de Dados', desde: 'há 3 dias' },
-  { cand: 'Pedro Antunes', vaga: 'Scrum Master', desde: 'há 5 dias' },
-]
 const PER_PAGE = 10
 
 const fmtData = (ev: Evento) => dataLonga(ev.y, ev.m, ev.d)
@@ -455,9 +449,7 @@ export function Entrevistas({ onNavigate, brand, mode, onCycleBrand, onToggleMod
   const [mes, setMes] = useState(() => new Date().getMonth())
   const [ano, setAno] = useState(() => new Date().getFullYear())
   const [qProx, setQProx] = useState('')
-  const [qAgu, setQAgu] = useState('')
   const [eventos, setEventos] = useState<Evento[]>(EVENTOS)
-  const [fila, setFila] = useState<Fila[]>(AGUARDANDO)
   const [agendar, setAgendar] = useState<{ cand: string; vaga: string; inicial?: Evento } | null>(null)
   const [detalhe, setDetalhe] = useState<Evento | null>(null)
 
@@ -468,9 +460,8 @@ export function Entrevistas({ onNavigate, brand, mode, onCycleBrand, onToggleMod
   while (celulas.length % 7 !== 0) celulas.push(null)
 
   const eventosDoDia = (d: number) => eventos.filter((e) => e.y === ano && e.m === mes && e.d === d).sort((a, b) => a.hora.localeCompare(b.hora))
-  // Filtro por nome do candidato afeta os dois painéis. Próximas entrevistas pagina de 10 em 10.
+  // Próximas entrevistas: filtro por nome do candidato + paginação de 10 em 10.
   const proximas = eventos.filter((e) => e.y === ano && e.m === mes && e.cand.toLowerCase().includes(qProx.trim().toLowerCase())).sort((a, b) => a.d - b.d || a.hora.localeCompare(b.hora))
-  const aguardando = fila.filter((c) => c.cand.toLowerCase().includes(qAgu.trim().toLowerCase()))
   const { page, setPage, pageItems, total, inicio, totalItems } = usePagination(proximas, PER_PAGE)
 
   const mudarMes = (delta: number) => {
@@ -481,10 +472,9 @@ export function Entrevistas({ onNavigate, brand, mode, onCycleBrand, onToggleMod
   // Qualquer clique no menu volta para o calendário: limpa agendamento/detalhe abertos.
   const handleNav = (v: string) => { setAgendar(null); setDetalhe(null); onNavigate(v) }
 
-  // Confirma um agendamento: substitui qualquer evento do mesmo candidato/vaga, tira-o da fila e mostra o mês.
+  // Confirma um (re)agendamento: substitui qualquer evento do mesmo candidato/vaga e mostra o mês.
   const confirmarAgendamento = (novo: Evento) => {
     setEventos((prev) => [...prev.filter((e) => !(e.cand === novo.cand && e.vaga === novo.vaga)), novo])
-    setFila((prev) => prev.filter((c) => c.cand !== novo.cand))
     setMes(novo.m); setAno(novo.y); setPage(1)
     setAgendar(null); setDetalhe(null)
     const nIntv = novo.entrevistadores?.length ?? 1
@@ -559,9 +549,8 @@ export function Entrevistas({ onNavigate, brand, mode, onCycleBrand, onToggleMod
             </div>
           </section>
 
-          {/* próximas entrevistas + candidatos aguardando, busca própria em cada painel + paginação (10/página) */}
-          <div className="grid gap-4 lg:grid-cols-2">
-            <Panel icon={CalendarDays} title={t('proximas.title')} desc={t('proximas.desc', { n: proximas.length, mes: mesLongo(mes) })}>
+          {/* próximas entrevistas (busca própria + paginação 10/página) */}
+          <Panel icon={CalendarDays} title={t('proximas.title')} desc={t('proximas.desc', { n: proximas.length, mes: mesLongo(mes) })}>
               <div className="relative mb-4">
                 <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
                 <Input value={qProx} onChange={(e) => { setQProx(e.target.value); setPage(1) }} placeholder={t('proximas.buscar')} aria-label={t('proximas.buscarAria')} className="pl-9" />
@@ -602,33 +591,6 @@ export function Entrevistas({ onNavigate, brand, mode, onCycleBrand, onToggleMod
                 </>
               )}
             </Panel>
-
-            <Panel icon={Inbox} title={t('fila.title')} desc={t('fila.desc', { n: aguardando.length })}>
-              <div className="relative mb-4">
-                <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
-                <Input value={qAgu} onChange={(e) => setQAgu(e.target.value)} placeholder={t('fila.buscar')} aria-label={t('fila.buscarAria')} className="pl-9" />
-              </div>
-              {aguardando.length === 0 ? (
-                <div className="flex flex-col items-center justify-center gap-2 rounded-xl bg-muted/30 py-12 text-center">
-                  <Inbox className="size-7 text-muted-foreground/60" aria-hidden />
-                  <p className="ty-body-sm text-muted-foreground">{qAgu.trim() ? t('fila.vaziaBusca') : t('fila.vazia')}</p>
-                </div>
-              ) : (
-                <ul className="space-y-2.5">
-                  {aguardando.map((c) => (
-                    <li key={c.cand} className="flex items-center gap-3 rounded-xl bg-muted/30 p-3">
-                      <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-secondary/15 ty-body-sm font-semibold text-secondary-text" aria-hidden>{iniciais(c.cand)}</span>
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate ty-body-sm font-medium text-foreground">{c.cand}</p>
-                        <p className="truncate ty-caption text-muted-foreground">{t('fila.aguardando', { vaga: c.vaga, desde: c.desde })}</p>
-                      </div>
-                      <Button size="sm" variant="outline" className="shrink-0" onClick={() => setAgendar({ cand: c.cand, vaga: c.vaga })}><CalendarPlus aria-hidden /> {t('fila.agendar')}</Button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </Panel>
-          </div>
         </PageContainer>
 
         {/* painel lateral, agendar ou ver o detalhe do agendamento (modal lateral) */}
@@ -655,7 +617,6 @@ export function Entrevistas({ onNavigate, brand, mode, onCycleBrand, onToggleMod
                   onReagendar={() => { setAgendar({ cand: detalhe.cand, vaga: detalhe.vaga, inicial: detalhe }); setDetalhe(null) }}
                   onCancelar={() => {
                     setEventos((prev) => prev.filter((e) => e !== detalhe))
-                    setFila((prev) => [{ cand: detalhe.cand, vaga: detalhe.vaga, desde: 'há instantes' }, ...prev])
                     setDetalhe(null)
                     toast.info(t('toast.cancelada', { cand: detalhe.cand }))
                   }}

@@ -13,13 +13,15 @@ const LARGURAS = ['w-3/4', 'w-2/3', 'w-1/2', 'w-3/5'] // larguras variadas p/ as
 function CardSkeleton() {
   return (
     <div className={cn(CARD, 'flex h-full flex-col gap-4 p-5')}>
+      {/* Topo: data publicada (esq.) + expiração (dir.) na mesma linha — espelha o VagaCard. */}
       <div className="flex items-center justify-between gap-2">
         <Skeleton className="h-4 w-28" />
-        <Skeleton className="h-5 w-20 rounded-full" />
+        <Skeleton className="h-4 w-24" />
       </div>
       <div className="space-y-2.5">
         <Skeleton className="h-6 w-3/4" />
         <div className="flex gap-1.5">
+          <Skeleton className="h-6 w-16 rounded-full" />
           <Skeleton className="h-6 w-16 rounded-full" />
           <Skeleton className="h-6 w-16 rounded-full" />
         </div>
@@ -41,9 +43,17 @@ export function PainelSkeleton({ brand }: { brand?: string }) {
   return (
     <div className="min-h-dvh bg-background" role="status" aria-label="Carregando vagas">
       <header className="sticky top-0 z-30 border-b border-border/60 bg-card/80 backdrop-blur-sm">
-        <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-4 px-6">
-          <Logo brand={brand} className="h-8" />
-          <Skeleton className="ml-auto size-9 rounded-full" />
+        <div className="mx-auto w-full max-w-6xl px-6">
+          <div className="flex h-16 items-center gap-4">
+            <Logo brand={brand} className="h-8" />
+            <Skeleton className="ml-auto size-9 rounded-full" />
+          </div>
+          {/* abas (espelha o CandidatoShell: Vagas · Minhas candidaturas · Candidaturas finalizadas) */}
+          <div className="-mb-px flex gap-4 pb-3">
+            <Skeleton className="h-5 w-20" />
+            <Skeleton className="h-5 w-32" />
+            <Skeleton className="h-5 w-36" />
+          </div>
         </div>
       </header>
 

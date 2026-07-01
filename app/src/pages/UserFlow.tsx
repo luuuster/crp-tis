@@ -39,7 +39,7 @@ const FLOW: FlowNode[] = [
   { kind: 'phase', label: 'Fase 1 · Criação e publicação (recrutador)' },
   { kind: 'nota', label: 'Charlie (copiloto IA) participa de TODOS os passos da criação — sugere e preenche em cada etapa.', icon: Sparkles },
   { kind: 'start', label: 'Recrutador faz login', icon: LogIn },
-  { kind: 'process', label: 'Cria a vaga — briefing', icon: FilePlus2, ator: 'rec' },
+  { kind: 'process', label: 'Cria a vaga — resumo', icon: FilePlus2, ator: 'rec' },
   { kind: 'process', label: 'Define o perfil da vaga', icon: ClipboardList, ator: 'rec' },
   { kind: 'process', label: 'Revisa — Charlie melhora a postagem ou muda o tom (Equilibrado · Descontraído · Formal)', icon: FileText, ator: 'rec' },
   { kind: 'decision', label: 'Publicar agora?', icon: Megaphone, nao: 'Salvo como rascunho — completa e publica depois', naoTom: 'warning', naoIcon: FileText },
@@ -57,7 +57,7 @@ const FLOW: FlowNode[] = [
   { kind: 'process', label: 'Responde o questionário (2ª etapa)', icon: Brain, ator: 'cand' },
 
   { kind: 'phase', label: 'Fase 3 · Triagem e seleção (funil de 5 etapas)' },
-  { kind: 'decision', label: 'IA aprova?', icon: Bot, nao: 'Reprovado pela IA' },
+  { kind: 'decision', label: 'Currículo aprovado pela IA?', icon: Bot, nao: 'Reprovado na análise de currículo' },
   { kind: 'process', label: 'Candidato agenda a entrevista (escolhe dias e horários)', icon: CalendarClock, ator: 'cand' },
   { kind: 'process', label: 'Entrevista marcada', icon: CalendarCheck, ator: 'rec' },
   { kind: 'decision', label: 'Entrevistadores podem comparecer?', icon: Users, nao: 'Imprevisto interno (recrutador/entrevistador não pode) → RH reagenda nos mesmos horários · avisa por e-mail + WhatsApp', naoTom: 'warning', naoIcon: RefreshCw },
@@ -71,6 +71,7 @@ const FLOW: FlowNode[] = [
   { kind: 'decision', label: 'Candidato aceita?', icon: Handshake, nao: 'Proposta recusada' },
 
   { kind: 'phase', label: 'Resultado' },
+  { kind: 'nota', label: 'Em qualquer desfecho (aprovado ou não), o candidato vê o feedback do processo em "Minhas candidaturas → Finalizadas".', icon: MessagesSquare },
   { kind: 'success', label: 'Contratado 🎉', icon: Trophy },
 ]
 

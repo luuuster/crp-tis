@@ -98,6 +98,7 @@ export function ListaCandidatos({
           </h2>
         </div>
 
+        <div className="hidden md:block">
         <Table className="[&_:is(th,td):first-child]:pl-5 [&_:is(th,td):last-child]:pr-5">
           <TableHeader>
             <TableRow className="hover:bg-transparent">
@@ -164,6 +165,48 @@ export function ListaCandidatos({
             )}
           </TableBody>
         </Table>
+        </div>
+
+        {/* Mobile (<md): filtros + cards no lugar da tabela (mesmo estado/handlers). */}
+        <div className="space-y-3 p-4 md:hidden">
+          <div className="relative">
+            <Search className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
+            <Input value={q} onChange={(e) => onBusca(e.target.value)} placeholder={t('busca.placeholder')} aria-label={t('busca.aria')} className="h-9 pl-9 ty-body-sm font-normal" />
+          </div>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+            <ColFilter value={vagaF} onChange={onVagaF} options={vagas} label={t('filtro.vaga')} renderLabel={vagaLabel} />
+            <ColFilter value={senioridadeF} onChange={onSenioridadeF} options={senioridades} label={t('filtro.senioridade')} renderLabel={senFiltroLabel} />
+            <ColFilter value={etapaF} onChange={onEtapaF} options={etapaFiltros} label={t('filtro.etapa')} renderLabel={etapaLabel} />
+          </div>
+          {loading ? null : error ? (
+            <ErrorState onRetry={onRetry} />
+          ) : filtrados.length === 0 ? (
+            <EmptyState icon={Search} title={t('vazio')} description={tc('vazio.descricaoFiltro')} action={filtrosAtivos ? <Button variant="outline" size="sm" onClick={limparFiltros}>{tc('acao.limparFiltros')}</Button> : undefined} />
+          ) : (
+            <ul className="space-y-3">
+              {pageItems.map((c) => (
+                <li key={c.id} className={cn(CARD, 'space-y-3 p-4')}>
+                  <div className="flex items-center gap-3">
+                    <span className={cn('flex size-9 shrink-0 items-center justify-center rounded-full ty-caption font-semibold', tintFor(c.nome))} aria-hidden>{iniciais(c.nome)}</span>
+                    <div className="min-w-0 flex-1">
+                      <button type="button" onClick={() => onAbrir(c)} className="block max-w-full truncate rounded-sm text-left ty-body-sm font-medium text-foreground transition-colors hover:text-primary-text focus-visible:focus-ring">{c.nome}</button>
+                      <p className="truncate ty-caption text-muted-foreground">{c.email}</p>
+                    </div>
+                    <Badge variant="ghost" className={cn('shrink-0 ty-caption font-semibold tabular-nums', scoreTint(c.score))}>{c.score}%</Badge>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <EtapaBadge value={c.etapa} />
+                    <Badge variant="ghost" className="bg-muted ty-caption font-medium text-muted-foreground">{senLabel(c.senioridade)}</Badge>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 border-t border-border/50 pt-3 ty-caption text-muted-foreground">
+                    <span className="truncate">{c.vaga}</span>
+                    <span className="shrink-0">{c.atualizado}</span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
 
         {/* Paginação — barra abaixo da tabela (10 itens por página) */}
         {filtrados.length > 0 && (

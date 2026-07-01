@@ -16,6 +16,7 @@
     "fechar": "Cerrar menú",
     "recolher": "Contraer menú",
     "expandir": "Expandir menú",
+    "irInicio": "Ir al Panel",
     "descricao": "Accede a las áreas del workspace."
   },
   "demoToast": "\"{{item}}\" no forma parte de esta demo.",

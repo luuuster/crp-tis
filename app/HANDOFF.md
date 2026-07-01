@@ -226,7 +226,7 @@ trocará por API.
 |---|---|---|---|
 | **Login / Cadastro** | `pages/LoginPage.tsx`, `RegisterPage.tsx`, `components/auth/*` | auth **simulada** (RHF + zod; credencial fixa de demo) | credenciais em `LoginPage.tsx` |
 | **Dashboard** | `pages/Dashboard.tsx`, `pages/dashboard/*` | dashboard **modular**: modo "Personalizar" adiciona/remove/redimensiona widgets; layout salvo no `localStorage` | `dashboard/data.ts` |
-| **Vagas (Gerador)** | `pages/JobGenerator.tsx`, `pages/VagasList.tsx`, `pages/job-generator/*`, `vagas.logic.ts` | lista de vagas + **wizard** (Briefing → Perfil → Revisão) + **Charlie** (motor de consistência da vaga) | `VagasList.tsx` (`VAGAS_INICIAL`), `vagas.logic.ts` |
+| **Vagas (Gerador)** | `pages/JobGenerator.tsx`, `pages/VagasList.tsx`, `pages/job-generator/*`, `vagas.logic.ts` | lista de vagas + **wizard** (Resumo da vaga → Perfil → Revisão) + **Charlie** (motor de consistência da vaga) | `VagasList.tsx` (`VAGAS_INICIAL`), `vagas.logic.ts` |
 | **Entrevistas IA** | `pages/EntrevistasIA.tsx` | triagem de currículos pela IA; aprovar/reprovar em lote; detalhe do candidato (score, aderência, perguntas) | `CANDIDATOS_INICIAL` no próprio arquivo |
 | **Banco de talentos** | `pages/Candidatos.tsx`, `pages/candidatos/*`, `candidatos.logic.ts` | pool de candidatos, perfil, **histórico de processos** (gerado deterministicamente), assistente Charlie de match | `candidatos/types.ts` (`CANDIDATOS_INICIAL`), `builders.ts` |
 | **Entrevistas (Agenda)** | `pages/Entrevistas.tsx`, `entrevistas.logic.ts` | calendário, agendamento, reagendar/cancelar | `entrevistas.logic.ts` |

@@ -41,7 +41,7 @@ const VAGAS_INICIAL: Vaga[] = [
       cliente: 'TIS Talent AI Platform', gestor: 'Carlos Mendes',
       desafio: 'O TIS Talent AI Platform está evoluindo sua experiência de ponta a ponta e precisa de reforço para acelerar a entrega de novas funcionalidades web.',
       objetivo: 'Entregar features completas, do banco à interface, com qualidade, performance e boa experiência para quem usa a plataforma.',
-      local: 'São Paulo, SP (100% remoto)', horario: '09h às 18h', carga: '40h semanais', motivo: 'Aumento do quadro', quantidade: 2,
+      local: 'São Paulo, SP (100% remoto)', horario: '09h às 18h', carga: '40h semanais', motivo: 'Aumento do quadro', quantidade: 2, prazo: 60,
       budget: 'R$ 9.000 a R$ 14.000', modalidade: 'CLT', beneficios: BENEF, processoSeletivo: PROCESSO,
     },
     {
@@ -62,7 +62,7 @@ const VAGAS_INICIAL: Vaga[] = [
       cliente: 'TIS Talent AI Platform', gestor: 'Marina Albuquerque',
       desafio: 'Queremos elevar a maturidade de design da plataforma e tornar as jornadas de recrutamento mais simples e humanas.',
       objetivo: 'Conduzir a pesquisa e o design de experiências consistentes, acessíveis e orientadas a dados em todo o produto.',
-      local: 'São Paulo, SP (100% remoto)', horario: '09h às 18h', carga: '40h semanais', motivo: 'Nova posição', quantidade: 1,
+      local: 'São Paulo, SP (100% remoto)', horario: '09h às 18h', carga: '40h semanais', motivo: 'Nova posição', quantidade: 1, prazo: 30,
       budget: 'R$ 8.000 a R$ 12.000', modalidade: 'CLT', beneficios: BENEF, processoSeletivo: PROCESSO,
     },
     {
@@ -83,7 +83,7 @@ const VAGAS_INICIAL: Vaga[] = [
       cliente: 'TIS Talent AI Platform', gestor: 'Rafael Tavares',
       desafio: 'A plataforma cresceu e precisa de liderança de produto para priorizar com clareza e conectar negócio, design e engenharia.',
       objetivo: 'Definir e executar a estratégia de produto de uma área crítica, maximizando o valor entregue e o impacto no negócio.',
-      local: 'São Paulo, SP', horario: '09h às 18h', carga: '40h semanais', motivo: 'Aumento do quadro', quantidade: 1,
+      local: 'São Paulo, SP', horario: '09h às 18h', carga: '40h semanais', motivo: 'Aumento do quadro', quantidade: 1, prazo: 30,
       budget: 'R$ 14.000 a R$ 20.000', modalidade: 'CLT', beneficios: BENEF, processoSeletivo: PROCESSO,
     },
     {
@@ -104,7 +104,7 @@ const VAGAS_INICIAL: Vaga[] = [
       cliente: 'TIS Talent AI Platform', gestor: 'Carlos Mendes',
       desafio: 'Os modelos de IA da plataforma dependem de dados confiáveis; precisamos fortalecer a engenharia de dados que os alimenta.',
       objetivo: 'Construir e manter pipelines de dados robustos, escaláveis e observáveis para sustentar analytics e modelos de IA.',
-      local: 'São Paulo, SP', horario: '09h às 18h', carga: '40h semanais', motivo: 'Aumento do quadro', quantidade: 1,
+      local: 'São Paulo, SP', horario: '09h às 18h', carga: '40h semanais', motivo: 'Aumento do quadro', quantidade: 1, prazo: 30,
       budget: 'R$ 10.000 a R$ 15.000', modalidade: 'CLT', beneficios: BENEF, processoSeletivo: PROCESSO,
     },
     {
@@ -125,7 +125,7 @@ const VAGAS_INICIAL: Vaga[] = [
       cliente: 'TIS Talent AI Platform', gestor: 'Marina Albuquerque',
       desafio: 'Conforme a plataforma ganha escala, precisamos garantir qualidade de forma sistemática e cada vez mais automatizada.',
       objetivo: 'Assegurar a qualidade das entregas por meio de testes manuais e automatizados, prevenindo regressões.',
-      local: 'São Paulo, SP', horario: '09h às 18h', carga: '40h semanais', motivo: 'Nova posição', quantidade: 1,
+      local: 'São Paulo, SP', horario: '09h às 18h', carga: '40h semanais', motivo: 'Nova posição', quantidade: 1, prazo: 45,
       budget: 'R$ 4.000 a R$ 6.000', modalidade: 'CLT', beneficios: BENEF, processoSeletivo: PROCESSO,
     },
     {
@@ -146,7 +146,7 @@ const VAGAS_INICIAL: Vaga[] = [
       cliente: 'TIS Talent AI Platform', gestor: 'Carlos Mendes',
       desafio: 'Estamos expandindo o time de engenharia do TIS Talent AI Platform para sustentar o crescimento da plataforma.',
       objetivo: 'Ampliar a capacidade de entrega de soluções backend de alta performance, garantindo escalabilidade e qualidade nas integrações da plataforma.',
-      local: 'São Paulo, SP', horario: '09h às 18h', carga: '40h semanais', motivo: 'Aumento do quadro', quantidade: 1,
+      local: 'São Paulo, SP', horario: '09h às 18h', carga: '40h semanais', motivo: 'Aumento do quadro', quantidade: 1, prazo: 30,
       budget: 'R$ 8.000 a R$ 12.000', modalidade: 'CLT', beneficios: ['Vale-refeição', 'Plano de saúde', 'Auxílio home-office', 'Day-off aniversário'], processoSeletivo: ['Entrevista comportamental', 'Entrevista técnica', 'Entrevista com RH'],
     },
     {
@@ -358,6 +358,7 @@ export function VagasList({ onAbrirVaga, onEditVaga, onVerVaga }: { onAbrirVaga:
           </div>
         </div>
 
+        <div className="hidden md:block">
         <Table className="[&_:is(th,td):first-child]:pl-5 [&_:is(th,td):last-child]:pr-5">
           <TableHeader>
             <TableRow className="hover:bg-transparent">
@@ -432,6 +433,50 @@ export function VagasList({ onAbrirVaga, onEditVaga, onVerVaga }: { onAbrirVaga:
             )}
           </TableBody>
         </Table>
+        </div>
+
+        {/* Mobile (<md): filtros + cards no lugar da tabela com scroll horizontal (mesmo estado). */}
+        <div className="space-y-3 p-4 md:hidden">
+          <div className="relative">
+            <Search className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
+            <Input value={q} onChange={(e) => { setQ(e.target.value); resetPage() }} placeholder={t('busca.placeholder')} aria-label={t('busca.aria')} className="h-9 pl-9 ty-body-sm font-normal" />
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <ColFilter value={dataF} onChange={(v) => { setDataF(v); resetPage() }} options={datas} label={t('filtro.data')} format={fmtTodas} />
+            <ColFilter value={senioridadeF} onChange={(v) => { setSenioridadeF(v); resetPage() }} options={senioridades} label={t('filtro.senioridade')} format={fmtTodas} />
+            <ColFilter value={modeloF} onChange={(v) => { setModeloF(v); resetPage() }} options={modelos} label={t('filtro.modelo')} format={fmtTodos} />
+            <ColFilter value={status} onChange={(v) => { setStatus(v as (typeof STATUS_FILTROS)[number]); resetPage() }} options={STATUS_FILTROS} label={t('filtro.status')} format={fmtStatus} />
+          </div>
+          {loading ? null : error ? (
+            <ErrorState onRetry={retry} />
+          ) : filtradas.length === 0 ? (
+            <EmptyState icon={Search} title={t('lista.vazio')} description={tc('vazio.descricaoFiltro')} action={filtrosAtivos ? <Button variant="outline" size="sm" onClick={limparFiltros}>{tc('acao.limparFiltros')}</Button> : undefined} />
+          ) : (
+            <ul className="space-y-3">
+              {pageItems.map((v) => (
+                <li key={v.id} className={cn(CARD, 'space-y-3 p-4')}>
+                  <div className="flex items-start justify-between gap-2">
+                    <button type="button" onClick={() => onVerVaga(v)} className="rounded-sm text-left ty-body-sm font-semibold text-foreground transition-colors hover:text-primary-text focus-visible:focus-ring">{v.vaga}</button>
+                    <StatusBadge value={statusLabel(t, v.status)} tones={{ [statusLabel(t, v.status)]: STATUS_TOM[v.status] }} />
+                  </div>
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1 ty-caption text-muted-foreground">
+                    <span>{v.senioridade}</span><span aria-hidden>·</span><span>{v.modelo}</span><span aria-hidden>·</span><span className="tabular-nums">{v.data}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 border-t border-border/50 pt-3">
+                    <div className="flex gap-4 ty-caption text-muted-foreground">
+                      <span>{t('tabela.inscritos')} <span className="font-medium tabular-nums text-foreground">{v.inscritos}</span></span>
+                      <span>{t('tabela.aprovados')} <span className="font-semibold tabular-nums text-success-text">{v.aprovados}</span></span>
+                    </div>
+                    <div className="flex gap-1">
+                      <Tip label={t('acoes.editar', { vaga: v.vaga })}><Button variant="ghost" size="icon-sm" aria-label={t('acoes.editar', { vaga: v.vaga })} onClick={() => onEditVaga(v)} className="text-muted-foreground hover:bg-primary/10 hover:text-primary-text"><Pencil /></Button></Tip>
+                      <Tip label={t('acoes.fechar', { vaga: v.vaga })}><Button variant="ghost" size="icon-sm" aria-label={t('acoes.fechar', { vaga: v.vaga })} onClick={() => setFechar(v)} className="text-muted-foreground hover:bg-warning/10 hover:text-warning-text"><Lock /></Button></Tip>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
 
         {/* Paginação, barra abaixo da tabela (10 itens por página) */}
         {filtradas.length > 0 && (

@@ -10,7 +10,6 @@ import { useTranslation } from 'react-i18next'
 import { Check, FileText, Send, Upload, X } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
-import { focusRing } from '@/lib/focus'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 
@@ -83,7 +82,7 @@ export function ConfirmarCandidaturaDialog({ open, onOpenChange, vaga, onEnviada
                   <p className="flex items-center gap-1.5 ty-caption font-medium text-success-text"><Check className="size-3.5 shrink-0" aria-hidden /> {t('logado.novoCurriculo')}</p>
                   <p className="truncate ty-body-sm font-medium">{cvFile.name}<span className="font-normal text-muted-foreground"> · {(cvFile.size / 1024).toFixed(0)} KB</span></p>
                 </div>
-                <button type="button" onClick={() => setCvFile(null)} aria-label={t('logado.usarPerfil')} className={cn('grid size-8 shrink-0 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive-text', focusRing)}><X className="size-4" /></button>
+                <Button type="button" variant="ghost" size="icon-sm" onClick={() => setCvFile(null)} aria-label={t('logado.usarPerfil')} className="shrink-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive-text"><X className="size-4" /></Button>
               </div>
             )}
             {cvError && <p id="conf-cv-error" className="ty-body-sm text-destructive-text" role="alert">{cvError}</p>}

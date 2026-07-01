@@ -14,6 +14,12 @@
       "sair": "Sign out"
     }
   },
+  "nav": {
+    "label": "Sections",
+    "vagas": "Jobs",
+    "candidaturas": "My applications",
+    "finalizadas": "Completed applications"
+  },
   "header": {
     "titulo": "Open positions",
     "subtitulo": "Find the right job and apply in minutes.",
@@ -23,7 +29,9 @@
   "busca": {
     "placeholder": "Search by role",
     "aria": "Search jobs",
-    "limpar": "Clear search"
+    "limpar": "Clear search",
+    "vazioTitulo": "No applications found",
+    "vazioDescricao": "Try searching for another role."
   },
   "filtro": {
     "modelo": "Work model",
@@ -62,6 +70,94 @@
     "naoInformado": "Not informed",
     "verDetalhes": "View job details",
     "verDetalhesAria": "View job details: {{cargo}}"
+  },
+  "candidaturas": {
+    "titulo": "My applications",
+    "subtitulo": "Track the progress of the jobs you've applied to.",
+    "resumo_one": "{{count}} application",
+    "resumo_other": "{{count}} applications",
+    "candidatouSe": "Applied on {{data}}",
+    "verVaga": "View job",
+    "seuProgresso": "Your progress",
+    "verAndamento": "View progress",
+    "verFeedback": "View feedback",
+    "andamentoEmBreve": "Detailed progress tracking is coming soon.",
+    "desistir": "Withdraw",
+    "desistido": "You left the {{cargo}} process.",
+    "desistirConfirm": {
+      "titulo": "Withdraw this application?",
+      "descricao": "You'll leave this hiring process. This can't be undone.",
+      "voltar": "Back",
+      "confirmar": "Withdraw"
+    },
+    "andamentoMsg": "Current stage: {{fase}}.",
+    "aprovadoMsg": "Congratulations! You were approved and received an offer by email.",
+    "reprovadoMsg": "We're sorry! Unfortunately the process ended at the stage: {{fase}}.",
+    "feedback": {
+      "titulo": "Feedback",
+      "subtitulo": "Analysis of your hiring process for {{cargo}}.",
+      "fortesLabel": "Strengths",
+      "desenvolverLabel": "Areas to develop",
+      "fechar": "Close",
+      "aprovado": {
+        "resumo": "Your performance was consistent across all stages. The clarity of your answers and your fit with the role were decisive for the approval.",
+        "fortes": [
+          "Clear and objective communication throughout the interviews.",
+          "Technical experience well aligned with the role's requirements.",
+          "Strong demonstration of collaboration and teamwork."
+        ],
+        "desenvolver": [
+          "Reinforce examples with quantifiable metrics and results.",
+          "Explore the business context behind your technical decisions further."
+        ]
+      },
+      "reprovado": {
+        "resumo": "Your process ended at the {{fase}} stage. You showed solid strengths, but some aspects weighed in the comparison with other candidates.",
+        "fortes": [
+          "Solid technical grounding in the initial answers.",
+          "Clear motivation and genuine interest in the role."
+        ],
+        "desenvolver": [
+          "Structure answers with concrete examples (STAR method).",
+          "Deepen the specific knowledge required by the role.",
+          "Back up results with objective data and metrics."
+        ]
+      }
+    },
+    "status": {
+      "andamento": "In progress",
+      "aprovado": "Approved",
+      "reprovado": "Not selected"
+    },
+    "fase": {
+      "ia": "Resume review",
+      "rh": "HR interview",
+      "teste": "Technical test / Case",
+      "gestor": "Manager interview",
+      "proposta": "Offer"
+    },
+    "estado": {
+      "feita": "completed",
+      "atual": "current stage",
+      "pendente": "pending",
+      "reprovada": "did not advance"
+    },
+    "vazio": {
+      "titulo": "You haven't applied yet",
+      "descricao": "Explore open positions and apply in minutes.",
+      "irVagas": "View jobs"
+    }
+  },
+  "finalizadas": {
+    "titulo": "Completed applications",
+    "subtitulo": "Hiring processes already concluded — approved or closed.",
+    "resumo_one": "{{count}} completed application",
+    "resumo_other": "{{count}} completed applications",
+    "vazio": {
+      "titulo": "No completed applications",
+      "descricao": "Once a process is concluded, it shows up here.",
+      "irVagas": "View jobs"
+    }
   },
   "vazio": {
     "titulo": "No jobs found",

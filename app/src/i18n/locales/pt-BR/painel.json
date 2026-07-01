@@ -14,6 +14,12 @@
       "sair": "Sair"
     }
   },
+  "nav": {
+    "label": "Seções",
+    "vagas": "Vagas",
+    "candidaturas": "Minhas candidaturas",
+    "finalizadas": "Candidaturas finalizadas"
+  },
   "header": {
     "titulo": "Vagas abertas",
     "subtitulo": "Encontre a vaga certa e candidate-se em minutos.",
@@ -23,7 +29,9 @@
   "busca": {
     "placeholder": "Buscar por cargo",
     "aria": "Buscar vagas",
-    "limpar": "Limpar busca"
+    "limpar": "Limpar busca",
+    "vazioTitulo": "Nenhuma candidatura encontrada",
+    "vazioDescricao": "Tente buscar por outro cargo."
   },
   "filtro": {
     "modelo": "Modelo de trabalho",
@@ -62,6 +70,94 @@
     "naoInformado": "Não informado",
     "verDetalhes": "Ver detalhes da vaga",
     "verDetalhesAria": "Ver detalhes da vaga: {{cargo}}"
+  },
+  "candidaturas": {
+    "titulo": "Minhas candidaturas",
+    "subtitulo": "Acompanhe o andamento das vagas a que você se candidatou.",
+    "resumo_one": "{{count}} candidatura",
+    "resumo_other": "{{count}} candidaturas",
+    "candidatouSe": "Candidatou-se em {{data}}",
+    "verVaga": "Ver vaga",
+    "seuProgresso": "Seu progresso",
+    "verAndamento": "Ver andamento",
+    "verFeedback": "Ver feedback",
+    "andamentoEmBreve": "O acompanhamento detalhado chega em breve.",
+    "desistir": "Desistir",
+    "desistido": "Você saiu do processo de {{cargo}}.",
+    "desistirConfirm": {
+      "titulo": "Desistir desta candidatura?",
+      "descricao": "Você sairá deste processo seletivo. Essa ação não pode ser desfeita.",
+      "voltar": "Voltar",
+      "confirmar": "Desistir"
+    },
+    "andamentoMsg": "Etapa atual: {{fase}}.",
+    "aprovadoMsg": "Parabéns! Você foi aprovado(a) e recebeu uma proposta por e-mail.",
+    "reprovadoMsg": "Desculpe! Mas infelizmente o processo foi encerrado na etapa: {{fase}}.",
+    "feedback": {
+      "titulo": "Feedback",
+      "subtitulo": "Análise do seu processo seletivo para {{cargo}}.",
+      "fortesLabel": "Pontos fortes",
+      "desenvolverLabel": "Pontos a desenvolver",
+      "fechar": "Fechar",
+      "aprovado": {
+        "resumo": "Seu desempenho foi consistente em todas as etapas. A clareza nas respostas e a aderência ao perfil da vaga foram decisivas para a aprovação.",
+        "fortes": [
+          "Comunicação clara e objetiva ao longo das entrevistas.",
+          "Experiência técnica bem alinhada aos requisitos da vaga.",
+          "Boa demonstração de colaboração e trabalho em equipe."
+        ],
+        "desenvolver": [
+          "Reforçar exemplos com métricas e resultados quantificáveis.",
+          "Explorar mais o contexto de negócio por trás das decisões técnicas."
+        ]
+      },
+      "reprovado": {
+        "resumo": "Seu processo foi encerrado na etapa de {{fase}}. Você apresentou pontos sólidos, mas alguns aspectos pesaram na comparação com os demais candidatos.",
+        "fortes": [
+          "Boa fundamentação técnica nas respostas iniciais.",
+          "Motivação clara e interesse genuíno pela vaga."
+        ],
+        "desenvolver": [
+          "Estruturar as respostas com exemplos concretos (método STAR).",
+          "Aprofundar os conhecimentos específicos exigidos pela vaga.",
+          "Apoiar os resultados com dados e métricas objetivas."
+        ]
+      }
+    },
+    "status": {
+      "andamento": "Em andamento",
+      "aprovado": "Aprovada",
+      "reprovado": "Não selecionado(a)"
+    },
+    "fase": {
+      "ia": "Análise de currículo",
+      "rh": "Entrevista com RH",
+      "teste": "Teste técnico / Case",
+      "gestor": "Entrevista com gestor",
+      "proposta": "Proposta"
+    },
+    "estado": {
+      "feita": "concluída",
+      "atual": "etapa atual",
+      "pendente": "pendente",
+      "reprovada": "não avançou"
+    },
+    "vazio": {
+      "titulo": "Você ainda não se candidatou",
+      "descricao": "Explore as vagas abertas e candidate-se em minutos.",
+      "irVagas": "Ver vagas"
+    }
+  },
+  "finalizadas": {
+    "titulo": "Candidaturas finalizadas",
+    "subtitulo": "Processos seletivos já concluídos — aprovados ou encerrados.",
+    "resumo_one": "{{count}} candidatura finalizada",
+    "resumo_other": "{{count}} candidaturas finalizadas",
+    "vazio": {
+      "titulo": "Nenhuma candidatura finalizada",
+      "descricao": "Quando um processo for concluído, ele aparece aqui.",
+      "irVagas": "Ver vagas"
+    }
   },
   "vazio": {
     "titulo": "Nenhuma vaga encontrada",

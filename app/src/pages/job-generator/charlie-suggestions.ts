@@ -39,10 +39,10 @@ export function suggestionsFor(step: number): Suggestion[] {
             ? `Adicionei benefícios que deixam a vaga mais competitiva: ${novos.join(', ')}. Remova o que não fizer sentido.`
             : 'Seu pacote de benefícios já está bem competitivo para essa vaga. 👍'
         } },
-        { icon: ClipboardList, label: 'Revisar o briefing', run: ({ data }) => {
+        { icon: ClipboardList, label: 'Revisar o resumo da vaga', run: ({ data }) => {
           const faltando = SECTIONS.flatMap((s) => s.fields).filter((k) => !isFilledVal(data[k])).length
           return faltando === 0
-            ? `Briefing completo: ${data.cargo} ${data.nivel} · ${data.modelo} · ${data.local} · ${data.modalidade}. Pode avançar para o Perfil. 👍`
+            ? `Resumo completo: ${data.cargo} ${data.nivel} · ${data.modelo} · ${data.local} · ${data.modalidade}. Pode avançar para o Perfil. 👍`
             : `Resumo quase pronto, ${faltando} campo(s) ainda em branco${data.budget ? '' : ', incluindo o Budget'}. Quer que eu sugira a faixa salarial?`
         } },
       ]

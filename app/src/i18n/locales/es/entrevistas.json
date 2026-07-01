@@ -24,16 +24,6 @@
     "vaziaBusca": "No se encontraron entrevistas para esta búsqueda.",
     "vazia": "No hay entrevistas programadas este mes."
   },
-  "fila": {
-    "title": "Candidatos a la espera de programación",
-    "desc": "{{n}} en la cola",
-    "buscar": "Buscar candidato por nombre…",
-    "buscarAria": "Buscar candidato por nombre",
-    "vaziaBusca": "No se encontraron candidatos para esta búsqueda.",
-    "vazia": "No hay candidatos en la cola.",
-    "aguardando": "{{vaga}} · esperando {{desde}}",
-    "agendar": "Programar"
-  },
   "formato": {
     "Online": "En línea",
     "Presencial": "Presencial"

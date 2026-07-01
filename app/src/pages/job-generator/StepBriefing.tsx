@@ -16,6 +16,7 @@ import {
   MODELOS,
   MOTIVOS,
   NIVEIS,
+  PRAZOS,
   PROCESSO_POOL,
   QUANTIDADES,
   SECTIONS,
@@ -44,12 +45,13 @@ export function BriefingForm({ data, set, showErrors }: { data: Briefing; set: S
         </div>
       </SectionBlock>
 
-      <SectionBlock meta={SECTIONS[1]} status={fieldsStatus(data, SECTIONS[1].fields)}>
+      {/* "Sobre a vaga" é OPCIONAL: vem como rascunho e é refinada no passo do Charlie (sem obrigatoriedade). */}
+      <SectionBlock meta={SECTIONS[1]} status="opcional">
         <div className="space-y-5">
-          <Field id="desafio" label={t('briefing.desafio.label')} required hint={t('briefing.desafio.hint')} invalid={inv('desafio')}>
+          <Field id="desafio" label={t('briefing.desafio.label')} hint={t('briefing.desafio.hint')}>
             <Textarea id="desafio" value={data.desafio} onChange={(e) => set('desafio', e.target.value)} placeholder={t('briefing.desafio.placeholder')} style={{ lineHeight: 1.65 }} className={cn('min-h-24 resize-y', FIELD)} />
           </Field>
-          <Field id="objetivo" label={t('briefing.objetivo.label')} required hint={t('briefing.objetivo.hint')} invalid={inv('objetivo')}>
+          <Field id="objetivo" label={t('briefing.objetivo.label')} hint={t('briefing.objetivo.hint')}>
             <Textarea id="objetivo" value={data.objetivo} onChange={(e) => set('objetivo', e.target.value)} placeholder={t('briefing.objetivo.placeholder')} style={{ lineHeight: 1.65 }} className={cn('min-h-24 resize-y', FIELD)} />
           </Field>
         </div>
@@ -62,9 +64,11 @@ export function BriefingForm({ data, set, showErrors }: { data: Briefing; set: S
             <Field id="horario" label={t('briefing.horario.label')} required invalid={inv('horario')}><FormSelect id="horario" value={data.horario} onChange={(v) => set('horario', v)} options={HORARIOS} placeholder={t('briefing.horario.placeholder')} /></Field>
             <Field id="carga" label={t('briefing.carga.label')} required invalid={inv('carga')}><FormSelect id="carga" value={data.carga} onChange={(v) => set('carga', v)} options={CARGAS} labelOf={optLabeler(t, 'carga')} placeholder={t('briefing.carga.placeholder')} /></Field>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-3">
             <Field id="motivo" label={t('briefing.motivo.label')} required invalid={inv('motivo')}><FormSelect id="motivo" value={data.motivo} onChange={(v) => set('motivo', v)} options={MOTIVOS} labelOf={optLabeler(t, 'motivo')} placeholder={t('briefing.motivo.placeholder')} /></Field>
             <Field id="quantidade" label={t('briefing.quantidade.label')} required invalid={inv('quantidade')}><SearchSelect id="quantidade" value={String(data.quantidade)} onChange={(v) => set('quantidade', Number(v))} options={QUANTIDADES} placeholder={t('briefing.quantidade.placeholder')} searchPlaceholder={t('briefing.quantidade.buscar')} /></Field>
+            {/* Prazo: por quanto tempo a vaga fica aberta (definido pelo RH). */}
+            <Field id="prazo" label={t('briefing.prazo.label')} required hint={t('briefing.prazo.hint')} invalid={inv('prazo')}><FormSelect id="prazo" value={String(data.prazo)} onChange={(v) => set('prazo', Number(v))} options={PRAZOS} labelOf={(v) => t('briefing.prazo.dias', { count: Number(v) })} placeholder={t('briefing.prazo.placeholder')} /></Field>
           </div>
         </div>
       </SectionBlock>

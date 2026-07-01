@@ -20,7 +20,7 @@ import type { Briefing, Perfil, Tom } from '@/lib/vaga'
 /* ────────────────────────────── dados estáticos ────────────────────────────── */
 
 export const STEPS = [
-  { n: 1, title: 'Briefing da Vaga', eyebrow: 'Briefing', desc: 'Dados institucionais e operacionais' },
+  { n: 1, title: 'Resumo da Vaga', eyebrow: 'Resumo', desc: 'Dados institucionais e operacionais' },
   { n: 2, title: 'Perfil e Requisitos', eyebrow: 'Perfil', desc: 'Skills, experiência e formação' },
   { n: 3, title: 'Revisar & Publicar', eyebrow: 'Revisão', desc: 'Revise, edite e publique a vaga' },
 ] as const
@@ -33,6 +33,8 @@ export const HORARIOS = ['08:00 às 17:00', '09:00 às 18:00', '10:00 às 19:00'
 export const MOTIVOS = ['Aumento do quadro', 'Substituição', 'Novo projeto', 'Backfill', 'Confidencial']
 export const MODALIDADES = ['CLT', 'PJ', 'Estágio', 'Temporário', 'Cooperado']
 export const QUANTIDADES = Array.from({ length: 20 }, (_, i) => String(i + 1))
+// Prazos (em dias) que o RH pode escolher para a vaga ficar aberta. 30 é o padrão da plataforma.
+export const PRAZOS = ['15', '30', '45', '60', '90']
 export const BENEFICIOS_POOL = ['Vale-refeição', 'Vale-transporte', 'Plano de saúde', 'Plano odontológico', 'Auxílio home-office', 'Day-off aniversário', 'Gympass', 'Bônus anual', 'Stock options', 'Auxílio creche', 'Seguro de vida', 'Horário flexível']
 export const PROCESSO_POOL = ['Triagem de currículo', 'Entrevista com RH', 'Entrevista comportamental', 'Teste técnico / Case', 'Entrevista técnica', 'Entrevista com gestor', 'Entrevista com liderança', 'Dinâmica de grupo', 'Verificação de referências', 'Proposta']
 
@@ -45,7 +47,7 @@ export const BRIEFING_INICIAL: Briefing = {
   cliente: 'TIS Talent AI Platform', gestor: 'Carlos Mendes',
   desafio: 'Estamos expandindo o time de engenharia do TIS Talent AI Platform para sustentar o crescimento da plataforma.',
   objetivo: 'Ampliar a capacidade de entrega de soluções backend de alta performance, garantindo escalabilidade e qualidade nas integrações da plataforma.',
-  local: 'São Paulo, SP', horario: '', carga: '', motivo: 'Aumento do quadro', quantidade: 1,
+  local: 'São Paulo, SP', horario: '', carga: '', motivo: 'Aumento do quadro', quantidade: 1, prazo: 30,
   budget: '', modalidade: 'CLT', beneficios: ['Vale-refeição', 'Plano de saúde', 'Auxílio home-office', 'Day-off aniversário'],
   processoSeletivo: ['Entrevista comportamental', 'Entrevista técnica', 'Entrevista com RH'],
 }
@@ -56,7 +58,7 @@ export const BRIEFING_INICIAL: Briefing = {
 export const SECTIONS = [
   { key: 'identidade', icon: Building2, title: 'Identidade da vaga', desc: 'Como essa posição se posiciona dentro da organização.', fields: ['cargo', 'nivel', 'modelo', 'cliente', 'gestor'] as (keyof Briefing)[] },
   { key: 'sobre', icon: Rocket, title: 'Sobre a vaga', desc: 'O contexto do desafio e o objetivo da contratação, a abertura da descrição.', fields: ['desafio', 'objetivo'] as (keyof Briefing)[] },
-  { key: 'operacao', icon: CalendarClock, title: 'Operação & rotina', desc: 'Onde, quando e em que ritmo essa pessoa vai trabalhar.', fields: ['local', 'horario', 'carga', 'motivo', 'quantidade'] as (keyof Briefing)[] },
+  { key: 'operacao', icon: CalendarClock, title: 'Operação & rotina', desc: 'Onde, quando e em que ritmo essa pessoa vai trabalhar.', fields: ['local', 'horario', 'carga', 'motivo', 'quantidade', 'prazo'] as (keyof Briefing)[] },
   { key: 'investimento', icon: Wallet, title: 'Investimento', desc: 'A faixa salarial e benefícios que tornam essa vaga competitiva.', fields: ['budget', 'modalidade', 'beneficios'] as (keyof Briefing)[] },
   { key: 'processo', icon: ListChecks, title: 'Processo seletivo', desc: 'As etapas da seleção, na ordem, o que quem se candidata vai enfrentar.', fields: ['processoSeletivo'] as (keyof Briefing)[] },
 ] as const
@@ -114,8 +116,10 @@ export function melhorarObjetivo(_d: Briefing, p: Perfil): string {
 }
 
 
-// Tudo obrigatório: o readiness checa TODOS os campos de cada seção.
-export const requiredBriefingOk = (d: Briefing) => SECTIONS.flatMap((s) => s.fields).every((k) => isFilledVal(d[k]))
+// "Sobre a vaga" (desafio/objetivo) é OPCIONAL — vem como rascunho e é refinada no passo do Charlie. As
+// demais seções entram no readiness (bloqueiam publicar enquanto incompletas).
+const SECOES_OBRIGATORIAS = SECTIONS.filter((s) => s.key !== 'sobre')
+export const requiredBriefingOk = (d: Briefing) => SECOES_OBRIGATORIAS.flatMap((s) => s.fields).every((k) => isFilledVal(d[k]))
 export const requiredPerfilOk = (p: Perfil) => PERFIL_SECTIONS.filter((s) => !s.optional).flatMap((s) => s.fields).every((k) => isFilledVal(p[k]))
 
 // Campos obrigatórios → rótulo legível (lista "Faltando completar" da Visão da vaga no passo 3).
@@ -128,7 +132,7 @@ export const REQ_LABELS: Partial<Record<keyof Briefing | keyof Perfil, string>> 
 }
 export type MissingField = { scope: 'Briefing' | 'Perfil'; label: string; hint: string }
 export function missingRequired(d: Briefing, p: Perfil) {
-  const briefFields = SECTIONS.flatMap((s) => s.fields)
+  const briefFields = SECOES_OBRIGATORIAS.flatMap((s) => s.fields)
   const perfFields = PERFIL_SECTIONS.filter((s) => !s.optional).flatMap((s) => s.fields)
   const hint = (label: string, k: string) => (k === 'quantidade' ? 'Deve ser maior que zero.' : `Informe ${label.toLowerCase()}.`)
   const mk = (scope: 'Briefing' | 'Perfil') => (k: keyof Briefing | keyof Perfil): MissingField => {

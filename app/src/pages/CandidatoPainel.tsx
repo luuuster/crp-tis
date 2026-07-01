@@ -9,7 +9,7 @@
  */
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Accessibility, ArrowRight, Briefcase, ChevronDown, CircleDollarSign, Clock, Gift, MapPin, Search, SearchX, Trash2, X } from 'lucide-react'
+import { Accessibility, ArrowRight, Briefcase, ChevronDown, CircleDollarSign, Clock, Gift, LayoutGrid, MapPin, Search, SearchX, Trash2, X } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { CARD } from '@/lib/surfaces'
@@ -20,16 +20,14 @@ import {
 } from '@/lib/vagasCatalogo'
 import { usePagination } from '@/lib/usePagination'
 import { estaLogado, guardarEmailCandidato } from '@/lib/candidatoSessao'
-import { Logo } from '@/components/auth/Logo'
-import { ThemeToggles } from '@/components/ThemeToggles'
-import { ContaMenu } from '@/components/candidato/ContaMenu'
+import { CandidatoShell } from '@/components/candidato/CandidatoShell'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Paginacao } from '@/components/page'
+import { PageContainer, PageHeader, EmptyState, Paginacao } from '@/components/page'
 
 const H_MD = 'h-[var(--button-height-md)]' // 40px — altura padrão dos controles de filtro (DS)
 
@@ -47,19 +45,12 @@ function VagaCard({ v, dias, onAbrir }: { v: VagaPublica; dias: number; onAbrir:
   ]
   return (
     <article className={cn(CARD, 'group flex h-full flex-col gap-4 p-5 transition-[transform,border-color,box-shadow] hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg')}>
-      {/* Topo: publicada + selo PcD. */}
-      <div className="flex items-center justify-between gap-2">
-        <span className="ty-caption font-medium text-muted-foreground">{t('card.publicadaEm', { data: v.publicada })}</span>
-        {v.pcd && (
-          <Badge variant="ghost" className="shrink-0 gap-1 bg-primary/10 ty-caption font-medium text-primary-text">
-            <Accessibility className="size-3.5" aria-hidden /> {t('card.pcd')}
-          </Badge>
-        )}
-      </div>
-
-      {/* Prazo de validade — urgência (≤7 dias) em âmbar pra dar senso de oportunidade. */}
-      <div className={cn('-mt-1.5 flex items-center gap-1.5 ty-caption font-medium', urgente ? 'text-warning-text' : 'text-muted-foreground')}>
-        <Clock className="size-3.5 shrink-0" aria-hidden /> {prazoLabel}
+      {/* Topo: data de publicação + prazo de expiração na MESMA linha (urgência ≤7 dias em âmbar). */}
+      <div className="flex items-center justify-between gap-2 ty-caption font-medium">
+        <span className="text-muted-foreground">{t('card.publicadaEm', { data: v.publicada })}</span>
+        <span className={cn('flex shrink-0 items-center gap-1.5', urgente ? 'text-warning-text' : 'text-muted-foreground')}>
+          <Clock className="size-3.5 shrink-0" aria-hidden /> {prazoLabel}
+        </span>
       </div>
 
       {/* Cargo + tags (nível sólido; modelo/modalidade em contorno). Sem empresa — tudo TIS. */}
@@ -70,6 +61,12 @@ function VagaCard({ v, dias, onAbrir }: { v: VagaPublica; dias: number; onAbrir:
           {[v.briefing.modelo, v.briefing.modalidade].map((tg) => (
             <Badge key={tg} variant="outline" className="font-medium text-muted-foreground">{tg}</Badge>
           ))}
+          {/* Selo PcD movido pra cá (tags), liberando o topo para data + expiração na mesma linha. */}
+          {v.pcd && (
+            <Badge variant="outline" className="gap-1 font-medium text-muted-foreground">
+              <Accessibility className="size-3.5" aria-hidden /> {t('card.pcd')}
+            </Badge>
+          )}
         </div>
       </div>
 
@@ -186,25 +183,13 @@ export function CandidatoPainel({ brand, mode, onCycleBrand, onToggleMode, onSai
   }
 
   return (
-    <div className="min-h-dvh bg-background">
-      {/* Topbar da área logada (própria — não o dock flutuante das telas públicas). */}
-      <header className="sticky top-0 z-30 border-b border-border/60 bg-card/80 backdrop-blur-sm">
-        <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-4 px-6">
-          <Logo brand={brand} className="h-8" />
-          <div className="ml-auto flex items-center gap-1.5">
-            <ThemeToggles brand={brand} mode={mode} onCycleBrand={onCycleBrand} onToggleMode={onToggleMode} />
-            <Separator orientation="vertical" className="mx-1 h-5" />
-            <ContaMenu onSair={onSair} />
-          </div>
-        </div>
-      </header>
-
-      <main className="mx-auto w-full max-w-6xl px-6 pt-10 pb-16 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 motion-safe:duration-500">
-        <h1 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">{t('header.titulo')}</h1>
-        <p className="mt-1.5 ty-body text-muted-foreground">{t('header.subtitulo')}</p>
+    <CandidatoShell active="vagas" brand={brand} mode={mode} onCycleBrand={onCycleBrand} onToggleMode={onToggleMode} onSair={onSair}>
+      <main className="motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 motion-safe:duration-500">
+       <PageContainer>
+        <PageHeader icon={LayoutGrid} title={t('header.titulo')} desc={t('header.subtitulo')} />
 
         {/* Busca + filtros */}
-        <div className="mt-6 space-y-3">
+        <div className="space-y-3">
           <div className="relative">
             <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
             <Input
@@ -266,23 +251,22 @@ export function CandidatoPainel({ brand, mode, onCycleBrand, onToggleMode, onSai
 
         {/* Resultados (paginados) + rodapé "Mostrando X–Y de N" + pager */}
         {totalItems > 0 ? (
-          <>
-            <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div>
+            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {pageItems.map((v) => <li key={v.id}><VagaCard v={v} dias={diasRestantes(v, hoje)} onAbrir={abrir} /></li>)}
             </ul>
-            <Paginacao page={page} total={total} inicio={inicio} shown={pageItems.length} totalItems={totalItems} onPage={setPage} className="mt-8" />
-          </>
-        ) : (
-          <div className="mt-6 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border py-16 text-center">
-            <span aria-hidden className="grid size-12 place-items-center rounded-full bg-muted text-muted-foreground"><SearchX className="size-6" /></span>
-            <div className="space-y-1">
-              <h2 className="ty-body-lg font-semibold text-foreground">{t('vazio.titulo')}</h2>
-              <p className="ty-body-sm text-muted-foreground">{t('vazio.descricao')}</p>
-            </div>
-            <Button variant="outline" onClick={limparTudo} className="gap-1.5"><X className="size-4" aria-hidden /> {t('vazio.limpar')}</Button>
+            <Paginacao page={page} total={total} inicio={inicio} shown={pageItems.length} totalItems={totalItems} onPage={setPage} />
           </div>
+        ) : (
+          <EmptyState
+            icon={SearchX}
+            title={t('vazio.titulo')}
+            description={t('vazio.descricao')}
+            action={<Button variant="outline" onClick={limparTudo} className="gap-1.5"><X className="size-4" aria-hidden /> {t('vazio.limpar')}</Button>}
+          />
         )}
+       </PageContainer>
       </main>
-    </div>
+    </CandidatoShell>
   )
 }

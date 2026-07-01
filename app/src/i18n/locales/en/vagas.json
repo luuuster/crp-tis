@@ -1,7 +1,7 @@
 {
   "header": {
     "titulo": "Jobs",
-    "descricao": "View the jobs registered in the TalentAI Data API and track applicants, approvals and status. Click <0>Open job</0> to create a new one through the step-by-step flow."
+    "descricao": "See all jobs and track applicants, approvals and status. Click <0>Open job</0> to create a new one through the step-by-step flow."
   },
   "kpi": {
     "regiao": "Indicators",
