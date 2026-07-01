@@ -11,6 +11,7 @@
     "dica": "Enviamos una contraseña provisional a tu correo cuando te postulaste.",
     "demo": "Demo: usa cualquier correo y la contraseña provisional {{senha}}.",
     "esqueci": "Olvidé mi contraseña",
+    "lembrar": "Recordarme",
     "entrar": "Entrar",
     "entrando": "Entrando…",
     "mostrarSenha": "Mostrar contraseña",
@@ -78,6 +79,7 @@
   },
   "rodape": {
     "semConta": "¿No tienes una cuenta?",
-    "criarConta": "Crear cuenta"
+    "criarConta": "Crear cuenta",
+    "criarContaAviso": "Este recurso aún debe discutirse con el equipo para evaluar la viabilidad de la implementación."
   }
 }

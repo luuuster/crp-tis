@@ -26,8 +26,10 @@ import { autenticarCandidato, guardarEmailCandidato } from '@/lib/candidatoSessa
 import { AuthLayout } from '@/components/auth/AuthLayout'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 // Demo: a "senha provisória que veio no e-mail". Sem backend — qualquer e-mail + esta senha entra no 1º acesso.
@@ -294,9 +296,15 @@ export function CandidatoAcesso({ brand }: { brand?: string }) {
   const footerLogin = (
     <p className="text-sm text-muted-foreground">
       {t('rodape.semConta')}{' '}
-      <button type="button" onClick={() => { window.location.href = '/cadastro' }} className={cn('font-medium text-link underline-offset-4 hover:underline', focusRing)}>
-        {t('rodape.criarConta')}
-      </button>
+      {/* Aviso de implementação (mockup): criar conta em avaliação — tooltip vermelho no hover/foco. */}
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button type="button" onClick={() => { window.location.href = '/cadastro' }} className={cn('font-medium text-link underline-offset-4 hover:underline', focusRing)}>
+            {t('rodape.criarConta')}
+          </button>
+        </TooltipTrigger>
+        <TooltipContent tone="destructive" className="max-w-xs text-center">{t('rodape.criarContaAviso')}</TooltipContent>
+      </Tooltip>
     </p>
   )
 
@@ -331,17 +339,7 @@ export function CandidatoAcesso({ brand }: { brand?: string }) {
             name="senha"
             render={({ field }) => (
               <FormItem>
-                <div className="flex items-center justify-between gap-2">
-                  <FormLabel>{t('login.label.senha')}</FormLabel>
-                  {/* Esqueci a senha → leva à recuperação (rota própria), pré-preenchendo o e-mail digitado. */}
-                  <button
-                    type="button"
-                    onClick={() => { recuperarForm.reset({ email: loginForm.getValues('email') }); irPara('recuperar', RT_RECUPERAR) }}
-                    className={cn('text-sm font-medium text-link underline-offset-4 hover:underline', focusRing)}
-                  >
-                    {t('login.esqueci')}
-                  </button>
-                </div>
+                <FormLabel>{t('login.label.senha')}</FormLabel>
                 <div className="relative">
                   <FormControl>
                     <Input type={showProvisoria ? 'text' : 'password'} placeholder={t('login.placeholder.senha')} autoComplete="current-password" className="pr-9" {...field} />
@@ -350,11 +348,25 @@ export function CandidatoAcesso({ brand }: { brand?: string }) {
                     {showProvisoria ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                   </button>
                 </div>
-                <FormDescription className="flex items-center gap-1.5"><KeyRound className="size-3.5 shrink-0" aria-hidden /> {t('login.dica')}</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
+
+          {/* Lembrar-me + Esqueci — MESMO layout do login do recrutador (linha abaixo da senha). */}
+          <div className="flex items-center justify-between gap-3">
+            <label htmlFor="cand-lembrar" className="flex items-center gap-2 text-sm">
+              <Checkbox id="cand-lembrar" defaultChecked /> {t('login.lembrar')}
+            </label>
+            {/* Esqueci a senha → leva à recuperação (rota própria), pré-preenchendo o e-mail digitado. */}
+            <button
+              type="button"
+              onClick={() => { recuperarForm.reset({ email: loginForm.getValues('email') }); irPara('recuperar', RT_RECUPERAR) }}
+              className={cn('text-sm font-medium text-link underline-offset-4 hover:underline', focusRing)}
+            >
+              {t('login.esqueci')}
+            </button>
+          </div>
 
           <Button type="submit" className="group w-full" isLoading={loginForm.formState.isSubmitting}>
             {loginForm.formState.isSubmitting ? t('login.entrando') : <>{t('login.entrar')} <ArrowRight className="transition-transform group-hover:translate-x-0.5" /></>}

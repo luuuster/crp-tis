@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
+import { TooltipProvider } from '@/components/ui/tooltip'
 import { CandidatoAcesso } from './CandidatoAcesso'
 
 // Teste de interação REAL (não axe): prova que os DOIS campos da troca de senha aceitam digitação.
@@ -10,7 +11,7 @@ import { CandidatoAcesso } from './CandidatoAcesso'
 describe('CandidatoAcesso — interação', () => {
   it('ambos os campos da troca de senha aceitam digitação (sem congelar o 2º)', async () => {
     const user = userEvent.setup()
-    render(<CandidatoAcesso />)
+    render(<TooltipProvider><CandidatoAcesso /></TooltipProvider>)
 
     // login com a senha provisória (labels exatos p/ não casar com o botão "Mostrar senha")
     await user.type(screen.getByLabelText('E-mail'), 'a@b.com')
