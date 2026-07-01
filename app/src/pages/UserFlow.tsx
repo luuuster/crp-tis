@@ -58,9 +58,10 @@ const FLOW: FlowNode[] = [
 
   { kind: 'phase', label: 'Fase 3 · Triagem e seleção (funil de 5 etapas)' },
   { kind: 'decision', label: 'Currículo aprovado pela IA?', icon: Bot, nao: 'Reprovado na análise de currículo' },
-  { kind: 'process', label: 'Candidato agenda a entrevista (escolhe dias e horários)', icon: CalendarClock, ator: 'cand' },
+  { kind: 'process', label: 'Candidato se identifica (nome + e-mail) — o assistente localiza a candidatura na vaga', icon: Mail, ator: 'cand' },
+  { kind: 'process', label: 'Escolhe datas e períodos; o assistente cruza com a agenda da equipe e oferece os horários disponíveis', icon: CalendarClock, ator: 'cand' },
   { kind: 'process', label: 'Entrevista marcada', icon: CalendarCheck, ator: 'rec' },
-  { kind: 'decision', label: 'Entrevistadores podem comparecer?', icon: Users, nao: 'Imprevisto interno (recrutador/entrevistador não pode) → RH reagenda nos mesmos horários · avisa por e-mail + WhatsApp', naoTom: 'warning', naoIcon: RefreshCw },
+  { kind: 'decision', label: 'Entrevistadores podem comparecer?', icon: Users, nao: 'Imprevisto interno (recrutador/entrevistador não pode) → RH reagenda a partir das datas/horários que o candidato informou · avisa por e-mail + WhatsApp', naoTom: 'warning', naoIcon: RefreshCw },
   { kind: 'process', label: 'Entrevista com o RH', icon: MessagesSquare, ator: 'rec' },
   { kind: 'decision', label: 'RH aprova?', icon: UserCheck, nao: 'Reprovado no RH' },
   { kind: 'process', label: 'Teste técnico / case', icon: FlaskConical, ator: 'rec' },

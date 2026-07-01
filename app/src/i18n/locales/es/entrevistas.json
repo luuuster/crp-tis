@@ -57,6 +57,13 @@
   "agendar": {
     "overlineReagendar": "Reprogramar entrevista",
     "overlineAgendar": "Programar entrevista",
+    "dispCandidato": "Disponibilidad indicada por el candidato",
+    "dispCandidatoDica": "Elige una de las fechas que indicó el candidato.",
+    "dispPeriodos": "Franjas",
+    "periodo": {
+      "manha": "Mañana",
+      "tarde": "Tarde"
+    },
     "data": "Fecha",
     "entrevistadores": "Entrevistadores",
     "contador": "({{n}}/4)",

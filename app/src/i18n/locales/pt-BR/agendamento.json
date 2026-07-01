@@ -1,0 +1,51 @@
+{
+  "titulo": "Agendar entrevista",
+  "subtitulo": "Escolha os melhores dias e horários. Nós cruzamos com a agenda da equipe.",
+  "assistente": {
+    "nome": "Assistente de agendamento",
+    "online": "online",
+    "papel": "Agendamento de entrevistas"
+  },
+  "identificacao": {
+    "nome": "Nome completo",
+    "nomePlaceholder": "Como no seu currículo",
+    "email": "E-mail",
+    "emailPlaceholder": "voce@email.com",
+    "continuar": "Continuar"
+  },
+  "logAria": "Conversa de agendamento",
+  "conector": " e ",
+  "periodo": {
+    "manha": "Manhã",
+    "tarde": "Tarde"
+  },
+  "periodoFaixa": {
+    "manha": "Das 09:00 às 12:00",
+    "tarde": "Das 13:00 às 17:00"
+  },
+  "bot": {
+    "saudacaoInicial": "Oi! 👋 Sou o assistente de agendamento. Antes de começar, me diga seu nome e e-mail para eu localizar a sua candidatura.",
+    "encontrado": "Prontinho, {{nome}}! Localizei a sua candidatura para {{vaga}}.",
+    "perguntaDias": "Quais dias ficam melhores para você? Pode escolher mais de um.",
+    "perguntaPeriodos": "E em quais períodos você fica disponível nesses dias?",
+    "cruzando": "Perfeito! Cruzando a sua disponibilidade com a agenda de {{pessoas}}…",
+    "ofereceHorarios": "Estes são os horários em que o RH consegue te receber. Toque no que preferir:",
+    "semHorarios": "Não encontrei horários em comum nesses dias. Que tal escolher outros dias ou períodos?",
+    "confirmado": "Tudo certo! Sua entrevista de {{vaga}} ficou marcada para {{quando}}. Você vai receber os detalhes por e-mail. 🎉"
+  },
+  "composer": {
+    "diasAria": "Dias da semana disponíveis",
+    "periodosAria": "Períodos disponíveis",
+    "horariosAria": "Horários sugeridos",
+    "confirmarDias": "Confirmar dias",
+    "confirmarPeriodos": "Confirmar períodos",
+    "recomecar": "Escolher outros dias",
+    "slotAria": "Agendar {{quando}}"
+  },
+  "sucesso": {
+    "titulo": "Entrevista agendada",
+    "quando": "{{dia}}, {{data}} às {{hora}}",
+    "nota": "Guardamos os dias e horários que você informou. Se algo mudar, nosso time consegue reagendar respeitando a sua disponibilidade.",
+    "recomecar": "Agendar outro horário"
+  }
+}

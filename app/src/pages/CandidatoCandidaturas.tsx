@@ -21,6 +21,7 @@ import { CandidatoShell } from '@/components/candidato/CandidatoShell'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { PageContainer, PageHeader, EmptyState } from '@/components/page'
@@ -81,11 +82,17 @@ function CandidaturaCard({ c, onDesistir }: { c: CandidaturaComVaga; onDesistir:
             </div>
           </div>
 
-          {/* Ação: ver o feedback do processo (CTA primário cheio). Divisória acima, como no card em andamento. */}
+          {/* Ação: ver o feedback do processo (CTA primário cheio). Divisória acima, como no card em andamento.
+              Aviso de implementação (mockup): tooltip vermelho de "recurso em avaliação" no hover/foco. */}
           <footer className="mt-auto border-t border-border/50 pt-4">
-            <Button onClick={() => setFeedbackAberto(true)} className="w-full gap-1.5">
-              {t('candidaturas.verFeedback')} <ArrowUpRight className="size-4" aria-hidden />
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button onClick={() => setFeedbackAberto(true)} className="w-full gap-1.5">
+                  {t('candidaturas.verFeedback')} <ArrowUpRight className="size-4" aria-hidden />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent tone="destructive" className="max-w-xs text-center">{t('candidaturas.verFeedbackAviso')}</TooltipContent>
+            </Tooltip>
           </footer>
 
           <FeedbackIADialog open={feedbackAberto} onOpenChange={setFeedbackAberto} aprovado={aprovado} cargo={v.briefing.cargo} fase={faseAtual} />
