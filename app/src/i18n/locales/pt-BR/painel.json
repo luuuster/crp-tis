@@ -81,6 +81,7 @@
     "seuProgresso": "Seu progresso",
     "verAndamento": "Ver andamento",
     "verFeedback": "Ver feedback",
+    "verFeedbackAviso": "Este recurso ainda precisa ser discutido com o time para avaliar a viabilidade da implementação.",
     "andamentoEmBreve": "O acompanhamento detalhado chega em breve.",
     "desistir": "Desistir",
     "desistido": "Você saiu do processo de {{cargo}}.",

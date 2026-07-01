@@ -81,6 +81,7 @@
     "seuProgresso": "Your progress",
     "verAndamento": "View progress",
     "verFeedback": "View feedback",
+    "verFeedbackAviso": "This feature still needs to be discussed with the team to assess whether the implementation is feasible.",
     "andamentoEmBreve": "Detailed progress tracking is coming soon.",
     "desistir": "Withdraw",
     "desistido": "You left the {{cargo}} process.",
