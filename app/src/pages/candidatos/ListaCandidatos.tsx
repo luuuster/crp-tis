@@ -25,7 +25,7 @@ import { EtapaBadge, scoreTint, useSenioridadeLabel } from './styles'
 function ColFilter({ value, onChange, options, label, renderLabel }: { value: string; onChange: (v: string) => void; options: readonly string[]; label: string; renderLabel: (v: string) => string }) {
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger size="sm" aria-label={label} className="w-full font-normal"><SelectValue /></SelectTrigger>
+      <SelectTrigger aria-label={label} className="w-full font-normal"><SelectValue /></SelectTrigger>
       <SelectContent>{options.map((o) => <SelectItem key={o} value={o}>{renderLabel(o)}</SelectItem>)}</SelectContent>
     </Select>
   )
@@ -114,7 +114,7 @@ export function ListaCandidatos({
               <TableCell className="py-2">
                 <div className="relative">
                   <Search className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" aria-hidden />
-                  <Input value={q} onChange={(e) => onBusca(e.target.value)} placeholder={t('busca.placeholder')} aria-label={t('busca.aria')} className="h-8 pl-8 ty-body-sm font-normal" />
+                  <Input value={q} onChange={(e) => onBusca(e.target.value)} placeholder={t('busca.placeholder')} aria-label={t('busca.aria')} className="h-[var(--button-height-md)] pl-8 ty-body-sm font-normal" />
                 </div>
               </TableCell>
               <TableCell className="py-2"><ColFilter value={vagaF} onChange={onVagaF} options={vagas} label={t('filtro.vaga')} renderLabel={vagaLabel} /></TableCell>
@@ -171,7 +171,7 @@ export function ListaCandidatos({
         <div className="space-y-3 p-4 md:hidden">
           <div className="relative">
             <Search className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
-            <Input value={q} onChange={(e) => onBusca(e.target.value)} placeholder={t('busca.placeholder')} aria-label={t('busca.aria')} className="h-9 pl-9 ty-body-sm font-normal" />
+            <Input value={q} onChange={(e) => onBusca(e.target.value)} placeholder={t('busca.placeholder')} aria-label={t('busca.aria')} className="h-[var(--button-height-md)] pl-9 ty-body-sm font-normal" />
           </div>
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
             <ColFilter value={vagaF} onChange={onVagaF} options={vagas} label={t('filtro.vaga')} renderLabel={vagaLabel} />

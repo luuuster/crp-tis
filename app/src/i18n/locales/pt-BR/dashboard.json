@@ -93,6 +93,7 @@
   },
   "personalizar": {
     "entrar": "Personalizar",
+    "aviso": "Este recurso ainda precisa ser discutido com o time para avaliar a viabilidade da implementação.",
     "concluir": "Concluir",
     "desc": "Monte sua dashboard: adicione, reordene e redimensione os widgets. As mudanças ficam salvas neste navegador.",
     "adicionarWidget": "Adicionar widget",

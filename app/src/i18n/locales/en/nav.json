@@ -22,7 +22,7 @@
   "demoToast": "\"{{item}}\" is not part of this demo.",
   "conta": {
     "label": "Your account",
-    "minha": "My account",
+    "minha": "Edit profile",
     "contaDemo": "Account (demo).",
     "sair": "Sign out"
   },

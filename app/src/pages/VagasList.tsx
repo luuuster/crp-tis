@@ -196,7 +196,7 @@ function ColFilter({ value, onChange, options, label, format }: { value: string;
   const fmt = format ?? ((v: string) => v)
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger size="sm" aria-label={label} className="w-full font-normal"><SelectValue>{fmt(value)}</SelectValue></SelectTrigger>
+      <SelectTrigger aria-label={label} className="w-full font-normal"><SelectValue>{fmt(value)}</SelectValue></SelectTrigger>
       <SelectContent>
         {options.map((o) => <SelectItem key={o} value={o}>{fmt(o)}</SelectItem>)}
       </SelectContent>
@@ -378,7 +378,7 @@ export function VagasList({ onAbrirVaga, onEditVaga, onVerVaga }: { onAbrirVaga:
               <TableCell className="py-2">
                 <div className="relative">
                   <Search className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" aria-hidden />
-                  <Input value={q} onChange={(e) => { setQ(e.target.value); resetPage() }} placeholder={t('busca.placeholder')} aria-label={t('busca.aria')} className="h-8 pl-8 ty-body-sm font-normal" />
+                  <Input value={q} onChange={(e) => { setQ(e.target.value); resetPage() }} placeholder={t('busca.placeholder')} aria-label={t('busca.aria')} className="h-[var(--button-height-md)] pl-8 ty-body-sm font-normal" />
                 </div>
               </TableCell>
               <TableCell className="py-2"><ColFilter value={senioridadeF} onChange={(v) => { setSenioridadeF(v); resetPage() }} options={senioridades} label={t('filtro.senioridade')} format={fmtTodas} /></TableCell>
@@ -439,7 +439,7 @@ export function VagasList({ onAbrirVaga, onEditVaga, onVerVaga }: { onAbrirVaga:
         <div className="space-y-3 p-4 md:hidden">
           <div className="relative">
             <Search className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
-            <Input value={q} onChange={(e) => { setQ(e.target.value); resetPage() }} placeholder={t('busca.placeholder')} aria-label={t('busca.aria')} className="h-9 pl-9 ty-body-sm font-normal" />
+            <Input value={q} onChange={(e) => { setQ(e.target.value); resetPage() }} placeholder={t('busca.placeholder')} aria-label={t('busca.aria')} className="h-[var(--button-height-md)] pl-9 ty-body-sm font-normal" />
           </div>
           <div className="grid grid-cols-2 gap-2">
             <ColFilter value={dataF} onChange={(v) => { setDataF(v); resetPage() }} options={datas} label={t('filtro.data')} format={fmtTodas} />

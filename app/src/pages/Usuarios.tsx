@@ -117,7 +117,7 @@ function maskData(v: string) {
 function ColFilter({ value, onChange, options, label, renderLabel }: { value: string; onChange: (v: string) => void; options: readonly string[]; label: string; renderLabel: (v: string) => string }) {
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger size="sm" aria-label={label} className="w-full font-normal"><SelectValue>{renderLabel(value)}</SelectValue></SelectTrigger>
+      <SelectTrigger aria-label={label} className="w-full font-normal"><SelectValue>{renderLabel(value)}</SelectValue></SelectTrigger>
       <SelectContent>{options.map((o) => <SelectItem key={o} value={o}>{renderLabel(o)}</SelectItem>)}</SelectContent>
     </Select>
   )
@@ -261,7 +261,7 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
                 <TableCell className="py-2">
                   <div className="relative">
                     <Search className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" aria-hidden />
-                    <Input value={q} onChange={(e) => { setQ(e.target.value); resetPage() }} placeholder={t('filtro.buscarPlaceholder')} aria-label={t('filtro.buscarLabel')} className="h-8 pl-8 ty-body-sm font-normal" />
+                    <Input value={q} onChange={(e) => { setQ(e.target.value); resetPage() }} placeholder={t('filtro.buscarPlaceholder')} aria-label={t('filtro.buscarLabel')} className="h-[var(--button-height-md)] pl-8 ty-body-sm font-normal" />
                   </div>
                 </TableCell>
                 <TableCell className="py-2"><ColFilter value={funcaoF} onChange={(v) => { setFuncaoF(v as (typeof FUNCAO_FILTROS)[number]); resetPage() }} options={FUNCAO_FILTROS} label={t('filtro.porFuncao')} renderLabel={labelFiltroFuncao} /></TableCell>
@@ -330,7 +330,7 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
           <div className="space-y-3 p-4 md:hidden">
             <div className="relative">
               <Search className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
-              <Input value={q} onChange={(e) => { setQ(e.target.value); resetPage() }} placeholder={t('filtro.buscarPlaceholder')} aria-label={t('filtro.buscarLabel')} className="h-9 pl-9 ty-body-sm font-normal" />
+              <Input value={q} onChange={(e) => { setQ(e.target.value); resetPage() }} placeholder={t('filtro.buscarPlaceholder')} aria-label={t('filtro.buscarLabel')} className="h-[var(--button-height-md)] pl-9 ty-body-sm font-normal" />
             </div>
             <div className="grid grid-cols-2 gap-2">
               <ColFilter value={funcaoF} onChange={(v) => { setFuncaoF(v as (typeof FUNCAO_FILTROS)[number]); resetPage() }} options={FUNCAO_FILTROS} label={t('filtro.porFuncao')} renderLabel={labelFiltroFuncao} />

@@ -2,6 +2,8 @@
   "idioma": "Language",
   "abrirCalendario": "Open calendar",
   "exportar": "Export",
+  "exportarAvisoTitulo": "Export — feature under review",
+  "exportarAviso": "This feature still needs to be discussed with the team to assess whether the implementation is feasible.",
   "tentarNovamente": "Try again",
   "buscar": "Search",
   "acao": {
@@ -12,7 +14,8 @@
     "fechar": "Close",
     "editar": "Edit",
     "limpar": "Clear",
-    "limparFiltros": "Clear filters"
+    "limparFiltros": "Clear filters",
+    "entendi": "Got it"
   },
   "filtro": { "todas": "All", "todos": "All" },
   "vazio": { "descricaoFiltro": "Adjust the search or filters to see more results." },

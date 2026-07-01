@@ -496,17 +496,17 @@ export function Entrevistas({ onNavigate, brand, mode, onCycleBrand, onToggleMod
             {/* controles: navegação + mês/ano */}
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/50 p-4 sm:p-5">
               <div className="flex items-center gap-1.5">
-                <Button variant="outline" size="icon-sm" aria-label={t('calendario.mesAnterior')} onClick={() => mudarMes(-1)}><ChevronLeft aria-hidden /></Button>
+                <Button variant="outline" size="icon" aria-label={t('calendario.mesAnterior')} onClick={() => mudarMes(-1)}><ChevronLeft aria-hidden /></Button>
                 <h2 className="min-w-[10rem] text-center font-heading text-lg font-bold tracking-tight text-foreground tabular-nums">{mesLongo(mes)} {ano}</h2>
-                <Button variant="outline" size="icon-sm" aria-label={t('calendario.proximoMes')} onClick={() => mudarMes(1)}><ChevronRight aria-hidden /></Button>
+                <Button variant="outline" size="icon" aria-label={t('calendario.proximoMes')} onClick={() => mudarMes(1)}><ChevronRight aria-hidden /></Button>
               </div>
               <div className="flex items-center gap-2">
                 <Select value={String(mes)} onValueChange={(v) => setMes(Number(v))}>
-                  <SelectTrigger size="sm" aria-label={t('calendario.mes')} className="w-36"><SelectValue /></SelectTrigger>
+                  <SelectTrigger aria-label={t('calendario.mes')} className="w-36"><SelectValue /></SelectTrigger>
                   <SelectContent>{Array.from({ length: 12 }, (_, i) => <SelectItem key={i} value={String(i)}>{mesLongo(i)}</SelectItem>)}</SelectContent>
                 </Select>
                 <Select value={String(ano)} onValueChange={(v) => setAno(Number(v))}>
-                  <SelectTrigger size="sm" aria-label={t('calendario.ano')} className="w-24"><SelectValue /></SelectTrigger>
+                  <SelectTrigger aria-label={t('calendario.ano')} className="w-24"><SelectValue /></SelectTrigger>
                   <SelectContent>{ANOS.map((a) => <SelectItem key={a} value={String(a)}>{a}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
