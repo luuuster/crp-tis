@@ -4,7 +4,7 @@
  * É EAGER de propósito (não pode estar no chunk lazy que ele cobre). 100% token-driven; role=status anuncia.
  */
 import { cn } from '@/lib/utils'
-import { CARD } from '@/lib/surfaces'
+import { CARD, HEADER_SURFACE } from '@/lib/surfaces'
 import { Logo } from '@/components/auth/Logo'
 import { Skeleton } from '@/components/ui/skeleton'
 
@@ -42,11 +42,11 @@ function CardSkeleton() {
 export function PainelSkeleton({ brand }: { brand?: string }) {
   return (
     <div className="min-h-dvh bg-background" role="status" aria-label="Carregando vagas">
-      <header className="sticky top-0 z-30 border-b border-border/60 bg-card/80 backdrop-blur-sm">
-        <div className="mx-auto w-full max-w-6xl px-6">
+      <header className={cn('sticky top-0 z-30', HEADER_SURFACE)}>
+        <div className="mx-auto w-full max-w-6xl px-5 lg:px-8">
           <div className="flex h-16 items-center gap-4">
             <Logo brand={brand} className="h-8" />
-            <Skeleton className="ml-auto size-9 rounded-full" />
+            <Skeleton className="ml-auto size-10 rounded-full" />
           </div>
           {/* abas (espelha o CandidatoShell: Vagas · Minhas candidaturas · Candidaturas finalizadas) */}
           <div className="-mb-px flex gap-4 pb-3">
@@ -57,7 +57,7 @@ export function PainelSkeleton({ brand }: { brand?: string }) {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-6xl px-6 pt-10 pb-16">
+      <main className="mx-auto w-full max-w-6xl px-5 py-8 lg:px-8">
         <Skeleton className="h-8 w-52" />
         <Skeleton className="mt-2.5 h-5 w-80 max-w-full" />
 

@@ -3,6 +3,11 @@
     "titulo": "Embudo de contratación",
     "descricao": "Todo el flujo de selección en una pantalla. La IA entrevista y mide la compatibilidad con la vacante; a partir de ahí, cada etapa tiene su propia forma de avanzar al candidato."
   },
+  "vista": {
+    "aria": "Cambiar vista",
+    "funil": "Embudo",
+    "calendario": "Calendario"
+  },
   "total": "{{n}} candidatos en el embudo",
   "resultado": "{{n}} de {{total}} candidatos",
   "boardAria": "Columnas del embudo — desplázate en horizontal para verlas todas",
@@ -34,7 +39,8 @@
   "tempoEtapa_other": "Hace {{count}} días en esta etapa",
   "agendadaPara": "Agendada: {{quando}}",
   "reagendar": "Reagendar",
-  "reagendarAviso": "Este recurso aún debe discutirse con el equipo para evaluar la viabilidad de la implementación.",
+  "entrevistador": "Entrevistador",
+  "entrevistadores": "Entrevistadores",
   "verCurriculo": "Ver currículum",
   "acao": {
     "verProcesso": "Ver el proceso de {{nome}}"
@@ -48,12 +54,17 @@
     "titulo": "Entrevista finalizada — {{nome}}",
     "desc": "Registra la entrevista y genera un nuevo análisis de IA.",
     "overline": "Entrevista finalizada",
-    "intro": "Registra cómo fue la conversación con el candidato. La IA genera un nuevo análisis a partir de tus notas y el archivo adjunto.",
+    "intro": "Adjunta el guion completado (y el audio, si lo tienes) y registra tus notas. La IA genera un nuevo análisis a partir de este material.",
     "notasLabel": "Notas de la entrevista",
     "notasPlaceholder": "¿Cómo fue la entrevista? Puntos clave, impresiones, fortalezas y aspectos a revisar…",
-    "arquivoLabel": "Adjuntar archivo",
-    "arquivoPlaceholder": "Haz clic para subir una grabación, transcripción o notas",
+    "arquivoLabel": "Adjuntar guion completado",
+    "arquivoPlaceholder": "Haz clic para subir el guion completado (Word, PDF o documento)",
+    "audioLabel": "Adjuntar audio de la entrevista",
+    "audioPlaceholder": "Haz clic para subir el audio de la entrevista",
     "removerArquivo": "Quitar archivo",
+    "removerAudio": "Quitar audio",
+    "obrigatorio": "obligatorio",
+    "opcional": "(opcional)",
     "analisar": "Analizar con IA",
     "analisando": "La IA está analizando la entrevista…",
     "resultadoTitulo": "Nuevo análisis de IA",

@@ -451,6 +451,7 @@ function NovaSenhaEtapa({
                     {showNova ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                   </button>
                 </div>
+                <FormMessage />
               </FormItem>
             )}
           />

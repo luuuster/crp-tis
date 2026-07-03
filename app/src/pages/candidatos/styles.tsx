@@ -13,16 +13,17 @@ import { Badge } from '@/components/ui/badge'
 import type { Etapa, ResultadoFase, StatusProc } from './types'
 
 // Pílula de etapa: mapa valor→TOM (token-driven, AA). O VALOR canônico pt-BR é mantido nos mapas/comparações;
-// só a EXIBIÇÃO é traduzida (lookup `etapa.${value}`). 'Em entrevista' usa o tom `warning` (âmbar).
-// Tons da ETAPA: semântico p/ desfecho (success/destructive/warning), neutro p/ "parado" (Banco) e a
-// paleta de DADOS (blue/violet) p/ as etapas intermediárias — antes Triagem/Entrevistado vestiam a MARCA
-// (secondary/primary), o que repintava o funil no rebrand e colidia com o verde de "Contratado".
+// só a EXIBIÇÃO é traduzida (lookup `etapa.${value}`).
+// Tons da ETAPA: desfecho semântico (success p/ Contratado, destructive p/ Reprovado), neutro p/ "parado"
+// (Banco de Talentos) e a paleta de DADOS (blue/teal/violet/warning) p/ as 4 fases do funil — sem vestir a
+// MARCA (repintaria no rebrand e colidiria com o verde de "Contratado").
 export const ETAPA_TOM: Record<Etapa, BadgeTone> = {
-  'Triagem': 'blue',
-  'Em entrevista': 'warning',
-  'Entrevistado': 'violet',
+  'Triagem IA': 'blue',
+  'Entrevista RH': 'teal',
+  'Teste Técnico': 'violet',
+  'Entrevista Gestor': 'warning',
   'Contratado': 'success',
-  'Banco de talentos': 'muted',
+  'Banco de Talentos': 'muted',
   'Reprovado': 'destructive',
 }
 export function EtapaBadge({ value, className }: { value: Etapa; className?: string }) {

@@ -3,6 +3,11 @@
     "titulo": "Hiring pipeline",
     "descricao": "The whole selection flow on one screen. AI interviews and scores the match with the role; from there, each stage has its own way to advance the candidate."
   },
+  "vista": {
+    "aria": "Switch view",
+    "funil": "Board",
+    "calendario": "Calendar"
+  },
   "total": "{{n}} candidates in the pipeline",
   "resultado": "{{n}} of {{total}} candidates",
   "boardAria": "Pipeline columns — scroll horizontally to see all",
@@ -34,7 +39,8 @@
   "tempoEtapa_other": "{{count}} days in this stage",
   "agendadaPara": "Scheduled: {{quando}}",
   "reagendar": "Reschedule",
-  "reagendarAviso": "This feature still needs to be discussed with the team to assess whether the implementation is feasible.",
+  "entrevistador": "Interviewer",
+  "entrevistadores": "Interviewers",
   "verCurriculo": "View resume",
   "acao": {
     "verProcesso": "View {{nome}}'s process"
@@ -48,12 +54,17 @@
     "titulo": "Interview completed — {{nome}}",
     "desc": "Log the interview and generate a new AI analysis.",
     "overline": "Interview completed",
-    "intro": "Log how the conversation with the candidate went. AI generates a new analysis from your notes and the attached file.",
+    "intro": "Attach the filled script (and the audio, if any) and log your notes. AI generates a new analysis from this material.",
     "notasLabel": "Interview notes",
     "notasPlaceholder": "How was the interview? Key points, impressions, strengths and concerns…",
-    "arquivoLabel": "Attach file",
-    "arquivoPlaceholder": "Click to upload a recording, transcript or notes",
+    "arquivoLabel": "Attach filled script",
+    "arquivoPlaceholder": "Click to upload the filled script (Word, PDF or document)",
+    "audioLabel": "Attach interview audio",
+    "audioPlaceholder": "Click to upload the interview audio",
     "removerArquivo": "Remove file",
+    "removerAudio": "Remove audio",
+    "obrigatorio": "required",
+    "opcional": "(optional)",
     "analisar": "Analyze with AI",
     "analisando": "AI is analyzing the interview…",
     "resultadoTitulo": "New AI analysis",

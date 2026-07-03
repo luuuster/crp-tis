@@ -59,7 +59,7 @@
     "titulo": "¡Candidatura enviada!",
     "descricao": "Recibimos tu candidatura para {{vaga}}. Te avisaremos por correo sobre los próximos pasos.",
     "emailAviso": "Enviamos una contraseña provisional a tu correo. Úsala para acceder a tu cuenta y seguir tu candidatura.",
-    "segundaEtapa": "Ir a la segunda etapa",
+    "segundaEtapa": "Iniciar entrevista",
     "acessar": "Acceder a mi cuenta",
     "outra": "Enviar otra candidatura",
     "verVagas": "Ver otras vacantes"
@@ -78,6 +78,35 @@
     "sucessoDescricao": "Recibimos tus respuestas. Nuestro equipo las evaluará y te avisaremos por correo sobre los próximos pasos.",
     "validacao": {
       "obrigatoria": "Responde a esta pregunta."
+    }
+  },
+  "entrevista": {
+    "titulo": "Entrevista",
+    "persona": "Entrevistador · Equipo de reclutamiento",
+    "candidatoLabel": "Candidato",
+    "vagaLabel": "Vacante",
+    "tempoRestante": "Tiempo restante: {{tempo}}",
+    "tempoEsgotado": "Tiempo agotado — finalizando…",
+    "chatTitulo": "Chat de la entrevista",
+    "logAria": "Conversación de la entrevista",
+    "respostaLabel": "Tu respuesta",
+    "respostaPlaceholder": "Escribe tu respuesta…",
+    "enviar": "Enviar respuesta",
+    "perguntaContador": "Pregunta {{n}} de {{total}}",
+    "faseLabel": "Etapa: {{fase}}",
+    "fase": {
+      "aquecimento": "Calentamiento",
+      "experiencia": "Experiencia",
+      "tecnica": "Técnica",
+      "encerramento": "Cierre"
+    },
+    "analisando": "¡Gracias! Estoy evaluando tus respuestas junto con tu currículum…",
+    "veredito": {
+      "aprovadoTitulo": "¡Avanzaste a la siguiente etapa!",
+      "aprovadoTexto": "Tus respuestas mostraron claridad y buena afinidad con el perfil de la vacante. Pronto te contactaremos por correo sobre los próximos pasos.",
+      "reprovadoTitulo": "No avanzaste en esta etapa",
+      "reprovadoTexto": "Muchas gracias por participar. En este momento tu perfil no avanzó en esta etapa, pero tu registro permanece en nuestra base para futuras oportunidades.",
+      "irPainel": "Ir al tablón de vacantes"
     }
   },
   "toast": {

@@ -13,6 +13,11 @@ export const FIELD =
 /** Popover/menu flutuante "clean": sem borda, definido por sombra + anel hairline do DS. */
 export const FLOAT = 'border-0 shadow-xl ring-1 ring-surface-ring'
 
+/** Barra de topo (header) da plataforma: fio inferior + superfície de card translúcida com blur. Fonte
+ *  ÚNICA da "casca" do header — todas as topbars (recrutador, candidato, docs) puxam daqui pra não
+ *  divergirem no fio/fundo/blur. Layout (sticky, h-16, gutter, flex) fica com cada header. */
+export const HEADER_SURFACE = 'border-b border-border/60 bg-card/80 backdrop-blur-sm'
+
 /** Superfície de card: fonte ÚNICA da elevação (sombra + anel hairline do DS). Padding/raio extra
  *  entram via cn() em cada uso. */
 export const CARD = 'rounded-2xl bg-card shadow-sm ring-1 ring-surface-ring'

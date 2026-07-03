@@ -9,8 +9,8 @@
  */
 import type { LucideIcon } from 'lucide-react'
 import {
-  Blocks, Bot, Brain, Briefcase, Building2, Calendar, CheckCircle2, ClipboardList, Compass, FileText, FolderTree,
-  KanbanSquare, KeyRound, LayoutDashboard, LayoutGrid, Link2, LockKeyhole, Network, Search, Settings, Tag, UserPlus,
+  Bot, Briefcase, Building2, Calendar, CheckCircle2, ClipboardList, Compass, FileText, FolderTree,
+  KanbanSquare, KeyRound, LayoutDashboard, LayoutGrid, Link2, LockKeyhole, MessagesSquare, Network, Search, Settings, Tag, UserPlus,
   UserRound, Users,
 } from 'lucide-react'
 
@@ -83,7 +83,7 @@ const RECRUTADOR: Produto = {
             { path: '/usuarios/:id', desc: 'Editar / desativar' },
           ],
         },
-        { icon: Blocks, path: '/componentes', desc: 'Galeria do DS — tokens, a11y e marca/tema' },
+        { icon: UserRound, path: '/perfil', desc: 'Editar perfil (foto, dados pessoais, troca de senha) — via menu da conta' },
       ],
     },
   ],
@@ -101,7 +101,7 @@ const CANDIDATO: Produto = {
         {
           icon: KeyRound, path: '/acesso', desc: 'Login (senha provisória)',
           subs: [
-            { path: '/acesso/trocar-senha', desc: 'Trocar a senha provisória (1º acesso)' },
+            { path: '/acesso · trocar senha', desc: 'Trocar a senha provisória (1º acesso · etapa transitória, sem URL própria)' },
             { path: '/acesso/recuperar', desc: 'Esqueci a senha — informa o e-mail' },
             { path: '/acesso/recuperar/enviado', desc: 'Link de recuperação enviado' },
           ],
@@ -138,8 +138,8 @@ const CANDIDATO: Produto = {
       nome: '2ª etapa',
       itens: [
         {
-          icon: Brain, path: '/questionario', desc: 'Perguntas abertas + captcha',
-          subs: [{ path: '/questionario/enviado', desc: 'Questionário enviado → volta ao mural' }],
+          icon: MessagesSquare, path: '/entrevista', desc: 'Entrevista conversacional (chat) logo após candidatar — cronômetro + fases',
+          subs: [{ path: '/entrevista/veredito', desc: 'Veredito da etapa (avançou / não avançou) → volta ao mural' }],
         },
       ],
     },
@@ -293,7 +293,7 @@ export function MapaArquitetura() {
               // A árvore do Recrutador é larga (9 folhas numa linha) — rola na horizontal quando não cabe.
               // O fade nas bordas (mask, no wrapper interno p/ não desbotar o chrome do card) sinaliza
               // "há mais conteúdo p/ rolar" em vez de parecer cortado; simétrico e theme-agnóstico.
-              <div key={raiz.label} className={cn(CARD, 'p-5 sm:p-6')}>
+              <div key={raiz.label} className={cn(CARD, 'p-6')}>
                 <div className="overflow-x-auto [--fade:1.75rem] [-webkit-mask-image:linear-gradient(to_right,transparent,#000_var(--fade),#000_calc(100%-var(--fade)),transparent)] [mask-image:linear-gradient(to_right,transparent,#000_var(--fade),#000_calc(100%-var(--fade)),transparent)]">
                   <ul aria-label={`Site map — ${raiz.label}`} className="mx-auto flex w-max justify-center px-1 pt-1">
                     <TreeNode node={raiz} pos="root" />

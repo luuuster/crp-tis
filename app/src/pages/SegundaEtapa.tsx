@@ -93,7 +93,7 @@ export function SegundaEtapa({ brand, nome, vaga, onConcluir, onSair, publico = 
       <CandidatoHeader brand={brand} onSair={onSair} publico={publico} />
 
       <main className="min-h-0 flex-1 overflow-y-auto">
-        <div className="mx-auto w-full max-w-4xl px-6 py-10 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 motion-safe:duration-500">
+        <div className="mx-auto w-full max-w-4xl px-5 py-8 lg:px-8 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 motion-safe:duration-500">
           {enviado ? (
             // Etapa concluída — confirma o recebimento das respostas.
             <div className="mx-auto max-w-md rounded-2xl border border-success/25 bg-success/5 p-8 text-center">

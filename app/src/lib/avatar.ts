@@ -14,3 +14,16 @@ export const AVATAR_TINTS = [
 
 /** Escolhe uma tintura ESTÁVEL por nome (determinístico via hashNum) — mesmo nome, mesma cor. */
 export const tintFor = (nome: string) => AVATAR_TINTS[hashNum(nome) % AVATAR_TINTS.length]
+
+// Primeiros nomes FEMININOS que aparecem na demo — só para escolher o gênero do retrato fake.
+const PRIMEIRO_FEM = new Set(['Aline', 'Beatriz', 'Camila', 'Fernanda', 'Juliana', 'Marina', 'Patrícia', 'Ana', 'Carla', 'Helena', 'Letícia', 'Paula', 'Renata', 'Sofia'])
+
+/**
+ * Foto FAKE determinística por nome (retrato do randomuser.me), com gênero inferido pelo primeiro nome.
+ * É mockup: se a imagem não carregar (offline/sem rede), o Avatar cai no fallback de iniciais sozinho.
+ * Mesmo nome → mesma foto.
+ */
+export const fotoDe = (nome: string) => {
+  const fem = PRIMEIRO_FEM.has(nome.trim().split(' ')[0])
+  return `https://randomuser.me/api/portraits/${fem ? 'women' : 'men'}/${hashNum(nome) % 100}.jpg`
+}

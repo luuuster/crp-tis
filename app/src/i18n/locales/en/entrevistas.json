@@ -9,7 +9,20 @@
     "mesAnterior": "Previous month",
     "proximoMes": "Next month",
     "mes": "Month",
-    "ano": "Year"
+    "ano": "Year",
+    "hoje": "Today",
+    "semana": "Week",
+    "visao": "View",
+    "semanaAnterior": "Previous week",
+    "semanaProxima": "Next week"
+  },
+  "responsavel": {
+    "label": "Assignee",
+    "buscar": "Search assignee",
+    "verTodos": "Show full list",
+    "limpar": "Clear",
+    "vazio": "No assignee found.",
+    "contagem": "{{n}} assignees"
   },
   "dia": {
     "mais": "+{{n}} more",
@@ -22,7 +35,10 @@
     "buscar": "Search interview by name…",
     "buscarAria": "Search interview by candidate name",
     "vaziaBusca": "No interviews found for this search.",
-    "vazia": "No interviews scheduled this month."
+    "vazia": "No interviews scheduled this month.",
+    "mostrar": "Show upcoming interviews",
+    "ocultar": "Hide upcoming interviews",
+    "fecharAria": "Close upcoming interviews"
   },
   "formato": {
     "Online": "Online",
@@ -47,6 +63,8 @@
     "entrarChamada": "Join the call",
     "verLocal": "View location",
     "toastEntrando": "Joining the call… (demo)",
+    "baixarRoteiro": "Download script",
+    "roteiroBaixado": "{{cand}}'s interview script downloaded.",
     "toastLocalCopiado": "Location address copied (demo).",
     "reagendar": "Reschedule",
     "cancelar": "Cancel",

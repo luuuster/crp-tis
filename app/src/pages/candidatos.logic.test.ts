@@ -9,7 +9,7 @@ const cand = (over: Partial<Candidato> = {}): Candidato => ({
   email: 'fulano@email.com',
   vaga: 'Desenvolvedor Backend',
   senioridade: 'Pleno',
-  etapa: 'Triagem',
+  etapa: 'Triagem IA',
   score: 80,
   atualizado: 'ontem',
   ...over,

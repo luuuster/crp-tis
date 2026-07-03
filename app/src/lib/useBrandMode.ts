@@ -3,6 +3,11 @@ import { useEffect, useState } from 'react'
 export type Brand = 'crp' | 'marca-b'
 export type Mode = 'light' | 'dark'
 
+// Nome AMIGÁVEL exibido de cada marca (o código é interno). Fonte única — o Logo, o painel de auth e os
+// toggles de tema/marca puxam daqui, pra não divergirem (CRP aparece como "TIS"; a 2ª marca como "Trevo").
+export const BRAND_NOME: Record<Brand, string> = { crp: 'TIS', 'marca-b': 'Trevo' }
+export const brandNome = (brand?: string): string => BRAND_NOME[brand as Brand] ?? BRAND_NOME.crp
+
 // Lê do localStorage com guarda (valida contra a lista de valores aceitos) e tolera storage indisponível.
 export function readStored<T extends string>(key: string, allowed: readonly T[], fallback: T): T {
   try {

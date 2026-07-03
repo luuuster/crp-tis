@@ -56,7 +56,7 @@ const VAGAS_INICIAL: Vaga[] = [
     },
   ),
   mkVaga(
-    { id: '2', data: '10/01/2026', inscritos: 34, aprovados: 6, status: 'Rascunho' },
+    { id: '2', data: '10/01/2026', inscritos: 0, aprovados: 0, status: 'Rascunho' }, // rascunho = não publicada → sem inscritos/aprovados
     {
       cargo: 'UX Designer III', nivel: 'Sênior', modelo: 'Remoto',
       cliente: 'TIS Talent AI Platform', gestor: 'Marina Albuquerque',
@@ -162,11 +162,11 @@ const VAGAS_INICIAL: Vaga[] = [
   ),
   // --- vagas adicionais (template genérico, detalhe completo) — povoam a lista p/ demonstrar a paginação ---
   mkGen({ id: '7', data: '05/01/2026', inscritos: 41, aprovados: 7, status: 'Aberta' }, 'Desenvolvedor Mobile', 'Pleno', 'Remoto', 'Carlos Mendes', 'R$ 8.000 a R$ 12.000', ['React Native', 'TypeScript', 'iOS', 'Android', 'Git'], 'Desenvolver e manter aplicativos móveis. Integrar APIs e otimizar performance. Garantir qualidade com testes. Colaborar com design e produto.'),
-  mkGen({ id: '8', data: '05/01/2026', inscritos: 18, aprovados: 3, status: 'Rascunho' }, 'Scrum Master', 'Sênior', 'Híbrido', 'Rafael Tavares', 'R$ 11.000 a R$ 16.000', ['Scrum', 'Kanban', 'Facilitação', 'Jira', 'Métricas ágeis'], 'Facilitar cerimônias ágeis e remover impedimentos. Apoiar a melhoria contínua do time. Acompanhar métricas de fluxo. Promover a cultura ágil.'),
+  mkGen({ id: '8', data: '05/01/2026', inscritos: 0, aprovados: 0, status: 'Rascunho' }, 'Scrum Master', 'Sênior', 'Híbrido', 'Rafael Tavares', 'R$ 11.000 a R$ 16.000', ['Scrum', 'Kanban', 'Facilitação', 'Jira', 'Métricas ágeis'], 'Facilitar cerimônias ágeis e remover impedimentos. Apoiar a melhoria contínua do time. Acompanhar métricas de fluxo. Promover a cultura ágil.'),
   mkGen({ id: '9', data: '03/01/2026', inscritos: 52, aprovados: 10, status: 'Aberta' }, 'Cientista de Dados', 'Sênior', 'Remoto', 'Carlos Mendes', 'R$ 12.000 a R$ 18.000', ['Python', 'SQL', 'Machine Learning', 'Pandas', 'MLOps'], 'Desenvolver e validar modelos de machine learning. Analisar dados e gerar insights. Colocar modelos em produção. Colaborar com engenharia de dados.'),
   mkGen({ id: '10', data: '03/01/2026', inscritos: 29, aprovados: 5, status: 'Em pausa' }, 'Analista de Marketing', 'Pleno', 'Presencial', 'Marina Albuquerque', 'R$ 5.000 a R$ 8.000', ['SEO', 'Mídia paga', 'Analytics', 'Conteúdo', 'CRM'], 'Planejar e executar campanhas de marketing. Acompanhar métricas e otimizar resultados. Produzir conteúdo. Apoiar a estratégia de growth.'),
   mkGen({ id: '11', data: '02/01/2026', inscritos: 37, aprovados: 6, status: 'Aberta' }, 'DevOps Engineer', 'Sênior', 'Remoto', 'Carlos Mendes', 'R$ 13.000 a R$ 19.000', ['Kubernetes', 'Terraform', 'AWS', 'CI/CD', 'Observabilidade'], 'Automatizar pipelines de build e deploy. Manter a infraestrutura como código. Garantir confiabilidade e observabilidade. Apoiar as squads em produção.'),
-  mkGen({ id: '12', data: '02/01/2026', inscritos: 14, aprovados: 2, status: 'Rascunho' }, 'Designer de Produto', 'Júnior', 'Híbrido', 'Marina Albuquerque', 'R$ 4.500 a R$ 7.000', ['Figma', 'Protótipos', 'Design System', 'Pesquisa', 'Acessibilidade'], 'Apoiar a criação de fluxos e telas. Manter componentes no design system. Participar de testes com usuários. Garantir acessibilidade nas entregas.'),
+  mkGen({ id: '12', data: '02/01/2026', inscritos: 0, aprovados: 0, status: 'Rascunho' }, 'Designer de Produto', 'Júnior', 'Híbrido', 'Marina Albuquerque', 'R$ 4.500 a R$ 7.000', ['Figma', 'Protótipos', 'Design System', 'Pesquisa', 'Acessibilidade'], 'Apoiar a criação de fluxos e telas. Manter componentes no design system. Participar de testes com usuários. Garantir acessibilidade nas entregas.'),
   mkGen({ id: '13', data: '28/12/2025', inscritos: 45, aprovados: 9, status: 'Fechada' }, 'Analista de RH', 'Pleno', 'Presencial', 'Rafael Tavares', 'R$ 5.000 a R$ 7.500', ['Recrutamento', 'Entrevistas', 'Cultura', 'Indicadores de RH', 'Onboarding'], 'Conduzir processos seletivos ponta a ponta. Apoiar a jornada do colaborador. Acompanhar indicadores de RH. Fortalecer a cultura da empresa.'),
   mkGen({ id: '14', data: '28/12/2025', inscritos: 61, aprovados: 11, status: 'Aberta' }, 'Tech Lead Frontend', 'Sênior', 'Remoto', 'Carlos Mendes', 'R$ 15.000 a R$ 22.000', ['React', 'TypeScript', 'Arquitetura', 'Performance', 'Mentoria'], 'Liderar tecnicamente o time de frontend. Definir padrões e arquitetura. Revisar código e mentorar. Garantir performance e qualidade.'),
   mkGen({ id: '15', data: '22/12/2025', inscritos: 20, aprovados: 4, status: 'Em pausa' }, 'Suporte Técnico N2', 'Júnior', 'Híbrido', 'Marina Albuquerque', 'R$ 3.500 a R$ 5.000', ['Atendimento', 'Troubleshooting', 'SQL básico', 'Documentação', 'ITIL'], 'Atender e resolver chamados de nível 2. Diagnosticar e escalar problemas. Documentar soluções. Apoiar a satisfação dos clientes.'),
@@ -182,6 +182,10 @@ const STATUS_TOM: Record<Status, BadgeTone> = {
 }
 const STATUS_FILTROS = ['Todos', 'Aberta', 'Rascunho', 'Em pausa', 'Fechada'] as const
 const PER_PAGE = 10
+
+// Rascunho = vaga ainda NÃO publicada → não existe inscrito/aprovado. Exibe "—" no lugar do número
+// (em vez de "0", que sugeriria uma vaga aberta sem candidatos).
+const naoPublicada = (v: Vaga) => v.status === 'Rascunho'
 
 // Rótulo TRADUZIDO de um status (o VALOR canônico pt-BR continua no estado/filtros/tones; só a exibição muda).
 // Chave dinâmica `status.${Status}` sobre a união literal — a tipagem segue feliz. Para o sentinela "Todos"
@@ -238,19 +242,19 @@ export function VagaDetalhe({ vaga }: { vaga: Vaga }) {
         </dl>
       </header>
 
-      {/* funil: inscritos → aprovados → taxa */}
+      {/* funil: inscritos → aprovados → taxa. Rascunho (não publicada) ainda não tem funil → "—". */}
       <section aria-label={t('detalhe.resultados')} className="grid gap-4 sm:grid-cols-3">
-        <StatCard icon={Users} label={t('detalhe.inscritos')} value={vaga.inscritos} />
-        <StatCard icon={CheckCircle2} label={t('detalhe.aprovados')} value={vaga.aprovados} />
+        <StatCard icon={Users} label={t('detalhe.inscritos')} value={naoPublicada(vaga) ? '—' : vaga.inscritos} />
+        <StatCard icon={CheckCircle2} label={t('detalhe.aprovados')} value={naoPublicada(vaga) ? '—' : vaga.aprovados} />
         <StatCard
           icon={TrendingUp}
           label={t('detalhe.taxaAprovacao')}
-          value={`${taxa}%`}
-          delta={
+          value={naoPublicada(vaga) ? '—' : `${taxa}%`}
+          delta={naoPublicada(vaga) ? undefined : (
             <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-muted" aria-hidden>
               <div className="h-full rounded-full bg-success" style={{ width: `${taxa}%` }} />
             </div>
-          }
+          )}
         />
       </section>
 
@@ -419,8 +423,8 @@ export function VagasList({ onAbrirVaga, onEditVaga, onVerVaga }: { onAbrirVaga:
                   </TableCell>
                   <TableCell className="py-3"><Badge variant="ghost" className="bg-muted ty-caption font-medium text-muted-foreground">{v.senioridade}</Badge></TableCell>
                   <TableCell className="py-3 ty-body-sm text-muted-foreground">{v.modelo}</TableCell>
-                  <TableCell className="py-3 text-right ty-body-sm font-medium tabular-nums text-foreground">{v.inscritos}</TableCell>
-                  <TableCell className="py-3 text-right ty-body-sm font-semibold tabular-nums text-success-text">{v.aprovados}</TableCell>
+                  <TableCell className="py-3 text-right ty-body-sm font-medium tabular-nums text-foreground">{naoPublicada(v) ? <span className="text-muted-foreground">—</span> : v.inscritos}</TableCell>
+                  <TableCell className="py-3 text-right ty-body-sm font-semibold tabular-nums text-success-text">{naoPublicada(v) ? <span className="font-normal text-muted-foreground">—</span> : v.aprovados}</TableCell>
                   <TableCell className="py-3"><StatusBadge value={statusLabel(t, v.status)} tones={{ [statusLabel(t, v.status)]: STATUS_TOM[v.status] }} /></TableCell>
                   <TableCell className="py-3 text-right">
                     <div className="flex justify-end gap-1">
@@ -464,8 +468,8 @@ export function VagasList({ onAbrirVaga, onEditVaga, onVerVaga }: { onAbrirVaga:
                   </div>
                   <div className="flex items-center justify-between gap-2 border-t border-border/50 pt-3">
                     <div className="flex gap-4 ty-caption text-muted-foreground">
-                      <span>{t('tabela.inscritos')} <span className="font-medium tabular-nums text-foreground">{v.inscritos}</span></span>
-                      <span>{t('tabela.aprovados')} <span className="font-semibold tabular-nums text-success-text">{v.aprovados}</span></span>
+                      <span>{t('tabela.inscritos')} <span className="font-medium tabular-nums text-foreground">{naoPublicada(v) ? '—' : v.inscritos}</span></span>
+                      <span>{t('tabela.aprovados')} <span className={cn('font-semibold tabular-nums', naoPublicada(v) ? 'font-normal text-muted-foreground' : 'text-success-text')}>{naoPublicada(v) ? '—' : v.aprovados}</span></span>
                     </div>
                     <div className="flex gap-1">
                       <Tip label={t('acoes.editar', { vaga: v.vaga })}><Button variant="ghost" size="icon-sm" aria-label={t('acoes.editar', { vaga: v.vaga })} onClick={() => onEditVaga(v)} className="text-muted-foreground hover:bg-primary/10 hover:text-primary-text"><Pencil /></Button></Tip>

@@ -59,7 +59,7 @@
     "titulo": "Inscrição enviada!",
     "descricao": "Recebemos sua candidatura para {{vaga}}. Você será avisado por e-mail sobre os próximos passos.",
     "emailAviso": "Enviamos uma senha provisória ao seu e-mail. Use-a para acessar sua conta e acompanhar a candidatura.",
-    "segundaEtapa": "Ir para a segunda etapa",
+    "segundaEtapa": "Iniciar entrevista",
     "acessar": "Acessar minha conta",
     "outra": "Fazer outra inscrição",
     "verVagas": "Ver outras vagas"
@@ -78,6 +78,35 @@
     "sucessoDescricao": "Recebemos suas respostas. Nossa equipe vai avaliá-las e avisaremos por e-mail sobre os próximos passos.",
     "validacao": {
       "obrigatoria": "Responda a esta pergunta."
+    }
+  },
+  "entrevista": {
+    "titulo": "Entrevista",
+    "persona": "Entrevistador · Time de recrutamento",
+    "candidatoLabel": "Candidato",
+    "vagaLabel": "Vaga",
+    "tempoRestante": "Tempo restante: {{tempo}}",
+    "tempoEsgotado": "Tempo esgotado — finalizando…",
+    "chatTitulo": "Chat da entrevista",
+    "logAria": "Conversa da entrevista",
+    "respostaLabel": "Sua resposta",
+    "respostaPlaceholder": "Digite sua resposta…",
+    "enviar": "Enviar resposta",
+    "perguntaContador": "Pergunta {{n}} de {{total}}",
+    "faseLabel": "Fase: {{fase}}",
+    "fase": {
+      "aquecimento": "Aquecimento",
+      "experiencia": "Experiência",
+      "tecnica": "Técnica",
+      "encerramento": "Encerramento"
+    },
+    "analisando": "Obrigado! Estou avaliando as suas respostas junto com o seu currículo…",
+    "veredito": {
+      "aprovadoTitulo": "Você avançou para a próxima etapa!",
+      "aprovadoTexto": "Suas respostas mostraram clareza e boa aderência ao perfil da vaga. Em breve entramos em contato com os próximos passos por e-mail.",
+      "reprovadoTitulo": "Você não avançou nesta etapa",
+      "reprovadoTexto": "Agradecemos muito a sua participação. Neste momento o seu perfil não seguiu nesta etapa, mas o seu cadastro continua na nossa base para futuras oportunidades.",
+      "irPainel": "Ir para o mural de vagas"
     }
   },
   "toast": {

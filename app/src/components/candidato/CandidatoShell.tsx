@@ -12,12 +12,10 @@ import { useTranslation } from 'react-i18next'
 import { CheckCircle2, ClipboardList, LayoutGrid } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
-import { focusRing } from '@/lib/focus'
+import { HEADER_SURFACE } from '@/lib/surfaces'
 import type { Brand, Mode } from '@/lib/useBrandMode'
-import { Logo } from '@/components/auth/Logo'
-import { ThemeToggles } from '@/components/ThemeToggles'
-import { ContaMenu } from '@/components/candidato/ContaMenu'
-import { Separator } from '@/components/ui/separator'
+import { CandidatoBrandRow } from '@/components/candidato/CandidatoBrandRow'
+import { SectionTabs } from '@/components/SectionTabs'
 
 export type AbaCandidato = 'vagas' | 'candidaturas' | 'finalizadas'
 
@@ -39,38 +37,12 @@ export function CandidatoShell({ brand, mode, onCycleBrand, onToggleMode, onSair
   const { t } = useTranslation('painel')
   return (
     <div className="min-h-dvh bg-background">
-      <header className="sticky top-0 z-30 border-b border-border/60 bg-card/80 backdrop-blur-sm">
-        <div className="mx-auto w-full max-w-6xl px-6">
-          {/* Linha 1: logo + controles de conta/tema */}
-          <div className="flex h-16 items-center gap-4">
-            <Logo brand={brand} className="h-8" />
-            <div className="ml-auto flex items-center gap-1.5">
-              <ThemeToggles brand={brand} mode={mode} onCycleBrand={onCycleBrand} onToggleMode={onToggleMode} />
-              <Separator orientation="vertical" className="mx-1 h-5" />
-              <ContaMenu onSair={onSair} />
-            </div>
-          </div>
-          {/* Linha 2: abas sublinhadas (alinhadas à borda inferior do header). No mobile a faixa rola na
-              horizontal (overflow-x-auto + itens shrink-0/nowrap) em vez de quebrar em 2 linhas. */}
-          <nav aria-label={t('nav.label')} className="-mb-px flex gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {ABAS.map((aba) => {
-              const ativo = aba.key === active
-              return (
-                <a
-                  key={aba.key}
-                  href={aba.href}
-                  aria-current={ativo ? 'page' : undefined}
-                  className={cn(
-                    'inline-flex shrink-0 items-center gap-2 border-b-2 px-3 pb-3 ty-body-sm font-medium whitespace-nowrap transition-colors',
-                    ativo ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground',
-                    focusRing,
-                  )}
-                >
-                  <aba.icon className="size-4" aria-hidden /> {t(`nav.${aba.key}`)}
-                </a>
-              )
-            })}
-          </nav>
+      <header className={cn('sticky top-0 z-30', HEADER_SURFACE)}>
+        <div className="mx-auto w-full max-w-6xl px-5 lg:px-8">
+          {/* Linha 1: logo + controles de conta/tema — mesma linha de topo do header público. */}
+          <CandidatoBrandRow brand={brand} mode={mode} onCycleBrand={onCycleBrand} onToggleMode={onToggleMode} onSair={onSair} conta />
+          {/* Linha 2: abas sublinhadas (padrão compartilhado com a documentação). */}
+          <SectionTabs label={t('nav.label')} tabs={ABAS.map((aba) => ({ href: aba.href, label: t(`nav.${aba.key}`), icon: aba.icon, active: aba.key === active }))} />
         </div>
       </header>
       {children}

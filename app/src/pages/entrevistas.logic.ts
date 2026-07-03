@@ -11,6 +11,14 @@ import { hashNum } from '@/lib/hash'
 export const ENTREVISTADORES = ['Marina Albuquerque · RH', 'Carlos Mendes · Gestor', 'Rafael Tavares · Tech Lead', 'Beatriz Nunes · Recrutadora']
 export const DURACOES = ['30 min', '45 min', '60 min', '90 min']
 
+// Universo de RESPONSÁVEIS (equipe de RH/gestão) para o filtro do calendário — em ordem alfabética e
+// incluindo os ENTREVISTADORES acima (que são quem de fato conduz as entrevistas dos eventos).
+export const RESPONSAVEIS = [
+  'Aline Costa', 'André Pinto', 'Beatriz Nunes', 'Camila Rocha', 'Carlos Mendes', 'Diego Farias',
+  'Fernanda Dias', 'Juliana Castro', 'Marcelo Reis', 'Marina Albuquerque', 'Patrícia Gomes',
+  'Rafael Tavares', 'Roberto Silva', 'Thiago Moreira',
+]
+
 // Disponibilidade (demo): horários úteis (pula 12h de almoço). O livre/ocupado de cada entrevistador
 // é DETERMINÍSTICO por (entrevistador + data + horário) — simula o que viria do free/busy do Teams
 // (Microsoft Graph getSchedule/findMeetingTimes). ~35% ocupado por bloco.

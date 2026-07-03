@@ -54,7 +54,8 @@ const FLOW: FlowNode[] = [
     ],
   },
   { kind: 'process', label: 'Inscrição enviada', icon: Inbox, ator: 'cand' },
-  { kind: 'process', label: 'Responde o questionário (2ª etapa)', icon: Brain, ator: 'cand' },
+  { kind: 'process', label: 'Entrevista conversacional (2ª etapa) — responde as perguntas do entrevistador por chat', icon: MessagesSquare, ator: 'cand' },
+  { kind: 'process', label: 'Respostas + currículo avaliados → veredito da etapa (avançou / não avançou)', icon: Brain, ator: 'cand' },
 
   { kind: 'phase', label: 'Fase 3 · Triagem e seleção (funil de 5 etapas)' },
   { kind: 'decision', label: 'Currículo aprovado pela IA?', icon: Bot, nao: 'Reprovado na análise de currículo' },

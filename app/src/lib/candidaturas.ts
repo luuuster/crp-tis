@@ -48,13 +48,3 @@ export function lerCandidaturas(): CandidaturaComVaga[] {
     .map((c) => { const vaga = vagaPorId(c.vagaId); return vaga ? { ...c, vaga } : null })
     .filter((c): c is CandidaturaComVaga => c !== null)
 }
-
-export type EstadoFase = 'feita' | 'atual' | 'pendente' | 'reprovada'
-
-/** Estado de uma fase (índice i) para uma candidatura — dirige cor/ícone/aria do stepper. */
-export function estadoDaFase(c: Candidatura, i: number): EstadoFase {
-  if (c.status === 'aprovado') return 'feita'
-  if (i < c.faseIndex) return 'feita'
-  if (i === c.faseIndex) return c.status === 'reprovado' ? 'reprovada' : 'atual'
-  return 'pendente'
-}

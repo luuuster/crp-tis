@@ -19,6 +19,7 @@ import { CalendarClock, Check, CheckCircle2, RotateCcw, Sunrise, Sunset } from '
 import { cn } from '@/lib/utils'
 import { dataMedia, diaSemanaLongo, diaSemanaNome } from '@/lib/datetime'
 import { PERIODOS, horariosEmDatas, proximosDiasUteis, type DiaDisponivel, type Periodo, type SlotCruzado } from '@/lib/disponibilidade'
+import type { Mode } from '@/lib/useBrandMode'
 import { CandidatoHeader } from '@/components/candidato/CandidatoHeader'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -89,7 +90,7 @@ function PeriodoCard({ on, onClick, icon: Icon, nome, faixa }: { on: boolean; on
   )
 }
 
-export function AgendarEntrevistaCandidato({ brand, vaga = 'Desenvolvedor Backend' }: { brand?: string; vaga?: string }) {
+export function AgendarEntrevistaCandidato({ brand, mode, onCycleBrand, onToggleMode, vaga = 'Desenvolvedor Backend' }: { brand?: string; mode?: Mode; onCycleBrand?: () => void; onToggleMode?: () => void; vaga?: string }) {
   const { t } = useTranslation('agendamento')
   const [etapa, setEtapa] = useState<Etapa>('identificacao')
   const [nome, setNome] = useState('') // identificação confirmada
@@ -109,7 +110,7 @@ export function AgendarEntrevistaCandidato({ brand, vaga = 'Desenvolvedor Backen
 
   // Rótulo legível dos entrevistadores para a fala do bot: "Marina Albuquerque (RH) e Carlos Mendes (Gestor)".
   const pessoasLabel = useMemo(
-    () => PESSOAS.map((p) => { const [nome, papel] = p.split(' · '); return `${nome} (${papel})` }).join(t('conector')),
+    () => PESSOAS.map((p) => { const [pnome, papel] = p.split(' · '); return `${pnome} (${papel})` }).join(t('conector')),
     [t],
   )
 
@@ -150,8 +151,8 @@ export function AgendarEntrevistaCandidato({ brand, vaga = 'Desenvolvedor Backen
 
   return (
     <div className="flex min-h-dvh flex-col bg-background">
-      <CandidatoHeader brand={brand} />
-      <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-4 py-8 sm:px-6">
+      <CandidatoHeader brand={brand} mode={mode} onCycleBrand={onCycleBrand} onToggleMode={onToggleMode} />
+      <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-5 py-8 lg:px-8">
         <div className="mb-5">
           <h1 className="font-heading text-2xl font-bold tracking-tight text-foreground">{t('titulo')}</h1>
           <p className="mt-1 ty-body-sm text-muted-foreground">{t('subtitulo')}</p>

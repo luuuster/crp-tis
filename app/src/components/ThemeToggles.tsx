@@ -1,8 +1,10 @@
 import { Moon, Palette, Sun } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 import { Button } from '@/components/ui/button'
 import { Tip } from '@/components/ui/tooltip'
 import { LanguageSelect } from '@/components/LanguageSelect'
+import { brandNome } from '@/lib/useBrandMode'
 import type { Brand, Mode } from '@/lib/useBrandMode'
 
 // Dock flutuante (idioma + marca + tema) — sempre no canto superior direito. Compartilhado pelos dois
@@ -16,18 +18,21 @@ export function ThemeToggles({ brand, mode, onCycleBrand, onToggleMode }: {
   onCycleBrand: () => void
   onToggleMode: () => void
 }) {
-  const brandLabel = `Trocar para ${brand === 'crp' ? 'Trevo' : 'TIS'}`
-  const modeLabel = mode === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro'
+  // Rótulos i18n (namespace 'common') — MESMA fonte da topbar do recrutador, pra os tooltips baterem nos
+  // três idiomas e a marca aparecer pelo nome amigável (não pelo código interno).
+  const { t } = useTranslation('common')
+  const brandLabel = t('marca', { marca: brandNome(brand) })
+  const modeLabel = t(mode === 'dark' ? 'tema.claro' : 'tema.escuro')
   return (
     <>
-      <LanguageSelect />
+      <LanguageSelect size="icon" />
       <Tip label={brandLabel}>
-        <Button variant="ghost" size="icon-sm" aria-label={brandLabel} onClick={onCycleBrand}>
+        <Button variant="ghost" size="icon" aria-label={brandLabel} onClick={onCycleBrand}>
           <Palette />
         </Button>
       </Tip>
       <Tip label={modeLabel}>
-        <Button variant="ghost" size="icon-sm" aria-label={modeLabel} onClick={onToggleMode}>
+        <Button variant="ghost" size="icon" aria-label={modeLabel} onClick={onToggleMode}>
           {mode === 'dark' ? <Sun /> : <Moon />}
         </Button>
       </Tip>

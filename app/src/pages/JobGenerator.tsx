@@ -186,7 +186,7 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
     : t('crumb.novaVaga')
 
   return (
-    <div className="ty-scale-16 flex h-dvh overflow-hidden bg-muted/40 text-foreground">
+    <div className="ty-scale-16 flex h-dvh overflow-hidden bg-background text-foreground">
       <Sidebar active="gerador" expanded={leftExpanded} onNavigate={onNavigate} onVagas={irParaLista} brand={brand} />
       <MobileNav active="gerador" open={navOpen} onOpenChange={setMobileNavOpen} onNavigate={onNavigate} onVagas={irParaLista} brand={brand} />
 

@@ -7,7 +7,7 @@
  * Layout alinhado ao mural de Vagas (CandidatoPainel): mesma largura (max-w-6xl), grade de 3 colunas e o
  * mesmo chrome de card (cargo, tags, hover). 100% token-driven, multi-marca, claro/escuro e WCAG 2.2 AA.
  */
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { Accessibility, ArrowUpRight, Ban, Briefcase, CheckCircle2, CircleSlash, ClipboardList, type LucideIcon, MapPin, MessageSquareText, Search, SearchX, Target, Trophy, X } from 'lucide-react'
@@ -201,8 +201,8 @@ export function CandidatoCandidaturas({ brand, mode, onCycleBrand, onToggleMode,
   onSair?: () => void
   tipo?: 'andamento' | 'finalizadas'
 }) {
-  // Mesma garantia do mural: se chegou sem sessão, estabelece uma demo (mock, sem backend).
-  if (!estaLogado()) guardarEmailCandidato('ana.souza@exemplo.com')
+  // Mesma garantia do mural: se chegou sem sessão, estabelece uma demo NA MONTAGEM (efeito, não no render).
+  useEffect(() => { if (!estaLogado()) guardarEmailCandidato('ana.souza@exemplo.com') }, [])
   const { t } = useTranslation('painel')
   const ns = tipo === 'finalizadas' ? 'finalizadas' : 'candidaturas' // namespace de textos da página
   // Cada aba mostra um conjunto: "Minhas candidaturas" = em andamento · "Finalizadas" = aprovada/reprovada.

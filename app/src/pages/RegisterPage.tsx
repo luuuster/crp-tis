@@ -193,6 +193,7 @@ export function RegisterPage({ onBackToLogin, onRegistered, brand }: { onBackToL
                 <FormDescription className="sr-only">
                   {t('registro.descricaoSenha')}
                 </FormDescription>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -217,6 +218,7 @@ export function RegisterPage({ onBackToLogin, onRegistered, brand }: { onBackToL
                   </button>
                 </div>
                 <FormDescription className="sr-only">{t('registro.descricaoConfirmar')}</FormDescription>
+                <FormMessage />
               </FormItem>
             )}
           />
