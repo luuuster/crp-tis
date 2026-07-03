@@ -59,7 +59,7 @@
     "titulo": "Application sent!",
     "descricao": "We received your application for {{vaga}}. You'll be notified by e-mail about the next steps.",
     "emailAviso": "We sent a temporary password to your e-mail. Use it to access your account and follow your application.",
-    "segundaEtapa": "Go to the second stage",
+    "segundaEtapa": "Start interview",
     "acessar": "Access my account",
     "outra": "Submit another application",
     "verVagas": "View other jobs"
@@ -78,6 +78,35 @@
     "sucessoDescricao": "We received your answers. Our team will review them and notify you by e-mail about the next steps.",
     "validacao": {
       "obrigatoria": "Please answer this question."
+    }
+  },
+  "entrevista": {
+    "titulo": "Interview",
+    "persona": "Interviewer · Recruitment team",
+    "candidatoLabel": "Candidate",
+    "vagaLabel": "Job",
+    "tempoRestante": "Time left: {{tempo}}",
+    "tempoEsgotado": "Time's up — wrapping up…",
+    "chatTitulo": "Interview chat",
+    "logAria": "Interview conversation",
+    "respostaLabel": "Your answer",
+    "respostaPlaceholder": "Type your answer…",
+    "enviar": "Send answer",
+    "perguntaContador": "Question {{n}} of {{total}}",
+    "faseLabel": "Stage: {{fase}}",
+    "fase": {
+      "aquecimento": "Warm-up",
+      "experiencia": "Experience",
+      "tecnica": "Technical",
+      "encerramento": "Wrap-up"
+    },
+    "analisando": "Thank you! I'm reviewing your answers together with your resume…",
+    "veredito": {
+      "aprovadoTitulo": "You've advanced to the next stage!",
+      "aprovadoTexto": "Your answers showed clarity and a good fit with the role. We'll reach out soon about the next steps by e-mail.",
+      "reprovadoTitulo": "You didn't advance in this stage",
+      "reprovadoTexto": "Thank you very much for taking part. At this moment your profile didn't move forward in this stage, but your registration stays in our database for future opportunities.",
+      "irPainel": "Go to the job board"
     }
   },
   "toast": {

@@ -1,37 +1,34 @@
 /**
- * Header leve das telas do candidato no fluxo público (descrição da vaga, 2ª etapa). Só a marca — quando há
- * sessão, o logo vira link pro mural (/painel) e aparece a conta (avatar + ponto verde + sair) à direita.
- * Sem sessão (link público direto, ex.: LinkedIn), fica só o logo estático, sem conta.
- *
- * `publico` força a visão "fora do sistema": mesmo com sessão, esconde a conta e o link pro mural — é o que
- * um visitante sem cadastro (vindo do LinkedIn) veria.
+ * Header leve das telas do candidato no fluxo público (descrição da vaga, entrevista, agendamento). A linha
+ * de topo (marca + cluster de idioma/marca/tema + conta) vem do CandidatoBrandRow — a MESMA da área logada
+ * (CandidatoShell), pra o topo ficar consistente em todas as telas do candidato. Quando há sessão, o logo
+ * vira link pro mural (/painel). `publico` força a visão "fora do sistema" (esconde a conta e o link).
  */
 import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/lib/utils'
-import { focusRing } from '@/lib/focus'
+import { HEADER_SURFACE } from '@/lib/surfaces'
 import { estaLogado } from '@/lib/candidatoSessao'
-import { Logo } from '@/components/auth/Logo'
-import { ContaMenu } from '@/components/candidato/ContaMenu'
+import type { Mode } from '@/lib/useBrandMode'
+import { CandidatoBrandRow } from '@/components/candidato/CandidatoBrandRow'
 
-export function CandidatoHeader({ brand, onSair, publico = false }: { brand?: string; onSair?: () => void; publico?: boolean }) {
+export function CandidatoHeader({ brand, mode, onCycleBrand, onToggleMode, onSair, publico = false }: {
+  brand?: string
+  mode?: Mode
+  onCycleBrand?: () => void
+  onToggleMode?: () => void
+  onSair?: () => void
+  publico?: boolean
+}) {
   const { t } = useTranslation('painel')
   const logado = !publico && estaLogado()
   return (
-    <header className="shrink-0 border-b border-border/60">
-      <div className="mx-auto flex h-16 w-full max-w-4xl items-center px-6">
-        {logado ? (
-          <a href="/painel" aria-label={t('conta.irMural')} className={cn('rounded-sm', focusRing)}>
-            <Logo brand={brand} className="h-8" />
-          </a>
-        ) : (
-          <Logo brand={brand} className="h-8" />
-        )}
-        {logado && (
-          <div className="ml-auto">
-            <ContaMenu onSair={onSair} />
-          </div>
-        )}
+    <header className={cn('sticky top-0 z-30 shrink-0', HEADER_SURFACE)}>
+      <div className="mx-auto w-full max-w-6xl px-5 lg:px-8">
+        <CandidatoBrandRow
+          brand={brand} mode={mode} onCycleBrand={onCycleBrand} onToggleMode={onToggleMode} onSair={onSair}
+          logoHref={logado ? '/painel' : undefined} logoLabel={t('conta.irMural')} conta={logado}
+        />
       </div>
     </header>
   )

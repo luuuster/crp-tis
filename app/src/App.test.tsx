@@ -12,9 +12,9 @@ test('alterna a marca aplicando data-brand no <html>', async () => {
   const user = userEvent.setup()
   render(<App />)
   expect(document.documentElement.getAttribute('data-brand')).toBeNull()
-  await user.click(screen.getByRole('button', { name: /trocar para trevo/i }))
+  await user.click(screen.getByRole('button', { name: /atual: TIS/i }))
   expect(document.documentElement.getAttribute('data-brand')).toBe('marca-b')
-  await user.click(screen.getByRole('button', { name: /trocar para tis/i }))
+  await user.click(screen.getByRole('button', { name: /atual: Trevo/i }))
   expect(document.documentElement.getAttribute('data-brand')).toBeNull()
 })
 
@@ -22,9 +22,9 @@ test('alterna o tema aplicando a classe .dark no <html>', async () => {
   const user = userEvent.setup()
   render(<App />)
   expect(document.documentElement.classList.contains('dark')).toBe(false)
-  await user.click(screen.getByRole('button', { name: /mudar para tema escuro/i }))
+  await user.click(screen.getByRole('button', { name: /^tema escuro$/i }))
   expect(document.documentElement.classList.contains('dark')).toBe(true)
-  await user.click(screen.getByRole('button', { name: /mudar para tema claro/i }))
+  await user.click(screen.getByRole('button', { name: /^tema claro$/i }))
   expect(document.documentElement.classList.contains('dark')).toBe(false)
 })
 

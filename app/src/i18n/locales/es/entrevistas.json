@@ -9,7 +9,20 @@
     "mesAnterior": "Mes anterior",
     "proximoMes": "Mes siguiente",
     "mes": "Mes",
-    "ano": "Año"
+    "ano": "Año",
+    "hoje": "Hoy",
+    "semana": "Semana",
+    "visao": "Vista",
+    "semanaAnterior": "Semana anterior",
+    "semanaProxima": "Semana siguiente"
+  },
+  "responsavel": {
+    "label": "Responsable",
+    "buscar": "Buscar responsable",
+    "verTodos": "Mostrar lista completa",
+    "limpar": "Limpiar",
+    "vazio": "Ningún responsable encontrado.",
+    "contagem": "{{n}} responsables"
   },
   "dia": {
     "mais": "+{{n}} más",
@@ -22,7 +35,10 @@
     "buscar": "Buscar entrevista por nombre…",
     "buscarAria": "Buscar entrevista por nombre del candidato",
     "vaziaBusca": "No se encontraron entrevistas para esta búsqueda.",
-    "vazia": "No hay entrevistas programadas este mes."
+    "vazia": "No hay entrevistas programadas este mes.",
+    "mostrar": "Mostrar próximas entrevistas",
+    "ocultar": "Ocultar próximas entrevistas",
+    "fecharAria": "Cerrar próximas entrevistas"
   },
   "formato": {
     "Online": "En línea",
@@ -47,6 +63,8 @@
     "entrarChamada": "Unirse a la llamada",
     "verLocal": "Ver lugar",
     "toastEntrando": "Uniéndose a la llamada… (demo)",
+    "baixarRoteiro": "Descargar guion",
+    "roteiroBaixado": "Guion de entrevista de {{cand}} descargado.",
     "toastLocalCopiado": "Dirección del lugar copiada (demo).",
     "reagendar": "Reprogramar",
     "cancelar": "Cancelar",

@@ -4,7 +4,9 @@
  * NÃO importa de Candidatos.tsx (evita ciclo); só depende de utilitários de @/lib.
  */
 
-export type Etapa = 'Triagem' | 'Em entrevista' | 'Entrevistado' | 'Contratado' | 'Banco de talentos' | 'Reprovado'
+// Etapa do candidato no funil — espelha as fases do Funil de contratação (Triagem IA → RH → Teste → Gestor)
+// + os desfechos (Contratado / Reprovado / Banco de Talentos).
+export type Etapa = 'Triagem IA' | 'Entrevista RH' | 'Teste Técnico' | 'Entrevista Gestor' | 'Contratado' | 'Banco de Talentos' | 'Reprovado'
 export type Candidato = { id: string; nome: string; email: string; vaga: string; senioridade: string; etapa: Etapa; score: number; atualizado: string }
 
 // Match = candidato + % de aderência + skills da vaga que ele cobre + o "por quê".

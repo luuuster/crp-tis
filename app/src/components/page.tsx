@@ -172,23 +172,28 @@ export function Paginacao({ page, total, inicio, shown, totalItems, onPage, comp
   const { t } = useTranslation('common')
   const size = compact ? 'icon-sm' : 'sm'
   return (
-    <div className={cn('mt-4 flex items-center justify-between gap-3 border-t border-border/50 pt-4', className)}>
-      <p className="ty-caption text-muted-foreground">
-        {t('paginacao.mostrando')} <span className="font-medium tabular-nums text-foreground">{inicio + 1}–{inicio + shown}</span> {t('paginacao.de')} <span className="font-medium tabular-nums text-foreground">{totalItems}</span>
-      </p>
-      <div className="flex items-center gap-3">
-        {/* Contador FORA do par (não-compact): senão o "Anterior" desabilitado (opacity-50) fica órfão
-            entre os dois botões. Agrupados, prev/next leem como UM controle mesmo com um deles desabilitado. */}
+    // Mobile: 2 linhas — info (Mostrando + Página) numa, botões na outra. Desktop (sm+): tudo numa linha,
+    // info à esquerda e botões à direita.
+    <div className={cn('mt-4 flex flex-col gap-3 border-t border-border/50 pt-4 sm:flex-row sm:items-center sm:justify-between', className)}>
+      {/* Info: "Mostrando X–Y de N" + (não-compact) "Página P de T". No mobile a linha se espalha
+          (justify-between); no desktop os dois ficam juntos à esquerda. */}
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-0.5 sm:justify-start">
+        <p className="ty-caption text-muted-foreground">
+          {t('paginacao.mostrando')} <span className="font-medium tabular-nums text-foreground">{inicio + 1}–{inicio + shown}</span> {t('paginacao.de')} <span className="font-medium tabular-nums text-foreground">{totalItems}</span>
+        </p>
+        {/* Contador FORA do par de botões (não-compact): senão o "Anterior" desabilitado fica órfão entre eles. */}
         {!compact && <span className="ty-caption tabular-nums text-muted-foreground" aria-live="polite">{t('paginacao.pagina')} {page} {t('paginacao.de')} {total}</span>}
-        <div className="flex items-center gap-1.5">
-          <Button variant="outline" size={size} aria-label={t('paginacao.paginaAnterior')} onClick={() => onPage((p) => Math.max(1, p - 1))} disabled={page <= 1}>
-            <ChevronLeft aria-hidden />{!compact && <span>{t('paginacao.anterior')}</span>}
-          </Button>
-          {compact && <span className="px-0.5 ty-caption tabular-nums text-muted-foreground" aria-live="polite">{page} {t('paginacao.de')} {total}</span>}
-          <Button variant="outline" size={size} aria-label={t('paginacao.proximaPagina')} onClick={() => onPage((p) => Math.min(total, p + 1))} disabled={page >= total}>
-            {!compact && <span>{t('paginacao.proxima')}</span>}<ChevronRight aria-hidden />
-          </Button>
-        </div>
+      </div>
+      {/* Botões (2ª linha no mobile, ocupando a largura toda — metade cada). No compact, o contador vive
+          ENTRE os dois botões-ícone e o par fica alinhado à direita. */}
+      <div className="flex items-center justify-end gap-1.5">
+        <Button variant="outline" size={size} className={cn(!compact && 'flex-1 sm:flex-none')} aria-label={t('paginacao.paginaAnterior')} onClick={() => onPage((p) => Math.max(1, p - 1))} disabled={page <= 1}>
+          <ChevronLeft aria-hidden />{!compact && <span>{t('paginacao.anterior')}</span>}
+        </Button>
+        {compact && <span className="px-0.5 ty-caption tabular-nums text-muted-foreground" aria-live="polite">{page} {t('paginacao.de')} {total}</span>}
+        <Button variant="outline" size={size} className={cn(!compact && 'flex-1 sm:flex-none')} aria-label={t('paginacao.proximaPagina')} onClick={() => onPage((p) => Math.min(total, p + 1))} disabled={page >= total}>
+          {!compact && <span>{t('paginacao.proxima')}</span>}<ChevronRight aria-hidden />
+        </Button>
       </div>
     </div>
   )

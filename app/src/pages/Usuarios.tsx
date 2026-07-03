@@ -7,10 +7,11 @@
  */
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { LayoutList, MailCheck, Pencil, Search, ShieldCheck, UserCheck, UserMinus, UserPlus, Users } from 'lucide-react'
+import { Eye, EyeOff, LayoutList, MailCheck, Pencil, Search, ShieldCheck, UserCheck, UserMinus, UserPlus, Users } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { cn } from '@/lib/utils'
+import { focusRing } from '@/lib/focus'
 import { CARD } from '@/lib/surfaces'
 import { iniciais } from '@/lib/format'
 import { tintFor } from '@/lib/avatar'
@@ -117,7 +118,9 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
   // Diálogo de convite/edição: editing=null → convidar; editing=usuário → editar.
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editing, setEditing] = useState<Usuario | null>(null)
-  const [form, setForm] = useState<{ nome: string; email: string; telefone: string; cpf: string; tipoPessoa: TipoPessoa; nascimento: string; funcao: Funcao }>({ nome: '', email: '', telefone: '', cpf: '', tipoPessoa: 'Pessoa Física', nascimento: '', funcao: 'Recrutador' })
+  const [form, setForm] = useState<{ nome: string; email: string; senha: string; confirmar: string; telefone: string; cpf: string; tipoPessoa: TipoPessoa; nascimento: string; funcao: Funcao }>({ nome: '', email: '', senha: '', confirmar: '', telefone: '', cpf: '', tipoPessoa: 'Pessoa Física', nascimento: '', funcao: 'Recrutador' })
+  const [showSenha, setShowSenha] = useState(false)
+  const [showConfirmar, setShowConfirmar] = useState(false)
 
   // KPIs DERIVADOS dos dados (atualizam ao convidar/desativar) — números reais, não decorativos.
   const ativos = usuarios.filter((u) => u.status === 'Ativo').length
@@ -138,11 +141,15 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
   const filtrosAtivos = funcaoF !== 'Todas' || statusF !== 'Todos' || q !== ''
   const limparFiltros = () => { setFuncaoF('Todas'); setStatusF('Todos'); setQ(''); resetPage() }
 
-  const abrirConvite = () => { setEditing(null); setForm({ nome: '', email: '', telefone: '', cpf: '', tipoPessoa: 'Pessoa Física', nascimento: '', funcao: 'Recrutador' }); setDialogOpen(true) }
-  const abrirEdicao = (u: Usuario) => { setEditing(u); setForm({ nome: u.nome, email: u.email, telefone: u.telefone ?? '', cpf: u.cpf ?? '', tipoPessoa: u.tipoPessoa ?? 'Pessoa Física', nascimento: u.nascimento ?? '', funcao: u.funcao }); setDialogOpen(true) }
+  const abrirConvite = () => { setEditing(null); setForm({ nome: '', email: '', senha: '', confirmar: '', telefone: '', cpf: '', tipoPessoa: 'Pessoa Física', nascimento: '', funcao: 'Recrutador' }); setShowSenha(false); setShowConfirmar(false); setDialogOpen(true) }
+  const abrirEdicao = (u: Usuario) => { setEditing(u); setForm({ nome: u.nome, email: u.email, senha: '', confirmar: '', telefone: u.telefone ?? '', cpf: u.cpf ?? '', tipoPessoa: u.tipoPessoa ?? 'Pessoa Física', nascimento: u.nascimento ?? '', funcao: u.funcao }); setShowSenha(false); setShowConfirmar(false); setDialogOpen(true) }
 
   const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())
-  const podeSalvar = form.nome.trim().length > 0 && emailValido
+  // Senha só é exigida no CADASTRO (novo usuário); na edição não se troca a senha por aqui. Confirmação
+  // evita erro de digitação numa senha que está sendo CRIADA.
+  const senhaValida = form.senha.length >= 8
+  const senhaConfere = form.senha === form.confirmar
+  const podeSalvar = form.nome.trim().length > 0 && emailValido && (editing !== null || (senhaValida && senhaConfere))
   // Documento e rótulo de data acompanham o Tipo de pessoa (PF → CPF/nascimento; PJ → CNPJ/abertura).
   const isPJ = form.tipoPessoa === 'Pessoa Jurídica'
   const docLabel = isPJ ? t('sheet.doc.cnpj') : t('sheet.doc.cpf')
@@ -426,6 +433,32 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
                 </SelectContent>
               </Select>
             </div>
+            {/* Senha por ÚLTIMO e só no CADASTRO — no produto ela iria pro backend; aqui é o campo do
+                mockup. Confirmação porque é uma senha sendo CRIADA (evita erro de digitação). */}
+            {!editing && (
+              <>
+                <div className="grid gap-2">
+                  <Label htmlFor="u-senha">{t('sheet.senha')}</Label>
+                  <div className="relative">
+                    <Input id="u-senha" type={showSenha ? 'text' : 'password'} value={form.senha} onChange={(e) => setForm((f) => ({ ...f, senha: e.target.value }))} placeholder={t('sheet.senhaPlaceholder')} aria-invalid={form.senha.length > 0 && !senhaValida} autoComplete="new-password" className="pr-9" />
+                    <button type="button" onClick={() => setShowSenha((s) => !s)} aria-label={showSenha ? t('sheet.ocultarSenha') : t('sheet.mostrarSenha')} className={cn('absolute top-1/2 right-2 grid size-7 -translate-y-1/2 place-items-center text-muted-foreground transition-colors hover:text-foreground', focusRing)}>
+                      {showSenha ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                    </button>
+                  </div>
+                  {form.senha.length > 0 && !senhaValida && <p className="ty-caption text-destructive-text">{t('sheet.senhaCurta')}</p>}
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="u-senha-conf">{t('sheet.confirmarSenha')}</Label>
+                  <div className="relative">
+                    <Input id="u-senha-conf" type={showConfirmar ? 'text' : 'password'} value={form.confirmar} onChange={(e) => setForm((f) => ({ ...f, confirmar: e.target.value }))} placeholder={t('sheet.confirmarSenhaPlaceholder')} aria-invalid={form.confirmar.length > 0 && !senhaConfere} autoComplete="new-password" className="pr-9" />
+                    <button type="button" onClick={() => setShowConfirmar((s) => !s)} aria-label={showConfirmar ? t('sheet.ocultarSenha') : t('sheet.mostrarSenha')} className={cn('absolute top-1/2 right-2 grid size-7 -translate-y-1/2 place-items-center text-muted-foreground transition-colors hover:text-foreground', focusRing)}>
+                      {showConfirmar ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                    </button>
+                  </div>
+                  {form.confirmar.length > 0 && !senhaConfere && <p className="ty-caption text-destructive-text">{t('sheet.senhaNaoConfere')}</p>}
+                </div>
+              </>
+            )}
           </div>
 
           {/* rodapé */}

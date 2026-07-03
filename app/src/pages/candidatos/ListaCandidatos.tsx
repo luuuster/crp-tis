@@ -3,7 +3,7 @@
  * orquestrador (pages/Candidatos.tsx); aqui só desce o JSX, recebendo dados e handlers por props (os
  * setters continuam sendo chamados em handlers, nunca em effect). ColFilter é privado deste arquivo.
  */
-import { ClipboardCheck, LayoutList, Search, UserCheck, Users, Video } from 'lucide-react'
+import { Archive, LayoutList, Search, UserCheck, Users, Video } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/lib/utils'
@@ -36,7 +36,7 @@ export function ListaCandidatos({
   etapaF, vagaF, senioridadeF, q,
   vagas, senioridades, etapaFiltros,
   page, total, inicio, totalItems,
-  emEntrevista, entrevistados, contratados,
+  emProcesso, bancoTalentos, contratados,
   onEtapaF, onVagaF, onSenioridadeF, onBusca,
   onPage, onAbrir,
 }: {
@@ -44,7 +44,7 @@ export function ListaCandidatos({
   etapaF: string; vagaF: string; senioridadeF: string; q: string
   vagas: string[]; senioridades: string[]; etapaFiltros: typeof ETAPA_FILTROS
   page: number; total: number; inicio: number; totalItems: number
-  emEntrevista: number; entrevistados: number; contratados: number
+  emProcesso: number; bancoTalentos: number; contratados: number
   onEtapaF: (v: string) => void; onVagaF: (v: string) => void; onSenioridadeF: (v: string) => void; onBusca: (v: string) => void
   onPage: (p: number | ((prev: number) => number)) => void; onAbrir: (c: Candidato) => void
 }) {
@@ -52,7 +52,7 @@ export function ListaCandidatos({
   const { t: tc } = useTranslation('common')
   const senLabel = useSenioridadeLabel()
   // Opção 'Todas' (filtro) reusa o genérico do common; as demais traduzem a EXIBIÇÃO mantendo o valor canônico.
-  const etapaLabel = (v: string) => (v === 'Todas' ? tc('filtro.todas') : t(`etapa.${v}` as 'etapa.Triagem'))
+  const etapaLabel = (v: string) => (v === 'Todas' ? tc('filtro.todas') : t(`etapa.${v}` as 'etapa.Contratado'))
   const senFiltroLabel = (v: string) => (v === 'Todas' ? tc('filtro.todas') : senLabel(v))
   const vagaLabel = (v: string) => (v === 'Todas' ? tc('filtro.todas') : v)
 
@@ -68,7 +68,7 @@ export function ListaCandidatos({
       { header: t('export.col.email'), value: (c) => c.email },
       { header: t('export.col.vaga'), value: (c) => c.vaga },
       { header: t('export.col.senioridade'), value: (c) => senLabel(c.senioridade) },
-      { header: t('export.col.etapa'), value: (c) => t(`etapa.${c.etapa}` as 'etapa.Triagem') },
+      { header: t('export.col.etapa'), value: (c) => t(`etapa.${c.etapa}` as 'etapa.Contratado') },
       { header: t('export.col.score'), value: (c) => `${c.score}%` },
     ])
 
@@ -84,8 +84,8 @@ export function ListaCandidatos({
       {/* KPIs */}
       <section aria-label={t('aria.indicadores')} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard icon={Users} label={t('kpi.total')} value={cands.length} loading={loading} />
-        <StatCard icon={Video} label={t('kpi.emEntrevista')} value={emEntrevista} loading={loading} />
-        <StatCard icon={ClipboardCheck} label={t('kpi.entrevistados')} value={entrevistados} loading={loading} />
+        <StatCard icon={Video} label={t('kpi.emProcesso')} value={emProcesso} loading={loading} />
+        <StatCard icon={Archive} label={t('kpi.banco')} value={bancoTalentos} loading={loading} />
         <StatCard icon={UserCheck} label={t('kpi.contratados')} value={contratados} loading={loading} />
       </section>
 

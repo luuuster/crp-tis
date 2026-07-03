@@ -14,7 +14,7 @@ import { ThemeToggles, DOCK } from '@/components/ThemeToggles'
 import { PainelSkeleton } from '@/components/PainelSkeleton'
 import { useBrandMode } from '@/lib/useBrandMode'
 import { vagaPorId } from '@/lib/vagasCatalogo'
-import { sairCandidato } from '@/lib/candidatoSessao'
+import { sairCandidato, lerCandidato } from '@/lib/candidatoSessao'
 
 const InscricaoVaga = lazy(() => import('@/pages/InscricaoVaga').then((m) => ({ default: m.InscricaoVaga })))
 const CandidatoAcesso = lazy(() => import('@/pages/CandidatoAcesso').then((m) => ({ default: m.CandidatoAcesso })))
@@ -26,6 +26,8 @@ const CandidatoPainel = lazy(() => import('@/pages/CandidatoPainel').then((m) =>
 const CandidatoCandidaturas = lazy(() => import('@/pages/CandidatoCandidaturas').then((m) => ({ default: m.CandidatoCandidaturas })))
 // Auto-agendamento da entrevista (link externo, sem login): candidato conversa com o assistente e marca o horário.
 const AgendarEntrevistaCandidato = lazy(() => import('@/pages/AgendarEntrevistaCandidato').then((m) => ({ default: m.AgendarEntrevistaCandidato })))
+// Entrevista conversacional (2ª etapa): chega pelo fluxo de candidatura, mas também tem rota própria p/ demo direta.
+const EntrevistaConversacional = lazy(() => import('@/pages/EntrevistaConversacional').then((m) => ({ default: m.EntrevistaConversacional })))
 
 const PageFallback = () => (
   <div className="grid min-h-dvh place-items-center" role="status" aria-label="Carregando página">
@@ -49,19 +51,23 @@ export function CandidatoApp() {
   // /candidaturas capturaria /candidaturas_finalizadas (ambos começam com "/candidaturas").
   const finalizadas = path.startsWith('/candidaturas_finalizadas')
   const candidaturas = path.startsWith('/candidaturas') && !finalizadas
-  const logada = painel || candidaturas || finalizadas // áreas com topbar própria (sem o dock flutuante)
   // Link PÚBLICO da vaga (ex.: divulgada no LinkedIn): abre a vaga SEM exigir login — visão de quem ainda não
   // tem conta (formulário público de inscrição), mesmo que haja sessão nesta porta.
   const linkpublico = path.startsWith('/linkpublico')
   // Auto-agendamento (link externo do convite): tela pública de chat para o candidato marcar a própria entrevista.
   const agendar = path.startsWith('/agendar')
+  // Entrevista conversacional (2ª etapa) — rota própria para abrir a tela direto (também é alcançada pós-candidatura).
+  const entrevista = path.startsWith('/entrevista')
+  // Telas de AUTH (AuthLayout): não têm header próprio → é onde fica o pill flutuante dos toggles. As demais
+  // telas (com header do candidato) mostram os toggles agrupados na barra do topo, junto da conta.
+  const authShell = acesso || redefinir || cadastro
   // Vaga aberta em NOVA ABA pelo mural: id na URL (?vaga=<id>). Sem id (link público direto) → exemplo padrão.
   const vagaId = new URLSearchParams(window.location.search).get('vaga')
   const vagaSel = vagaId ? vagaPorId(vagaId) : undefined
   return (
     <TooltipProvider delayDuration={200}>
-      {/* Dock flutuante só nas telas PÚBLICAS; a área logada (mural/candidaturas) tem topbar própria. */}
-      {!logada && (
+      {/* Pill flutuante só nas telas de AUTH (sem header); as demais mostram os toggles agrupados no header. */}
+      {authShell && (
         <div className={DOCK}>
           <ThemeToggles brand={brand} mode={mode} onCycleBrand={cycleBrand} onToggleMode={toggleMode} />
         </div>
@@ -80,9 +86,11 @@ export function CandidatoApp() {
           ) : acesso || redefinir ? (
             <CandidatoAcesso brand={brand} />
           ) : agendar ? (
-            <AgendarEntrevistaCandidato brand={brand} />
+            <AgendarEntrevistaCandidato brand={brand} mode={mode} onCycleBrand={cycleBrand} onToggleMode={toggleMode} />
+          ) : entrevista ? (
+            <EntrevistaConversacional brand={brand} mode={mode} onCycleBrand={cycleBrand} onToggleMode={toggleMode} nome={lerCandidato().nome} vaga="Desenvolvedor Backend Pleno" onConcluir={() => { window.location.href = '/painel' }} />
           ) : (
-            <InscricaoVaga brand={brand} vaga={vagaSel} publico={linkpublico} />
+            <InscricaoVaga brand={brand} mode={mode} onCycleBrand={cycleBrand} onToggleMode={toggleMode} vaga={vagaSel} publico={linkpublico} />
           )}
         </Suspense>
       </ErrorBoundary>

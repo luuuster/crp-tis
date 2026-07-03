@@ -6,6 +6,7 @@
  * - variant="onBrand": lockup 100% branco (símbolo + wordmark) — para superfícies bg-primary (a cor da marca).
  */
 import { cn } from '@/lib/utils'
+import { BRAND_NOME } from '@/lib/useBrandMode'
 import logoWhite from '@/assets/logo/logo-white.svg'
 import logoDark from '@/assets/logo/logo-dark.svg'
 import logoOnBrand from '@/assets/logo/logo-onbrand.svg'
@@ -16,8 +17,8 @@ import trevoOnBrand from '@/assets/logo/trevo-onbrand.svg'
 export type Brand = 'crp' | 'marca-b'
 
 const ASSETS: Record<Brand, { dark: string; white: string; onBrand: string; name: string }> = {
-  crp: { dark: logoDark, white: logoWhite, onBrand: logoOnBrand, name: 'TIS' },
-  'marca-b': { dark: trevoDark, white: trevoWhite, onBrand: trevoOnBrand, name: 'Trevo' },
+  crp: { dark: logoDark, white: logoWhite, onBrand: logoOnBrand, name: BRAND_NOME.crp },
+  'marca-b': { dark: trevoDark, white: trevoWhite, onBrand: trevoOnBrand, name: BRAND_NOME['marca-b'] },
 }
 
 export function Logo({

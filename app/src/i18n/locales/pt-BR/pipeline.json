@@ -3,6 +3,11 @@
     "titulo": "Funil de contratação",
     "descricao": "Todo o fluxo de seleção numa tela. A IA entrevista e mede a compatibilidade com a vaga; daí em diante, cada etapa tem a sua própria forma de avançar o candidato."
   },
+  "vista": {
+    "aria": "Alternar visão",
+    "funil": "Funil",
+    "calendario": "Calendário"
+  },
   "total": "{{n}} candidatos no funil",
   "resultado": "{{n}} de {{total}} candidatos",
   "boardAria": "Colunas do funil — role na horizontal para ver todas",
@@ -34,7 +39,8 @@
   "tempoEtapa_other": "Há {{count}} dias nesta etapa",
   "agendadaPara": "Agendada: {{quando}}",
   "reagendar": "Reagendar",
-  "reagendarAviso": "Este recurso ainda precisa ser discutido com o time para avaliar a viabilidade da implementação.",
+  "entrevistador": "Entrevistador",
+  "entrevistadores": "Entrevistadores",
   "verCurriculo": "Ver currículo",
   "acao": {
     "verProcesso": "Ver processo de {{nome}}"
@@ -48,12 +54,17 @@
     "titulo": "Entrevista finalizada — {{nome}}",
     "desc": "Registre a entrevista e gere uma nova análise da IA.",
     "overline": "Entrevista finalizada",
-    "intro": "Registre como foi a conversa com o candidato. A IA gera uma nova análise a partir das suas anotações e do arquivo anexado.",
-    "notasLabel": "Anotações da entrevista",
+    "intro": "Anexe o roteiro preenchido (e o áudio, se tiver) e registre suas observações. A IA gera uma nova análise a partir desse material.",
+    "notasLabel": "Observações da entrevista",
     "notasPlaceholder": "Como foi a entrevista? Principais pontos, impressões, pontos fortes e de atenção…",
-    "arquivoLabel": "Anexar arquivo",
-    "arquivoPlaceholder": "Clique para enviar gravação, transcrição ou notas",
+    "arquivoLabel": "Anexar roteiro preenchido",
+    "arquivoPlaceholder": "Clique para enviar o roteiro preenchido (Word, PDF ou documento)",
+    "audioLabel": "Anexar áudio da entrevista",
+    "audioPlaceholder": "Clique para enviar o áudio da entrevista",
     "removerArquivo": "Remover arquivo",
+    "removerAudio": "Remover áudio",
+    "obrigatorio": "obrigatório",
+    "opcional": "(opcional)",
     "analisar": "Analisar com IA",
     "analisando": "A IA está analisando a entrevista…",
     "resultadoTitulo": "Nova análise da IA",

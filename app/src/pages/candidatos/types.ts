@@ -37,32 +37,32 @@ export type Processo = { id: string; titulo: string; status: StatusProc; faseAtu
 
 export const CANDIDATOS_INICIAL: Candidato[] = [
   { id: '1', nome: 'Mariana Lopes', email: 'mariana.lopes@email.com', vaga: 'Desenvolvedor Full Stack', senioridade: 'Sênior', etapa: 'Contratado', score: 92, atualizado: 'há 3 dias' },
-  { id: '2', nome: 'Jair Carmona', email: 'jair.carmona@email.com', vaga: 'Desenvolvedor Backend', senioridade: 'Pleno', etapa: 'Entrevistado', score: 82, atualizado: 'ontem' },
-  { id: '3', nome: 'Diego Teixeira', email: 'diego.teixeira@email.com', vaga: 'Product Manager', senioridade: 'Sênior', etapa: 'Em entrevista', score: 68, atualizado: 'há 2 h' },
-  { id: '4', nome: 'Rodrigo Alves', email: 'rodrigo.alves@email.com', vaga: 'UX Designer III', senioridade: 'Sênior', etapa: 'Em entrevista', score: 74, atualizado: 'há 5 h' },
-  { id: '5', nome: 'Carla Mendonça', email: 'carla.mendonca@email.com', vaga: 'Engenheiro de Dados', senioridade: 'Pleno', etapa: 'Entrevistado', score: 88, atualizado: 'ontem' },
-  { id: '6', nome: 'Felipe Santos', email: 'felipe.santos@email.com', vaga: 'Analista de QA', senioridade: 'Júnior', etapa: 'Triagem', score: 65, atualizado: 'há 1 dia' },
+  { id: '2', nome: 'Jair Carmona', email: 'jair.carmona@email.com', vaga: 'Desenvolvedor Backend', senioridade: 'Pleno', etapa: 'Entrevista Gestor', score: 82, atualizado: 'ontem' },
+  { id: '3', nome: 'Diego Teixeira', email: 'diego.teixeira@email.com', vaga: 'Product Manager', senioridade: 'Sênior', etapa: 'Entrevista RH', score: 68, atualizado: 'há 2 h' },
+  { id: '4', nome: 'Rodrigo Alves', email: 'rodrigo.alves@email.com', vaga: 'UX Designer III', senioridade: 'Sênior', etapa: 'Teste Técnico', score: 74, atualizado: 'há 5 h' },
+  { id: '5', nome: 'Carla Mendonça', email: 'carla.mendonca@email.com', vaga: 'Engenheiro de Dados', senioridade: 'Pleno', etapa: 'Entrevista Gestor', score: 88, atualizado: 'ontem' },
+  { id: '6', nome: 'Felipe Santos', email: 'felipe.santos@email.com', vaga: 'Analista de QA', senioridade: 'Júnior', etapa: 'Triagem IA', score: 65, atualizado: 'há 1 dia' },
   { id: '7', nome: 'Bianca Ferreira', email: 'bianca.ferreira@email.com', vaga: 'Desenvolvedor Backend', senioridade: 'Sênior', etapa: 'Contratado', score: 95, atualizado: 'há 1 semana' },
   { id: '8', nome: 'Gustavo Pereira', email: 'gustavo.pereira@email.com', vaga: 'Product Manager', senioridade: 'Sênior', etapa: 'Reprovado', score: 58, atualizado: 'há 4 dias' },
-  { id: '9', nome: 'Larissa Castro', email: 'larissa.castro@email.com', vaga: 'Cientista de Dados', senioridade: 'Sênior', etapa: 'Entrevistado', score: 84, atualizado: 'ontem' },
-  { id: '10', nome: 'Vitor Hugo', email: 'vitor.hugo@email.com', vaga: 'DevOps Engineer', senioridade: 'Sênior', etapa: 'Em entrevista', score: 79, atualizado: 'há 3 h' },
+  { id: '9', nome: 'Larissa Castro', email: 'larissa.castro@email.com', vaga: 'Cientista de Dados', senioridade: 'Sênior', etapa: 'Entrevista Gestor', score: 84, atualizado: 'ontem' },
+  { id: '10', nome: 'Vitor Hugo', email: 'vitor.hugo@email.com', vaga: 'DevOps Engineer', senioridade: 'Sênior', etapa: 'Entrevista RH', score: 79, atualizado: 'há 3 h' },
   { id: '11', nome: 'Aline Ramos', email: 'aline.ramos@email.com', vaga: 'Tech Lead Frontend', senioridade: 'Sênior', etapa: 'Contratado', score: 90, atualizado: 'há 2 semanas' },
-  { id: '12', nome: 'Daniel Moreira', email: 'daniel.moreira@email.com', vaga: 'Desenvolvedor Mobile', senioridade: 'Pleno', etapa: 'Banco de talentos', score: 62, atualizado: 'há 1 mês' },
+  { id: '12', nome: 'Daniel Moreira', email: 'daniel.moreira@email.com', vaga: 'Desenvolvedor Mobile', senioridade: 'Pleno', etapa: 'Banco de Talentos', score: 62, atualizado: 'há 1 mês' },
   { id: '13', nome: 'Patrícia Lima', email: 'patricia.lima@email.com', vaga: 'UX Designer III', senioridade: 'Pleno', etapa: 'Reprovado', score: 49, atualizado: 'há 5 dias' },
-  { id: '14', nome: 'Ricardo Nunes', email: 'ricardo.nunes@email.com', vaga: 'Analista de QA', senioridade: 'Júnior', etapa: 'Triagem', score: 71, atualizado: 'há 2 dias' },
-  { id: '15', nome: 'Sofia Martins', email: 'sofia.martins@email.com', vaga: 'Desenvolvedor Mobile', senioridade: 'Pleno', etapa: 'Em entrevista', score: 80, atualizado: 'há 6 h' },
-  { id: '16', nome: 'Gabriel Costa', email: 'gabriel.costa@email.com', vaga: 'Analista de Marketing', senioridade: 'Pleno', etapa: 'Banco de talentos', score: 55, atualizado: 'há 2 meses' },
-  { id: '17', nome: 'Juliana Reis', email: 'juliana.reis@email.com', vaga: 'Product Manager', senioridade: 'Pleno', etapa: 'Triagem', score: 73, atualizado: 'há 1 dia' },
-  { id: '18', nome: 'Thiago Barros', email: 'thiago.barros@email.com', vaga: 'Arquiteto de Software', senioridade: 'Sênior', etapa: 'Entrevistado', score: 86, atualizado: 'ontem' },
-  { id: '19', nome: 'Rafael Tavares', email: 'rafael.tavares@email.com', vaga: 'DevOps Engineer', senioridade: 'Sênior', etapa: 'Banco de talentos', score: 77, atualizado: 'há 3 semanas' },
-  { id: '20', nome: 'Letícia Gomes', email: 'leticia.gomes@email.com', vaga: 'Cientista de Dados', senioridade: 'Pleno', etapa: 'Banco de talentos', score: 70, atualizado: 'há 1 mês' },
+  { id: '14', nome: 'Ricardo Nunes', email: 'ricardo.nunes@email.com', vaga: 'Analista de QA', senioridade: 'Júnior', etapa: 'Triagem IA', score: 71, atualizado: 'há 2 dias' },
+  { id: '15', nome: 'Sofia Martins', email: 'sofia.martins@email.com', vaga: 'Desenvolvedor Mobile', senioridade: 'Pleno', etapa: 'Teste Técnico', score: 80, atualizado: 'há 6 h' },
+  { id: '16', nome: 'Gabriel Costa', email: 'gabriel.costa@email.com', vaga: 'Analista de Marketing', senioridade: 'Pleno', etapa: 'Banco de Talentos', score: 55, atualizado: 'há 2 meses' },
+  { id: '17', nome: 'Juliana Reis', email: 'juliana.reis@email.com', vaga: 'Product Manager', senioridade: 'Pleno', etapa: 'Triagem IA', score: 73, atualizado: 'há 1 dia' },
+  { id: '18', nome: 'Thiago Barros', email: 'thiago.barros@email.com', vaga: 'Arquiteto de Software', senioridade: 'Sênior', etapa: 'Entrevista Gestor', score: 86, atualizado: 'ontem' },
+  { id: '19', nome: 'Rafael Tavares', email: 'rafael.tavares@email.com', vaga: 'DevOps Engineer', senioridade: 'Sênior', etapa: 'Banco de Talentos', score: 77, atualizado: 'há 3 semanas' },
+  { id: '20', nome: 'Letícia Gomes', email: 'leticia.gomes@email.com', vaga: 'Cientista de Dados', senioridade: 'Pleno', etapa: 'Banco de Talentos', score: 70, atualizado: 'há 1 mês' },
   { id: '21', nome: 'Pedro Antunes', email: 'pedro.antunes@email.com', vaga: 'Scrum Master', senioridade: 'Sênior', etapa: 'Reprovado', score: 60, atualizado: 'há 6 dias' },
-  { id: '22', nome: 'Helena Castro', email: 'helena.castro@email.com', vaga: 'Tech Lead Frontend', senioridade: 'Sênior', etapa: 'Em entrevista', score: 83, atualizado: 'há 4 h' },
+  { id: '22', nome: 'Helena Castro', email: 'helena.castro@email.com', vaga: 'Tech Lead Frontend', senioridade: 'Sênior', etapa: 'Entrevista RH', score: 83, atualizado: 'há 4 h' },
   { id: '23', nome: 'Bruno Lima', email: 'bruno.lima@email.com', vaga: 'Engenheiro de Dados', senioridade: 'Pleno', etapa: 'Contratado', score: 91, atualizado: 'há 2 semanas' },
-  { id: '24', nome: 'Ana Souza', email: 'ana.souza@email.com', vaga: 'Analista de QA', senioridade: 'Pleno', etapa: 'Banco de talentos', score: 64, atualizado: 'há 1 mês' },
+  { id: '24', nome: 'Ana Souza', email: 'ana.souza@email.com', vaga: 'Analista de QA', senioridade: 'Pleno', etapa: 'Banco de Talentos', score: 64, atualizado: 'há 1 mês' },
 ]
 
-export const ETAPA_FILTROS = ['Todas', 'Triagem', 'Em entrevista', 'Entrevistado', 'Contratado', 'Banco de talentos', 'Reprovado'] as const
+export const ETAPA_FILTROS = ['Todas', 'Triagem IA', 'Entrevista RH', 'Teste Técnico', 'Entrevista Gestor', 'Contratado', 'Banco de Talentos', 'Reprovado'] as const
 export const PER_PAGE = 10
 
 // ---------- Pools de texto do domínio (dados sintéticos, determinísticos por seed) ----------
@@ -191,16 +191,17 @@ export const CRITERIOS_POR_FASE: Record<number, string[]> = {
 }
 
 export const ETAPA_PROC: Record<Etapa, StatusProc> = {
-  'Triagem': 'Em andamento', 'Em entrevista': 'Em andamento', 'Entrevistado': 'Em andamento',
-  'Contratado': 'Contratado', 'Reprovado': 'Reprovado', 'Banco de talentos': 'Reprovado',
+  'Triagem IA': 'Em andamento', 'Entrevista RH': 'Em andamento', 'Teste Técnico': 'Em andamento', 'Entrevista Gestor': 'Em andamento',
+  'Contratado': 'Contratado', 'Reprovado': 'Reprovado', 'Banco de Talentos': 'Reprovado',
 }
 export const ETAPA_FASE: Record<Etapa, (h: number) => number> = {
-  'Triagem': () => 1,
-  'Em entrevista': (h) => 2 + (h % 2),
-  'Entrevistado': () => 4,
+  'Triagem IA': () => 1,
+  'Entrevista RH': () => 2,
+  'Teste Técnico': () => 3,
+  'Entrevista Gestor': () => 4,
   'Contratado': () => 5,
   'Reprovado': (h) => 2 + (h % 3),
-  'Banco de talentos': (h) => 3 + (h % 2),
+  'Banco de Talentos': (h) => 3 + (h % 2),
 }
 
 // Charlie — copiloto de match

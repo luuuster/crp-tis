@@ -19,6 +19,7 @@ import { CandidatoAcesso } from './pages/CandidatoAcesso'
 import { CandidatoPainel } from './pages/CandidatoPainel'
 import { CandidatoCandidaturas } from './pages/CandidatoCandidaturas'
 import { AgendarEntrevistaCandidato } from './pages/AgendarEntrevistaCandidato'
+import { EntrevistaConversacional } from './pages/EntrevistaConversacional'
 import { PainelSkeleton } from './components/PainelSkeleton'
 import { JobGenerator } from './pages/JobGenerator'
 import { Showcase } from './pages/Showcase'
@@ -102,7 +103,7 @@ describe('axe — zero violações por página', () => {
     await expectNoViolations(<TooltipProvider><Candidatos onNavigate={() => {}} /></TooltipProvider>)
   })
   it('Candidatos — perfil/histórico', async () => {
-    const c: CandidatoBanco = { id: 'p', nome: 'Teste Candidato', email: 'teste@email.com', vaga: 'Desenvolvedor Backend', senioridade: 'Pleno', etapa: 'Em entrevista', score: 78, atualizado: 'ontem' }
+    const c: CandidatoBanco = { id: 'p', nome: 'Teste Candidato', email: 'teste@email.com', vaga: 'Desenvolvedor Backend', senioridade: 'Pleno', etapa: 'Entrevista RH', score: 78, atualizado: 'ontem' }
     await expectNoViolations(<TooltipProvider><CandidatoPerfil c={c} onVoltar={() => {}} onAbrirProcesso={() => {}} /></TooltipProvider>)
   })
   it('Candidatos — detalhe do processo (reprovado)', async () => {
@@ -157,6 +158,9 @@ describe('axe — zero violações por página', () => {
   })
   it('SegundaEtapa (questionário do processo)', async () => {
     await expectNoViolations(<SegundaEtapa nome="Teste Candidato" vaga="Desenvolvedor Backend · Pleno" onConcluir={() => {}} onSair={() => {}} />)
+  })
+  it('EntrevistaConversacional (2ª etapa — entrevista por chat)', async () => {
+    await expectNoViolations(<TooltipProvider><EntrevistaConversacional nome="Teste Candidato" vaga="Desenvolvedor Backend · Pleno" onConcluir={() => {}} onSair={() => {}} /></TooltipProvider>)
   })
   it('CandidatoAcesso (login do candidato)', async () => {
     await expectNoViolations(<TooltipProvider><CandidatoAcesso /></TooltipProvider>)

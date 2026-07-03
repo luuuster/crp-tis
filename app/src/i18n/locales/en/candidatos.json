@@ -28,8 +28,8 @@
   },
   "kpi": {
     "total": "Total candidates",
-    "emEntrevista": "In interview",
-    "entrevistados": "Interviewed",
+    "emProcesso": "In process",
+    "banco": "Talent pool",
     "contratados": "Hired"
   },
   "aria": {
@@ -137,11 +137,12 @@
     }
   },
   "etapa": {
-    "Triagem": "Screening",
-    "Em entrevista": "In interview",
-    "Entrevistado": "Interviewed",
+    "Triagem IA": "AI screening",
+    "Entrevista RH": "HR interview",
+    "Teste Técnico": "Tech test",
+    "Entrevista Gestor": "Manager interview",
     "Contratado": "Hired",
-    "Banco de talentos": "Talent pool",
+    "Banco de Talentos": "Talent pool",
     "Reprovado": "Rejected"
   },
   "senioridade": {

@@ -45,8 +45,9 @@ export function Candidatos({ onNavigate, brand, mode, onCycleBrand, onToggleMode
   const [proc, setProc] = useState<Processo | null>(null)
   const [charlie, setCharlie] = useState(false)
 
-  const emEntrevista = cands.filter((c) => c.etapa === 'Em entrevista').length
-  const entrevistados = cands.filter((c) => c.etapa === 'Entrevistado').length
+  // Em processo = em alguma fase ativa do funil (não é desfecho terminal: Contratado/Reprovado/Banco).
+  const emProcesso = cands.filter((c) => c.etapa !== 'Contratado' && c.etapa !== 'Reprovado' && c.etapa !== 'Banco de Talentos').length
+  const bancoTalentos = cands.filter((c) => c.etapa === 'Banco de Talentos').length
   const contratados = cands.filter((c) => c.etapa === 'Contratado').length
 
   const vagas = ['Todas', ...Array.from(new Set(cands.map((c) => c.vaga)))]
@@ -103,8 +104,8 @@ export function Candidatos({ onNavigate, brand, mode, onCycleBrand, onToggleMode
           total={total}
           inicio={inicio}
           totalItems={totalItems}
-          emEntrevista={emEntrevista}
-          entrevistados={entrevistados}
+          emProcesso={emProcesso}
+          bancoTalentos={bancoTalentos}
           contratados={contratados}
           onEtapaF={(v) => { setEtapaF(v as (typeof ETAPA_FILTROS)[number]); resetPage() }}
           onVagaF={(v) => { setVagaF(v); resetPage() }}

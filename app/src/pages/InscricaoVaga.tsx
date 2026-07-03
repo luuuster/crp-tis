@@ -31,8 +31,9 @@ import { CaptchaBox } from '@/components/CaptchaBox'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { VagaDocumento, type Briefing, type Perfil } from '@/lib/vaga'
 import { estaLogado, lerCandidato } from '@/lib/candidatoSessao'
+import type { Mode } from '@/lib/useBrandMode'
 import { ConfirmarCandidaturaDialog } from '@/pages/ConfirmarCandidatura'
-import { SegundaEtapa } from '@/pages/SegundaEtapa'
+import { EntrevistaConversacional } from '@/pages/EntrevistaConversacional'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const MAX_MB = 10
@@ -127,7 +128,7 @@ function ReqMark() {
   )
 }
 
-export function InscricaoVaga({ vaga = VAGA_EXEMPLO, brand, onSair, publico = false }: { vaga?: VagaInscricao; brand?: string; onSair?: () => void; publico?: boolean }) {
+export function InscricaoVaga({ vaga = VAGA_EXEMPLO, brand, mode, onCycleBrand, onToggleMode, onSair, publico = false }: { vaga?: VagaInscricao; brand?: string; mode?: Mode; onCycleBrand?: () => void; onToggleMode?: () => void; onSair?: () => void; publico?: boolean }) {
   const { t } = useTranslation('inscricao')
   const vagaTitulo = `${vaga.briefing.cargo} · ${vaga.briefing.nivel}`
   // Logado (sessão em localStorage, compartilhada entre abas): candidatura é só CONFIRMAR num modal — sem o
@@ -229,11 +230,14 @@ export function InscricaoVaga({ vaga = VAGA_EXEMPLO, brand, onSair, publico = fa
     if (publico) window.history.pushState(null, '', PUB_INSCRICAO)
   }
 
-  // 2ª etapa: tela própria (questionário). Substitui a inscrição inteira enquanto está aberta.
+  // 2ª etapa: entrevista conversacional (chat + veredito). Substitui a inscrição inteira enquanto aberta.
   if (segundaEtapa) {
     return (
-      <SegundaEtapa
+      <EntrevistaConversacional
         brand={brand}
+        mode={mode}
+        onCycleBrand={onCycleBrand}
+        onToggleMode={onToggleMode}
         nome={nomeEnviado || candidato.nome}
         vaga={vagaTitulo}
         onConcluir={() => { window.location.href = '/painel' }}
@@ -246,11 +250,11 @@ export function InscricaoVaga({ vaga = VAGA_EXEMPLO, brand, onSair, publico = fa
   return (
     <div className="flex h-dvh flex-col bg-background">
       {/* Chrome leve do portal do candidato — marca (link pro mural quando logado) + conta. */}
-      <CandidatoHeader brand={brand} onSair={onSair} publico={publico} />
+      <CandidatoHeader brand={brand} mode={mode} onCycleBrand={onCycleBrand} onToggleMode={onToggleMode} onSair={onSair} publico={publico} />
 
       {/* main rola por DENTRO; o rodapé de ação fica preso embaixo (mesmo padrão do shell do recrutador). */}
       <main className="min-h-0 flex-1 overflow-y-auto">
-        <div className="mx-auto w-full max-w-4xl px-6 py-10 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 motion-safe:duration-500">
+        <div className="mx-auto w-full max-w-4xl px-5 py-8 lg:px-8 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 motion-safe:duration-500">
         {enviado ? (
           // Estado de sucesso — confirma o envio e recapitula o essencial.
           <div className="mx-auto max-w-md rounded-2xl border border-success/25 bg-success/5 p-8 text-center">
@@ -461,7 +465,7 @@ export function InscricaoVaga({ vaga = VAGA_EXEMPLO, brand, onSair, publico = fa
           (h-dvh → main rola por dentro → footer shrink-0). Some no estado de sucesso. */}
       {!enviado && (
         <footer className="shrink-0 border-t border-border/40 bg-card/80 pb-[env(safe-area-inset-bottom)] backdrop-blur-sm">
-          <div className="mx-auto flex w-full max-w-4xl items-center gap-3 px-6 py-3">
+          <div className="mx-auto flex w-full max-w-4xl items-center gap-3 px-5 py-3 lg:px-8">
             {logado ? (
               // Logado: candidatar = abrir o modal de confirmação (currículo do perfil ou outro).
               <Button onClick={() => setModalOpen(true)} className="ml-auto">{t('rodape.candidatar')} <ArrowRight aria-hidden /></Button>

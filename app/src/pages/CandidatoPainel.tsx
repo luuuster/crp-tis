@@ -7,7 +7,7 @@
  * Área LOGADA: topbar própria (logo + idioma/marca/tema + sair), diferente do dock flutuante das telas
  * públicas. 100% token-driven, multi-marca, claro/escuro e WCAG 2.2 AA.
  */
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Accessibility, ArrowRight, Briefcase, ChevronDown, CircleDollarSign, Clock, Gift, LayoutGrid, MapPin, Search, SearchX, Trash2, X } from 'lucide-react'
 
@@ -158,9 +158,9 @@ export function CandidatoPainel({ brand, mode, onCycleBrand, onToggleMode, onSai
   onSair?: () => void
 }) {
   // O mural É a área LOGADA. Se a pessoa chegou sem sessão (navegou direto p/ /painel), estabelece uma
-  // sessão demo — assim a vaga aberta em NOVA ABA sabe que está logado (mostra o modal de confirmar, não o
-  // formulário público). Se ela logou pelo /acesso, o e-mail real já está salvo e isto não sobrescreve.
-  if (!estaLogado()) guardarEmailCandidato('ana.souza@exemplo.com')
+  // sessão demo NA MONTAGEM (efeito, não no corpo do render — write puro) — assim a vaga aberta em NOVA ABA
+  // sabe que está logado. Se ela logou pelo /acesso, o e-mail real já está salvo e isto não sobrescreve.
+  useEffect(() => { if (!estaLogado()) guardarEmailCandidato('ana.souza@exemplo.com') }, [])
 
   const { t } = useTranslation('painel')
   const [f, setF] = useState<FiltroVagas>(FILTRO_VAZIO)

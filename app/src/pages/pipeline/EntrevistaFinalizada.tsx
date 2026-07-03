@@ -10,7 +10,7 @@
  */
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Check, Paperclip, Sparkles, Upload, X } from 'lucide-react'
+import { Check, Mic, Paperclip, Sparkles, Upload, X } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -79,9 +79,10 @@ export function EntrevistaFinalizada({ card, onCancelar, onAprovar, onReprovar }
   const { t: tc } = useTranslation('common')
   const [estado, setEstado] = useState<Estado>('entrada')
   const [notas, setNotas] = useState('')
-  const [arquivo, setArquivo] = useState<string | null>(null)
+  const [roteiro, setRoteiro] = useState<string | null>(null) // roteiro preenchido — OBRIGATÓRIO
+  const [audio, setAudio] = useState<string | null>(null)     // áudio da entrevista — opcional
   const [resultado, setResultado] = useState<Detalhe | null>(null)
-  const podeAnalisar = notas.trim().length > 0 || !!arquivo
+  const podeAnalisar = !!roteiro // o roteiro preenchido é obrigatório para a IA gerar a análise
 
   const analisar = () => {
     if (!podeAnalisar) return
@@ -118,19 +119,31 @@ export function EntrevistaFinalizada({ card, onCancelar, onAprovar, onReprovar }
         {estado === 'entrada' && (
           <div className="space-y-5">
             <p className="ty-body-sm text-muted-foreground">{t('finalizar.intro')}</p>
-            <label className="block space-y-1.5">
-              <span className="ty-body-sm font-medium text-foreground">{t('finalizar.notasLabel')}</span>
-              <Textarea value={notas} onChange={(e) => setNotas(e.target.value)} rows={8} placeholder={t('finalizar.notasPlaceholder')} />
-            </label>
+            {/* 1) Roteiro preenchido — OBRIGATÓRIO */}
             <div className="space-y-1.5">
-              <span className="block ty-body-sm font-medium text-foreground">{t('finalizar.arquivoLabel')}</span>
+              <span className="block ty-body-sm font-medium text-foreground">{t('finalizar.arquivoLabel')} <span className="text-destructive-text">*</span></span>
               <label className="flex cursor-pointer flex-col items-center gap-2 rounded-xl border border-dashed border-border bg-muted/30 px-4 py-6 text-center transition-colors hover:bg-muted/50 focus-within:focus-ring">
                 <Upload className="size-5 text-muted-foreground" aria-hidden />
-                <span className="ty-body-sm text-foreground">{arquivo ?? t('finalizar.arquivoPlaceholder')}</span>
-                <input type="file" className="sr-only" aria-label={t('finalizar.arquivoLabel')} onChange={(e) => setArquivo(e.target.files?.[0]?.name ?? null)} />
+                <span className="ty-body-sm text-foreground">{roteiro ?? t('finalizar.arquivoPlaceholder')}</span>
+                <input type="file" className="sr-only" aria-label={t('finalizar.arquivoLabel')} onChange={(e) => setRoteiro(e.target.files?.[0]?.name ?? null)} />
               </label>
-              {arquivo && <button type="button" onClick={() => setArquivo(null)} className="rounded-sm ty-caption text-muted-foreground transition-colors hover:text-destructive-text focus-visible:focus-ring">{t('finalizar.removerArquivo')}</button>}
+              {roteiro && <button type="button" onClick={() => setRoteiro(null)} className="rounded-sm ty-caption text-muted-foreground transition-colors hover:text-destructive-text focus-visible:focus-ring">{t('finalizar.removerArquivo')}</button>}
             </div>
+            {/* 2) Áudio da entrevista — opcional */}
+            <div className="space-y-1.5">
+              <span className="block ty-body-sm font-medium text-foreground">{t('finalizar.audioLabel')} <span className="ty-caption font-normal text-muted-foreground">{t('finalizar.opcional')}</span></span>
+              <label className="flex cursor-pointer flex-col items-center gap-2 rounded-xl border border-dashed border-border bg-muted/30 px-4 py-6 text-center transition-colors hover:bg-muted/50 focus-within:focus-ring">
+                <Mic className="size-5 text-muted-foreground" aria-hidden />
+                <span className="ty-body-sm text-foreground">{audio ?? t('finalizar.audioPlaceholder')}</span>
+                <input type="file" accept="audio/*" className="sr-only" aria-label={t('finalizar.audioLabel')} onChange={(e) => setAudio(e.target.files?.[0]?.name ?? null)} />
+              </label>
+              {audio && <button type="button" onClick={() => setAudio(null)} className="rounded-sm ty-caption text-muted-foreground transition-colors hover:text-destructive-text focus-visible:focus-ring">{t('finalizar.removerAudio')}</button>}
+            </div>
+            {/* 3) Observações — por último */}
+            <label className="block space-y-1.5">
+              <span className="ty-body-sm font-medium text-foreground">{t('finalizar.notasLabel')}</span>
+              <Textarea value={notas} onChange={(e) => setNotas(e.target.value)} rows={6} placeholder={t('finalizar.notasPlaceholder')} />
+            </label>
           </div>
         )}
         {estado === 'analisando' && (
@@ -149,8 +162,9 @@ export function EntrevistaFinalizada({ card, onCancelar, onAprovar, onReprovar }
             <details className="rounded-xl bg-muted/30">
               <summary className="cursor-pointer rounded-xl p-3 ty-caption font-semibold tracking-wide text-foreground uppercase focus-visible:focus-ring">{t('finalizar.entradaTitulo')}</summary>
               <div className="border-t border-border/50 p-4 pt-3">
-                {notas.trim() && <p className="max-h-60 overflow-y-auto whitespace-pre-wrap ty-body-sm leading-relaxed text-muted-foreground">{notas.trim()}</p>}
-                {arquivo && <p className="mt-3 flex items-center gap-1.5 ty-caption text-muted-foreground"><Paperclip className="size-3.5 shrink-0" aria-hidden /> {arquivo}</p>}
+                {roteiro && <p className="flex items-center gap-1.5 ty-caption text-muted-foreground"><Paperclip className="size-3.5 shrink-0" aria-hidden /> {roteiro}</p>}
+                {audio && <p className="mt-2 flex items-center gap-1.5 ty-caption text-muted-foreground"><Mic className="size-3.5 shrink-0" aria-hidden /> {audio}</p>}
+                {notas.trim() && <p className="mt-2 max-h-60 overflow-y-auto whitespace-pre-wrap ty-body-sm leading-relaxed text-muted-foreground">{notas.trim()}</p>}
               </div>
             </details>
             <AvaliacaoIAConteudo d={resultado} vaga={card.vaga} />

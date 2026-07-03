@@ -28,8 +28,8 @@
   },
   "kpi": {
     "total": "Total de candidatos",
-    "emEntrevista": "Em entrevista",
-    "entrevistados": "Entrevistados",
+    "emProcesso": "Em processo",
+    "banco": "Banco de talentos",
     "contratados": "Contratados"
   },
   "aria": {
@@ -137,11 +137,12 @@
     }
   },
   "etapa": {
-    "Triagem": "Triagem",
-    "Em entrevista": "Em entrevista",
-    "Entrevistado": "Entrevistado",
+    "Triagem IA": "Triagem IA",
+    "Entrevista RH": "Entrevista RH",
+    "Teste Técnico": "Teste Técnico",
+    "Entrevista Gestor": "Entrevista Gestor",
     "Contratado": "Contratado",
-    "Banco de talentos": "Banco de talentos",
+    "Banco de Talentos": "Banco de Talentos",
     "Reprovado": "Reprovado"
   },
   "senioridade": {

@@ -71,7 +71,7 @@ function CatalogNav() {
 
 export function Showcase() {
   return (
-    <main className="mx-auto max-w-6xl px-6 pt-20 pb-16">
+    <main className="mx-auto max-w-6xl px-5 pt-10 pb-16 lg:px-8">
       <Breadcrumb className="mb-6">
         <BreadcrumbList>
           <BreadcrumbItem><BreadcrumbLink href="#">Início</BreadcrumbLink></BreadcrumbItem>

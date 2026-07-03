@@ -12,6 +12,7 @@ import { toast } from 'sonner'
 import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/lib/utils'
+import { HEADER_SURFACE } from '@/lib/surfaces'
 import { focusRingOnPrimary } from '@/lib/focus'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { TopBarMenuButton, TopBarActions, TopBarAccount } from './topbar-parts'
@@ -70,7 +71,7 @@ export function Sidebar({ active, expanded, onNavigate, onVagas, brand }: { acti
           className={cn('group relative -ml-1 flex h-9 items-center rounded-lg px-1 transition-colors hover:bg-primary-foreground/10', focusRingOnPrimary)}
         >
           <img src={brand === 'marca-b' ? logoMarkTrevo : logoMark} alt="" className={cn('absolute left-1 size-7 transition-opacity duration-300', expanded ? 'opacity-0' : 'opacity-100')} />
-          <Logo variant="onBrand" brand={brand} className={cn('h-7 w-auto transition-opacity duration-300', expanded ? 'opacity-100' : 'opacity-0')} />
+          <Logo variant="onBrand" brand={brand} className={cn('h-8 w-auto transition-opacity duration-300', expanded ? 'opacity-100' : 'opacity-0')} />
         </button>
       </div>
 
@@ -117,7 +118,7 @@ export function MobileNav({ active, open, onOpenChange, onNavigate, onVagas, bra
       <DialogPrimitive.Portal>
         <DialogPrimitive.Content className="fixed inset-0 z-50 flex w-full flex-col bg-primary text-primary-foreground outline-none motion-safe:duration-200 motion-safe:data-[state=open]:animate-in motion-safe:data-[state=open]:fade-in-0 motion-safe:data-[state=closed]:animate-out motion-safe:data-[state=closed]:fade-out-0 md:hidden">
           <div className="flex h-16 shrink-0 items-center justify-between px-5">
-            <Logo variant="onBrand" brand={brand} className="h-7 w-auto" />
+            <Logo variant="onBrand" brand={brand} className="h-8 w-auto" />
             <DialogPrimitive.Close aria-label={t('menu.fechar')} className={cn('flex size-9 items-center justify-center rounded-lg text-primary-foreground transition-colors hover:bg-primary-foreground/10', focusRingOnPrimary)}>
               <X className="size-5" aria-hidden />
             </DialogPrimitive.Close>
@@ -164,7 +165,7 @@ function ShellTopBar({ active, onToggleMenu, menuExpanded, isMobile, onLogout, o
   const grupo = NAV_GROUPS.find((g) => g.items.some((it) => it.key === active))?.key ?? 'workspace'
   const trilhaLabel = t(`grupo.${grupo}` as 'grupo.workspace')
   return (
-    <header className="flex h-16 shrink-0 items-center gap-3 border-b border-border/40 bg-card/70 px-4 backdrop-blur-sm lg:px-6">
+    <header className={cn('flex h-16 shrink-0 items-center gap-3 px-5 lg:px-8', HEADER_SURFACE)}>
       <TopBarMenuButton label={menuLabel} menuExpanded={menuExpanded} isMobile={isMobile} onToggle={onToggleMenu} />
       <nav aria-label={t('trilha')} className="hidden items-center gap-1.5 ty-caption font-medium tracking-wide text-muted-foreground uppercase sm:flex">
         <span>{trilhaLabel}</span><span aria-hidden>/</span><span className="text-foreground" aria-current="page">{crumb}</span>
@@ -189,7 +190,7 @@ export function AppShell({ active, crumb, onNavigate, brand, mode, onCycleBrand,
   const navOpen = isMobile && mobileOpen
   const toggleMenu = () => (isMobile ? setMobileOpen((o) => !o) : setExpanded((e) => !e))
   return (
-    <div className="ty-scale-16 flex h-dvh overflow-hidden bg-muted/40 text-foreground">
+    <div className="ty-scale-16 flex h-dvh overflow-hidden bg-background text-foreground">
       <Sidebar active={active} expanded={expanded} onNavigate={onNavigate} brand={brand} />
       <MobileNav active={active} open={navOpen} onOpenChange={setMobileOpen} onNavigate={onNavigate} brand={brand} />
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">

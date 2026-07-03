@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { Sparkles } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
+import { HEADER_SURFACE } from '@/lib/surfaces'
 import { focusRing } from '@/lib/focus'
 import { TopBarMenuButton, TopBarActions, TopBarAccount } from '@/components/shell/topbar-parts'
 
@@ -16,7 +17,7 @@ export function TopBar({ onToggleMenu, menuExpanded, isMobile, onCharlie, charli
   // `menuExpanded` = no mobile reflete o drawer aberto; no desktop, o menu fixo expandido.
   const menuLabel = isMobile ? (menuExpanded ? t('topbar.menu.fechar') : t('topbar.menu.abrir')) : menuExpanded ? t('topbar.menu.recolher') : t('topbar.menu.expandir')
   return (
-    <header className="flex h-16 shrink-0 items-center gap-3 border-b border-border/40 bg-card/70 px-4 backdrop-blur-sm lg:px-6">
+    <header className={cn('flex h-16 shrink-0 items-center gap-3 px-5 lg:px-8', HEADER_SURFACE)}>
       <TopBarMenuButton label={menuLabel} menuExpanded={menuExpanded} isMobile={isMobile} onToggle={onToggleMenu} />
       <nav aria-label={t('topbar.trilha')} className="hidden items-center gap-1.5 ty-caption font-medium tracking-wide text-muted-foreground uppercase sm:flex">
         <span>{t('topbar.workspace')}</span><span aria-hidden>/</span>

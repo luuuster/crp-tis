@@ -8,30 +8,35 @@
  */
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ArrowUpDown, CalendarClock, CalendarPlus, Check, ChevronDown, Clock, FileText, Hourglass, Search, Sparkles, Workflow, X } from 'lucide-react'
+import { ArrowUpDown, CalendarClock, CalendarDays, CalendarPlus, Check, ChevronDown, Clock, FileDown, FileText, Hourglass, Search, Sparkles, Workflow, X } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { cn } from '@/lib/utils'
 import { iniciais } from '@/lib/format'
 import { hashNum } from '@/lib/hash'
-import { tintFor } from '@/lib/avatar'
-import { AppShell } from '@/components/shell/AppShell'
+import { tintFor, fotoDe } from '@/lib/avatar'
+import { AppShell, useIsMobile } from '@/components/shell/AppShell'
+import { CalendarioMensal } from '@/components/CalendarioMensal'
+import { ProximasEntrevistas } from '@/components/ProximasEntrevistas'
+import { ViewTabs } from '@/components/ViewTabs'
 import { ErrorState, PageHeader, badgeTone } from '@/components/page'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Spinner } from '@/components/ui/spinner'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/ui/sheet'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useMockData } from '@/lib/useMockData'
 import { CARDS_INICIAL, FASE, FASES, aprovar, reprovar, type Card, type FaseId } from './pipeline/data'
 import { buildDetalhe } from './EntrevistasIA'
 import { AgendarEntrevista, type Evento } from './Entrevistas'
+import { painelDe } from './entrevistas.logic'
+import { baixarRoteiro } from './roteiro'
 import { EntrevistaFinalizada } from './pipeline/EntrevistaFinalizada'
 import { ProcessoDetalhe } from './candidatos/ProcessoDetalhe'
 import { mkProcesso } from './candidatos/builders'
-import { NIVEIS, type Candidato as CandidatoBanco, type Processo, type StatusProc } from './candidatos/types'
+import { NIVEIS, type Candidato as CandidatoBanco, type Etapa, type Processo, type StatusProc } from './candidatos/types'
 
 // Faixa de nota 0–100 → tom semântico (verde/âmbar/vermelho). Score na etapa de IA = compatibilidade.
 const scoreTint = (s: number) => (s >= 80 ? 'bg-success/10 text-success-text' : s >= 65 ? 'bg-warning/10 text-warning-text' : 'bg-destructive/10 text-destructive-text')
@@ -55,6 +60,13 @@ const emailDe = (nome: string) =>
   // NFD separa o acento da letra-base; [^a-z\s] tira o acento (e qualquer pontuação) → "José Antônio" = jose.antonio
   `${nome.toLowerCase().normalize('NFD').replace(/[^a-z\s]/g, '').trim().split(/\s+/).join('.')}@email.com`
 
+// ---------- visão "Calendário" do funil: os agendamentos dos cards numa grade mensal ----------
+const ANOS_CAL = [2025, 2026, 2027]
+// Mês em que o calendário ABRE: o do agendamento mais antigo dos cards (não `new Date()`), pra não abrir
+// vazio quando a data real passar do mês semeado (jun/2026).
+const CAL_ANCORA = (CARDS_INICIAL.map(eventoDoCard).filter(Boolean) as Evento[])
+  .sort((a, b) => a.y - b.y || a.m - b.m || a.d - b.d)[0]
+
 // ---------- Card do funil → processo seletivo (stepper "Etapas do processo") ----------
 // A etapa do funil vira a faseAtual do processo (5 fases: Triagem IA, RH, Teste, Gestor, Proposta). O
 // mkProcesso já marca fase<atual=aprovado, =atual=em andamento, >atual=pendente → é o "libera o passo
@@ -64,6 +76,11 @@ const senioridadeDe = (c: Card) => nivelDaVaga(c.vaga)
 const PROC_STATUS: Record<FaseId, StatusProc> = {
   ia: 'Em andamento', rh: 'Em andamento', teste: 'Em andamento', gestor: 'Em andamento', proposta: 'Em andamento',
   contratado: 'Contratado', reprovado: 'Reprovado',
+}
+// Fase do funil → etapa do candidato no Banco de talentos (mesmo vocabulário das duas telas).
+const FASE_ETAPA: Record<FaseId, Etapa> = {
+  ia: 'Triagem IA', rh: 'Entrevista RH', teste: 'Teste Técnico', gestor: 'Entrevista Gestor',
+  proposta: 'Entrevista Gestor', contratado: 'Contratado', reprovado: 'Reprovado',
 }
 const procFaseAtual = (c: Card, h: number): number => {
   switch (c.fase) {
@@ -76,7 +93,7 @@ const procFaseAtual = (c: Card, h: number): number => {
   }
 }
 const candidatoProc = (c: Card): CandidatoBanco => ({
-  id: c.id, nome: c.nome, email: emailDe(c.nome), vaga: c.vaga, senioridade: senioridadeDe(c), etapa: 'Em entrevista', score: c.score, atualizado: dataDe(c),
+  id: c.id, nome: c.nome, email: emailDe(c.nome), vaga: c.vaga, senioridade: senioridadeDe(c), etapa: FASE_ETAPA[c.fase], score: c.score, atualizado: dataDe(c),
 })
 const processoDe = (c: Card): Processo => {
   const h = hashNum(c.nome)
@@ -119,44 +136,56 @@ const ordenarCards = (cards: Card[], ordens: OrdemCol[]) => {
 function CardItem({ c, onAbrir, onReagendar }: { c: Card; onAbrir?: (c: Card) => void; onReagendar?: (c: Card) => void }) {
   const { t } = useTranslation('pipeline')
   const interview = FASE[c.fase].gate === 'agendar' // RH / gestor: etapas de entrevista (agendamento inicial é por fora; aqui o RH reagenda)
+  // Quem vai CONDUZIR a entrevista (mock determinístico por candidato) — só aparece nas etapas de entrevista.
+  const painel = interview ? painelDe({ cand: c.nome }).slice(0, 3) : []
   return (
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions -- card clicável p/ mouse; o teclado vai pelo <button> do nome
-    <li onClick={() => onAbrir?.(c)} className="group/card cursor-pointer rounded-xl bg-card p-3 shadow-sm ring-1 ring-surface-ring transition-shadow hover:shadow-md hover:ring-primary/30">
-      <div className="flex items-start gap-2.5">
-        <span className={cn('flex size-9 shrink-0 items-center justify-center rounded-full ty-caption font-semibold', tintFor(c.nome))} aria-hidden>{iniciais(c.nome)}</span>
-        <div className="min-w-0 flex-1">
-          <button type="button" onClick={(e) => { e.stopPropagation(); onAbrir?.(c) }} aria-label={t('acao.verProcesso', { nome: c.nome })} className="block max-w-full truncate rounded-sm text-left ty-body-sm font-semibold text-foreground transition-colors group-hover/card:text-primary-text focus-visible:focus-ring">{c.nome}</button>
-          <p className="truncate ty-caption text-muted-foreground">{c.vaga} · {nivelDaVaga(c.vaga)}</p>
-        </div>
+    <li onClick={() => onAbrir?.(c)} className="group/card cursor-pointer space-y-2.5 rounded-xl bg-card p-3.5 shadow-sm ring-1 ring-surface-ring transition-all hover:shadow-md hover:ring-primary/40">
+      {/* Título: nome do candidato em destaque + vaga (hierarquia clara, título primeiro). */}
+      <div className="min-w-0">
+        <button type="button" onClick={(e) => { e.stopPropagation(); onAbrir?.(c) }} aria-label={t('acao.verProcesso', { nome: c.nome })} className="block max-w-full truncate rounded-sm text-left ty-body-sm font-semibold text-foreground transition-colors group-hover/card:text-primary-text focus-visible:focus-ring">{c.nome}</button>
+        <p className="mt-0.5 truncate ty-caption text-muted-foreground">{c.vaga} · {nivelDaVaga(c.vaga)}</p>
       </div>
-      {/* Compatibilidade — cada etapa é uma análise da IA, então a pílula é consistente em TODAS as colunas. */}
-      <p className="mt-2 ty-caption">
-        <span className={cn('inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium', scoreTint(c.score))}>
-          <Sparkles className="size-3 shrink-0" aria-hidden /> {c.score}% {t('compatLabel')}
-        </span>
-      </p>
+
+      {/* Compatibilidade da IA (pílula) — consistente em TODAS as colunas (cada etapa é uma análise). */}
+      <span className={cn('inline-flex items-center gap-1.5 rounded-md px-2 py-1 ty-caption font-semibold', scoreTint(c.score))}>
+        <Sparkles className="size-3.5 shrink-0" aria-hidden /> {c.score}% {t('compatLabel')}
+      </span>
+
       {/* O que a IA analisou nesta etapa (currículo → entrevista → teste → …) + recência. */}
-      <p className="mt-1 flex items-center gap-1.5 ty-caption font-semibold text-foreground">
-        <Clock className="size-3 shrink-0" aria-hidden /> {t('analiseEtapa', { assunto: t(`analise.${c.fase}` as 'analise.ia'), count: diasDe(c) })}
+      <p className="flex items-center gap-1.5 ty-caption text-muted-foreground">
+        <Clock className="size-3.5 shrink-0" aria-hidden /> {t('analiseEtapa', { assunto: t(`analise.${c.fase}` as 'analise.ia'), count: diasDe(c) })}
       </p>
+
+      {/* Só nas etapas de ENTREVISTA (RH/Gestor): agendamento (com "Reagendar") ou tempo na etapa, e o
+          rodapé com QUEM vai conduzir a entrevista — avatares dos entrevistadores (mostra o painel). */}
       {interview && (
-        <div className="mt-2 space-y-1.5">
-          <p className="flex items-center gap-1.5 ty-caption text-muted-foreground"><Hourglass className="size-3.5 shrink-0" aria-hidden /> {t('tempoEtapa', { count: diasNaEtapa(c) })}</p>
-          {c.agendamento && (
-            <>
-              <p className="flex items-center gap-1.5 ty-caption font-medium text-foreground"><CalendarClock className="size-3.5 shrink-0 text-primary-text" aria-hidden /> {t('agendadaPara', { quando: c.agendamento })}</p>
+        <>
+          {c.agendamento ? (
+            <div className="space-y-2 rounded-lg bg-primary/5 p-2.5">
+              <p className="flex items-center gap-1.5 ty-caption font-medium text-primary-text"><CalendarClock className="size-3.5 shrink-0" aria-hidden /> {t('agendadaPara', { quando: c.agendamento })}</p>
               {onReagendar && (
-                /* Aviso de implementação (mockup): reagendar ainda precisa ser validado — tooltip vermelho no hover/foco. */
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); onReagendar(c) }} className="h-8 w-full gap-1.5 ty-caption"><CalendarPlus className="size-3.5 shrink-0" aria-hidden /> {t('reagendar')}</Button>
-                  </TooltipTrigger>
-                  <TooltipContent tone="destructive" className="max-w-xs text-center">{t('reagendarAviso')}</TooltipContent>
-                </Tooltip>
+                <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); onReagendar(c) }} className="h-8 w-full gap-1.5 ty-caption"><CalendarPlus className="size-3.5 shrink-0" aria-hidden /> {t('reagendar')}</Button>
               )}
-            </>
+            </div>
+          ) : (
+            <p className="flex items-center gap-1.5 ty-caption text-muted-foreground"><Hourglass className="size-3.5 shrink-0" aria-hidden /> {t('tempoEtapa', { count: diasNaEtapa(c) })}</p>
           )}
-        </div>
+          <div className="flex items-center justify-between gap-2 border-t border-border/40 pt-2.5">
+            <span className="truncate ty-caption text-muted-foreground">{painel.length > 1 ? t('entrevistadores') : t('entrevistador')}</span>
+            <div className="flex -space-x-1.5">
+              {painel.map((e) => {
+                const nome = e.split(' · ')[0]
+                return (
+                  <Avatar key={e} title={e} className="size-7 ring-2 ring-card">
+                    <AvatarImage src={fotoDe(nome)} alt="" />
+                    <AvatarFallback className={cn('ty-caption font-semibold', tintFor(nome))}>{iniciais(nome)}</AvatarFallback>
+                  </Avatar>
+                )
+              })}
+            </div>
+          </div>
+        </>
       )}
     </li>
   )
@@ -208,7 +237,7 @@ function Coluna({ fase, cards, onAbrir, onReagendar }: { fase: (typeof FASES)[nu
   const label = t(`fase.${fase.id}` as 'fase.ia')
   const ordenados = ordenarCards(cards, ordens)
   return (
-    <section aria-label={t('contagem', { n: cards.length, fase: label })} className="flex w-72 shrink-0 flex-col overflow-hidden rounded-2xl bg-muted/30 ring-1 ring-surface-ring">
+    <section aria-label={t('contagem', { n: cards.length, fase: label })} className="flex w-72 shrink-0 flex-col overflow-hidden rounded-2xl bg-muted/70 ring-1 ring-surface-ring dark:bg-muted/30">
       <header className="flex shrink-0 items-center justify-between gap-2 border-b border-border/50 p-3 pr-2">
         <h2 className="truncate ty-body-sm font-semibold text-foreground">{label}</h2>
         <div className="flex shrink-0 items-center gap-1">
@@ -234,7 +263,7 @@ function EtapaFiltro({ etapas, onToggle, onLimpar }: { etapas: FaseId[]; onToggl
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" aria-label={t('filtro.etapaAria')} className="h-[var(--button-height-md)] w-auto min-w-[9rem] justify-between gap-2 font-normal">
+        <Button variant="outline" aria-label={t('filtro.etapaAria')} className="col-span-2 h-[var(--button-height-md)] w-full justify-between gap-2 font-normal sm:w-auto sm:min-w-[9rem]">
           <span className="truncate">{label}</span>
           <ChevronDown className="size-4 shrink-0 text-muted-foreground" aria-hidden />
         </Button>
@@ -278,27 +307,29 @@ function Filtros({ busca, onBusca, vaga, onVaga, vagas, nivel, onNivel, niveis, 
 }) {
   const { t } = useTranslation('pipeline')
   return (
-    <div className="flex shrink-0 flex-wrap items-center gap-2 px-5 pb-4 lg:px-8">
-      <div className="relative min-w-[12rem] flex-1 sm:max-w-xs">
+    // Mobile: grid de 2 colunas (busca e "limpar" ocupam a linha toda) — evita controles espremidos.
+    // sm+: volta a ser uma faixa flex que quebra naturalmente.
+    <div className="grid shrink-0 grid-cols-2 gap-2.5 px-5 pb-5 sm:flex sm:flex-wrap sm:items-center sm:gap-2 sm:pb-4 lg:px-8">
+      <div className="relative col-span-2 sm:w-auto sm:min-w-[12rem] sm:max-w-xs sm:flex-1">
         <Search className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
         <Input value={busca} onChange={(e) => onBusca(e.target.value)} placeholder={t('filtro.buscar')} aria-label={t('filtro.buscarAria')} className="h-[var(--button-height-md)] pl-8 ty-body-sm font-normal" />
       </div>
       <Select value={vaga} onValueChange={onVaga}>
-        <SelectTrigger aria-label={t('filtro.vagaAria')} className="h-[var(--button-height-md)] w-auto min-w-[9rem] font-normal"><SelectValue>{vaga === 'todas' ? t('filtro.todasVagas') : vaga}</SelectValue></SelectTrigger>
+        <SelectTrigger aria-label={t('filtro.vagaAria')} className="h-[var(--button-height-md)] w-full min-w-0 font-normal sm:w-auto sm:min-w-[9rem]"><SelectValue>{vaga === 'todas' ? t('filtro.todasVagas') : vaga}</SelectValue></SelectTrigger>
         <SelectContent>
           <SelectItem value="todas">{t('filtro.todasVagas')}</SelectItem>
           {vagas.map((v) => <SelectItem key={v} value={v}>{v}</SelectItem>)}
         </SelectContent>
       </Select>
       <Select value={nivel} onValueChange={onNivel}>
-        <SelectTrigger aria-label={t('filtro.nivelAria')} className="h-[var(--button-height-md)] w-auto min-w-[9rem] font-normal"><SelectValue>{nivel === 'todos' ? t('filtro.todosNiveis') : nivel}</SelectValue></SelectTrigger>
+        <SelectTrigger aria-label={t('filtro.nivelAria')} className="h-[var(--button-height-md)] w-full min-w-0 font-normal sm:w-auto sm:min-w-[9rem]"><SelectValue>{nivel === 'todos' ? t('filtro.todosNiveis') : nivel}</SelectValue></SelectTrigger>
         <SelectContent>
           <SelectItem value="todos">{t('filtro.todosNiveis')}</SelectItem>
           {niveis.map((n) => <SelectItem key={n} value={n}>{n}</SelectItem>)}
         </SelectContent>
       </Select>
       <EtapaFiltro etapas={etapas} onToggle={onToggleEtapa} onLimpar={onLimparEtapas} />
-      {ativos && <Button variant="ghost" onClick={onLimpar} className="h-[var(--button-height-md)] gap-1.5"><X className="size-4" aria-hidden /> {t('filtro.limpar')}</Button>}
+      {ativos && <Button variant="ghost" onClick={onLimpar} className="col-span-2 h-[var(--button-height-md)] w-full justify-center gap-1.5 sm:w-auto"><X className="size-4" aria-hidden /> {t('filtro.limpar')}</Button>}
     </div>
   )
 }
@@ -325,6 +356,7 @@ export function Pipeline({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
 }) {
   const { t } = useTranslation('pipeline')
   const { t: te } = useTranslation('entrevistas') // títulos sr-only do Sheet de reagendamento (reusados)
+  const isMobile = useIsMobile()
   const { data: cards, setData, loading, error, retry } = useMockData<Card[]>('pipeline', () => CARDS_INICIAL, [])
   const [vendo, setVendo] = useState<Card | null>(null) // candidato aberto no processo (stepper)
   const [reagendando, setReagendando] = useState<Card | null>(null) // candidato no Sheet de reagendar entrevista
@@ -333,6 +365,14 @@ export function Pipeline({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
   const [vaga, setVaga] = useState('todas')
   const [nivel, setNivel] = useState('todos')
   const [etapas, setEtapas] = useState<FaseId[]>([])
+  const [vista, setVista] = useState<'funil' | 'calendario'>('funil') // board × calendário dos agendamentos
+  const [calMes, setCalMes] = useState(() => CAL_ANCORA?.m ?? new Date().getMonth())
+  const [calAno, setCalAno] = useState(() => CAL_ANCORA?.y ?? new Date().getFullYear())
+  const [painelCal, setPainelCal] = useState(false) // painel lateral de próximas entrevistas (visão Calendário)
+  const mudarMesCal = (delta: number) => { const base = new Date(calAno, calMes + delta, 1); setCalMes(base.getMonth()); setCalAno(base.getFullYear()) }
+  // Agendamentos dos cards → eventos do calendário (reflete reagendamentos). Clicar abre o processo do card.
+  const eventosCal = cards.map(eventoDoCard).filter(Boolean) as Evento[]
+  const abrirDoCalendario = (ev: Evento) => { const c = cards.find((x) => x.nome === ev.cand && x.vaga === ev.vaga); if (c) setVendo(c) }
 
   // Decisão tomada no rodapé do processo → move o card no funil e volta para o board.
   const decidir = (mover: (x: Card) => Card, kind: ToastKind) => {
@@ -382,6 +422,25 @@ export function Pipeline({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
           p={processoDe(vendo)}
           onVoltar={() => setVendo(null)}
           acoesInicio={<Button variant="secondary-soft" onClick={() => toast.info(t('toast.curriculo'))}><FileText aria-hidden /> {t('verCurriculo')}</Button>}
+          acaoEtapa={
+            // Roteiro personalizado da IA para a entrevista deste candidato (baixar → usar → reenviar preenchido).
+            <Button
+              size="lg" className="w-full"
+              onClick={() => {
+                const ev = eventoDoCard(vendo)
+                void baixarRoteiro({
+                  cand: vendo.nome, vaga: vendo.vaga, score: vendo.score,
+                  data: ev ? `${ev.d}/${ev.m + 1}/${ev.y}` : dataDe(vendo),
+                  hora: ev?.hora ?? '—',
+                  tipo: te(`formato.${ev?.tipo ?? 'Online'}`),
+                  entrevistadores: ev?.entrevistadores?.length ? ev.entrevistadores : painelDe({ cand: vendo.nome }),
+                })
+                toast.success(te('detalhe.roteiroBaixado', { cand: vendo.nome }))
+              }}
+            >
+              <FileDown aria-hidden /> {te('detalhe.baixarRoteiro')}
+            </Button>
+          }
           acoes={<Decisao c={vendo} onDecidir={decidir} onFinalizar={(c) => setFinalizando(c)} />}
         />
       ) : (
@@ -390,15 +449,24 @@ export function Pipeline({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
           {/* Header canônico (PageHeader) dentro do layout full-height próprio do kanban (h-full, sem
               PageContainer, que adicionaria padding/scroll vertical incompatível com o board). */}
           <div className="shrink-0 px-5 pt-6 pb-4 lg:px-8">
-            <PageHeader icon={Workflow} title={t('header.titulo')} desc={t('header.descricao')} />
-            {!loading && !error && (
-              <p className="mt-1 ty-caption tabular-nums text-muted-foreground">
+            <PageHeader icon={Workflow} title={t('header.titulo')} desc={isMobile ? undefined : t('header.descricao')} />
+            {/* Abas de visão (barra sublinhada) — Funil × Calendário. */}
+            <ViewTabs
+              className="mt-5"
+              value={vista} onChange={setVista} ariaLabel={t('vista.aria')}
+              options={[
+                { value: 'funil', label: t('vista.funil'), icon: Workflow },
+                { value: 'calendario', label: t('vista.calendario'), icon: CalendarDays },
+              ]}
+            />
+            {vista === 'funil' && !loading && !error && (
+              <p className="mt-4 ty-caption tabular-nums text-muted-foreground">
                 {ativos ? t('resultado', { n: visiveis.length, total: cards.length }) : t('total', { n: cards.length })}
               </p>
             )}
           </div>
 
-          {!loading && !error && (
+          {vista === 'funil' && !loading && !error && (
             <Filtros
               busca={busca} onBusca={setBusca}
               vaga={vaga} onVaga={setVaga} vagas={vagas}
@@ -412,6 +480,29 @@ export function Pipeline({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
             <div className="grid flex-1 place-items-center py-20" role="status" aria-label={t('carregando')}><Spinner className="size-6" /></div>
           ) : error ? (
             <div className="px-5 lg:px-8"><ErrorState onRetry={retry} /></div>
+          ) : vista === 'calendario' ? (
+            // Visão Calendário: os agendamentos dos cards numa grade mensal (componente compartilhado com Entrevistas).
+            <div className="min-h-0 flex-1 overflow-y-auto px-5 pb-8 lg:px-8">
+              <div className={cn('grid gap-5', painelCal && 'lg:grid-cols-[minmax(0,1fr)_22rem]')}>
+                <CalendarioMensal
+                  eventos={eventosCal} mes={calMes} ano={calAno} anos={ANOS_CAL}
+                  onMes={setCalMes} onAno={setCalAno} onMudarMes={mudarMesCal} onAbrir={abrirDoCalendario}
+                  acoes={
+                    <Button
+                      variant="outline" size="icon"
+                      aria-pressed={painelCal} aria-label={painelCal ? te('proximas.ocultar') : te('proximas.mostrar')}
+                      onClick={() => setPainelCal((v) => !v)}
+                      className={cn('shrink-0', painelCal && 'border-primary/40 bg-primary/10 text-primary-text hover:bg-primary/15')}
+                    >
+                      <CalendarClock aria-hidden />
+                    </Button>
+                  }
+                />
+                {painelCal && (
+                  <ProximasEntrevistas eventos={eventosCal} mes={calMes} ano={calAno} onAbrir={abrirDoCalendario} onFechar={() => setPainelCal(false)} />
+                )}
+              </div>
+            </div>
           ) : (
             // Board = a própria linha de colunas E o container de rolagem HORIZONTAL (ver todas as colunas).
             // min-h-0 mantém a altura presa. tabIndex+role=group: rolável e focável pelo teclado (WCAG 2.1.1).

@@ -7,9 +7,8 @@
  * competir com o <h1> do formulário — um único heading principal por tela (WCAG heading-order).
  */
 import { cn } from '@/lib/utils'
+import { brandNome } from '@/lib/useBrandMode'
 import { Logo } from './Logo'
-
-const brandName = (brand?: string) => (brand === 'marca-b' ? 'Trevo' : 'TIS')
 
 export function BrandPanel({
   headline,
@@ -24,7 +23,7 @@ export function BrandPanel({
   brand?: string
   className?: string
 }) {
-  const copyright = `© 2026 ${brandName(brand)} · Plataforma de RH`
+  const copyright = `© 2026 ${brandNome(brand)} · Plataforma de RH`
   if (variant === 'banner') {
     return (
       <div

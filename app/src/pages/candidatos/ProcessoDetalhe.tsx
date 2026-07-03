@@ -15,10 +15,11 @@ import { AvaliacaoIAConteudo } from '../EntrevistasIA'
 import type { Candidato, Processo } from './types'
 import { notaBar, FASE_VISUAL, FASE_LABEL_COLOR, PROC_BAR, ProcStatusBadge, useResultadoFaseLabel } from './styles'
 
-// `acoes`/`acoesInicio` (opcionais): ações extras no rodapé (ex.: aprovar/reprovar e "ver currículo" do funil).
-// `acoesInicio` fica à ESQUERDA, junto do "Voltar"; `acoes` à direita. A tela de Candidatos não passa nada —
-// footer fica só com "Voltar".
-export function ProcessoDetalhe({ c, p, onVoltar, acoes, acoesInicio }: { c: Candidato; p: Processo; onVoltar: () => void; acoes?: ReactNode; acoesInicio?: ReactNode }) {
+// Ações opcionais (só o funil passa; Candidatos não passa nada → footer só com "Voltar"):
+// • `acoesInicio` — RODAPÉ à esquerda, junto do "Voltar" (ex.: "Ver currículo").
+// • `acoes` — RODAPÉ à direita (ex.: aprovar/reprovar).
+// • `acaoEtapa` — DENTRO do card da etapa selecionada, junto do contexto da entrevista (ex.: "Baixar roteiro").
+export function ProcessoDetalhe({ c, p, onVoltar, acoes, acoesInicio, acaoEtapa }: { c: Candidato; p: Processo; onVoltar: () => void; acoes?: ReactNode; acoesInicio?: ReactNode; acaoEtapa?: ReactNode }) {
   const { t } = useTranslation('candidatos')
   const faseLabel = useResultadoFaseLabel()
   const pct = Math.round((p.faseAtual / p.totalFases) * 100)
@@ -171,6 +172,9 @@ export function ProcessoDetalhe({ c, p, onVoltar, acoes, acoesInicio }: { c: Can
                 ))}
               </dl>
             )}
+
+            {/* ação da etapa (ex.: baixar o roteiro da entrevista) — dentro do contexto da etapa */}
+            {acaoEtapa && <div className="mt-4 flex flex-wrap items-center gap-2">{acaoEtapa}</div>}
 
             {/* triagem de currículo por IA — avaliação COMPLETA da IA (mesma da tela Entrevistas IA) */}
             {dSel.triagemIA && (
