@@ -16,7 +16,7 @@ export type Vaga = {
 
 // Condições comuns da empresa (mesma TIS) — reaproveitadas por todas as vagas.
 export const BENEF: string[] = ['Vale-refeição', 'Plano de saúde', 'Vale-transporte', 'Auxílio home-office', 'Day-off no aniversário', 'Gympass']
-export const PROCESSO: string[] = ['Triagem de currículo', 'Entrevista com RH', 'Entrevista técnica', 'Entrevista com o gestor', 'Proposta']
+export const PROCESSO: string[] = ['Triagem de currículo', 'Teste técnico', 'Entrevista com RH', 'Entrevista com o gestor', 'Proposta']
 
 // Constrói uma Vaga derivando os campos da tabela do próprio briefing (cargo/nível/modelo).
 export function mkVaga(meta: { id: string; data: string; inscritos: number; aprovados: number; status: Status }, briefing: Briefing, perfil: Perfil): Vaga {

@@ -68,7 +68,7 @@ const CAL_ANCORA = (CARDS_INICIAL.map(eventoDoCard).filter(Boolean) as Evento[])
   .sort((a, b) => a.y - b.y || a.m - b.m || a.d - b.d)[0]
 
 // ---------- Card do funil → processo seletivo (stepper "Etapas do processo") ----------
-// A etapa do funil vira a faseAtual do processo (5 fases: Triagem IA, RH, Teste, Gestor, Proposta). O
+// A etapa do funil vira a faseAtual do processo (5 fases: Triagem IA, Teste, RH, Gestor, Proposta). O
 // mkProcesso já marca fase<atual=aprovado, =atual=em andamento, >atual=pendente → é o "libera o passo
 // anterior conforme avança". senioridade/email/data são sintetizados (mock), estáveis pelo nome.
 const nivelDaVaga = (vaga: string) => NIVEIS[hashNum(vaga) % NIVEIS.length] // nível é da VAGA: mesma vaga = mesmo nível p/ todos os candidatos dela
@@ -84,8 +84,8 @@ const FASE_ETAPA: Record<FaseId, Etapa> = {
 }
 const procFaseAtual = (c: Card, h: number): number => {
   switch (c.fase) {
-    case 'rh': return 2
-    case 'teste': return 3
+    case 'teste': return 2
+    case 'rh': return 3
     case 'gestor': return 4
     case 'proposta': case 'contratado': return 5
     case 'reprovado': return 2 + (h % 3) // caiu numa fase intermediária (não rastreamos qual no funil)
@@ -147,10 +147,13 @@ function CardItem({ c, onAbrir, onReagendar }: { c: Card; onAbrir?: (c: Card) =>
         <p className="mt-0.5 truncate ty-caption text-muted-foreground">{c.vaga} · {nivelDaVaga(c.vaga)}</p>
       </div>
 
-      {/* Compatibilidade da IA (pílula) — consistente em TODAS as colunas (cada etapa é uma análise). */}
-      <span className={cn('inline-flex items-center gap-1.5 rounded-md px-2 py-1 ty-caption font-semibold', scoreTint(c.score))}>
-        <Sparkles className="size-3.5 shrink-0" aria-hidden /> {c.score}% {t('compatLabel')}
-      </span>
+      {/* Compatibilidade da IA (pílula) — em todas as colunas, MENOS no Teste técnico (lá o que vale é o
+          resultado do teste, não a compatibilidade do currículo). */}
+      {c.fase !== 'teste' && (
+        <span className={cn('inline-flex items-center gap-1.5 rounded-md px-2 py-1 ty-caption font-semibold', scoreTint(c.score))}>
+          <Sparkles className="size-3.5 shrink-0" aria-hidden /> {c.score}% {t('compatLabel')}
+        </span>
+      )}
 
       {/* O que a IA analisou nesta etapa (currículo → entrevista → teste → …) + recência. */}
       <p className="flex items-center gap-1.5 ty-caption text-muted-foreground">

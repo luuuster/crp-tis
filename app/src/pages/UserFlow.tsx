@@ -4,7 +4,7 @@
  * ponta, com pontos de decisão (losangos), bifurcações que reconvergem (fork) e estados finais.
  *
  * Cobre as 3 fases: criação/publicação (recrutador), acesso/candidatura (candidato) e o funil de 5 etapas
- * (IA → RH → Teste → Gestor → Proposta), com reprovação possível em cada porta. 100% token-driven,
+ * (IA → Teste → RH → Gestor → Proposta), com reprovação possível em cada porta. 100% token-driven,
  * multi-marca, claro/escuro e WCAG 2.2 AA (passos em ordem real; losangos/setas decorativos com aria-hidden;
  * cor sempre acompanhada de rótulo).
  */
@@ -59,14 +59,14 @@ const FLOW: FlowNode[] = [
 
   { kind: 'phase', label: 'Fase 3 · Triagem e seleção (funil de 5 etapas)' },
   { kind: 'decision', label: 'Currículo aprovado pela IA?', icon: Bot, nao: 'Reprovado na análise de currículo' },
+  { kind: 'process', label: 'Teste técnico', icon: FlaskConical, ator: 'rec' },
+  { kind: 'decision', label: 'Passa no teste?', icon: FlaskConical, nao: 'Reprovado no teste' },
   { kind: 'process', label: 'Candidato se identifica (nome + e-mail) — o assistente localiza a candidatura na vaga', icon: Mail, ator: 'cand' },
   { kind: 'process', label: 'Escolhe datas e períodos; o assistente cruza com a agenda da equipe e oferece os horários disponíveis', icon: CalendarClock, ator: 'cand' },
   { kind: 'process', label: 'Entrevista marcada', icon: CalendarCheck, ator: 'rec' },
   { kind: 'decision', label: 'Entrevistadores podem comparecer?', icon: Users, nao: 'Imprevisto interno (recrutador/entrevistador não pode) → RH reagenda a partir das datas/horários que o candidato informou · avisa por e-mail + WhatsApp', naoTom: 'warning', naoIcon: RefreshCw },
   { kind: 'process', label: 'Entrevista com o RH', icon: MessagesSquare, ator: 'rec' },
   { kind: 'decision', label: 'RH aprova?', icon: UserCheck, nao: 'Reprovado no RH' },
-  { kind: 'process', label: 'Teste técnico / case', icon: FlaskConical, ator: 'rec' },
-  { kind: 'decision', label: 'Passa no teste?', icon: FlaskConical, nao: 'Reprovado no teste' },
   { kind: 'process', label: 'Entrevista com o gestor', icon: Users, ator: 'rec' },
   { kind: 'decision', label: 'Gestor aprova?', icon: Users, nao: 'Reprovado pelo gestor' },
   { kind: 'process', label: 'Proposta enviada', icon: FileSignature, ator: 'rec' },

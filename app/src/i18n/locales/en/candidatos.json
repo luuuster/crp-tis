@@ -115,7 +115,9 @@
     "etapaDe": "Stage {{atual}} of {{total}}",
     "conversa": {
       "rh": "What was discussed",
-      "gestor": "Questions for the candidate"
+      "gestor": "Questions for the candidate",
+      "tecnica": "Interview chat",
+      "aguardando": "Waiting for the candidate's answers…"
     },
     "desafio": "The challenge",
     "desafioCampo": {
@@ -125,6 +127,7 @@
     },
     "criterios": "Assessment by criterion",
     "destaques": "Highlights",
+    "scoreTeste": "Interview score (AI)",
     "atencao": "Points of attention",
     "iaReprovado": "Rejected",
     "iaAprovado": "Bot approved",

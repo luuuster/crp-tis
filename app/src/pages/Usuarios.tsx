@@ -7,7 +7,7 @@
  */
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Eye, EyeOff, LayoutList, MailCheck, Pencil, Search, ShieldCheck, UserCheck, UserMinus, UserPlus, Users } from 'lucide-react'
+import { Check, Circle, Eye, EyeOff, LayoutList, MailCheck, Pencil, Search, ShieldCheck, UserCheck, UserMinus, UserPlus, Users } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { cn } from '@/lib/utils'
@@ -145,11 +145,20 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
   const abrirEdicao = (u: Usuario) => { setEditing(u); setForm({ nome: u.nome, email: u.email, senha: '', confirmar: '', telefone: u.telefone ?? '', cpf: u.cpf ?? '', tipoPessoa: u.tipoPessoa ?? 'Pessoa Física', nascimento: u.nascimento ?? '', funcao: u.funcao }); setShowSenha(false); setShowConfirmar(false); setDialogOpen(true) }
 
   const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())
-  // Senha só é exigida no CADASTRO (novo usuário); na edição não se troca a senha por aqui. Confirmação
-  // evita erro de digitação numa senha que está sendo CRIADA.
-  const senhaValida = form.senha.length >= 8
+  // Requisitos da senha (checklist na tela). A senha é definida/trocada tanto no cadastro quanto na edição.
+  const senhaReqs = [
+    { id: 'min8', ok: form.senha.length >= 8 },
+    { id: 'maiuscula', ok: /[A-Z]/.test(form.senha) },
+    { id: 'numero', ok: /[0-9]/.test(form.senha) },
+    { id: 'especial', ok: /[^A-Za-z0-9]/.test(form.senha) },
+    { id: 'coincidem', ok: form.senha.length > 0 && form.senha === form.confirmar },
+  ] as const
+  const senhaReqsOk = senhaReqs.filter((r) => r.ok).length
+  const senhaValida = senhaReqsOk === senhaReqs.length
   const senhaConfere = form.senha === form.confirmar
-  const podeSalvar = form.nome.trim().length > 0 && emailValido && (editing !== null || (senhaValida && senhaConfere))
+  // Como na referência, todos os campos são obrigatórios (Tipo/Função já têm valor padrão).
+  const podeSalvar = form.nome.trim().length > 0 && emailValido && form.telefone.trim().length > 0
+    && form.cpf.trim().length > 0 && form.nascimento.trim().length > 0 && senhaValida
   // Documento e rótulo de data acompanham o Tipo de pessoa (PF → CPF/nascimento; PJ → CNPJ/abertura).
   const isPJ = form.tipoPessoa === 'Pessoa Jurídica'
   const docLabel = isPJ ? t('sheet.doc.cnpj') : t('sheet.doc.cpf')
@@ -381,27 +390,27 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
           {/* formulário (rolável) */}
           <div className="flex-1 space-y-4 overflow-y-auto p-5">
             <div className="grid gap-2">
-              <Label htmlFor="u-nome">{t('sheet.nome')}</Label>
+              <Label htmlFor="u-nome">{t('sheet.nome')} <span className="text-destructive-text" aria-hidden>*</span></Label>
               <Input id="u-nome" value={form.nome} onChange={(e) => setForm((f) => ({ ...f, nome: e.target.value }))} placeholder={t('sheet.nomePlaceholder')} autoComplete="off" />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="u-email">{t('sheet.email')}</Label>
+              <Label htmlFor="u-email">{t('sheet.email')} <span className="text-destructive-text" aria-hidden>*</span></Label>
               <Input id="u-email" type="email" inputMode="email" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} placeholder={t('sheet.emailPlaceholder')} aria-invalid={form.email.length > 0 && !emailValido} autoComplete="off" />
               {form.email.length > 0 && !emailValido && <p className="ty-caption text-destructive-text">{t('sheet.emailInvalido')}</p>}
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="grid gap-2">
-                <Label htmlFor="u-tel">{t('sheet.telefone')}</Label>
+                <Label htmlFor="u-tel">{t('sheet.telefone')} <span className="text-destructive-text" aria-hidden>*</span></Label>
                 <Input id="u-tel" inputMode="tel" value={form.telefone} onChange={(e) => setForm((f) => ({ ...f, telefone: maskTel(e.target.value) }))} placeholder={t('sheet.telefonePlaceholder')} autoComplete="off" />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="u-doc">{docLabel}</Label>
+                <Label htmlFor="u-doc">{docLabel} <span className="text-destructive-text" aria-hidden>*</span></Label>
                 <Input id="u-doc" inputMode="numeric" value={form.cpf} onChange={(e) => setForm((f) => ({ ...f, cpf: maskDoc(e.target.value) }))} placeholder={docPlaceholder} autoComplete="off" />
               </div>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="grid gap-2">
-                <Label htmlFor="u-tipo">{t('sheet.tipoPessoa')}</Label>
+                <Label htmlFor="u-tipo">{t('sheet.tipoPessoa')} <span className="text-destructive-text" aria-hidden>*</span></Label>
                 <Select value={form.tipoPessoa} onValueChange={(v) => setForm((f) => ({ ...f, tipoPessoa: v as TipoPessoa, cpf: (v === 'Pessoa Jurídica' ? maskCNPJ : maskCPF)(f.cpf) }))}>
                   <SelectTrigger id="u-tipo" className="w-full"><SelectValue>{labelTipoPessoa(form.tipoPessoa)}</SelectValue></SelectTrigger>
                   <SelectContent>
@@ -411,12 +420,12 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
                 </Select>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="u-data">{dataLabel}</Label>
+                <Label htmlFor="u-data">{dataLabel} <span className="text-destructive-text" aria-hidden>*</span></Label>
                 <Input id="u-data" inputMode="numeric" value={form.nascimento} onChange={(e) => setForm((f) => ({ ...f, nascimento: maskData(e.target.value) }))} placeholder={t('sheet.data.placeholder')} autoComplete="off" />
               </div>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="u-funcao">{t('sheet.funcao')}</Label>
+              <Label htmlFor="u-funcao">{t('sheet.funcao')} <span className="text-destructive-text" aria-hidden>*</span></Label>
               {/* trigger com altura automática + py extra: o valor tem 2 linhas (nome + descrição) e a
                   altura fixa padrão (h-9) o deixava espremido. */}
               <Select value={form.funcao} onValueChange={(v) => setForm((f) => ({ ...f, funcao: v as Funcao }))}>
@@ -433,32 +442,44 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
                 </SelectContent>
               </Select>
             </div>
-            {/* Senha por ÚLTIMO e só no CADASTRO — no produto ela iria pro backend; aqui é o campo do
-                mockup. Confirmação porque é uma senha sendo CRIADA (evita erro de digitação). */}
-            {!editing && (
-              <>
-                <div className="grid gap-2">
-                  <Label htmlFor="u-senha">{t('sheet.senha')}</Label>
-                  <div className="relative">
-                    <Input id="u-senha" type={showSenha ? 'text' : 'password'} value={form.senha} onChange={(e) => setForm((f) => ({ ...f, senha: e.target.value }))} placeholder={t('sheet.senhaPlaceholder')} aria-invalid={form.senha.length > 0 && !senhaValida} autoComplete="new-password" className="pr-9" />
-                    <button type="button" onClick={() => setShowSenha((s) => !s)} aria-label={showSenha ? t('sheet.ocultarSenha') : t('sheet.mostrarSenha')} className={cn('absolute top-1/2 right-2 grid size-7 -translate-y-1/2 place-items-center text-muted-foreground transition-colors hover:text-foreground', focusRing)}>
-                      {showSenha ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                    </button>
-                  </div>
-                  {form.senha.length > 0 && !senhaValida && <p className="ty-caption text-destructive-text">{t('sheet.senhaCurta')}</p>}
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="u-senha-conf">{t('sheet.confirmarSenha')}</Label>
-                  <div className="relative">
-                    <Input id="u-senha-conf" type={showConfirmar ? 'text' : 'password'} value={form.confirmar} onChange={(e) => setForm((f) => ({ ...f, confirmar: e.target.value }))} placeholder={t('sheet.confirmarSenhaPlaceholder')} aria-invalid={form.confirmar.length > 0 && !senhaConfere} autoComplete="new-password" className="pr-9" />
-                    <button type="button" onClick={() => setShowConfirmar((s) => !s)} aria-label={showConfirmar ? t('sheet.ocultarSenha') : t('sheet.mostrarSenha')} className={cn('absolute top-1/2 right-2 grid size-7 -translate-y-1/2 place-items-center text-muted-foreground transition-colors hover:text-foreground', focusRing)}>
-                      {showConfirmar ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                    </button>
-                  </div>
-                  {form.confirmar.length > 0 && !senhaConfere && <p className="ty-caption text-destructive-text">{t('sheet.senhaNaoConfere')}</p>}
-                </div>
-              </>
-            )}
+            {/* Senha — definida no cadastro e trocada na edição (mockup). Confirmação + checklist de
+                requisitos (como na referência). */}
+            <div className="grid gap-2">
+              <Label htmlFor="u-senha">{t(editing ? 'sheet.novaSenha' : 'sheet.senha')} <span className="text-destructive-text" aria-hidden>*</span></Label>
+              <div className="relative">
+                <Input id="u-senha" type={showSenha ? 'text' : 'password'} value={form.senha} onChange={(e) => setForm((f) => ({ ...f, senha: e.target.value }))} placeholder={t('sheet.senhaPlaceholder')} aria-invalid={form.senha.length > 0 && !senhaValida} autoComplete="new-password" className="pr-9" />
+                <button type="button" onClick={() => setShowSenha((s) => !s)} aria-label={showSenha ? t('sheet.ocultarSenha') : t('sheet.mostrarSenha')} className={cn('absolute top-1/2 right-2 grid size-7 -translate-y-1/2 place-items-center text-muted-foreground transition-colors hover:text-foreground', focusRing)}>
+                  {showSenha ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                </button>
+              </div>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="u-senha-conf">{t('sheet.confirmarSenha')} <span className="text-destructive-text" aria-hidden>*</span></Label>
+              <div className="relative">
+                <Input id="u-senha-conf" type={showConfirmar ? 'text' : 'password'} value={form.confirmar} onChange={(e) => setForm((f) => ({ ...f, confirmar: e.target.value }))} placeholder={t('sheet.confirmarSenhaPlaceholder')} aria-invalid={form.confirmar.length > 0 && !senhaConfere} autoComplete="new-password" className="pr-9" />
+                <button type="button" onClick={() => setShowConfirmar((s) => !s)} aria-label={showConfirmar ? t('sheet.ocultarSenha') : t('sheet.mostrarSenha')} className={cn('absolute top-1/2 right-2 grid size-7 -translate-y-1/2 place-items-center text-muted-foreground transition-colors hover:text-foreground', focusRing)}>
+                  {showConfirmar ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                </button>
+              </div>
+            </div>
+            {/* Requisitos da senha — barra segmentada (N/5) + checklist. */}
+            <div className="grid gap-2">
+              <div className="flex items-center justify-between">
+                <span className="ty-body-sm font-medium text-foreground">{t('sheet.requisitos.titulo')}</span>
+                <span className="ty-caption tabular-nums text-muted-foreground">{senhaReqsOk}/{senhaReqs.length}</span>
+              </div>
+              <div className="flex gap-1" aria-hidden>
+                {senhaReqs.map((r) => <div key={r.id} className={cn('h-1.5 flex-1 rounded-full transition-colors', r.ok ? 'bg-success' : 'bg-muted-foreground/15')} />)}
+              </div>
+              <ul className="space-y-1.5">
+                {senhaReqs.map((r) => (
+                  <li key={r.id} className="flex items-center gap-2 ty-caption">
+                    {r.ok ? <Check className="size-3.5 shrink-0 text-success-text" aria-hidden /> : <Circle className="size-3.5 shrink-0 text-muted-foreground/40" aria-hidden />}
+                    <span className={r.ok ? 'text-foreground' : 'text-muted-foreground'}>{t(`sheet.requisitos.${r.id}` as 'sheet.requisitos.min8')}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
           {/* rodapé */}

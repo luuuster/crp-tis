@@ -34,7 +34,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
-export type StatusIA = 'Pendente' | 'Aprovado bot' | 'Aprovado RH' | 'Reprovado'
+export type StatusIA = 'Pendente' | 'Aprovado bot' | 'Aprovado RH' | 'Aprovado' | 'Reprovado'
 type Recomendacao = 'Sim' | 'Talvez' | 'Não'
 type Pergunta = { titulo: string; texto: string }
 // Detalhe = tudo que aparece na tela do candidato (currículo analisado + avaliação da IA).
@@ -198,6 +198,7 @@ const STATUS_TONE: Record<StatusIA, BadgeTone> = {
   'Pendente': 'warning',
   'Aprovado bot': 'violet',
   'Aprovado RH': 'success',
+  'Aprovado': 'success',
   'Reprovado': 'destructive',
 }
 const RECOMENDA_TONE: Record<Recomendacao, BadgeTone> = {
@@ -428,8 +429,12 @@ export function CandidatoDetalhe({ c, onVoltar, onAprovar, onReprovar }: { c: Ca
 
 // Conteúdo da avaliação da IA em formato EMBUTIDO (sem cards externos) — reaproveitado dentro de outra
 // superfície, ex.: a etapa "Triagem de currículo por IA" do detalhe de um processo seletivo.
-export function AvaliacaoIAConteudo({ d, email, vaga, statusLabel }: {
+export function AvaliacaoIAConteudo({ d, email, vaga, statusLabel, ocultarScore, ocultarCurriculo }: {
   d: Detalhe; email?: string; vaga?: string; statusLabel?: StatusIA
+  // Na TRIAGEM de currículo (etapa 1 do processo) não faz sentido "Score da entrevista" — só aderência.
+  ocultarScore?: boolean
+  // ...e o botão "Abrir currículo" (ação da tela Entrevistas IA) não pertence ao detalhe do processo.
+  ocultarCurriculo?: boolean
 }) {
   const { t } = useTranslation('entrevistas-ia')
   return (
@@ -444,7 +449,7 @@ export function AvaliacaoIAConteudo({ d, email, vaga, statusLabel }: {
         </div>
         <div className="space-y-5">
           <ScoreBar label={t('detalhe.aderencia')} value={d.aderencia} unit="%" />
-          <ScoreBar label={t('detalhe.scoreEntrevista')} value={d.scoreGeral} />
+          {!ocultarScore && <ScoreBar label={t('detalhe.scoreEntrevista')} value={d.scoreGeral} />}
           <div className="flex flex-wrap items-start gap-x-8 gap-y-3">
             <div>
               <p className="ty-caption text-muted-foreground">{t('detalhe.recomendacao')}</p>
@@ -502,7 +507,7 @@ export function AvaliacaoIAConteudo({ d, email, vaga, statusLabel }: {
       <div>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h4 className="flex items-center gap-2 ty-body-sm font-semibold text-foreground"><FileSearch className="size-4 text-muted-foreground" aria-hidden /> {t('detalhe.analiseTitulo')}</h4>
-          <Button variant="secondary-soft" size="sm" onClick={() => toast.info(t('toast.curriculo'))}><FileText aria-hidden /> {t('detalhe.abrirCurriculo')}</Button>
+          {!ocultarCurriculo && <Button variant="secondary-soft" size="sm" onClick={() => toast.info(t('toast.curriculo'))}><FileText aria-hidden /> {t('detalhe.abrirCurriculo')}</Button>}
         </div>
         <p className="mt-2 ty-body-sm leading-relaxed text-muted-foreground">{d.analiseCandidato}</p>
         <div className="mt-3 flex flex-wrap gap-2">

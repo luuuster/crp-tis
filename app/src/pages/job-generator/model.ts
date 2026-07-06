@@ -36,7 +36,7 @@ export const QUANTIDADES = Array.from({ length: 20 }, (_, i) => String(i + 1))
 // Prazos (em dias) que o RH pode escolher para a vaga ficar aberta. 30 é o padrão da plataforma.
 export const PRAZOS = ['15', '30', '45', '60', '90']
 export const BENEFICIOS_POOL = ['Vale-refeição', 'Vale-transporte', 'Plano de saúde', 'Plano odontológico', 'Auxílio home-office', 'Day-off aniversário', 'Gympass', 'Bônus anual', 'Stock options', 'Auxílio creche', 'Seguro de vida', 'Horário flexível']
-export const PROCESSO_POOL = ['Triagem de currículo', 'Entrevista com RH', 'Entrevista comportamental', 'Teste técnico / Case', 'Entrevista técnica', 'Entrevista com gestor', 'Entrevista com liderança', 'Dinâmica de grupo', 'Verificação de referências', 'Proposta']
+export const PROCESSO_POOL = ['Triagem de currículo', 'Entrevista com RH', 'Entrevista comportamental', 'Teste técnico', 'Entrevista técnica', 'Entrevista com gestor', 'Entrevista com liderança', 'Dinâmica de grupo', 'Verificação de referências', 'Proposta']
 
 // O modelo de dados (Briefing, Perfil, Tom, GeneratedDesc) e o buildDesc vivem em @/lib/vaga — fonte
 // única compartilhada com a Lista/Detalhe de vagas.

@@ -18,14 +18,15 @@ export type CampoDetalhe = { label: string; valor: string }
 export type Criterio = { nome: string; nota: number }
 // Conteúdo "de verdade" que abre em cada etapa do stepper.
 export type QA = { pergunta: string; resposta: string }
-export type Desafio = { descricao: string; entrega: string; observacao: string }
 // Contexto do candidato/vaga que alimenta o conteúdo de cada processo.
 export type ProcCtx = { vaga: string; senioridade: string; nome: string }
 // Detalhe rico de "como foi" cada etapa — abre no stepper do processo.
 // triagemIA = avaliação completa da IA (a etapa 1 reaproveita a tela Entrevistas IA).
 export type DetalheFase = {
   resumo: string; campos: CampoDetalhe[]; criterios: Criterio[]; destaques: string[]; atencao: string[]
-  triagemIA?: Detalhe; conversa?: QA[]; desafio?: Desafio; oferta?: CampoDetalhe[]
+  triagemIA?: Detalhe; conversa?: QA[]; oferta?: CampoDetalhe[]
+  // Nota que a IA dá ao teste técnico (chat) — só existe quando o teste JÁ foi respondido.
+  scoreTeste?: number
 }
 export type Fase = { nome: string; resultado: ResultadoFase; observacao?: string; detalhe: DetalheFase }
 export type StatusProc = 'Em andamento' | 'Contratado' | 'Reprovado'
@@ -62,12 +63,12 @@ export const CANDIDATOS_INICIAL: Candidato[] = [
   { id: '24', nome: 'Ana Souza', email: 'ana.souza@email.com', vaga: 'Analista de QA', senioridade: 'Pleno', etapa: 'Banco de Talentos', score: 64, atualizado: 'há 1 mês' },
 ]
 
-export const ETAPA_FILTROS = ['Todas', 'Triagem IA', 'Entrevista RH', 'Teste Técnico', 'Entrevista Gestor', 'Contratado', 'Banco de Talentos', 'Reprovado'] as const
+export const ETAPA_FILTROS = ['Todas', 'Triagem IA', 'Teste Técnico', 'Entrevista RH', 'Entrevista Gestor', 'Contratado', 'Banco de Talentos', 'Reprovado'] as const
 export const PER_PAGE = 10
 
 // ---------- Pools de texto do domínio (dados sintéticos, determinísticos por seed) ----------
 
-export const FASES_PADRAO = ['Triagem de currículo por IA', 'Entrevista com RH', 'Teste técnico', 'Entrevista com o gestor', 'Proposta']
+export const FASES_PADRAO = ['Triagem de currículo por IA', 'Teste técnico', 'Entrevista com RH', 'Entrevista com o gestor', 'Proposta']
 export const DATAS_ANTIGAS = ['há 3 meses', 'há 6 meses', 'há 9 meses', 'há 1 ano']
 export const MOTIVO_REPROVA = [
   'Não atingiu o nível técnico esperado para a senioridade da vaga.',
@@ -89,14 +90,14 @@ export const MOTIVOS_POR_FASE: Record<number, string[]> = {
     'Ausência de comprovação nas principais tecnologias obrigatórias.',
   ],
   2: [
-    'Pretensão salarial acima da faixa orçada para a posição.',
-    'Disponibilidade de início incompatível com a necessidade do time.',
-    'Pouca aderência aos valores e à forma de trabalho da equipe.',
-  ],
-  3: [
     'Não atingiu a nota mínima no teste técnico (resultado abaixo do corte).',
     'Dificuldade em estruturar a solução e justificar as decisões técnicas.',
     'Lacunas relevantes nas tecnologias obrigatórias da vaga.',
+  ],
+  3: [
+    'Pretensão salarial acima da faixa orçada para a posição.',
+    'Disponibilidade de início incompatível com a necessidade do time.',
+    'Pouca aderência aos valores e à forma de trabalho da equipe.',
   ],
   4: [
     'Pouca profundidade técnica ao discutir cenários reais com o gestor.',
@@ -131,14 +132,14 @@ export const RESUMO_FASE: Record<number, { ok: string; ko: string; and: string }
     and: 'A IA está processando o currículo e cruzando com os requisitos da vaga.',
   },
   2: {
-    ok: 'Conversa inicial de RH para entender trajetória, motivação e expectativas. Avaliação positiva, seguiu para a etapa técnica.',
-    ko: 'Conversa inicial de RH para entender trajetória, motivação e expectativas. A aderência ficou abaixo do esperado nesta etapa.',
-    and: 'Entrevista de RH agendada, aguardando realização e registro do feedback.',
-  },
-  3: {
-    ok: 'Desafio técnico para avaliar a forma de resolver problemas e a qualidade do código. Resultado acima do corte exigido.',
+    ok: 'Desafio técnico para avaliar a forma de resolver problemas e a qualidade do código. Resultado acima do corte exigido, seguiu para a entrevista com o RH.',
     ko: 'Desafio técnico para avaliar a forma de resolver problemas e a qualidade do código. Resultado abaixo do corte exigido.',
     and: 'Teste técnico enviado, aguardando a entrega do candidato.',
+  },
+  3: {
+    ok: 'Conversa de RH para entender trajetória, motivação e expectativas. Avaliação positiva, seguiu para a entrevista com o gestor.',
+    ko: 'Conversa de RH para entender trajetória, motivação e expectativas. A aderência ficou abaixo do esperado nesta etapa.',
+    and: 'Entrevista de RH agendada, aguardando realização e registro do feedback.',
   },
   4: {
     ok: 'Entrevista com o gestor da vaga sobre cenários reais, arquitetura e fit com o time. Avaliação positiva.',
@@ -159,14 +160,14 @@ export const DESTAQUE_POR_FASE: Record<number, string[]> = {
     'Palavras-chave do anúncio encontradas em projetos anteriores.',
   ],
   2: [
-    'Comunicação clara e objetiva durante a conversa.',
-    'Motivação genuína pela vaga e pela empresa.',
-    'Expectativas de carreira alinhadas à posição.',
-  ],
-  3: [
     'Solução funcional e entregue dentro do prazo proposto.',
     'Código organizado, com boa nomeação e estrutura.',
     'Decisões técnicas bem justificadas no relatório.',
+  ],
+  3: [
+    'Comunicação clara e objetiva durante a conversa.',
+    'Motivação genuína pela vaga e pela empresa.',
+    'Expectativas de carreira alinhadas à posição.',
   ],
   4: [
     'Boa profundidade ao discutir arquitetura e trade-offs.',
@@ -184,8 +185,8 @@ export const EXP_EXIGIDA: Record<string, string> = { 'Estágio': 'sem experiênc
 // Critérios avaliados em cada etapa — viram a "Avaliação por critério" (barra de nota por item).
 export const CRITERIOS_POR_FASE: Record<number, string[]> = {
   1: ['Experiência relevante', 'Formação acadêmica', 'Skills técnicas', 'Palavras-chave da vaga'],
-  2: ['Comunicação', 'Motivação', 'Fit cultural', 'Expectativas alinhadas'],
-  3: ['Lógica e algoritmo', 'Qualidade do código', 'Boas práticas', 'Cobertura de testes'],
+  2: ['Lógica e algoritmo', 'Qualidade do código', 'Boas práticas', 'Cobertura de testes'],
+  3: ['Comunicação', 'Motivação', 'Fit cultural', 'Expectativas alinhadas'],
   4: ['Profundidade técnica', 'Resolução de problemas', 'Comunicação', 'Fit com o time'],
   5: ['Alinhamento salarial', 'Disponibilidade', 'Aderência ao modelo'],
 }
@@ -196,8 +197,8 @@ export const ETAPA_PROC: Record<Etapa, StatusProc> = {
 }
 export const ETAPA_FASE: Record<Etapa, (h: number) => number> = {
   'Triagem IA': () => 1,
-  'Entrevista RH': () => 2,
-  'Teste Técnico': () => 3,
+  'Teste Técnico': () => 2,
+  'Entrevista RH': () => 3,
   'Entrevista Gestor': () => 4,
   'Contratado': () => 5,
   'Reprovado': (h) => 2 + (h % 3),

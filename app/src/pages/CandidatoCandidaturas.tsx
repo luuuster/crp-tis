@@ -1,6 +1,6 @@
 /**
  * "Minhas candidaturas" e "Candidaturas finalizadas" (porta :5172) — abas da área logada que listam as vagas
- * a que o candidato se candidatou. Em andamento: barra de progresso no funil (IA → RH → Teste → Gestor →
+ * a que o candidato se candidatou. Em andamento: barra de progresso no funil (IA → Teste → RH → Gestor →
  * Proposta) + ação Desistir. Finalizadas: FAIXA de resultado no rodapé (verde aprovada · cinza sóbrio não
  * selecionada). Dados mock (@/lib/candidaturas), sem backend.
  *

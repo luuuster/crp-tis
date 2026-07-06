@@ -3,7 +3,7 @@
  * (com observação por fase) + o "porquê" completo da reprovação. É a análise aprofundada de um processo.
  */
 import { useState, type ReactNode } from 'react'
-import { CheckCircle2, ChevronLeft, MessageSquareText, XCircle } from 'lucide-react'
+import { CheckCircle2, ChevronLeft, Clock, MessageSquareText, XCircle } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/lib/utils'
@@ -173,8 +173,9 @@ export function ProcessoDetalhe({ c, p, onVoltar, acoes, acoesInicio, acaoEtapa 
               </dl>
             )}
 
-            {/* ação da etapa (ex.: baixar o roteiro da entrevista) — dentro do contexto da etapa */}
-            {acaoEtapa && <div className="mt-4 flex flex-wrap items-center gap-2">{acaoEtapa}</div>}
+            {/* ação da etapa (ex.: baixar o roteiro) — só nas etapas de ENTREVISTA (RH/gestor); não faz
+                sentido em Triagem/Teste técnico/Proposta. */}
+            {acaoEtapa && /Entrevista/.test(fSel.nome) && <div className="mt-4 flex flex-wrap items-center gap-2">{acaoEtapa}</div>}
 
             {/* triagem de currículo por IA — avaliação COMPLETA da IA (mesma da tela Entrevistas IA) */}
             {dSel.triagemIA && (
@@ -183,15 +184,48 @@ export function ProcessoDetalhe({ c, p, onVoltar, acoes, acoesInicio, acaoEtapa 
                   d={dSel.triagemIA}
                   email={c.email}
                   vaga={c.vaga}
-                  statusLabel={fSel.resultado === 'reprovado' ? 'Reprovado' : 'Aprovado bot'}
+                  statusLabel={fSel.resultado === 'reprovado' ? 'Reprovado' : 'Aprovado'}
+                  ocultarScore
+                  ocultarCurriculo
                 />
               </div>
             )}
 
-            {/* conversa (entrevista com RH / com o gestor) — o que foi falado */}
-            {dSel.conversa && (
+            {/* teste técnico (fase 2) — score da IA no topo + transcript do "Chat da entrevista". */}
+            {sel === 1 && (
               <div className="mt-5">
-                <p className="flex items-center gap-2 ty-caption font-semibold tracking-wide text-foreground uppercase"><MessageSquareText className="size-3.5 text-muted-foreground" aria-hidden /> {sel === 1 ? t('proc.conversa.rh') : t('proc.conversa.gestor')}</p>
+                {/* Score da IA — só aparece depois que o teste foi respondido (scoreTeste definido). */}
+                {dSel.scoreTeste !== undefined && (
+                  <div className="mb-5">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="ty-body-sm font-semibold text-foreground">{t('proc.scoreTeste')}</span>
+                      <span className={cn('ty-body-sm font-semibold tabular-nums', dSel.scoreTeste >= 70 ? 'text-success-text' : dSel.scoreTeste >= 50 ? 'text-warning-text' : 'text-destructive-text')}>{dSel.scoreTeste}</span>
+                    </div>
+                    <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-muted" aria-hidden>
+                      <div className={cn('h-full rounded-full motion-safe:transition-all motion-safe:duration-500', notaBar(dSel.scoreTeste))} style={{ width: `${dSel.scoreTeste}%` }} />
+                    </div>
+                  </div>
+                )}
+                <p className="flex items-center gap-2 ty-caption font-semibold tracking-wide text-foreground uppercase"><MessageSquareText className="size-3.5 text-muted-foreground" aria-hidden /> {t('proc.conversa.tecnica')}</p>
+                {dSel.conversa ? (
+                  <div className="mt-3 space-y-2.5">
+                    {dSel.conversa.map((qa, i) => (
+                      <div key={i} className="space-y-1.5">
+                        <div className="flex"><div className="max-w-[85%] rounded-2xl rounded-tl-sm bg-muted/50 px-3.5 py-2.5 ty-body-sm leading-relaxed text-foreground">{qa.pergunta}</div></div>
+                        <div className="flex justify-end"><div className="max-w-[85%] rounded-2xl rounded-tr-sm bg-primary/10 px-3.5 py-2.5 ty-body-sm leading-relaxed text-foreground">{qa.resposta}</div></div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="mt-2 flex items-center gap-2 rounded-lg bg-muted/30 p-3 ty-body-sm text-muted-foreground"><Clock className="size-4 shrink-0" aria-hidden /> {t('proc.conversa.aguardando')}</div>
+                )}
+              </div>
+            )}
+
+            {/* conversa de entrevista (RH / gestor) — lista de perguntas e respostas */}
+            {sel !== 1 && dSel.conversa && (
+              <div className="mt-5">
+                <p className="flex items-center gap-2 ty-caption font-semibold tracking-wide text-foreground uppercase"><MessageSquareText className="size-3.5 text-muted-foreground" aria-hidden /> {sel === 2 ? t('proc.conversa.rh') : t('proc.conversa.gestor')}</p>
                 <ul className="mt-2 space-y-2.5">
                   {dSel.conversa.map((qa, i) => (
                     <li key={i} className="rounded-lg bg-muted/30 p-3">
@@ -200,21 +234,6 @@ export function ProcessoDetalhe({ c, p, onVoltar, acoes, acoesInicio, acaoEtapa 
                     </li>
                   ))}
                 </ul>
-              </div>
-            )}
-
-            {/* desafio (teste técnico) */}
-            {dSel.desafio && (
-              <div className="mt-5">
-                <p className="ty-caption font-semibold tracking-wide text-foreground uppercase">{t('proc.desafio')}</p>
-                <div className="mt-2 space-y-2">
-                  {([['enunciado', dSel.desafio.descricao], ['entrega', dSel.desafio.entrega], ['observacao', dSel.desafio.observacao]] as const).map(([campo, valor]) => (
-                    <div key={campo} className="rounded-lg bg-muted/30 p-3">
-                      <p className="ty-caption text-muted-foreground">{t(`proc.desafioCampo.${campo}`)}</p>
-                      <p className="mt-0.5 ty-body-sm text-foreground">{valor}</p>
-                    </div>
-                  ))}
-                </div>
               </div>
             )}
 
@@ -230,7 +249,7 @@ export function ProcessoDetalhe({ c, p, onVoltar, acoes, acoesInicio, acaoEtapa 
               </dl>
             )}
 
-            {dSel.criterios.length > 0 && (
+            {sel !== 1 && dSel.criterios.length > 0 && (
               <>
                 <p className="mt-5 ty-caption font-semibold tracking-wide text-foreground uppercase">{t('proc.criterios')}</p>
                 <ul className="mt-3 space-y-3">
@@ -249,7 +268,7 @@ export function ProcessoDetalhe({ c, p, onVoltar, acoes, acoesInicio, acaoEtapa 
               </>
             )}
 
-            {dSel.destaques.length > 0 && (
+            {sel !== 1 && dSel.destaques.length > 0 && (
               <>
                 <p className="mt-5 ty-caption font-semibold tracking-wide text-foreground uppercase">{t('proc.destaques')}</p>
                 <ul className="mt-2 space-y-2">
