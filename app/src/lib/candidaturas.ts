@@ -1,12 +1,12 @@
 /**
  * Candidaturas do candidato logado (MOCK, sem backend) — as vagas a que ele já se candidatou e em que
- * ETAPA do funil cada uma está. Espelha o funil do recrutador (5 fases: IA → RH → Teste → Gestor →
+ * ETAPA do funil cada uma está. Espelha o funil do recrutador (5 fases: IA → Teste → RH → Gestor →
  * Proposta — ver pipeline.json) e referencia vagas REAIS do catálogo por id (fonte única @/lib/vagasCatalogo).
  */
 import { vagaPorId, type VagaPublica } from '@/lib/vagasCatalogo'
 
 // As 5 fases do funil, na ordem. As chaves casam com painel.candidaturas.fase.* (i18n).
-export const FASES = ['ia', 'rh', 'teste', 'gestor', 'proposta'] as const
+export const FASES = ['ia', 'teste', 'rh', 'gestor', 'proposta'] as const
 export type Fase = (typeof FASES)[number]
 
 // andamento = em progresso na fase atual · aprovado = passou tudo (proposta/contratado) · reprovado = parou na fase.
@@ -22,8 +22,8 @@ export type Candidatura = {
 
 // MOCK — cobre os 3 estados em fases diferentes do funil, referenciando vagas do catálogo.
 export const CANDIDATURAS: Candidatura[] = [
-  { id: 'c1', vagaId: '1', data: '21/06/2026', faseIndex: 1, status: 'andamento' }, // Designer UX/UI — em RH
-  { id: 'c2', vagaId: '4', data: '18/06/2026', faseIndex: 2, status: 'andamento' }, // Frontend Júnior — em Teste
+  { id: 'c1', vagaId: '1', data: '21/06/2026', faseIndex: 1, status: 'andamento' }, // Designer UX/UI — em Teste técnico
+  { id: 'c2', vagaId: '4', data: '18/06/2026', faseIndex: 2, status: 'andamento' }, // Frontend Júnior — em Entrevista RH
   { id: 'c3', vagaId: '2', data: '20/06/2026', faseIndex: 0, status: 'andamento' }, // Backend Sênior — triagem por IA
   { id: 'c4', vagaId: '5', data: '10/06/2026', faseIndex: 4, status: 'aprovado' },  // Analista de Dados — proposta/contratado
   { id: 'c5', vagaId: '3', data: '12/06/2026', faseIndex: 0, status: 'reprovado' }, // Product Manager — não avançou

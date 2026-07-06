@@ -68,6 +68,15 @@
     "emailPlaceholder": "nome@empresa.com",
     "emailInvalido": "Informe um e-mail válido.",
     "senha": "Senha de acesso",
+    "novaSenha": "Nova senha",
+    "requisitos": {
+      "titulo": "Requisitos da senha",
+      "min8": "Mínimo de 8 caracteres",
+      "maiuscula": "Pelo menos uma letra maiúscula",
+      "numero": "Pelo menos um número",
+      "especial": "Pelo menos um caractere especial (ex.: ! @ # $)",
+      "coincidem": "As senhas coincidem"
+    },
     "senhaPlaceholder": "Mínimo de 8 caracteres",
     "senhaDica": "O usuário poderá alterá-la no primeiro acesso.",
     "senhaCurta": "A senha deve ter ao menos 8 caracteres.",

@@ -50,7 +50,7 @@ const VAGA_EXEMPLO: VagaInscricao = {
     local: 'São Paulo — SP (remoto)', horario: '09h às 18h', carga: '40h semanais', motivo: 'Aumento do quadro', quantidade: 1, prazo: 30,
     budget: 'R$ 8.000 a R$ 12.000', modalidade: 'CLT',
     beneficios: ['Vale-refeição', 'Plano de saúde', 'Plano odontológico', 'Auxílio home-office', 'Day-off no aniversário', 'Bônus anual'],
-    processoSeletivo: ['Inscrição e triagem por IA', 'Entrevista com RH', 'Teste técnico', 'Entrevista com o gestor', 'Proposta'],
+    processoSeletivo: ['Inscrição e triagem por IA', 'Teste técnico', 'Entrevista com RH', 'Entrevista com o gestor', 'Proposta'],
   },
   perfil: {
     formacao: 'Ensino superior em Computação ou áreas correlatas (ou experiência equivalente)',

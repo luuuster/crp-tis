@@ -63,7 +63,7 @@ const RECRUTADOR: Produto = {
           icon: Users, path: '/banco-de-talentos', desc: 'Lista de candidatos (filtros + busca)',
           subs: [
             { path: '/banco-de-talentos/:id', desc: 'Perfil (histórico de processos)' },
-            { path: '/banco-de-talentos/:id/processo', desc: 'Stepper de 5 fases (IA → RH → Teste → Gestor → Proposta)' },
+            { path: '/banco-de-talentos/:id/processo', desc: 'Stepper de 5 fases (IA → Teste → RH → Gestor → Proposta)' },
             { path: '/banco-de-talentos/charlie', desc: 'Assistente Charlie (IA): ranking e próximas ações' },
           ],
         },

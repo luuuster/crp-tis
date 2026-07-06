@@ -27,11 +27,12 @@ export type Fase = {
   ia?: boolean
 }
 
-// Ordem do funil (esquerda → direita). "reprovado" é o fim.
+// Ordem do funil (esquerda → direita): Triagem IA → Teste técnico → Entrevista RH → Gestor → Proposta.
+// "reprovado" é o fim.
 export const FASES: Fase[] = [
-  { id: 'ia', tone: 'blue', gate: 'decisao', next: 'rh', ia: true },
-  { id: 'rh', tone: 'teal', gate: 'agendar', next: 'teste' },
-  { id: 'teste', tone: 'violet', gate: 'teste', next: 'gestor' },
+  { id: 'ia', tone: 'blue', gate: 'decisao', next: 'teste', ia: true },
+  { id: 'teste', tone: 'violet', gate: 'teste', next: 'rh' },
+  { id: 'rh', tone: 'teal', gate: 'agendar', next: 'gestor' },
   { id: 'gestor', tone: 'blue', gate: 'agendar', next: 'proposta' },
   { id: 'proposta', tone: 'warning', gate: 'proposta', next: 'contratado' },
   { id: 'contratado', tone: 'success', gate: 'final' },

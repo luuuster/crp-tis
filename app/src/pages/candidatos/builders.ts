@@ -9,7 +9,7 @@ import {
   AVALIADORES, CRITERIOS_POR_FASE, DATAS_ANTIGAS, DESTAQUE_POR_FASE, ETAPA_FASE, ETAPA_PROC,
   EXP_EXIGIDA, FASES_PADRAO, MOTIVO_REPROVA, MOTIVOS_POR_FASE, NIVEIS, POSITIVOS_POOL,
   RECOMENDACOES, RESUMO_FASE, STATUS_ANDAMENTO,
-  type CampoDetalhe, type Criterio, type Desafio, type DetalheFase, type Fase, type PerfilVaga,
+  type CampoDetalhe, type Criterio, type DetalheFase, type Fase, type PerfilVaga,
   type ProcCtx, type Processo, type QA, type Reprovacao, type Requisito, type ResultadoFase, type StatusProc,
 } from './types'
 
@@ -33,14 +33,34 @@ export function conversaGestor(ctx: ProcCtx, resultado: ResultadoFase): QA[] {
   ]
 }
 
-export function desafioTecnico(ctx: ProcCtx, resultado: ResultadoFase): Desafio {
-  return {
-    descricao: `Implementar uma aplicação enxuta de ${ctx.vaga}, cobrindo um fluxo real de ponta a ponta, com código versionado e testes.`,
-    entrega: 'Entregue via repositório Git, com README e instruções de execução.',
-    observacao: resultado === 'reprovado'
-      ? 'A solução resolveu o caso básico, mas deixou lacunas em casos de borda, organização do código e testes.'
-      : 'Solução completa, bem organizada, com boas práticas e cobertura de testes acima da média.',
-  }
+// Teste técnico = a conversa do candidato com o assistente por chat ("Chat da entrevista"). Perguntas
+// fixas ligadas à vaga + respostas mock (variando por desfecho). Renderizado como transcript em bolhas.
+export function conversaTecnica(ctx: ProcCtx, resultado: ResultadoFase): QA[] {
+  const reprovou = resultado === 'reprovado'
+  return [
+    {
+      pergunta: `Para começar, o que mais te motivou a buscar uma oportunidade como ${ctx.vaga} na nossa empresa?`,
+      resposta: reprovou
+        ? 'Falou de forma genérica sobre buscar novos desafios, sem conexão clara com a vaga ou a empresa.'
+        : `Busca um ambiente com mais escala e impacto real no negócio, onde possa evoluir tecnicamente e contribuir em decisões de arquitetura. Vê a vaga de ${ctx.vaga} como um próximo passo natural na carreira.`,
+    },
+    {
+      pergunta: 'Pode contar sobre uma situação em que precisou colaborar com uma equipe multidisciplinar para resolver um problema técnico complexo, descrevendo seu papel, as ações e o resultado?',
+      resposta: reprovou
+        ? 'Descreveu a experiência de forma superficial, sem deixar claro o próprio papel nem o resultado obtido.'
+        : 'Atuou com backend, cientistas de dados e stakeholders para extrair informações de documentos não padronizados usando LLMs. Liderou a integração via APIs, alinhou critérios de qualidade com o negócio e implementou monitoramento — elevou a taxa de acerto e reduziu retrabalho manual.',
+    },
+    {
+      pergunta: 'Como você garante qualidade e escalabilidade no que constrói? Fale sobre testes, versionamento e boas práticas que adota no dia a dia.',
+      resposta: reprovou
+        ? 'Citou práticas de forma teórica, sem exemplos concretos de aplicação.'
+        : 'Escreve testes automatizados por camada, versiona contratos de API e documenta as decisões. Cuida de observabilidade (logs e métricas) para achar gargalos cedo e mantém a revisão de código como padrão do time.',
+    },
+    {
+      pergunta: 'Por fim, o que você procura no dia a dia de um time e o que espera de um próximo passo na carreira?',
+      resposta: 'Procura um time colaborativo, com autonomia e espaço para crescer técnica e profissionalmente, contribuindo em projetos de impacto para o negócio e os usuários.',
+    },
+  ]
 }
 
 export function ofertaProposta(aprovado: boolean, seed: number): CampoDetalhe[] {
@@ -98,21 +118,19 @@ export function camposDaFase(n: number, aprovado: boolean, seed: number): CampoD
       ]
     }
     case 2:
+      // A nota vira a barra "Score da entrevista (IA)" (scoreTeste); aqui fica só o restante da ficha.
+      return [
+        { label: 'Formato', valor: 'Entrevista por chat' },
+        { label: 'Tempo gasto', valor: `${18 + (seed % 22)} min` },
+        { label: 'Perguntas respondidas', valor: `${3 + (seed % 2)} de 4` },
+      ]
+    case 3:
       return [
         { label: 'Entrevistador(a)', valor: pick(['Marina Albuquerque · RH', 'Beatriz Nunes · Recrutadora'], seed) },
         { label: 'Duração', valor: `${26 + (seed % 12)} min` },
         { label: 'Formato', valor: 'Vídeo (online)' },
         { label: 'Fit cultural', valor: aprovado ? 'Alto' : 'Médio' },
       ]
-    case 3: {
-      const nota = aprovado ? 78 + (seed % 18) : 38 + (seed % 16)
-      return [
-        { label: 'Nota do teste', valor: `${nota}/100` },
-        { label: 'Formato', valor: 'Desafio assíncrono' },
-        { label: 'Tempo gasto', valor: `${2 + (seed % 4)} h ${10 + (seed % 49)} min` },
-        { label: 'Stack avaliada', valor: 'React · TypeScript · API' },
-      ]
-    }
     case 4:
       return [
         { label: 'Gestor(a)', valor: pick(['Carlos Mendes · Gestor', 'Rafael Tavares · Tech Lead'], seed) },
@@ -135,7 +153,9 @@ export function buildDetalheFase(n: number, resultado: ResultadoFase, seed: numb
   const r = RESUMO_FASE[n] ?? RESUMO_FASE[3]
   const resumo = resultado === 'reprovado' ? r.ko : resultado === 'em andamento' ? r.and : r.ok
   if (resultado === 'em andamento') {
-    return { resumo, campos: camposDaFase(n, false, seed).slice(0, 2), criterios: [], destaques: [], atencao: [] }
+    // Teste técnico ainda não entregue: não mostra nota/campos (o "aguardando respostas" já diz o estado).
+    const campos = n === 2 ? [] : camposDaFase(n, false, seed).slice(0, 2)
+    return { resumo, campos, criterios: [], destaques: [], atencao: [] }
   }
   const aprovado = resultado === 'aprovado'
   // Etapa 1 — Triagem de currículo por IA: avaliação COMPLETA da IA (a mesma da tela Entrevistas IA).
@@ -145,10 +165,11 @@ export function buildDetalheFase(n: number, resultado: ResultadoFase, seed: numb
     const triagemIA = buildDetalhe({ nome: ctx.nome, vaga: ctx.vaga, data: `${dia}/06/2026`, score })
     return { resumo, campos: [], criterios: [], destaques: [], atencao: [], triagemIA }
   }
-  // Bloco rico específico do tipo da etapa: conversa (RH/gestor), desafio (técnico), oferta (proposta).
+  // Bloco rico específico do tipo da etapa: teste técnico (fase 2 = conversa do chat), conversa de RH
+  // (fase 3) / gestor (fase 4), oferta (proposta). O teste técnico vem ANTES do RH no funil.
   const rico =
-    n === 2 ? { conversa: conversaRH(resultado, seed) }
-      : n === 3 ? { desafio: desafioTecnico(ctx, resultado) }
+    n === 2 ? { conversa: conversaTecnica(ctx, resultado) }
+      : n === 3 ? { conversa: conversaRH(resultado, seed) }
         : n === 4 ? { conversa: conversaGestor(ctx, resultado) }
           : { oferta: ofertaProposta(aprovado, seed) }
   return {
@@ -157,6 +178,8 @@ export function buildDetalheFase(n: number, resultado: ResultadoFase, seed: numb
     criterios: criteriosDaFase(n, aprovado, seed),
     destaques: pickN(DESTAQUE_POR_FASE[n] ?? [], seed, aprovado ? 3 : 1),
     atencao: aprovado ? [] : pickN(MOTIVOS_POR_FASE[n] ?? MOTIVOS_POR_FASE[3], seed, 2),
+    // Teste técnico já respondido: nota da IA para o chat (vira a barra "Score da entrevista (IA)").
+    ...(n === 2 ? { scoreTeste: aprovado ? 78 + (seed % 18) : 38 + (seed % 16) } : {}),
     ...rico,
   }
 }

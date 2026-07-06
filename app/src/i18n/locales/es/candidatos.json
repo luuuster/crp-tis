@@ -115,7 +115,9 @@
     "etapaDe": "Etapa {{atual}} de {{total}}",
     "conversa": {
       "rh": "Lo que se conversó",
-      "gestor": "Preguntas al candidato"
+      "gestor": "Preguntas al candidato",
+      "tecnica": "Chat de la entrevista",
+      "aguardando": "Esperando las respuestas del candidato…"
     },
     "desafio": "El desafío",
     "desafioCampo": {
@@ -125,6 +127,7 @@
     },
     "criterios": "Evaluación por criterio",
     "destaques": "Destacados",
+    "scoreTeste": "Puntuación de la entrevista (IA)",
     "atencao": "Puntos de atención",
     "iaReprovado": "Rechazado",
     "iaAprovado": "Aprobado por bot",

@@ -68,6 +68,15 @@
     "emailPlaceholder": "name@company.com",
     "emailInvalido": "Enter a valid email.",
     "senha": "Access password",
+    "novaSenha": "New password",
+    "requisitos": {
+      "titulo": "Password requirements",
+      "min8": "At least 8 characters",
+      "maiuscula": "At least one uppercase letter",
+      "numero": "At least one number",
+      "especial": "At least one special character (e.g. ! @ # $)",
+      "coincidem": "Passwords match"
+    },
     "senhaPlaceholder": "At least 8 characters",
     "senhaDica": "The user can change it on first sign-in.",
     "senhaCurta": "Password must be at least 8 characters.",
