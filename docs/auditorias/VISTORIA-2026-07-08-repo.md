@@ -1,7 +1,12 @@
 # Vistoria do repositório — nível "profissional"
 
-**Data:** 08/07/2026 · **Escopo:** o repositório inteiro (`crp_ds`) — git, CI/CD, governança, documentação, configs, dependências, segurança e higiene. O código do app já tem relatório próprio ([AUDITORIA.md](AUDITORIA.md), corrigido em 04/07).
+**Data:** 08/07/2026 · **Escopo:** o repositório inteiro (`crp_ds`) — git, CI/CD, governança, documentação, configs, dependências, segurança e higiene. O código do app já tem relatório próprio ([AUDITORIA.md](AUDITORIA-2026-07-04-app.md), corrigido em 04/07).
 **Método:** inspeção determinística (git, npm audit, CI, hooks, configs, scripts, README×realidade) — cada achado verificado no repo.
+
+> ## ✅ Status: ajustes aplicados (08/07/2026)
+> **1.1** — o README §Publicação já documentava o estado (private:true = publish no-op, consumo via `file:..`); o placeholder do [.npmrc](../../.npmrc) foi resolvido com o requisito escopo=owner registrado. **1.2** — doctor refinado: truncamento agora exige corte no MEIO de linha (deleção até fronteira limpa = edição legítima) + bypass granular `DOCTOR_ALLOW` (testado nos 3 cenários). **1.3** — criados [CODEOWNERS](../../.github/CODEOWNERS), [PULL_REQUEST_TEMPLATE](../../.github/PULL_REQUEST_TEMPLATE.md) e [SECURITY.md](../../SECURITY.md) (branch protection fica na UI do GitHub). **1.4** — [LICENSE](../../LICENSE) proprietária + `license` no app. **1.5** — `npm audit fix`: raiz com **0 vulnerabilidades**. **1.6** — quickstart do README com os 3 apps (:5173/:5172/:5174).
+> **B1** engines alinhadas (>=22) · **B2** author/repository/bugs preenchidos · **B3** `fetch --prune` + `fetch.prune=true` (30→12 refs; as restantes são PRs reais do dependabot) · **B4** auditorias consolidadas em `docs/auditorias/` · **B5** [.editorconfig](../../.editorconfig) criado (Prettier deliberadamente não adotado — estilo via ESLint) · **B6** meta description nos 3 HTMLs · **B7** resolvido com 1.1 · **B8** SECURITY.md.
+> **Pendente (fora do repo):** branch protection na `main` (Settings → Branches: exigir CI verde + review de Code Owner) e merge/fechamento dos PRs abertos do dependabot.
 
 ---
 
@@ -9,9 +14,9 @@
 
 O repositório está **bem acima da média** em profissionalismo. O que costuma faltar em projetos reais, aqui existe e funciona:
 
-- **CI com 3 jobs paralelos** ([build-tokens.yml](.github/workflows/build-tokens.yml)): tokens (build + doctor + check de contrato/contraste WCAG + audit dark `--strict` + `npm audit` + testes dos plugins), **app** (lint + tsc/build + 211 testes Vitest com axe) e **e2e** (Playwright com axe REAL renderizado, contraste por pixel, screenshots como artefato).
+- **CI com 3 jobs paralelos** ([build-tokens.yml](../../.github/workflows/build-tokens.yml)): tokens (build + doctor + check de contrato/contraste WCAG + audit dark `--strict` + `npm audit` + testes dos plugins), **app** (lint + tsc/build + 211 testes Vitest com axe) e **e2e** (Playwright com axe REAL renderizado, contraste por pixel, screenshots como artefato).
 - **Dependabot** configurado com grupos por família de peer-dependency e limite de PRs — config comentada e pensada.
-- **Hook anti-corrupção** (`.githooks/pre-commit` + `build/doctor.mjs`) documentado em [docs/PROTECAO-CORRUPCAO.md](docs/PROTECAO-CORRUPCAO.md).
+- **Hook anti-corrupção** (`.githooks/pre-commit` + `build/doctor.mjs`) documentado em [docs/PROTECAO-CORRUPCAO.md](../PROTECAO-CORRUPCAO.md).
 - **Zero segredos** no código, **zero artefato gerado rastreado** (dist/, test-results/, bundles de ícone — tudo no .gitignore, com comentário de como regenerar), **zero TODO/FIXME** pendente, **zero script morto** em `build/` (todos os ~20 .mjs são referenciados).
 - `.gitattributes` completo (LF normalizado, binários protegidos), `packageManager` pinado (npm@11.11.0), commits em **conventional commits** consistentes, `docs/` com 15 documentos vivos, README de 16 KB com quickstart, a11y e publicação.
 
@@ -23,7 +28,7 @@ Os achados abaixo são o que separa "muito bom" de "impecável". **Nenhum é gra
 
 ### 1.1 Pipeline de release configurado, mas inoperante
 O repo promete publicação em GitHub Packages (README §"Publicação", CI com changesets/action, script `release`), mas:
-- O escopo **`@crp`** não bate com o dono do repo (**`luuuster`**/crp-tis) — GitHub Packages **exige** escopo = owner; um `changeset publish` real falharia. O próprio [.npmrc](.npmrc) ainda tem o comentário-placeholder *"Troque @crp pelo escopo da sua org"*.
+- O escopo **`@crp`** não bate com o dono do repo (**`luuuster`**/crp-tis) — GitHub Packages **exige** escopo = owner; um `changeset publish` real falharia. O próprio [.npmrc](../../.npmrc) ainda tem o comentário-placeholder *"Troque @crp pelo escopo da sua org"*.
 - Versão eterna em `0.0.0`, **nenhuma tag**, **nenhum changeset** jamais criado — o mecanismo nunca rodou.
 
 **Correção:** decidir e executar um dos dois caminhos: (a) renomear o escopo para `@luuuster/*` (ou transferir o repo para uma org `crp`) e cortar a primeira release com changeset + tag; ou (b) remover a promessa de publicação do README/CI e assumir consumo por `file:..` (que é o que o app usa e funciona).
@@ -36,14 +41,14 @@ A heurística do [doctor.mjs](build/doctor.mjs) acusa "truncamento" quando **o d
 Não há `CODEOWNERS`, `PULL_REQUEST_TEMPLATE.md`, `ISSUE_TEMPLATE/`, nem indício de branch protection; o fluxo `franklin → main` é merge direto sem revisão formal. Para 1 pessoa é tolerável, mas "repo profissional" pede pelo menos: CODEOWNERS (1 linha), template de PR e branch protection na `main` exigindo o CI verde.
 
 ### 1.4 Licenciamento inconsistente
-Raiz declara `"license": "UNLICENSED"` (correto para privado), mas **[app/package.json](app/package.json) não tem campo `license`** e não existe arquivo `LICENSE`/aviso de proprietário.
+Raiz declara `"license": "UNLICENSED"` (correto para privado), mas **[app/package.json](../../app/package.json) não tem campo `license`** e não existe arquivo `LICENSE`/aviso de proprietário.
 **Correção:** `"license": "UNLICENSED"` também no app + (opcional) um `LICENSE` curto "proprietário — todos os direitos reservados".
 
 ### 1.5 Vulnerabilidade moderada na raiz (fix disponível)
 `js-yaml` (DoS de complexidade quadrática) via devDependency do changesets — `npm audit fix` resolve. O CI aceita moderates de propósito (gate em high+, com justificativa em comentário no workflow), o que é uma política válida, mas o fix é grátis.
 
 ### 1.6 README principal não cobre o produto inteiro
-O quickstart só sobe o recrutador (**:5173**); o portal do candidato (**:5172**, `dev:candidato`) e o hub de docs (**:5174**, `dev:mapa`) não aparecem no README da raiz (o [app/README.md](app/README.md) existe, mas o principal é a porta de entrada). Também não há screenshot/GIF — um repo vitrine merece.
+O quickstart só sobe o recrutador (**:5173**); o portal do candidato (**:5172**, `dev:candidato`) e o hub de docs (**:5174**, `dev:mapa`) não aparecem no README da raiz (o [app/README.md](../../app/README.md) existe, mas o principal é a porta de entrada). Também não há screenshot/GIF — um repo vitrine merece.
 
 ---
 

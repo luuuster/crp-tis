@@ -1,0 +1,14 @@
+# Estilo base consistente entre editores (complementa o .gitattributes, que já normaliza EOL no git).
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+[*.md]
+# Markdown usa espaço duplo no fim da linha como quebra — não aparar.
+trim_trailing_whitespace = false

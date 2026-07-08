@@ -24,6 +24,11 @@ sandbox, não o disco.
 
 **1. `npm run doctor` — diagnóstico.** Compara o disco com o HEAD e separa *corrupção* (assinatura
 de truncamento/NUL) de *edição legítima* (que ele nunca toca). Sai com código 1 se houver corrupção.
+A assinatura de truncamento exige corte **no meio de uma linha** (ou padding de espaços no fim):
+arquivo que virou prefixo do HEAD terminando em fronteira limpa de linha é *edição legítima*
+(apagar código do fim do arquivo tem essa forma — já causou falso positivo antes desse refinamento).
+Para um falso positivo pontual, use o bypass granular em vez de `git commit --no-verify` (que
+desliga o gate inteiro): `DOCTOR_ALLOW=caminho/arquivo.ts git commit …`.
 
 **2. `npm run doctor:fix` — restauração.** Sobrescreve só os corrompidos com o conteúdo do HEAD,
 in-place (funciona mesmo quando `git restore` falha com EPERM), e re-verifica.

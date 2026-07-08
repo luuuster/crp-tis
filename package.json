@@ -5,6 +5,14 @@
   "type": "module",
   "license": "UNLICENSED",
   "private": true,
+  "author": "Frank",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luuuster/crp-tis.git"
+  },
+  "bugs": {
+    "url": "https://github.com/luuuster/crp-tis/issues"
+  },
   "engines": {
     "node": ">=22"
   },
