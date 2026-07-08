@@ -1,4 +1,5 @@
 import { Suspense, lazy, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { Tabs, TabsContent } from '@/components/ui/tabs'
 import { TooltipProvider } from '@/components/ui/tooltip'
@@ -27,11 +28,14 @@ type View = 'login' | 'dashboard' | 'gerador' | 'entrevistas' | 'entrevistas-ia'
 
 const VIEWS: View[] = ['login', 'dashboard', 'gerador', 'entrevistas', 'entrevistas-ia', 'candidatos', 'pipeline', 'usuarios', 'perfil']
 
-const PageFallback = () => (
-  <div className="grid min-h-dvh place-items-center" role="status" aria-label="Carregando página">
-    <Spinner className="size-6" />
-  </div>
-)
+const PageFallback = () => {
+  const { t } = useTranslation('common')
+  return (
+    <div className="grid min-h-dvh place-items-center" role="status" aria-label={t('carregando.pagina')}>
+      <Spinner className="size-6" />
+    </div>
+  )
+}
 
 export function App() {
   const { brand, mode, cycleBrand, toggleMode } = useBrandMode()

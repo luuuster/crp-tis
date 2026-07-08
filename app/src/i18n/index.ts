@@ -56,15 +56,51 @@ import esPainel from './locales/es/painel.json'
 import esPerfil from './locales/es/perfil.json'
 import esAgendamento from './locales/es/agendamento.json'
 
-export const LOCALES = ['pt-BR', 'en', 'es'] as const
+export const LOCALES = ['pt-BR', 'en', 'es', 'pt-AO'] as const
 export type Locale = (typeof LOCALES)[number]
-export const LOCALE_LABEL: Record<Locale, string> = { 'pt-BR': 'Português', en: 'English', es: 'Español' }
+export const LOCALE_LABEL: Record<Locale, string> = { 'pt-BR': 'Português (Brasil)', en: 'English', es: 'Español', 'pt-AO': 'Português (Angola)' }
 
 // pt-BR é a árvore de referência (a tipagem deriva dela — ver i18next.d.ts).
+const ptBR = { common: ptCommon, nav: ptNav, auth: ptAuth, dashboard: ptDashboard, vagas: ptVagas, usuarios: ptUsuarios, candidatos: ptCandidatos, 'entrevistas-ia': ptEntrevistasIa, entrevistas: ptEntrevistas, gerador: ptGerador, pipeline: ptPipeline, inscricao: ptInscricao, acesso: ptAcesso, painel: ptPainel, perfil: ptPerfil, agendamento: ptAgendamento } as const
+
+// Português de Angola (pt-AO): reaproveita a árvore pt-BR e sobrepõe SÓ o que muda de facto no chrome —
+// moeda (Kwanza), telefone (+244), documento (BI/NIF), "província" no lugar de "UF" e "ecrã" no lugar de
+// "tela". Como cada override só SUBSTITUI uma folha que já existe em pt-BR, a paridade de chaves se mantém
+// (o teste de paridade continua verde) e o que não é sobreposto cai no pt-BR por referência.
+const ptAOoverrides: Record<string, unknown> = {
+  common: { erro: { descricao: 'Ocorreu um erro inesperado ao montar o ecrã. Recarregue a página para tentar novamente.' } },
+  // Moeda fica em R$ de propósito: os salários do mock são renderizados por formatBRL (BRL). Trocar só o
+  // placeholder para Kwanza criaria contradição com os valores exibidos.
+  // Angola divide-se em PROVÍNCIAS (não "estados") — cascata de local e filtro do mural usam o termo local.
+  gerador: { briefing: { estado: { label: 'Província', placeholder: 'Selecione a província' } } },
+  usuarios: { sheet: {
+    telefonePlaceholder: '+244 923 456 789',
+    doc: { cpf: 'BI', cnpj: 'NIF', cpfPlaceholder: '000000000LA000', cnpjPlaceholder: '5000000000' },
+  } },
+  inscricao: { form: { cpf: 'BI/NIF', cpfPlaceholder: 'Seu BI ou NIF', telefonePlaceholder: '+244 923 456 789' } },
+  pipeline: { header: { descricao: 'Todo o fluxo de seleção num ecrã. A IA entrevista e mede a compatibilidade com a vaga; daí em diante, cada etapa tem a sua própria forma de avançar o candidato.' } },
+  painel: {
+    conta: { sairConfirm: { descricao: 'Você voltará para o ecrã de acesso.' } },
+    localFiltro: { estado: 'Província', todosEstados: 'Todas as províncias' },
+  },
+}
+
+// Merge profundo: só desce em objetos; folha do override (string) substitui a de pt-BR. `undefined` mantém
+// o ramo pt-BR intacto (por referência), então namespaces sem override não são duplicados.
+function deepMerge<T>(base: T, over: unknown): T {
+  if (over === undefined) return base
+  if (typeof base !== 'object' || base === null || Array.isArray(base)) return over as T
+  const out: Record<string, unknown> = { ...(base as Record<string, unknown>) }
+  for (const k of Object.keys(over as Record<string, unknown>)) out[k] = deepMerge(out[k], (over as Record<string, unknown>)[k])
+  return out as T
+}
+const ptAO = Object.fromEntries(Object.entries(ptBR).map(([ns, tree]) => [ns, deepMerge(tree, ptAOoverrides[ns])])) as typeof ptBR
+
 export const resources = {
-  'pt-BR': { common: ptCommon, nav: ptNav, auth: ptAuth, dashboard: ptDashboard, vagas: ptVagas, usuarios: ptUsuarios, candidatos: ptCandidatos, 'entrevistas-ia': ptEntrevistasIa, entrevistas: ptEntrevistas, gerador: ptGerador, pipeline: ptPipeline, inscricao: ptInscricao, acesso: ptAcesso, painel: ptPainel, perfil: ptPerfil, agendamento: ptAgendamento },
+  'pt-BR': ptBR,
   en: { common: enCommon, nav: enNav, auth: enAuth, dashboard: enDashboard, vagas: enVagas, usuarios: enUsuarios, candidatos: enCandidatos, 'entrevistas-ia': enEntrevistasIa, entrevistas: enEntrevistas, gerador: enGerador, pipeline: enPipeline, inscricao: enInscricao, acesso: enAcesso, painel: enPainel, perfil: enPerfil, agendamento: enAgendamento },
   es: { common: esCommon, nav: esNav, auth: esAuth, dashboard: esDashboard, vagas: esVagas, usuarios: esUsuarios, candidatos: esCandidatos, 'entrevistas-ia': esEntrevistasIa, entrevistas: esEntrevistas, gerador: esGerador, pipeline: esPipeline, inscricao: esInscricao, acesso: esAcesso, painel: esPainel, perfil: esPerfil, agendamento: esAgendamento },
+  'pt-AO': ptAO,
 } as const
 
 function isLocale(v: unknown): v is Locale {

@@ -47,10 +47,12 @@ const VAGA_EXEMPLO: VagaInscricao = {
     cargo: 'Desenvolvedor Backend', nivel: 'Pleno', modelo: 'Remoto', cliente: 'TIS Talent AI Platform', gestor: 'Carlos Mendes',
     desafio: 'Evoluir os serviços de backend que sustentam o motor de recomendação de candidatos, com foco em performance, observabilidade e qualidade.',
     objetivo: 'Entregar APIs estáveis e bem testadas, reduzir a latência das integrações e ampliar a cobertura de testes automatizados do time.',
+    pais: 'Brasil', estado: 'SP', cidade: 'São Paulo',
     local: 'São Paulo — SP (remoto)', horario: '09h às 18h', carga: '40h semanais', motivo: 'Aumento do quadro', quantidade: 1, prazo: 30,
     budget: 'R$ 8.000 a R$ 12.000', modalidade: 'CLT',
     beneficios: ['Vale-refeição', 'Plano de saúde', 'Plano odontológico', 'Auxílio home-office', 'Day-off no aniversário', 'Bônus anual'],
     processoSeletivo: ['Inscrição e triagem por IA', 'Teste técnico', 'Entrevista com RH', 'Entrevista com o gestor', 'Proposta'],
+    pcd: false,
   },
   perfil: {
     formacao: 'Ensino superior em Computação ou áreas correlatas (ou experiência equivalente)',

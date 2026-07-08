@@ -31,7 +31,7 @@ export const MODELOS = ['Presencial', 'Híbrido', 'Remoto']
 export const CARGAS = ['20 horas', '30 horas', '40 horas', '44 horas']
 export const HORARIOS = ['08:00 às 17:00', '09:00 às 18:00', '10:00 às 19:00', '12:00 às 21:00', 'Horário flexível', 'Escala 12x36']
 export const MOTIVOS = ['Aumento do quadro', 'Substituição', 'Novo projeto', 'Backfill', 'Confidencial']
-export const MODALIDADES = ['CLT', 'PJ', 'Estágio', 'Temporário', 'Cooperado']
+export const MODALIDADES = ['CLT', 'PJ', 'Estágio']
 export const QUANTIDADES = Array.from({ length: 20 }, (_, i) => String(i + 1))
 // Prazos (em dias) que o RH pode escolher para a vaga ficar aberta. 30 é o padrão da plataforma.
 export const PRAZOS = ['15', '30', '45', '60', '90']
@@ -47,9 +47,11 @@ export const BRIEFING_INICIAL: Briefing = {
   cliente: 'TIS Talent AI Platform', gestor: 'Carlos Mendes',
   desafio: 'Estamos expandindo o time de engenharia do TIS Talent AI Platform para sustentar o crescimento da plataforma.',
   objetivo: 'Ampliar a capacidade de entrega de soluções backend de alta performance, garantindo escalabilidade e qualidade nas integrações da plataforma.',
+  pais: 'Brasil', estado: 'SP', cidade: 'São Paulo',
   local: 'São Paulo, SP', horario: '', carga: '', motivo: 'Aumento do quadro', quantidade: 1, prazo: 30,
   budget: '', modalidade: 'CLT', beneficios: ['Vale-refeição', 'Plano de saúde', 'Auxílio home-office', 'Day-off aniversário'],
   processoSeletivo: ['Entrevista comportamental', 'Entrevista técnica', 'Entrevista com RH'],
+  pcd: false,
 }
 
 /* seções do briefing: ícone + campos (p/ status reativo conforme o usuário preenche).
@@ -58,7 +60,7 @@ export const BRIEFING_INICIAL: Briefing = {
 export const SECTIONS = [
   { key: 'identidade', icon: Building2, title: 'Identidade da vaga', desc: 'Como essa posição se posiciona dentro da organização.', fields: ['cargo', 'nivel', 'modelo', 'cliente', 'gestor'] as (keyof Briefing)[] },
   { key: 'sobre', icon: Rocket, title: 'Sobre a vaga', desc: 'O contexto do desafio e o objetivo da contratação, a abertura da descrição.', fields: ['desafio', 'objetivo'] as (keyof Briefing)[] },
-  { key: 'operacao', icon: CalendarClock, title: 'Operação & rotina', desc: 'Onde, quando e em que ritmo essa pessoa vai trabalhar.', fields: ['local', 'horario', 'carga', 'motivo', 'quantidade', 'prazo'] as (keyof Briefing)[] },
+  { key: 'operacao', icon: CalendarClock, title: 'Operação & rotina', desc: 'Onde, quando e em que ritmo essa pessoa vai trabalhar.', fields: ['pais', 'estado', 'cidade', 'horario', 'carga', 'motivo', 'quantidade', 'prazo'] as (keyof Briefing)[] },
   { key: 'investimento', icon: Wallet, title: 'Investimento', desc: 'A faixa salarial e benefícios que tornam essa vaga competitiva.', fields: ['budget', 'modalidade', 'beneficios'] as (keyof Briefing)[] },
   { key: 'processo', icon: ListChecks, title: 'Processo seletivo', desc: 'As etapas da seleção, na ordem, o que quem se candidata vai enfrentar.', fields: ['processoSeletivo'] as (keyof Briefing)[] },
 ] as const
@@ -126,7 +128,7 @@ export const requiredPerfilOk = (p: Perfil) => PERFIL_SECTIONS.filter((s) => !s.
 export const REQ_LABELS: Partial<Record<keyof Briefing | keyof Perfil, string>> = {
   cargo: 'Cargo', nivel: 'Nível', modelo: 'Modelo de atuação', cliente: 'Cliente/Projeto', gestor: 'Gestor imediato',
   desafio: 'Sobre o desafio', objetivo: 'Objetivo da vaga',
-  local: 'Local de trabalho', horario: 'Horário', carga: 'Carga horária', motivo: 'Motivo de abertura', quantidade: 'Quantidade de vagas',
+  pais: 'País', estado: 'Estado', cidade: 'Cidade', horario: 'Horário', carga: 'Carga horária', motivo: 'Motivo de abertura', quantidade: 'Quantidade de vagas',
   budget: 'Budget', modalidade: 'Modalidade', beneficios: 'Benefícios', processoSeletivo: 'Processo seletivo',
   formacao: 'Formação', experiencia: 'Experiência obrigatória', stackObrigatoria: 'Stack técnica obrigatória', responsabilidades: 'Responsabilidades', justificativa: 'Justificativa da contratação',
 }

@@ -54,7 +54,7 @@ const eventoDoCard = (c: Card): Evento | undefined => {
   if (!c.agendamento) return undefined
   const [data, hora] = c.agendamento.split(' ')
   const [d, m, y] = data.split('/').map(Number)
-  return { y, m: m - 1, d, hora, cand: c.nome, vaga: c.vaga, tipo: 'Online' }
+  return { y, m: m - 1, d, hora, cand: c.nome, vaga: c.vaga, tipo: c.tipo ?? 'Online' }
 }
 const emailDe = (nome: string) =>
   // NFD separa o acento da letra-base; [^a-z\s] tira o acento (e qualquer pontuação) → "José Antônio" = jose.antonio
@@ -393,7 +393,8 @@ export function Pipeline({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
   const confirmarReagendamento = (ev: Evento) => {
     if (!reagendando) return
     const quando = `${String(ev.d).padStart(2, '0')}/${String(ev.m + 1).padStart(2, '0')}/${ev.y} ${ev.hora}`
-    setData((cs) => cs.map((x) => (x.id === reagendando.id ? { ...x, agendamento: quando } : x)))
+    // Preserva o FORMATO escolhido no formulário (antes o reagendar sempre regravava como Online).
+    setData((cs) => cs.map((x) => (x.id === reagendando.id ? { ...x, agendamento: quando, tipo: ev.tipo } : x)))
     toast.success(t('toast.reagendada', { nome: reagendando.nome, quando }))
     setReagendando(null)
   }

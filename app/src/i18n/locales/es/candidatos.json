@@ -117,7 +117,9 @@
       "rh": "Lo que se conversó",
       "gestor": "Preguntas al candidato",
       "tecnica": "Chat de la entrevista",
-      "aguardando": "Esperando las respuestas del candidato…"
+      "aguardando": "Esperando las respuestas del candidato…",
+      "pergunta": "Pregunta",
+      "resposta": "Respuesta"
     },
     "desafio": "El desafío",
     "desafioCampo": {
@@ -129,8 +131,6 @@
     "destaques": "Destacados",
     "scoreTeste": "Puntuación de la entrevista (IA)",
     "atencao": "Puntos de atención",
-    "iaReprovado": "Rechazado",
-    "iaAprovado": "Aprobado por bot",
     "reprovacao": {
       "titulo": "Por qué fue rechazado",
       "motivos": "Motivos del rechazo",

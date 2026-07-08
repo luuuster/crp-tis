@@ -146,7 +146,11 @@
     "gestor": { "label": "Direct manager", "hint": "Person the job reports to.", "placeholder": "Manager name" },
     "desafio": { "label": "About the challenge", "hint": "The scenario where the job is born, the team/project and the moment.", "placeholder": "Ex: Estamos expandindo o time de engenharia do TIS Talent AI Platform para sustentar o crescimento da plataforma." },
     "objetivo": { "label": "Goal of the job", "hint": "What this hire needs to achieve.", "placeholder": "Ex: Ampliar a capacidade de entrega de soluções backend de alta performance, garantindo escalabilidade e qualidade nas integrações da plataforma." },
-    "local": { "label": "Work location", "hint": "Base city/state (even for remote/hybrid).", "placeholder": "City, State" },
+    "local": { "label": "Work location" },
+    "pais": { "label": "Country", "placeholder": "Select the country" },
+    "estado": { "label": "State", "placeholder": "Select the state" },
+    "cidade": { "label": "City", "placeholder": "Select the city" },
+    "pcd": { "label": "Disability-inclusive", "hint": "Position reserved or prioritized for people with disabilities." },
     "horario": { "label": "Schedule", "placeholder": "Select a schedule" },
     "carga": { "label": "Weekly hours", "placeholder": "Select weekly hours" },
     "motivo": { "label": "Reason for opening", "placeholder": "Select the reason" },
@@ -383,9 +387,7 @@
     "modalidade": {
       "CLT": "CLT (employee)",
       "PJ": "PJ (contractor)",
-      "Estágio": "Internship",
-      "Temporário": "Temporary",
-      "Cooperado": "Co-op"
+      "Estágio": "Internship"
     },
     "beneficio": {
       "Vale-refeição": "Meal allowance",

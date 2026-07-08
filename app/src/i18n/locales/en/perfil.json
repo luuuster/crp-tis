@@ -32,5 +32,19 @@
   },
   "salvar": "Save changes",
   "cancelar": "Cancel",
-  "salvo": "Profile updated."
+  "salvo": "Profile updated.",
+  "candidato": {
+    "subtitulo": "Update your contact details, your résumé and your access password.",
+    "curriculo": {
+      "titulo": "Résumé",
+      "desc": "The PDF the AI reviews on your applications.",
+      "enviar": "Upload a new résumé",
+      "dica": "PDF, DOC or DOCX · up to {{max}} MB",
+      "anexado": "Résumé attached",
+      "atual": "Current résumé",
+      "remover": "Remove résumé",
+      "formato": "Upload a PDF, DOC or DOCX file.",
+      "tamanho": "The file must be at most {{max}} MB."
+    }
+  }
 }

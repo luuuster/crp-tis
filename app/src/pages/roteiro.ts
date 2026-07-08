@@ -27,5 +27,7 @@ export async function baixarRoteiro(d: RoteiroDados): Promise<void> {
   document.body.appendChild(a)
   a.click()
   a.remove()
-  URL.revokeObjectURL(url)
+  // Revoga no próximo tick: revogar sincronamente logo após o click() funciona nos browsers atuais,
+  // mas é frágil — o download pode ainda não ter "capturado" a URL do blob.
+  setTimeout(() => URL.revokeObjectURL(url), 0)
 }

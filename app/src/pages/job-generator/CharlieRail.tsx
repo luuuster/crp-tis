@@ -6,7 +6,7 @@ import { Dialog as DialogPrimitive } from 'radix-ui'
 
 import { cn } from '@/lib/utils'
 import { focusRing } from '@/lib/focus'
-import { toneBadge } from '@/lib/surfaces'
+import { PANEL_W, toneBadge } from '@/lib/surfaces'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
@@ -139,7 +139,7 @@ export function CharlieRail({ open, onClose, step, msgs, onSuggestion, onSend, o
 
   // `lg+`: painel lateral NÃO-modal (de propósito — dá p/ editar o form com o Charlie aberto ao lado).
   return (
-    <aside aria-label={t('charlie.copilotoAside')} className="relative z-50 flex h-dvh w-[300px] shrink-0 flex-col border-l border-border/40 bg-card shadow-panel-r motion-safe:duration-200 motion-safe:animate-in motion-safe:slide-in-from-right">
+    <aside aria-label={t('charlie.copilotoAside')} className={cn('relative z-50 flex h-dvh shrink-0 flex-col border-l border-border/40 bg-card shadow-panel-r motion-safe:duration-200 motion-safe:animate-in motion-safe:slide-in-from-right', PANEL_W)}>
       {content}
     </aside>
   )

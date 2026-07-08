@@ -3,6 +3,8 @@
  * filtros + grade de cards) enquanto o chunk lazy da página baixa — melhor que um spinner solto.
  * É EAGER de propósito (não pode estar no chunk lazy que ele cobre). 100% token-driven; role=status anuncia.
  */
+import { useTranslation } from 'react-i18next'
+
 import { cn } from '@/lib/utils'
 import { CARD, HEADER_SURFACE } from '@/lib/surfaces'
 import { Logo } from '@/components/auth/Logo'
@@ -40,8 +42,9 @@ function CardSkeleton() {
 }
 
 export function PainelSkeleton({ brand }: { brand?: string }) {
+  const { t } = useTranslation('common')
   return (
-    <div className="min-h-dvh bg-background" role="status" aria-label="Carregando vagas">
+    <div className="min-h-dvh bg-background" role="status" aria-label={t('carregando.vagas')}>
       <header className={cn('sticky top-0 z-30', HEADER_SURFACE)}>
         <div className="mx-auto w-full max-w-6xl px-5 lg:px-8">
           <div className="flex h-16 items-center gap-4">
