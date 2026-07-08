@@ -146,7 +146,11 @@
     "gestor": { "label": "Gestor imediato", "hint": "Pessoa a quem a vaga se reporta.", "placeholder": "Nome do gestor" },
     "desafio": { "label": "Sobre o desafio", "hint": "O cenário em que a vaga nasce, o time/projeto e o momento.", "placeholder": "Ex: Estamos expandindo o time de engenharia do TIS Talent AI Platform para sustentar o crescimento da plataforma." },
     "objetivo": { "label": "Objetivo da vaga", "hint": "O que essa contratação precisa alcançar.", "placeholder": "Ex: Ampliar a capacidade de entrega de soluções backend de alta performance, garantindo escalabilidade e qualidade nas integrações da plataforma." },
-    "local": { "label": "Local de trabalho", "hint": "Cidade/UF base (mesmo em remoto/híbrido).", "placeholder": "Cidade, UF" },
+    "local": { "label": "Local de trabalho" },
+    "pais": { "label": "País", "placeholder": "Selecione o país" },
+    "estado": { "label": "Estado", "placeholder": "Selecione o estado" },
+    "cidade": { "label": "Cidade", "placeholder": "Selecione a cidade" },
+    "pcd": { "label": "Afirmativas para PcD", "hint": "Vaga reservada ou priorizada para pessoas com deficiência." },
     "horario": { "label": "Horário", "placeholder": "Selecione um horário" },
     "carga": { "label": "Carga semanal", "placeholder": "Selecione uma carga semanal" },
     "motivo": { "label": "Motivo de abertura", "placeholder": "Selecione o motivo" },
@@ -383,9 +387,7 @@
     "modalidade": {
       "CLT": "CLT",
       "PJ": "PJ",
-      "Estágio": "Estágio",
-      "Temporário": "Temporário",
-      "Cooperado": "Cooperado"
+      "Estágio": "Estágio"
     },
     "beneficio": {
       "Vale-refeição": "Vale-refeição",

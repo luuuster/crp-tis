@@ -12,7 +12,7 @@ import { toast } from 'sonner'
 import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/lib/utils'
-import { HEADER_SURFACE } from '@/lib/surfaces'
+import { HEADER_SURFACE, PANEL_W } from '@/lib/surfaces'
 import { focusRingOnPrimary } from '@/lib/focus'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { TopBarMenuButton, TopBarActions, TopBarAccount } from './topbar-parts'
@@ -63,7 +63,7 @@ export function Sidebar({ active, expanded, onNavigate, onVagas, brand }: { acti
   // Transição SUAVE recolher↔expandir: a largura anima com easing; o conteúdo faz fade (não é render
   // condicional, o que dava "estalo"). `overflow-hidden` corta o excedente; o ícone fica FIXO.
   return (
-    <aside className={cn('relative z-20 hidden h-dvh shrink-0 flex-col overflow-hidden bg-primary text-primary-foreground shadow-panel-l transition-[width] duration-300 ease-in-out md:flex', expanded ? 'w-[300px]' : 'w-16')}>
+    <aside className={cn('relative z-20 hidden h-dvh shrink-0 flex-col overflow-hidden bg-primary text-primary-foreground shadow-panel-l transition-[width] duration-300 ease-in-out md:flex', expanded ? PANEL_W : 'w-16')}>
       <div className="relative flex h-16 shrink-0 items-center px-4">
         {/* Logo clicável: volta para a Dashboard (início do workspace), padrão de produto. */}
         <button

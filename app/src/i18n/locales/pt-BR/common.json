@@ -6,6 +6,10 @@
   "exportarAviso": "Este recurso ainda precisa ser discutido com o time para avaliar a viabilidade da implementação.",
   "tentarNovamente": "Tentar novamente",
   "buscar": "Buscar",
+  "carregando": {
+    "pagina": "Carregando página",
+    "vagas": "Carregando vagas"
+  },
   "acao": {
     "cancelar": "Cancelar",
     "salvar": "Salvar",

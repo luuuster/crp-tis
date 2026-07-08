@@ -181,7 +181,8 @@ export function EditarPerfil({ onNavigate, brand, mode, onCycleBrand, onToggleMo
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Campo id="p-nova" label={t('senha.nova')}>
-                    <Input id="p-nova" type="password" value={senha.nova} onChange={(e) => setS('nova', e.target.value)} aria-invalid={nova.length > 0 && !novaForte} aria-describedby="p-nova-req" autoComplete="new-password" />
+                    {/* describedby só quando o bloco de requisitos existe (ele monta com querSenha) — sem ref órfã. */}
+                    <Input id="p-nova" type="password" value={senha.nova} onChange={(e) => setS('nova', e.target.value)} aria-invalid={nova.length > 0 && !novaForte} aria-describedby={querSenha ? 'p-nova-req' : undefined} autoComplete="new-password" />
                   </Campo>
                   <Campo id="p-conf" label={t('senha.confirmar')} erro={naoConfere ? t('senha.erroConfirma') : undefined}>
                     <Input id="p-conf" type="password" value={senha.confirmar} onChange={(e) => setS('confirmar', e.target.value)} aria-invalid={naoConfere} autoComplete="new-password" />

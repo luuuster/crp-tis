@@ -2,7 +2,7 @@
 ### Documento de engenharia · v1 · 2026-06-10
 
 > ✅ **CONCLUÍDO em 2026-06-10.** Todas as tarefas deste plano foram executadas e verificadas —
-> ver `AUDITORIA-2026-06-10.md` (rev. 1), `-rev2`, `-rev3` e `-rev4`. Mantido como registro histórico.
+> ver `auditorias/AUDITORIA-2026-06-10.md` (rev. 1), `-rev2`, `-rev3` e `-rev4`. Mantido como registro histórico.
 
 ---
 

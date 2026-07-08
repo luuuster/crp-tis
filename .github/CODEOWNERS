@@ -1,0 +1,3 @@
+# Revisão padrão: todo PR passa pelo dono do repo.
+# (Com branch protection + "Require review from Code Owners" na main, isto vira gate obrigatório.)
+* @luuuster

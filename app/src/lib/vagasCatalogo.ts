@@ -135,13 +135,18 @@ const SPECS: Spec[] = [
   { cargo: 'Desenvolvedor Frontend', nivel: 'Pleno', pais: 'Portugal', estado: 'Lisboa', cidade: 'Lisboa', modelo: 'Híbrido', modalidade: 'CLT', pcd: false, data: '02/06/2026' },
   { cargo: 'Engenheiro DevOps', nivel: 'Especialista', pais: 'México', estado: 'CDMX', cidade: 'Cidade do México', modelo: 'Remoto', modalidade: 'PJ', budget: 'A combinar', pcd: false, data: '30/05/2026' },
   { cargo: 'Desenvolvedor Fullstack', nivel: 'Liderança', pais: 'Brasil', estado: 'SP', cidade: 'São Paulo', modelo: 'Híbrido', modalidade: 'CLT', pcd: false, data: '28/05/2026' },
+  // Angola (províncias no lugar de "estado") — coerente com o idioma Português (Angola) do seletor.
+  { cargo: 'Desenvolvedor Backend', nivel: 'Pleno', pais: 'Angola', estado: 'Luanda', cidade: 'Luanda', modelo: 'Híbrido', modalidade: 'CLT', pcd: false, data: '26/05/2026' },
+  { cargo: 'Analista de Dados', nivel: 'Júnior', pais: 'Angola', estado: 'Benguela', cidade: 'Benguela', modelo: 'Remoto', modalidade: 'CLT', pcd: true, data: '24/05/2026' },
+  { cargo: 'Desenvolvedor Frontend', nivel: 'Sênior', pais: 'Angola', estado: 'Huambo', cidade: 'Huambo', modelo: 'Presencial', modalidade: 'PJ', budget: 'A combinar', pcd: false, data: '22/05/2026' },
 ]
 
 // Rótulo de local SEMPRE com o país (deixa claro se é no Brasil ou fora). Omite o estado quando é igual à
 // cidade (ex.: Lisboa). Ex.: "Campinas, SP · Brasil" · "Lisboa · Portugal" · "Cidade do México, CDMX · México".
-const localLabel = (s: Spec) => {
-  const cidadeEstado = s.estado && s.estado !== s.cidade ? `${s.cidade}, ${s.estado}` : s.cidade
-  return `${cidadeEstado} · ${s.pais}`
+// Tolera preenchimento parcial (usado na criação da vaga, onde o RH escolhe país → estado → cidade em cascata).
+export const localLabel = (pais: string, estado: string, cidade: string) => {
+  const cidadeEstado = estado && estado !== cidade ? `${cidade}, ${estado}` : cidade
+  return [cidadeEstado, pais].filter(Boolean).join(' · ')
 }
 
 function mkVaga(s: Spec, i: number): VagaPublica {
@@ -151,10 +156,12 @@ function mkVaga(s: Spec, i: number): VagaPublica {
   const briefing: Briefing = {
     cargo: s.cargo, nivel: s.nivel, modelo: s.modelo, cliente: EMPRESA, gestor: GESTORES[i % GESTORES.length],
     desafio: a.desafio, objetivo: a.objetivo,
-    local: localLabel(s), horario: '09h às 18h', carga: '40h semanais', motivo: 'Aumento do quadro', quantidade, prazo: s.prazo ?? PRAZO_PADRAO_DIAS,
+    pais: s.pais, estado: s.estado, cidade: s.cidade,
+    local: localLabel(s.pais, s.estado, s.cidade), horario: '09h às 18h', carga: '40h semanais', motivo: 'Aumento do quadro', quantidade, prazo: s.prazo ?? PRAZO_PADRAO_DIAS,
     budget: s.budget ?? BUDGET[s.nivel], modalidade: s.modalidade,
     beneficios: BENEFICIOS_POOL.slice(0, 6),
     processoSeletivo: [PROCESSO_POOL[0], PROCESSO_POOL[1], PROCESSO_POOL[3], PROCESSO_POOL[5], PROCESSO_POOL[9]],
+    pcd: s.pcd,
   }
   const perfil: Perfil = {
     formacao: a.formacao, experiencia: EXPERIENCIA[s.nivel],
@@ -163,7 +170,7 @@ function mkVaga(s: Spec, i: number): VagaPublica {
     responsabilidades: a.resp, habilidades: a.habilidades,
     justificativa: 'O crescimento da demanda exige reforço no time.',
   }
-  return { id: String(i + 1), pais: s.pais, estado: s.estado, cidade: s.cidade, local: localLabel(s), publicada: s.data, prazoDias: s.prazo ?? PRAZO_PADRAO_DIAS, pcd: s.pcd, briefing, perfil }
+  return { id: String(i + 1), pais: s.pais, estado: s.estado, cidade: s.cidade, local: localLabel(s.pais, s.estado, s.cidade), publicada: s.data, prazoDias: s.prazo ?? PRAZO_PADRAO_DIAS, pcd: s.pcd, briefing, perfil }
 }
 
 export const VAGAS_CATALOGO: VagaPublica[] = SPECS.map(mkVaga)

@@ -48,6 +48,7 @@ export type Card = {
   score: number
   fase: FaseId
   agendamento?: string // "dd/mm/aaaa hh:mm" — gate 'agendar' cumprido
+  tipo?: 'Online' | 'Presencial' // formato da entrevista agendada (preservado no reagendamento)
   aplicado?: boolean // gate 'teste' cumprido (teste enviado)
   enviada?: boolean // gate 'proposta' cumprido (proposta enviada)
 }
@@ -61,12 +62,12 @@ export const CARDS_INICIAL: Card[] = [
   { id: 'c4', nome: 'Mariana Lopes', vaga: 'Desenvolvedor Full Stack', score: 91, fase: 'ia' },
   { id: 'c5', nome: 'Carla Mendonça', vaga: 'Engenheiro de Dados', score: 88, fase: 'ia' },
   { id: 'c6', nome: 'Vitor Hugo', vaga: 'DevOps Engineer', score: 79, fase: 'ia' },
-  { id: 'c7', nome: 'Jair Carmona', vaga: 'Desenvolvedor Backend', score: 82, fase: 'rh', agendamento: '18/06/2026 09:30' },
-  { id: 'c8', nome: 'Diego Teixeira', vaga: 'Product Manager', score: 68, fase: 'rh', agendamento: '24/06/2026 14:00' },
+  { id: 'c7', nome: 'Jair Carmona', vaga: 'Desenvolvedor Backend', score: 82, fase: 'rh', agendamento: '18/06/2026 09:30', tipo: 'Online' },
+  { id: 'c8', nome: 'Diego Teixeira', vaga: 'Product Manager', score: 68, fase: 'rh', agendamento: '24/06/2026 14:00', tipo: 'Presencial' },
   { id: 'c9', nome: 'Larissa Castro', vaga: 'Cientista de Dados', score: 84, fase: 'teste' },
   { id: 'c10', nome: 'Sofia Martins', vaga: 'Desenvolvedor Mobile', score: 80, fase: 'teste', aplicado: true },
-  { id: 'c11', nome: 'Thiago Barros', vaga: 'Arquiteto de Software', score: 86, fase: 'gestor', agendamento: '25/06/2026 10:30' },
-  { id: 'c12', nome: 'Rafael Tavares', vaga: 'DevOps Engineer', score: 77, fase: 'gestor', agendamento: '19/06/2026 15:00' },
+  { id: 'c11', nome: 'Thiago Barros', vaga: 'Arquiteto de Software', score: 86, fase: 'gestor', agendamento: '25/06/2026 10:30', tipo: 'Presencial' },
+  { id: 'c12', nome: 'Rafael Tavares', vaga: 'DevOps Engineer', score: 77, fase: 'gestor', agendamento: '19/06/2026 15:00', tipo: 'Online' },
   { id: 'c13', nome: 'Bianca Ferreira', vaga: 'Desenvolvedor Backend', score: 95, fase: 'proposta', enviada: true },
   { id: 'c14', nome: 'Aline Ramos', vaga: 'Tech Lead Frontend', score: 90, fase: 'proposta' },
   { id: 'c15', nome: 'Bruno Lima', vaga: 'Engenheiro de Dados', score: 91, fase: 'contratado' },
@@ -76,7 +77,7 @@ export const CARDS_INICIAL: Card[] = [
 
 // ---------- transições puras (limpam o sub-estado do gate ao trocar de fase) ----------
 
-const semGate = (c: Card): Card => ({ ...c, agendamento: undefined, aplicado: undefined, enviada: undefined })
+const semGate = (c: Card): Card => ({ ...c, agendamento: undefined, tipo: undefined, aplicado: undefined, enviada: undefined })
 
 /** Aprovar → empurra para a próxima fase (no-op se terminal). */
 export const aprovar = (c: Card): Card => {
@@ -85,21 +86,3 @@ export const aprovar = (c: Card): Card => {
 }
 /** Reprovar → coluna "Reprovado". */
 export const reprovar = (c: Card): Card => ({ ...semGate(c), fase: 'reprovado' })
-/** Proposta aceita → "Contratado". */
-export const contratar = (c: Card): Card => ({ ...semGate(c), fase: 'contratado' })
-
-/** Cumpre o gate 'agendar' (registra data/hora). */
-export const agendar = (c: Card, quando: string): Card => ({ ...c, agendamento: quando })
-/** Cumpre o gate 'teste' (teste enviado). */
-export const aplicarTeste = (c: Card): Card => ({ ...c, aplicado: true })
-/** Cumpre o gate 'proposta' (proposta enviada). */
-export const enviarProposta = (c: Card): Card => ({ ...c, enviada: true })
-
-/** Já cumpriu o gate da fase atual? (decisão fica disponível direto; agendar/teste/proposta exigem o passo 1) */
-export const gateCumprido = (c: Card): boolean => {
-  const g = FASE[c.fase].gate
-  if (g === 'agendar') return !!c.agendamento
-  if (g === 'teste') return !!c.aplicado
-  if (g === 'proposta') return !!c.enviada
-  return g === 'decisao' // 'final' não tem gate de ação
-}

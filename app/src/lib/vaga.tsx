@@ -13,9 +13,13 @@ import { CARD } from '@/lib/surfaces'
 export type Briefing = {
   cargo: string; nivel: string; modelo: string; cliente: string; gestor: string
   desafio: string; objetivo: string
+  // Local de trabalho em cascata (país → estado → cidade). `local` é o rótulo de exibição derivado
+  // deles (usado na prosa gerada e na lista/detalhe da vaga) — ver localLabel em @/lib/vagasCatalogo.
+  pais: string; estado: string; cidade: string
   local: string; horario: string; carga: string; motivo: string; quantidade: number
   prazo: number // dias que a vaga fica aberta para candidaturas (definido pelo RH na criação)
   budget: string; modalidade: string; beneficios: string[]; processoSeletivo: string[]
+  pcd: boolean // vaga afirmativa para PcD (pessoa com deficiência) — reservada/priorizada
 }
 export type Perfil = {
   formacao: string; experiencia: string; exigencias: string[]; stackObrigatoria: string[]

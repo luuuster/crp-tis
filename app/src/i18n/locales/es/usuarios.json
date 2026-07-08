@@ -78,11 +78,8 @@
       "coincidem": "Las contraseñas coinciden"
     },
     "senhaPlaceholder": "Mínimo 8 caracteres",
-    "senhaDica": "El usuario podrá cambiarla en el primer inicio de sesión.",
-    "senhaCurta": "La contraseña debe tener al menos 8 caracteres.",
     "confirmarSenha": "Confirmar contraseña",
     "confirmarSenhaPlaceholder": "Repite la contraseña",
-    "senhaNaoConfere": "Las contraseñas no coinciden.",
     "mostrarSenha": "Mostrar contraseña",
     "ocultarSenha": "Ocultar contraseña",
     "telefone": "Teléfono",

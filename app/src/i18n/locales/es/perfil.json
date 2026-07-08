@@ -32,5 +32,19 @@
   },
   "salvar": "Guardar cambios",
   "cancelar": "Cancelar",
-  "salvo": "Perfil actualizado."
+  "salvo": "Perfil actualizado.",
+  "candidato": {
+    "subtitulo": "Actualiza tus datos de contacto, tu currículum y tu contraseña de acceso.",
+    "curriculo": {
+      "titulo": "Currículum",
+      "desc": "El PDF que la IA analiza en tus candidaturas.",
+      "enviar": "Subir un nuevo currículum",
+      "dica": "PDF, DOC o DOCX · hasta {{max}} MB",
+      "anexado": "Currículum adjuntado",
+      "atual": "Currículum actual",
+      "remover": "Quitar currículum",
+      "formato": "Sube un archivo PDF, DOC o DOCX.",
+      "tamanho": "El archivo debe pesar como máximo {{max}} MB."
+    }
+  }
 }

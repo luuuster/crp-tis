@@ -6,6 +6,10 @@
   "exportarAviso": "This feature still needs to be discussed with the team to assess whether the implementation is feasible.",
   "tentarNovamente": "Try again",
   "buscar": "Search",
+  "carregando": {
+    "pagina": "Loading page",
+    "vagas": "Loading jobs"
+  },
   "acao": {
     "cancelar": "Cancel",
     "salvar": "Save",

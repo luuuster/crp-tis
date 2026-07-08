@@ -51,7 +51,7 @@ const useFormField = () => {
     throw new Error("useFormField should be used within <FormField>")
   }
 
-  const { id } = itemContext
+  const { id, hasDescription, setHasDescription } = itemContext
 
   return {
     id,
@@ -59,12 +59,18 @@ const useFormField = () => {
     formItemId: `${id}-form-item`,
     formDescriptionId: `${id}-form-item-description`,
     formMessageId: `${id}-form-item-message`,
+    hasDescription,
+    setHasDescription,
     ...fieldState,
   }
 }
 
 type FormItemContextValue = {
   id: string
+  // Presença de <FormDescription/> no item — o FormControl só referencia o id da descrição no
+  // aria-describedby quando ela existe de fato (senão vira referência órfã para leitores de tela).
+  hasDescription: boolean
+  setHasDescription: (v: boolean) => void
 }
 
 const FormItemContext = React.createContext<FormItemContextValue>(
@@ -73,9 +79,10 @@ const FormItemContext = React.createContext<FormItemContextValue>(
 
 function FormItem({ className, ...props }: React.ComponentProps<"div">) {
   const id = React.useId()
+  const [hasDescription, setHasDescription] = React.useState(false)
 
   return (
-    <FormItemContext.Provider value={{ id }}>
+    <FormItemContext.Provider value={{ id, hasDescription, setHasDescription }}>
       <div
         data-slot="form-item"
         className={cn("grid gap-2", className)}
@@ -105,17 +112,18 @@ function FormLabel({
 }
 
 function FormControl({ ...props }: React.ComponentProps<typeof Slot.Root>) {
-  const { error, formItemId, formDescriptionId, formMessageId } = useFormField()
+  const { error, formItemId, formDescriptionId, formMessageId, hasDescription } = useFormField()
+
+  // aria-describedby só com ids que EXISTEM no DOM: a descrição quando renderizada, a mensagem no erro
+  // (o <FormMessage/> só monta com erro). Evita referências órfãs para tecnologia assistiva.
+  const describedBy =
+    [hasDescription ? formDescriptionId : null, error ? formMessageId : null].filter(Boolean).join(" ") || undefined
 
   return (
     <Slot.Root
       data-slot="form-control"
       id={formItemId}
-      aria-describedby={
-        !error
-          ? `${formDescriptionId}`
-          : `${formDescriptionId} ${formMessageId}`
-      }
+      aria-describedby={describedBy}
       aria-invalid={!!error}
       {...props}
     />
@@ -123,7 +131,13 @@ function FormControl({ ...props }: React.ComponentProps<typeof Slot.Root>) {
 }
 
 function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
-  const { formDescriptionId } = useFormField()
+  const { formDescriptionId, setHasDescription } = useFormField()
+
+  // Registra a presença da descrição no item (ver FormItemContext) — inclui o id no aria-describedby.
+  React.useEffect(() => {
+    setHasDescription(true)
+    return () => setHasDescription(false)
+  }, [setHasDescription])
 
   return (
     <p

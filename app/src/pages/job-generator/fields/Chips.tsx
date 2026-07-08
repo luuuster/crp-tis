@@ -142,7 +142,7 @@ export function Chips({ value, onChange, pool, addLabel, emptyHint, searchPlaceh
             onOpenAutoFocus={(e) => { e.preventDefault(); inputRef.current?.focus() }}
             style={pos ? { left: pos.x, top: pos.y } : undefined}
             className={cn(
-              'fixed z-50 flex max-h-[80vh] w-[calc(100%-2rem)] max-w-sm flex-col overflow-hidden rounded-xl bg-popover p-0 text-popover-foreground outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
+              'fixed z-50 flex max-h-[80vh] w-[calc(100%-2rem)] max-w-sm flex-col overflow-hidden rounded-xl bg-popover p-0 text-popover-foreground outline-none motion-safe:data-[state=closed]:animate-out motion-safe:data-[state=closed]:fade-out-0 motion-safe:data-[state=closed]:zoom-out-95 motion-safe:data-[state=open]:animate-in motion-safe:data-[state=open]:fade-in-0 motion-safe:data-[state=open]:zoom-in-95',
               pos ? '' : 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
               FLOAT,
             )}

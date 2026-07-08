@@ -3,10 +3,7 @@
     "label": "Your account",
     "irMural": "Go to the job board",
     "editarPerfil": "Edit profile",
-    "editarCurriculo": "Edit resume",
     "sair": "Sign out",
-    "perfilEmBreve": "Profile editing is coming soon.",
-    "curriculoEmBreve": "Resume editing is coming soon.",
     "sairConfirm": {
       "titulo": "Sign out of your account?",
       "descricao": "You'll return to the sign-in screen.",

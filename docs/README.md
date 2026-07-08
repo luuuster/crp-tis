@@ -5,7 +5,7 @@
 
 | Arquivo | O que é |
 |---|---|
-| `AUDITORIA-*.md` | auditorias datadas (o que foi revisado em cada ciclo) |
+| `auditorias/` | auditorias e vistorias datadas (o que foi revisado em cada ciclo; as mais recentes: `AUDITORIA-2026-07-04-app.md` e `VISTORIA-2026-07-08-repo.md`) |
 | `PLANO-*.md` | planos de melhoria/saneamento (vários já executados) |
 | `IDEIAS-PLUGINS-FIGMA.md`, `PLANO-CODE-TO-FIGMA.md` | exploração do pipeline Code↔Figma |
 | `PROTECAO-CORRUPCAO.md` | o "doctor" (guarda anti-corrupção de arquivos, roda no pre-commit) |

@@ -209,10 +209,12 @@ export function ProcessoDetalhe({ c, p, onVoltar, acoes, acoesInicio, acaoEtapa 
                 <p className="flex items-center gap-2 ty-caption font-semibold tracking-wide text-foreground uppercase"><MessageSquareText className="size-3.5 text-muted-foreground" aria-hidden /> {t('proc.conversa.tecnica')}</p>
                 {dSel.conversa ? (
                   <div className="mt-3 space-y-2.5">
+                    {/* sr-only "Pergunta/Resposta": visualmente o locutor é distinguido por cor/alinhamento,
+                        que o leitor de tela não percebe. */}
                     {dSel.conversa.map((qa, i) => (
                       <div key={i} className="space-y-1.5">
-                        <div className="flex"><div className="max-w-[85%] rounded-2xl rounded-tl-sm bg-muted/50 px-3.5 py-2.5 ty-body-sm leading-relaxed text-foreground">{qa.pergunta}</div></div>
-                        <div className="flex justify-end"><div className="max-w-[85%] rounded-2xl rounded-tr-sm bg-primary/10 px-3.5 py-2.5 ty-body-sm leading-relaxed text-foreground">{qa.resposta}</div></div>
+                        <div className="flex"><div className="max-w-[85%] rounded-2xl rounded-tl-sm bg-muted/50 px-3.5 py-2.5 ty-body-sm leading-relaxed text-foreground"><span className="sr-only">{t('proc.conversa.pergunta')}: </span>{qa.pergunta}</div></div>
+                        <div className="flex justify-end"><div className="max-w-[85%] rounded-2xl rounded-tr-sm bg-primary/10 px-3.5 py-2.5 ty-body-sm leading-relaxed text-foreground"><span className="sr-only">{t('proc.conversa.resposta')}: </span>{qa.resposta}</div></div>
                       </div>
                     ))}
                   </div>

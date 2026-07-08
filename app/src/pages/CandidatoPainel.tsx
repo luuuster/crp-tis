@@ -27,6 +27,7 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { SearchSelect } from '@/pages/job-generator/fields'
 import { PageContainer, PageHeader, EmptyState, Paginacao } from '@/components/page'
 
 const H_MD = 'h-[var(--button-height-md)]' // 40px — altura padrão dos controles de filtro (DS)
@@ -107,16 +108,13 @@ function LocalFiltro({ pais, estado, cidade, onAplicar }: {
   const resumo = [cidade !== 'todas' ? cidade : null, estado !== 'todos' ? estado : null, pais !== 'todos' ? pais : null]
     .filter(Boolean).slice(0, 2).join(', ')
 
-  const campo = (rotulo: string, value: string, placeholder: string, opcoes: string[], todos: { valor: string; rotulo: string }, onChange: (v: string) => void) => (
+  // Cada campo é um SELECT COM BUSCA (SearchSelect): listas de estado/cidade ficam longas e procurar por
+  // scroll é ruim. A opção "Todos/Todas" entra como primeiro item da lista (valor sentinela) e o labelOf
+  // troca só a exibição. País tem poucas opções, mas fica buscável também para os 3 ficarem uniformes.
+  const campo = (id: string, rotulo: string, value: string, opcoes: string[], todos: { valor: string; rotulo: string }, onChange: (v: string) => void) => (
     <div className="space-y-1.5">
-      <p className="ty-label-sm text-muted-foreground">{rotulo}</p>
-      <Select value={value} onValueChange={onChange}>
-        <SelectTrigger size="md" aria-label={rotulo} className="w-full font-normal"><SelectValue>{value === todos.valor ? placeholder : value}</SelectValue></SelectTrigger>
-        <SelectContent>
-          <SelectItem value={todos.valor}>{todos.rotulo}</SelectItem>
-          {opcoes.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
-        </SelectContent>
-      </Select>
+      <p className="ty-label-sm text-muted-foreground" id={`${id}-label`}>{rotulo}</p>
+      <SearchSelect id={id} value={value} onChange={onChange} options={[todos.valor, ...opcoes]} labelOf={(v) => (v === todos.valor ? todos.rotulo : v)} aria-labelledby={`${id}-label`} />
     </div>
   )
 
@@ -131,11 +129,11 @@ function LocalFiltro({ pais, estado, cidade, onAplicar }: {
       <PopoverContent align="start" aria-label={t('localFiltro.titulo')} className="w-72">
         <p className="text-sm font-semibold text-foreground">{t('localFiltro.titulo')}</p>
         <div className="mt-4 space-y-3">
-          {campo(t('localFiltro.pais'), d.pais, t('localFiltro.todosPaises'), PAISES, { valor: 'todos', rotulo: t('localFiltro.todosPaises') },
+          {campo('filtro-pais', t('localFiltro.pais'), d.pais, PAISES, { valor: 'todos', rotulo: t('localFiltro.todosPaises') },
             (v) => setD({ pais: v, estado: 'todos', cidade: 'todas' }))}
-          {campo(t('localFiltro.estado'), d.estado, t('localFiltro.todosEstados'), estadosDe(d.pais), { valor: 'todos', rotulo: t('localFiltro.todosEstados') },
+          {campo('filtro-estado', t('localFiltro.estado'), d.estado, estadosDe(d.pais), { valor: 'todos', rotulo: t('localFiltro.todosEstados') },
             (v) => setD((p) => ({ ...p, estado: v, cidade: 'todas' })))}
-          {campo(t('localFiltro.cidade'), d.cidade, t('localFiltro.todasCidades'), cidadesDe(d.pais, d.estado), { valor: 'todas', rotulo: t('localFiltro.todasCidades') },
+          {campo('filtro-cidade', t('localFiltro.cidade'), d.cidade, cidadesDe(d.pais, d.estado), { valor: 'todas', rotulo: t('localFiltro.todasCidades') },
             (v) => setD((p) => ({ ...p, cidade: v })))}
         </div>
         <Separator className="my-4" />

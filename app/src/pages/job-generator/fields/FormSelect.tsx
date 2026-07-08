@@ -11,10 +11,11 @@ import { SheetOptions } from './sheet-parts'
 
 /** Select limpo (Radix): parece um select normal, sem checkmark; campo preenchido e dropdown
  * definido por sombra (sem a borda preta marcada do popup nativo do SO). */
-export function FormSelect({ id, value, onChange, options, placeholder, labelOf, "aria-invalid": ariaInvalid, "aria-describedby": ariaDescribedby, "aria-required": ariaRequired }: {
+export function FormSelect({ id, value, onChange, options, placeholder, labelOf, disabled, "aria-invalid": ariaInvalid, "aria-describedby": ariaDescribedby, "aria-required": ariaRequired }: {
   id: string; value: string; onChange: (v: string) => void; options: readonly string[]; placeholder?: string
   // labelOf: traduz só a EXIBIÇÃO (valor canônico pt-BR permanece em value/onChange). Sem ela, mostra o valor cru.
   labelOf?: (value: string) => string
+  disabled?: boolean
   "aria-invalid"?: boolean; "aria-describedby"?: string; "aria-required"?: boolean
 }) {
   const { t } = useTranslation('gerador')
@@ -29,9 +30,9 @@ export function FormSelect({ id, value, onChange, options, placeholder, labelOf,
         open={open} onOpenChange={setOpen} title={placeholder || t('select.selecione')}
         trigger={
           <button
-            id={id} type="button" role="combobox" aria-expanded={open} aria-controls={open ? `${id}-list` : undefined}
+            id={id} type="button" role="combobox" aria-haspopup="listbox" aria-expanded={open} aria-controls={open ? `${id}-list` : undefined} disabled={disabled}
             aria-invalid={ariaInvalid} aria-describedby={ariaDescribedby} aria-required={ariaRequired}
-            className={cn('flex min-h-[var(--button-height-lg)] w-full items-center justify-between gap-2 border px-3 outline-none', FIELD, 'focus-visible:focus-ring dark:bg-input/30 dark:hover:bg-input/50', !value && 'text-muted-foreground')}
+            className={cn('flex min-h-[var(--button-height-lg)] w-full items-center justify-between gap-2 border px-3 outline-none', FIELD, 'focus-visible:focus-ring dark:bg-input/30 dark:hover:bg-input/50', !value && 'text-muted-foreground', disabled && 'cursor-not-allowed opacity-50')}
           >
             <span className="line-clamp-1 text-left">{value ? lbl(value) : placeholder}</span>
             <ChevronDown className="size-4 shrink-0 text-muted-foreground opacity-60" aria-hidden />
@@ -44,7 +45,7 @@ export function FormSelect({ id, value, onChange, options, placeholder, labelOf,
   }
 
   return (
-    <SelectPrimitive.Root value={value} onValueChange={onChange}>
+    <SelectPrimitive.Root value={value} onValueChange={onChange} disabled={disabled}>
       <SelectPrimitive.Trigger
         id={id}
         aria-invalid={ariaInvalid}
@@ -54,6 +55,7 @@ export function FormSelect({ id, value, onChange, options, placeholder, labelOf,
           'flex min-h-[var(--button-height-lg)] w-full items-center justify-between gap-2 border px-3 outline-none', FIELD,
           'focus-visible:focus-ring',
           'data-[placeholder]:text-muted-foreground dark:bg-input/30 dark:hover:bg-input/50 [&>span]:line-clamp-1 [&>span]:text-left',
+          'data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50',
         )}
       >
         {/* children explícito: o Radix Value cacheia o texto do item ao selecionar e NÃO reage à troca de

@@ -391,28 +391,28 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
           <div className="flex-1 space-y-4 overflow-y-auto p-5">
             <div className="grid gap-2">
               <Label htmlFor="u-nome">{t('sheet.nome')} <span className="text-destructive-text" aria-hidden>*</span></Label>
-              <Input id="u-nome" value={form.nome} onChange={(e) => setForm((f) => ({ ...f, nome: e.target.value }))} placeholder={t('sheet.nomePlaceholder')} autoComplete="off" />
+              <Input id="u-nome" value={form.nome} onChange={(e) => setForm((f) => ({ ...f, nome: e.target.value }))} placeholder={t('sheet.nomePlaceholder')} aria-required autoComplete="off" />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="u-email">{t('sheet.email')} <span className="text-destructive-text" aria-hidden>*</span></Label>
-              <Input id="u-email" type="email" inputMode="email" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} placeholder={t('sheet.emailPlaceholder')} aria-invalid={form.email.length > 0 && !emailValido} autoComplete="off" />
-              {form.email.length > 0 && !emailValido && <p className="ty-caption text-destructive-text">{t('sheet.emailInvalido')}</p>}
+              <Input id="u-email" type="email" inputMode="email" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} placeholder={t('sheet.emailPlaceholder')} aria-invalid={form.email.length > 0 && !emailValido} aria-required aria-describedby={form.email.length > 0 && !emailValido ? 'u-email-erro' : undefined} autoComplete="off" />
+              {form.email.length > 0 && !emailValido && <p id="u-email-erro" role="alert" className="ty-caption text-destructive-text">{t('sheet.emailInvalido')}</p>}
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="grid gap-2">
                 <Label htmlFor="u-tel">{t('sheet.telefone')} <span className="text-destructive-text" aria-hidden>*</span></Label>
-                <Input id="u-tel" inputMode="tel" value={form.telefone} onChange={(e) => setForm((f) => ({ ...f, telefone: maskTel(e.target.value) }))} placeholder={t('sheet.telefonePlaceholder')} autoComplete="off" />
+                <Input id="u-tel" inputMode="tel" value={form.telefone} onChange={(e) => setForm((f) => ({ ...f, telefone: maskTel(e.target.value) }))} placeholder={t('sheet.telefonePlaceholder')} aria-required autoComplete="off" />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="u-doc">{docLabel} <span className="text-destructive-text" aria-hidden>*</span></Label>
-                <Input id="u-doc" inputMode="numeric" value={form.cpf} onChange={(e) => setForm((f) => ({ ...f, cpf: maskDoc(e.target.value) }))} placeholder={docPlaceholder} autoComplete="off" />
+                <Input id="u-doc" inputMode="numeric" value={form.cpf} onChange={(e) => setForm((f) => ({ ...f, cpf: maskDoc(e.target.value) }))} placeholder={docPlaceholder} aria-required autoComplete="off" />
               </div>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="grid gap-2">
                 <Label htmlFor="u-tipo">{t('sheet.tipoPessoa')} <span className="text-destructive-text" aria-hidden>*</span></Label>
                 <Select value={form.tipoPessoa} onValueChange={(v) => setForm((f) => ({ ...f, tipoPessoa: v as TipoPessoa, cpf: (v === 'Pessoa Jurídica' ? maskCNPJ : maskCPF)(f.cpf) }))}>
-                  <SelectTrigger id="u-tipo" className="w-full"><SelectValue>{labelTipoPessoa(form.tipoPessoa)}</SelectValue></SelectTrigger>
+                  <SelectTrigger id="u-tipo" aria-required className="w-full"><SelectValue>{labelTipoPessoa(form.tipoPessoa)}</SelectValue></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="Pessoa Física">{labelTipoPessoa('Pessoa Física')}</SelectItem>
                     <SelectItem value="Pessoa Jurídica">{labelTipoPessoa('Pessoa Jurídica')}</SelectItem>
@@ -421,7 +421,7 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="u-data">{dataLabel} <span className="text-destructive-text" aria-hidden>*</span></Label>
-                <Input id="u-data" inputMode="numeric" value={form.nascimento} onChange={(e) => setForm((f) => ({ ...f, nascimento: maskData(e.target.value) }))} placeholder={t('sheet.data.placeholder')} autoComplete="off" />
+                <Input id="u-data" inputMode="numeric" value={form.nascimento} onChange={(e) => setForm((f) => ({ ...f, nascimento: maskData(e.target.value) }))} placeholder={t('sheet.data.placeholder')} aria-required autoComplete="off" />
               </div>
             </div>
             <div className="grid gap-2">
@@ -429,7 +429,7 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
               {/* trigger com altura automática + py extra: o valor tem 2 linhas (nome + descrição) e a
                   altura fixa padrão (h-9) o deixava espremido. */}
               <Select value={form.funcao} onValueChange={(v) => setForm((f) => ({ ...f, funcao: v as Funcao }))}>
-                <SelectTrigger id="u-funcao" className="w-full data-[size=default]:h-auto py-2.5"><SelectValue>{labelFuncao(form.funcao)}</SelectValue></SelectTrigger>
+                <SelectTrigger id="u-funcao" aria-required className="w-full data-[size=default]:h-auto py-2.5"><SelectValue>{labelFuncao(form.funcao)}</SelectValue></SelectTrigger>
                 <SelectContent>
                   {FUNCOES.map((f) => (
                     <SelectItem key={f.value} value={f.value} className="py-2.5">
@@ -447,7 +447,7 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
             <div className="grid gap-2">
               <Label htmlFor="u-senha">{t(editing ? 'sheet.novaSenha' : 'sheet.senha')} <span className="text-destructive-text" aria-hidden>*</span></Label>
               <div className="relative">
-                <Input id="u-senha" type={showSenha ? 'text' : 'password'} value={form.senha} onChange={(e) => setForm((f) => ({ ...f, senha: e.target.value }))} placeholder={t('sheet.senhaPlaceholder')} aria-invalid={form.senha.length > 0 && !senhaValida} autoComplete="new-password" className="pr-9" />
+                <Input id="u-senha" type={showSenha ? 'text' : 'password'} value={form.senha} onChange={(e) => setForm((f) => ({ ...f, senha: e.target.value }))} placeholder={t('sheet.senhaPlaceholder')} aria-invalid={form.senha.length > 0 && !senhaValida} aria-required aria-describedby="u-senha-reqs" autoComplete="new-password" className="pr-9" />
                 <button type="button" onClick={() => setShowSenha((s) => !s)} aria-label={showSenha ? t('sheet.ocultarSenha') : t('sheet.mostrarSenha')} className={cn('absolute top-1/2 right-2 grid size-7 -translate-y-1/2 place-items-center text-muted-foreground transition-colors hover:text-foreground', focusRing)}>
                   {showSenha ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                 </button>
@@ -456,17 +456,18 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
             <div className="grid gap-2">
               <Label htmlFor="u-senha-conf">{t('sheet.confirmarSenha')} <span className="text-destructive-text" aria-hidden>*</span></Label>
               <div className="relative">
-                <Input id="u-senha-conf" type={showConfirmar ? 'text' : 'password'} value={form.confirmar} onChange={(e) => setForm((f) => ({ ...f, confirmar: e.target.value }))} placeholder={t('sheet.confirmarSenhaPlaceholder')} aria-invalid={form.confirmar.length > 0 && !senhaConfere} autoComplete="new-password" className="pr-9" />
+                <Input id="u-senha-conf" type={showConfirmar ? 'text' : 'password'} value={form.confirmar} onChange={(e) => setForm((f) => ({ ...f, confirmar: e.target.value }))} placeholder={t('sheet.confirmarSenhaPlaceholder')} aria-invalid={form.confirmar.length > 0 && !senhaConfere} aria-required aria-describedby="u-senha-reqs" autoComplete="new-password" className="pr-9" />
                 <button type="button" onClick={() => setShowConfirmar((s) => !s)} aria-label={showConfirmar ? t('sheet.ocultarSenha') : t('sheet.mostrarSenha')} className={cn('absolute top-1/2 right-2 grid size-7 -translate-y-1/2 place-items-center text-muted-foreground transition-colors hover:text-foreground', focusRing)}>
                   {showConfirmar ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                 </button>
               </div>
             </div>
-            {/* Requisitos da senha — barra segmentada (N/5) + checklist. */}
-            <div className="grid gap-2">
+            {/* Requisitos da senha — barra segmentada (N/5) + checklist. Referenciada pelos campos de senha
+                via aria-describedby; o contador é role="status" pra anunciar o progresso a leitores de tela. */}
+            <div id="u-senha-reqs" className="grid gap-2">
               <div className="flex items-center justify-between">
                 <span className="ty-body-sm font-medium text-foreground">{t('sheet.requisitos.titulo')}</span>
-                <span className="ty-caption tabular-nums text-muted-foreground">{senhaReqsOk}/{senhaReqs.length}</span>
+                <span role="status" className="ty-caption tabular-nums text-muted-foreground">{senhaReqsOk}/{senhaReqs.length}</span>
               </div>
               <div className="flex gap-1" aria-hidden>
                 {senhaReqs.map((r) => <div key={r.id} className={cn('h-1.5 flex-1 rounded-full transition-colors', r.ok ? 'bg-success' : 'bg-muted-foreground/15')} />)}

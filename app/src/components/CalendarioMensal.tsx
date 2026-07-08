@@ -13,7 +13,7 @@ import { CARD } from '@/lib/surfaces'
 import { focusRing } from '@/lib/focus'
 import { iniciais } from '@/lib/format'
 import { fotoDe } from '@/lib/avatar'
-import { dataMedia, mesLongo, semanaCurta } from '@/lib/datetime'
+import { dataLonga, dataMedia, mesLongo, semanaCurta } from '@/lib/datetime'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -96,6 +96,9 @@ function EventoChip({ ev, onOpen }: { ev: Evento; onOpen: (ev: Evento) => void }
         <button
           type="button"
           onClick={() => onOpen(ev)}
+          // nome acessível inclui a DATA (o texto visível só tem hora + nome; sem isso, navegando por
+          // eventos o leitor de tela não sabe de que dia é o agendamento).
+          aria-label={`${dataLonga(ev.y, ev.m, ev.d)} · ${ev.hora} · ${ev.cand}, ${ev.vaga}`}
           className="flex w-full items-center gap-1.5 truncate rounded-md px-1.5 py-1 text-left ty-caption transition-colors hover:bg-muted focus-visible:focus-ring"
         >
           <Icon className="size-3 shrink-0 text-primary-text" aria-hidden />

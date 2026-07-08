@@ -4,8 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "description": "App de demonstração — componentes shadcn/ui tematizados pelos tokens do CRP Design System (multi-marca, claro/escuro).",
+  "license": "UNLICENSED",
+  "author": "Frank",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luuuster/crp-tis.git",
+    "directory": "app"
+  },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "packageManager": "npm@11.11.0",
   "scripts": {

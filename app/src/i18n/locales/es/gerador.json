@@ -146,7 +146,11 @@
     "gestor": { "label": "Responsable directo", "hint": "Persona a quien reporta la vacante.", "placeholder": "Nombre del responsable" },
     "desafio": { "label": "Sobre el desafío", "hint": "El escenario en el que nace la vacante, el equipo/proyecto y el momento.", "placeholder": "Ex: Estamos expandindo o time de engenharia do TIS Talent AI Platform para sustentar o crescimento da plataforma." },
     "objetivo": { "label": "Objetivo de la vacante", "hint": "Lo que esta contratación necesita lograr.", "placeholder": "Ex: Ampliar a capacidade de entrega de soluções backend de alta performance, garantindo escalabilidade e qualidade nas integrações da plataforma." },
-    "local": { "label": "Lugar de trabajo", "hint": "Ciudad/estado base (incluso en remoto/híbrido).", "placeholder": "Ciudad, Estado" },
+    "local": { "label": "Lugar de trabajo" },
+    "pais": { "label": "País", "placeholder": "Selecciona el país" },
+    "estado": { "label": "Estado", "placeholder": "Selecciona el estado" },
+    "cidade": { "label": "Ciudad", "placeholder": "Selecciona la ciudad" },
+    "pcd": { "label": "Afirmativa para PcD", "hint": "Vacante reservada o priorizada para personas con discapacidad." },
     "horario": { "label": "Horario", "placeholder": "Selecciona un horario" },
     "carga": { "label": "Carga semanal", "placeholder": "Selecciona una carga semanal" },
     "motivo": { "label": "Motivo de apertura", "placeholder": "Selecciona el motivo" },
@@ -383,9 +387,7 @@
     "modalidade": {
       "CLT": "CLT (empleado)",
       "PJ": "PJ (autónomo)",
-      "Estágio": "Prácticas",
-      "Temporário": "Temporal",
-      "Cooperado": "Cooperativa"
+      "Estágio": "Prácticas"
     },
     "beneficio": {
       "Vale-refeição": "Vale de comida",

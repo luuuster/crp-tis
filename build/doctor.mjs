@@ -10,8 +10,10 @@
  * O que faz:
  *   1. Lista arquivos com conteúdo diferente do HEAD (git diff --ignore-cr-at-eol).
  *   2. Classifica cada um:
- *      - CORROMPIDO: contém byte NUL, OU é um PREFIXO do conteúdo do HEAD (truncamento),
- *        tolerando padding de espaços/tabs no fim (assinaturas observadas nas 2 ocorrências).
+ *      - CORROMPIDO: contém byte NUL, OU é um PREFIXO do conteúdo do HEAD cortado NO MEIO de uma
+ *        linha (truncamento), tolerando padding de espaços/tabs no fim (assinaturas observadas).
+ *        Prefixo que termina em fronteira LIMPA de linha ('\n' final) é EDIÇÃO legítima — apagar
+ *        código do fim de um arquivo produz exatamente essa forma (falso positivo já ocorrido).
  *      - EDITADO: qualquer outra diferença — é trabalho seu; o doctor NUNCA toca nesses.
  *   3. Sem --fix: reporta e sai com código 1 se houver corrompidos (uso em hook/CI).
  *      Com --fix: sobrescreve os corrompidos IN-PLACE com o conteúdo do HEAD (sem unlink,
@@ -19,11 +21,22 @@
  *
  * Uso:  npm run doctor        # só diagnóstico (exit 1 se houver corrupção)
  *       npm run doctor:fix    # diagnóstico + restauração dos corrompidos
+ *       DOCTOR_ALLOW=caminho/a.ts,caminho/b.ts npm run doctor
+ *         # bypass GRANULAR p/ falso positivo pontual (não desliga o hook inteiro como --no-verify)
  */
 import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 
 const FIX = process.argv.includes('--fix');
+// Bypass granular p/ falso positivo: lista de caminhos (relativos ao repo, separados por vírgula)
+// que o doctor trata como edição legítima nesta execução. Preferível ao `git commit --no-verify`,
+// que desliga o gate INTEIRO.
+const ALLOW = new Set(
+  (process.env.DOCTOR_ALLOW ?? '')
+    .split(',')
+    .map((s) => s.trim().replace(/\\/g, '/'))
+    .filter(Boolean),
+);
 
 function git(args, asBuffer = false) {
   return execFileSync('git', args, {
@@ -55,6 +68,7 @@ const corrupted = [];
 const edited = [];
 
 for (const f of changed) {
+  if (ALLOW.has(f)) { edited.push(`${f} (DOCTOR_ALLOW — não classifico)`); continue; }
   if (!existsSync(f)) { edited.push(`${f} (apagado — não toco)`); continue; }
   let headBuf;
   try { headBuf = git(['show', `HEAD:${f}`], true); }
@@ -64,9 +78,13 @@ for (const f of changed) {
   const hasNul = diskBuf.includes(0);
   const disk = norm(diskBuf);
   const head = norm(headBuf);
-  // assinatura de truncamento: disco é prefixo do HEAD (ignorando padding de espaços/tabs no fim)
+  // Assinatura de truncamento: disco é prefixo do HEAD (ignorando padding de espaços/tabs no fim)
+  // E o corte cai no MEIO de uma linha (sem '\n' final). Prefixo terminando em fronteira limpa de
+  // linha é apagar-código-do-fim — edição legítima, não corrupção (falso positivo já ocorrido:
+  // remoção de dead code no fim de candidaturas.ts bloqueou o commit).
   const diskTrimmed = disk.replace(/[ \t]+$/s, '');
-  const isTruncated = disk.length < head.length && head.startsWith(diskTrimmed);
+  const cleanLineBoundary = disk.endsWith('\n') && disk === diskTrimmed;
+  const isTruncated = disk.length < head.length && head.startsWith(diskTrimmed) && !cleanLineBoundary;
 
   if (hasNul || isTruncated) {
     corrupted.push({ f, motivo: hasNul ? 'bytes NUL' : `truncado (${diskBuf.length}B de ${headBuf.length}B)` });

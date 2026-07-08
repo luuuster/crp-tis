@@ -117,7 +117,9 @@
       "rh": "What was discussed",
       "gestor": "Questions for the candidate",
       "tecnica": "Interview chat",
-      "aguardando": "Waiting for the candidate's answers…"
+      "aguardando": "Waiting for the candidate's answers…",
+      "pergunta": "Question",
+      "resposta": "Answer"
     },
     "desafio": "The challenge",
     "desafioCampo": {
@@ -129,8 +131,6 @@
     "destaques": "Highlights",
     "scoreTeste": "Interview score (AI)",
     "atencao": "Points of attention",
-    "iaReprovado": "Rejected",
-    "iaAprovado": "Bot approved",
     "reprovacao": {
       "titulo": "Why they were rejected",
       "motivos": "Reasons for rejection",

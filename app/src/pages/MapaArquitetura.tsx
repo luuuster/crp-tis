@@ -120,6 +120,7 @@ const CANDIDATO: Produto = {
         { icon: LayoutGrid, path: '/painel', desc: 'Mural de vagas — busca, filtros, ordenação, cards e paginação' },
         { icon: ClipboardList, path: '/candidaturas', desc: 'Minhas candidaturas — em andamento (busca + progresso no funil)' },
         { icon: CheckCircle2, path: '/candidaturas_finalizadas', desc: 'Finalizadas — resultado (aprovada/não selecionada) + feedback' },
+        { icon: UserRound, path: '/perfil', desc: 'Editar perfil — dados de contato, currículo (PDF) e troca de senha — via menu da conta' },
       ],
     },
     {

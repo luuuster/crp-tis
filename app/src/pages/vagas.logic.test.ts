@@ -9,8 +9,10 @@ const briefing: Briefing = {
   cargo: 'Desenvolvedor Full Stack', nivel: 'Sênior', modelo: 'Remoto',
   cliente: 'TIS Talent AI Platform', gestor: 'Carlos Mendes',
   desafio: 'Desafio de teste.', objetivo: 'Objetivo de teste.',
+  pais: 'Brasil', estado: 'SP', cidade: 'São Paulo',
   local: 'São Paulo — SP', horario: '09h às 18h', carga: '40h semanais', motivo: 'Aumento do quadro', quantidade: 2,
   budget: 'R$ 9.000 a R$ 14.000', modalidade: 'CLT', beneficios: BENEF, processoSeletivo: PROCESSO,
+  pcd: false,
 }
 
 const perfil: Perfil = {

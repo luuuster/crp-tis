@@ -1,9 +1,13 @@
 import { useTranslation } from 'react-i18next'
 
+import { Accessibility } from 'lucide-react'
+
 import { cn } from '@/lib/utils'
 import { FIELD, CARD } from '@/lib/surfaces'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { Switch } from '@/components/ui/switch'
+import { PAISES, estadosDe, cidadesDe, localLabel } from '@/lib/vagasCatalogo'
 import type { Briefing } from '@/lib/vaga'
 import { SectionBlock } from './SectionBlock'
 import { Field, FormSelect, SearchSelect, Chips } from './fields'
@@ -29,6 +33,11 @@ import {
 export function BriefingForm({ data, set, showErrors }: { data: Briefing; set: SetBriefing; showErrors?: boolean }) {
   const { t } = useTranslation('gerador')
   const inv = (k: keyof Briefing) => !!showErrors && !isFilledVal(data[k])
+  // Local de trabalho em cascata: escolher um nível acima limpa os de baixo e recalcula o rótulo `local`
+  // (usado na prosa gerada). País → Estado → Cidade, reaproveitando os dados do mural (PAISES/estadosDe/cidadesDe).
+  const setLocal = (pais: string, estado: string, cidade: string) => {
+    set('pais', pais); set('estado', estado); set('cidade', cidade); set('local', localLabel(pais, estado, cidade))
+  }
   return (
     <div className={cn(CARD, 'divide-y divide-border/50 overflow-hidden')}>
       <SectionBlock meta={SECTIONS[0]} status={fieldsStatus(data, SECTIONS[0].fields)}>
@@ -59,16 +68,35 @@ export function BriefingForm({ data, set, showErrors }: { data: Briefing; set: S
 
       <SectionBlock meta={SECTIONS[2]} status={fieldsStatus(data, SECTIONS[2].fields)}>
         <div className="space-y-5">
-          <div className="grid gap-4 sm:grid-cols-3">
-            <Field id="local" label={t('briefing.local.label')} required hint={t('briefing.local.hint')} invalid={inv('local')}><Input id="local" value={data.local} onChange={(e) => set('local', e.target.value)} placeholder={t('briefing.local.placeholder')} className={cn(FIELD, 'min-h-[var(--button-height-lg)]')} /></Field>
-            <Field id="horario" label={t('briefing.horario.label')} required invalid={inv('horario')}><FormSelect id="horario" value={data.horario} onChange={(v) => set('horario', v)} options={HORARIOS} placeholder={t('briefing.horario.placeholder')} /></Field>
-            <Field id="carga" label={t('briefing.carga.label')} required invalid={inv('carga')}><FormSelect id="carga" value={data.carga} onChange={(v) => set('carga', v)} options={CARGAS} labelOf={optLabeler(t, 'carga')} placeholder={t('briefing.carga.placeholder')} /></Field>
+          {/* Local de trabalho — cascata País → Estado → Cidade (cada nível destrava o seguinte). */}
+          <div>
+            <p className="mb-2 ty-caption font-semibold tracking-wide text-muted-foreground uppercase">{t('briefing.local.label')}</p>
+            <div className="grid gap-4 sm:grid-cols-3">
+              <Field id="pais" label={t('briefing.pais.label')} required invalid={inv('pais')}><FormSelect id="pais" value={data.pais} onChange={(v) => setLocal(v, '', '')} options={PAISES} placeholder={t('briefing.pais.placeholder')} /></Field>
+              <Field id="estado" label={t('briefing.estado.label')} required invalid={inv('estado')}><SearchSelect id="estado" value={data.estado} onChange={(v) => setLocal(data.pais, v, '')} options={estadosDe(data.pais)} disabled={!data.pais} placeholder={t('briefing.estado.placeholder')} /></Field>
+              <Field id="cidade" label={t('briefing.cidade.label')} required invalid={inv('cidade')}><SearchSelect id="cidade" value={data.cidade} onChange={(v) => setLocal(data.pais, data.estado, v)} options={cidadesDe(data.pais, data.estado)} disabled={!data.estado} placeholder={t('briefing.cidade.placeholder')} /></Field>
+            </div>
           </div>
           <div className="grid gap-4 sm:grid-cols-3">
+            <Field id="horario" label={t('briefing.horario.label')} required invalid={inv('horario')}><FormSelect id="horario" value={data.horario} onChange={(v) => set('horario', v)} options={HORARIOS} placeholder={t('briefing.horario.placeholder')} /></Field>
+            <Field id="carga" label={t('briefing.carga.label')} required invalid={inv('carga')}><FormSelect id="carga" value={data.carga} onChange={(v) => set('carga', v)} options={CARGAS} labelOf={optLabeler(t, 'carga')} placeholder={t('briefing.carga.placeholder')} /></Field>
             <Field id="motivo" label={t('briefing.motivo.label')} required invalid={inv('motivo')}><FormSelect id="motivo" value={data.motivo} onChange={(v) => set('motivo', v)} options={MOTIVOS} labelOf={optLabeler(t, 'motivo')} placeholder={t('briefing.motivo.placeholder')} /></Field>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-3">
             <Field id="quantidade" label={t('briefing.quantidade.label')} required invalid={inv('quantidade')}><SearchSelect id="quantidade" value={String(data.quantidade)} onChange={(v) => set('quantidade', Number(v))} options={QUANTIDADES} placeholder={t('briefing.quantidade.placeholder')} searchPlaceholder={t('briefing.quantidade.buscar')} /></Field>
             {/* Prazo: por quanto tempo a vaga fica aberta (definido pelo RH). */}
             <Field id="prazo" label={t('briefing.prazo.label')} required hint={t('briefing.prazo.hint')} invalid={inv('prazo')}><FormSelect id="prazo" value={String(data.prazo)} onChange={(v) => set('prazo', Number(v))} options={PRAZOS} labelOf={(v) => t('briefing.prazo.dias', { count: Number(v) })} placeholder={t('briefing.prazo.placeholder')} /></Field>
+          </div>
+          {/* Vaga afirmativa para PcD — toggle OPCIONAL (fora dos campos obrigatórios da seção). */}
+          <div className="flex items-center justify-between gap-3 rounded-xl border p-3.5">
+            <div className="flex items-start gap-2.5">
+              <Accessibility className="mt-0.5 size-4.5 shrink-0 text-muted-foreground" aria-hidden />
+              <div>
+                <p id="pcd-label" className="ty-body-sm font-medium text-foreground">{t('briefing.pcd.label')}</p>
+                <p id="pcd-hint" className="mt-0.5 ty-caption text-muted-foreground">{t('briefing.pcd.hint')}</p>
+              </div>
+            </div>
+            <Switch id="pcd" checked={data.pcd} onCheckedChange={(v) => set('pcd', v)} aria-labelledby="pcd-label" aria-describedby="pcd-hint" />
           </div>
         </div>
       </SectionBlock>

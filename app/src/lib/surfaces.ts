@@ -18,6 +18,10 @@ export const FLOAT = 'border-0 shadow-xl ring-1 ring-surface-ring'
  *  divergirem no fio/fundo/blur. Layout (sticky, h-16, gutter, flex) fica com cada header. */
 export const HEADER_SURFACE = 'border-b border-border/60 bg-card/80 backdrop-blur-sm'
 
+/** Largura dos PAINÉIS laterais da plataforma (menu expandido do shell, copiloto do gerador). Fonte
+ *  única — antes o `w-[300px]` vivia duplicado em cada aside e podia divergir. */
+export const PANEL_W = 'w-[300px]'
+
 /** Superfície de card: fonte ÚNICA da elevação (sombra + anel hairline do DS). Padding/raio extra
  *  entram via cn() em cada uso. */
 export const CARD = 'rounded-2xl bg-card shadow-sm ring-1 ring-surface-ring'

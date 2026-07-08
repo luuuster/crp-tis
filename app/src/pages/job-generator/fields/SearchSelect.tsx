@@ -13,11 +13,12 @@ import { SheetSearch, SheetOptions } from './sheet-parts'
 /** Select COM BUSCA p/ listas longas (Popover + cmdk): trigger igual ao FormSelect (FIELD), com um
  * campo de busca no topo do dropdown que filtra as opções. Selecionado destacado por cor/peso (sem
  * checkmark — mesmo padrão do FormSelect). Use quando há muitas opções (regra de bolso: > 7). */
-export function SearchSelect({ id, value, onChange, options, placeholder, searchPlaceholder, labelOf, "aria-invalid": ariaInvalid, "aria-describedby": ariaDescribedby, "aria-required": ariaRequired }: {
+export function SearchSelect({ id, value, onChange, options, placeholder, searchPlaceholder, labelOf, disabled, "aria-invalid": ariaInvalid, "aria-describedby": ariaDescribedby, "aria-labelledby": ariaLabelledby, "aria-required": ariaRequired }: {
   id: string; value: string; onChange: (v: string) => void; options: readonly string[]; placeholder?: string; searchPlaceholder?: string
   // labelOf: traduz só a EXIBIÇÃO (valor canônico pt-BR permanece em value/onChange e no filtro do cmdk).
   labelOf?: (value: string) => string
-  "aria-invalid"?: boolean; "aria-describedby"?: string; "aria-required"?: boolean
+  disabled?: boolean
+  "aria-invalid"?: boolean; "aria-describedby"?: string; "aria-labelledby"?: string; "aria-required"?: boolean
 }) {
   const { t } = useTranslation('gerador')
   const { t: tc } = useTranslation('common')
@@ -28,12 +29,13 @@ export function SearchSelect({ id, value, onChange, options, placeholder, search
   const [query, setQuery] = useState('')
   const triggerBtn = (
     <button
-      id={id} type="button" role="combobox" aria-expanded={open} aria-controls={open ? `${id}-list` : undefined}
-      aria-invalid={ariaInvalid} aria-describedby={ariaDescribedby} aria-required={ariaRequired}
+      id={id} type="button" role="combobox" aria-haspopup="listbox" aria-expanded={open} aria-controls={open ? `${id}-list` : undefined} disabled={disabled}
+      aria-invalid={ariaInvalid} aria-describedby={ariaDescribedby} aria-labelledby={ariaLabelledby ? `${ariaLabelledby} ${id}` : undefined} aria-required={ariaRequired}
       className={cn(
         'flex min-h-[var(--button-height-lg)] w-full items-center justify-between gap-2 border px-3 outline-none', FIELD,
         'focus-visible:focus-ring dark:bg-input/30 dark:hover:bg-input/50',
         !value && 'text-muted-foreground',
+        disabled && 'cursor-not-allowed opacity-50',
       )}
     >
       <span className="line-clamp-1 text-left">{value ? lbl(value) : placeholder}</span>
