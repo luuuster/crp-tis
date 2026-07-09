@@ -51,6 +51,8 @@
     "todosPaises": "Todos os países",
     "todosEstados": "Todos os estados",
     "todasCidades": "Todas as cidades",
+    "emBreve": "Em breve",
+    "emBreveNota": "A filtragem por país será incluída em uma próxima versão.",
     "limpar": "Limpar",
     "aplicar": "Aplicar"
   },

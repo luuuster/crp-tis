@@ -148,6 +148,8 @@
     "objetivo": { "label": "Goal of the job", "hint": "What this hire needs to achieve.", "placeholder": "Ex: Ampliar a capacidade de entrega de soluções backend de alta performance, garantindo escalabilidade e qualidade nas integrações da plataforma." },
     "local": { "label": "Work location" },
     "pais": { "label": "Country", "placeholder": "Select the country" },
+    "emBreve": "Coming soon",
+    "emBreveNota": "Country selection will be added in a future version.",
     "estado": { "label": "State", "placeholder": "Select the state" },
     "cidade": { "label": "City", "placeholder": "Select the city" },
     "pcd": { "label": "Disability-inclusive", "hint": "Position reserved or prioritized for people with disabilities." },

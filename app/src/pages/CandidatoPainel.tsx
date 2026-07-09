@@ -111,10 +111,15 @@ function LocalFiltro({ pais, estado, cidade, onAplicar }: {
   // Cada campo é um SELECT COM BUSCA (SearchSelect): listas de estado/cidade ficam longas e procurar por
   // scroll é ruim. A opção "Todos/Todas" entra como primeiro item da lista (valor sentinela) e o labelOf
   // troca só a exibição. País tem poucas opções, mas fica buscável também para os 3 ficarem uniformes.
-  const campo = (id: string, rotulo: string, value: string, opcoes: string[], todos: { valor: string; rotulo: string }, onChange: (v: string) => void) => (
+  // `emBreve`: sinaliza um campo AINDA não implementado (só o País, por ora) — selo + select desabilitado.
+  const campo = (id: string, rotulo: string, value: string, opcoes: string[], todos: { valor: string; rotulo: string }, onChange: (v: string) => void, emBreve = false) => (
     <div className="space-y-1.5">
-      <p className="ty-label-sm text-muted-foreground" id={`${id}-label`}>{rotulo}</p>
-      <SearchSelect id={id} value={value} onChange={onChange} options={[todos.valor, ...opcoes]} labelOf={(v) => (v === todos.valor ? todos.rotulo : v)} aria-labelledby={`${id}-label`} />
+      <div className="flex items-center gap-2">
+        <p className="ty-label-sm text-muted-foreground" id={`${id}-label`}>{rotulo}</p>
+        {emBreve && <Badge variant="ghost" className="bg-warning/15 px-1.5 py-0 text-warning-text">{t('localFiltro.emBreve')}</Badge>}
+      </div>
+      <SearchSelect id={id} value={value} onChange={onChange} options={[todos.valor, ...opcoes]} labelOf={(v) => (v === todos.valor ? todos.rotulo : v)} aria-labelledby={`${id}-label`} disabled={emBreve} />
+      {emBreve && <p className="flex items-start gap-1.5 ty-caption text-muted-foreground"><Clock className="mt-px size-3 shrink-0" aria-hidden /> {t('localFiltro.emBreveNota')}</p>}
     </div>
   )
 
@@ -130,7 +135,7 @@ function LocalFiltro({ pais, estado, cidade, onAplicar }: {
         <p className="text-sm font-semibold text-foreground">{t('localFiltro.titulo')}</p>
         <div className="mt-4 space-y-3">
           {campo('filtro-pais', t('localFiltro.pais'), d.pais, PAISES, { valor: 'todos', rotulo: t('localFiltro.todosPaises') },
-            (v) => setD({ pais: v, estado: 'todos', cidade: 'todas' }))}
+            (v) => setD({ pais: v, estado: 'todos', cidade: 'todas' }), true)}
           {campo('filtro-estado', t('localFiltro.estado'), d.estado, estadosDe(d.pais), { valor: 'todos', rotulo: t('localFiltro.todosEstados') },
             (v) => setD((p) => ({ ...p, estado: v, cidade: 'todas' })))}
           {campo('filtro-cidade', t('localFiltro.cidade'), d.cidade, cidadesDe(d.pais, d.estado), { valor: 'todas', rotulo: t('localFiltro.todasCidades') },

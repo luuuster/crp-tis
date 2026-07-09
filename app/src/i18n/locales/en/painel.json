@@ -51,6 +51,8 @@
     "todosPaises": "All countries",
     "todosEstados": "All states",
     "todasCidades": "All cities",
+    "emBreve": "Coming soon",
+    "emBreveNota": "Filtering by country will be added in a future version.",
     "limpar": "Clear",
     "aplicar": "Apply"
   },
