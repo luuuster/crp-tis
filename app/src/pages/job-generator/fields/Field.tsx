@@ -1,14 +1,15 @@
 import { cloneElement, isValidElement, type ReactElement, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AlertTriangle, HelpCircle } from 'lucide-react'
+import { AlertTriangle, Clock, HelpCircle } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { focusRing } from '@/lib/focus'
 import { Label } from '@/components/ui/label'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
-export function Field({ id, label, required, hint, className, invalid, children }: {
-  id: string; label: string; required?: boolean; hint?: string; className?: string; invalid?: boolean; children: ReactNode
+// badge: selo ao lado do rótulo (ex.: "Em breve"). note: mensagem abaixo do controle (ex.: recurso futuro).
+export function Field({ id, label, required, hint, badge, note, className, invalid, children }: {
+  id: string; label: string; required?: boolean; hint?: string; badge?: ReactNode; note?: string; className?: string; invalid?: boolean; children: ReactNode
 }) {
   const { t } = useTranslation('gerador')
   // A11y do controle (injetado direto p/ leitores de tela): aria-labelledby liga o NOME (cobre grupos
@@ -26,7 +27,10 @@ export function Field({ id, label, required, hint, className, invalid, children 
   return (
     <div className={cn('space-y-1.5', className)}>
       <div className="flex min-h-5 items-center justify-between gap-2">
-        <Label htmlFor={id} id={labelId} className={cn('ty-label-sm', invalid ? 'text-destructive-text' : 'text-muted-foreground')}>{label}{required && <span className="text-destructive-text" aria-hidden>{t('field.obrigatorioMarca')}</span>}</Label>
+        <div className="flex items-center gap-2">
+          <Label htmlFor={id} id={labelId} className={cn('ty-label-sm', invalid ? 'text-destructive-text' : 'text-muted-foreground')}>{label}{required && <span className="text-destructive-text" aria-hidden>{t('field.obrigatorioMarca')}</span>}</Label>
+          {badge}
+        </div>
         {hint && (
           <Tooltip>
             <TooltipTrigger asChild>
@@ -37,6 +41,11 @@ export function Field({ id, label, required, hint, className, invalid, children 
         )}
       </div>
       {control}
+      {note && !invalid && (
+        <p className="flex items-start gap-1.5 ty-caption text-muted-foreground">
+          <Clock className="mt-px size-3 shrink-0" aria-hidden /> {note}
+        </p>
+      )}
       {invalid && (
         <p id={errId} className="flex items-center gap-1 ty-caption font-medium text-destructive-text">
           <AlertTriangle className="size-3.5 shrink-0" aria-hidden /> {t('field.campoObrigatorio')}

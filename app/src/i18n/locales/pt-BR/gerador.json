@@ -148,6 +148,8 @@
     "objetivo": { "label": "Objetivo da vaga", "hint": "O que essa contratação precisa alcançar.", "placeholder": "Ex: Ampliar a capacidade de entrega de soluções backend de alta performance, garantindo escalabilidade e qualidade nas integrações da plataforma." },
     "local": { "label": "Local de trabalho" },
     "pais": { "label": "País", "placeholder": "Selecione o país" },
+    "emBreve": "Em breve",
+    "emBreveNota": "A seleção de país será incluída em uma próxima versão.",
     "estado": { "label": "Estado", "placeholder": "Selecione o estado" },
     "cidade": { "label": "Cidade", "placeholder": "Selecione a cidade" },
     "pcd": { "label": "Afirmativas para PcD", "hint": "Vaga reservada ou priorizada para pessoas com deficiência." },

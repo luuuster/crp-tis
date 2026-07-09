@@ -7,6 +7,7 @@ import { FIELD, CARD } from '@/lib/surfaces'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
+import { Badge } from '@/components/ui/badge'
 import { PAISES, estadosDe, cidadesDe, localLabel } from '@/lib/vagasCatalogo'
 import type { Briefing } from '@/lib/vaga'
 import { SectionBlock } from './SectionBlock'
@@ -72,7 +73,8 @@ export function BriefingForm({ data, set, showErrors }: { data: Briefing; set: S
           <div>
             <p className="mb-2 ty-caption font-semibold tracking-wide text-muted-foreground uppercase">{t('briefing.local.label')}</p>
             <div className="grid gap-4 sm:grid-cols-3">
-              <Field id="pais" label={t('briefing.pais.label')} required invalid={inv('pais')}><FormSelect id="pais" value={data.pais} onChange={(v) => setLocal(v, '', '')} options={PAISES} placeholder={t('briefing.pais.placeholder')} /></Field>
+              {/* País é uma PRÉVIA: a seleção de país entra numa próxima versão — por ora fica em Brasil (desabilitado). */}
+              <Field id="pais" label={t('briefing.pais.label')} required invalid={inv('pais')} badge={<Badge variant="ghost" className="bg-warning/15 px-1.5 py-0 text-warning-text">{t('briefing.emBreve')}</Badge>} note={t('briefing.emBreveNota')}><FormSelect id="pais" value={data.pais} onChange={(v) => setLocal(v, '', '')} options={PAISES} placeholder={t('briefing.pais.placeholder')} disabled /></Field>
               <Field id="estado" label={t('briefing.estado.label')} required invalid={inv('estado')}><SearchSelect id="estado" value={data.estado} onChange={(v) => setLocal(data.pais, v, '')} options={estadosDe(data.pais)} disabled={!data.pais} placeholder={t('briefing.estado.placeholder')} /></Field>
               <Field id="cidade" label={t('briefing.cidade.label')} required invalid={inv('cidade')}><SearchSelect id="cidade" value={data.cidade} onChange={(v) => setLocal(data.pais, data.estado, v)} options={cidadesDe(data.pais, data.estado)} disabled={!data.estado} placeholder={t('briefing.cidade.placeholder')} /></Field>
             </div>
