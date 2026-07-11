@@ -1,0 +1,67 @@
+---
+description: Regra NORMATIVA para ícones em qualquer trabalho no Figma do projeto (telas, componentes, biblioteca). Todo ícone criado no Figma DEVE ser o mesmo ícone lucide que a aplicação web usa (lucide-react), com a geometria EXATA — nunca um vetor "parecido"/geométrico à mão. Se um ícone não existir no lucide, PARE e avise o usuário. Aplicar sempre que houver ícone indo para o Figma.
+globs:
+alwaysApply: true
+---
+
+# 07 — Ícones no Figma = lucide de verdade (paridade web↔Figma)
+
+> **Regra normativa.** "DEVE" = obrigatório, "NUNCA" = proibido. Objetivo: a aplicação **web e o Figma
+> o mais idênticos possível**. Os ícones fazem parte disso — a web usa **lucide** (`lucide-react`), então
+> o Figma DEVE usar os **mesmos** ícones lucide, com a **mesma geometria**.
+
+## 1. Princípio
+
+- Todo ícone que for para o Figma **DEVE** vir do **lucide** — a mesma biblioteca da web
+  (`app/node_modules/lucide-react`). Mesma fonte ⇒ ícone idêntico ao renderizado no app.
+- **NUNCA** desenhar um ícone "geométrico"/aproximado à mão, nem substituir por um ícone diferente
+  "que parece". Se a forma não é o lucide exato, está errado.
+- **Se um ícone NÃO existir no lucide**, isso **DEVE** ser reportado ao usuário (o script sinaliza em
+  `missing` e sai com código 2). NUNCA inventar/placeholder/trocar por outro sem confirmação explícita.
+
+## 2. Mecanismo — INSTÂNCIA da biblioteca linkada (componentizado!)
+
+Os ícones **DEVEM ser instâncias** do componente da biblioteca **"Icons Lucide"** (já linkada ao projeto,
+libraryKey `lk-b160c2a43b7e7c4d479b7e700789c1c38526cb66529047e3476f808b5ec2180d267772bfe6ec714ea07245248e48e94e1d5cc724d41f3a84d35601c38f2ed71d`).
+NÃO desenhe vetores soltos — tem que ser componente, igual à biblioteca. Cada ícone é um COMPONENT_SET
+nomeado `lucide/<kebab>` com variantes **Size = 16 | 20 | 24 | 32**.
+
+1. Descobrir a `key` do ícone (uma vez por ícone):
+   - `search_design_system({ query:'<nome>', fileKey, includeLibraryKeys:['<Icons Lucide key>'] })` → `componentKey`; OU
+   - abrir o arquivo da lib `uxqRVQh7kW9MQwhSUB4qn8`, achar o `COMPONENT_SET` de nome `lucide/<kebab>` e ler `.key`
+     (`page 73:12` = "Lucide Icons"; `findAllWithCriteria({types:['COMPONENT_SET']})`).
+   - Se **não existir** `lucide/<kebab>` na biblioteca → **avisar o usuário** (não placeholder, não trocar por outro).
+
+2. No Figma (`use_figma`, skill `figma-use`):
+   ```js
+   const set  = await figma.importComponentSetByKeyAsync(key)
+   const inst = set.defaultVariant.createInstance()
+   inst.setProperties({ Size: String(nearest(size)) })   // nearest ∈ {16,20,24,32}
+   // recolorir os vetores da instância → token (bindado, theme-aware):
+   for (const x of inst.findAll(v => ['VECTOR','ELLIPSE','RECTANGLE','LINE','POLYGON','BOOLEAN_OPERATION'].includes(v.type))) {
+     if (x.strokes?.length) x.strokes = x.strokes.map(p => p.type==='SOLID' ? figma.variables.setBoundVariableForPaint({type:'SOLID',color:p.color},'color',VAR) : p)
+     if (x.fills?.length)   x.fills   = x.fills.map(p => p.type==='SOLID' ? figma.variables.setBoundVariableForPaint({type:'SOLID',color:p.color},'color',VAR) : p)
+   }
+   if (Math.round(inst.width) !== size) inst.resize(size, size)   // tamanho exato
+   ```
+
+3. **Fallback técnico** (SÓ se a biblioteca não estiver acessível): `node build/lucide-figma.mjs <Nome>` →
+   `figma.createNodeFromSvg(svg)`; ⚠️ `n.fills = []` (o createNodeFromSvg deixa um FILL no frame-raiz que vira
+   QUADRADO SÓLIDO), e recolore só os vetores. Mas o padrão é INSTÂNCIA da biblioteca — vetor solto é exceção.
+   - Tamanho: o SVG é **24×24** (viewBox lucide, `stroke-width:2`). Para o tamanho alvo, `rescale(alvo/24)`
+     (20px → `20/24`). Isso reproduz como a web escala o viewBox 24 no tamanho usado (`size-4`=16, `size-5`=20…).
+   - Cor: sempre **bindar** o stroke a um token (theme-aware), nunca hex chumbado.
+
+## 3. Nomes
+
+- A web importa em **PascalCase** de `lucide-react` (`Search`, `MapPin`, `LayoutGrid`, `Accessibility`…).
+- O `build/lucide-figma.mjs` converte para o kebab do lucide automaticamente. Na dúvida do nome exato,
+  o catálogo canônico está em `app/node_modules/lucide-react/dist/esm/icons/*.mjs` (um arquivo por ícone).
+- Referência visual da biblioteca (Figma): file `uxqRVQh7kW9MQwhSUB4qn8` (Icons · Lucide).
+
+## 4. Definition of Done (ícones)
+
+- [ ] Todo ícone no Figma é um lucide real (via `build/lucide-figma.mjs` + `createNodeFromSvg`), não um vetor à mão.
+- [ ] Stroke bindado a token (light/dark).
+- [ ] Tamanho por `rescale(alvo/24)`.
+- [ ] Nenhum ícone "missing" foi silenciosamente substituído — se faltou no lucide, o usuário foi avisado.

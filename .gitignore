@@ -20,7 +20,8 @@ crp_plugins/crp-editor-extension/tokens.json
 crp_plugins/crp-editor-extension/tokens.js
 # backups automáticos do seed-palette (--force)
 tokens/.core-backup-*/
-.cursor/
+.cursor/*
+!.cursor/rules/
 .claude/settings.local.json
 *.log
 .DS_Store

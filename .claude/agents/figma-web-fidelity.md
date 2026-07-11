@@ -98,6 +98,45 @@ Tokens de altura do DS: `--button-height-sm=32  --button-height-md=40  --button-
 - ❌ Desenhar ícone "geométrico"/aproximado à mão. Ícone é **lucide real** via `build/lucide-figma.mjs` +
   `createNodeFromSvg`. Não existe no lucide → avisar o usuário, nunca inventar.
 
+## Snippets canônicos (NÃO reescrever do zero — copiar daqui)
+
+**Medição do DOM** (parametrizada, substitui os measure-*.mjs descartáveis):
+```bash
+node tools/measure.mjs http://localhost:5173 "button[data-slot=button]" --all
+```
+
+**Navegar pra página certa (1× por chamada use_figma):**
+```js
+const page = await figma.getNodeByIdAsync('<PAGE_ID>'); await figma.setCurrentPageAsync(page);
+```
+
+**Walk-up até a página (de qualquer nó):**
+```js
+const pageOf = (n) => { let x = n; while (x && x.type !== 'PAGE') x = x.parent; return x; };
+```
+
+**Recolorir vetores de uma instância de ícone bindando a token (o swap perde o bind — sempre refazer):**
+```js
+const recolor = async (inst, varId) => {
+  const v = await figma.variables.getVariableByIdAsync(varId);
+  for (const x of inst.findAll(n => ['VECTOR','ELLIPSE','RECTANGLE','LINE','POLYGON','BOOLEAN_OPERATION'].includes(n.type))) {
+    if (x.strokes?.length) x.strokes = x.strokes.map(p => p.type==='SOLID' ? figma.variables.setBoundVariableForPaint({type:'SOLID',color:p.color},'color',v) : p);
+    if (x.fills?.length)   x.fills   = x.fills.map(p => p.type==='SOLID' ? figma.variables.setBoundVariableForPaint({type:'SOLID',color:p.color},'color',v) : p);
+  }
+};
+```
+
+**Achar Variable por nome (coleções locais):**
+```js
+const byName = async (name) => (await figma.variables.getLocalVariablesAsync('COLOR')).find(v => v.name === name);
+```
+
+**Screenshot INLINE (não usar get_screenshot→curl→Read):**
+```js
+await node.screenshot();            // retorna a imagem na própria resposta
+await node.screenshot({ scale: 2 }); // zoom p/ detalhe
+```
+
 ## Contexto do projeto
 App é MOCKUP (sem backend). O arquivo Figma alvo costuma ser o TalentAI (`n38jQlHl3RBefCxyKLL92A`).
 Fonte do app: **Source Sans 3** (Regular/Medium/Semi Bold). Tela de referência frequente: `/painel`.
