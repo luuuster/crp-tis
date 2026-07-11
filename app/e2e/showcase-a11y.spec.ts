@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
 import { fmt, scanOverlay } from './axe'
-import { login, setTheme, gotoMenu } from './helpers'
+import { setTheme } from './helpers'
 import { BRANDS, MODES } from './themes'
 import { A11Y_MANIFEST } from '../src/components/ui/a11y-manifest'
 
@@ -50,9 +50,9 @@ test.describe('axe estrutural — overlays da vitrine (abertos)', () => {
         // O sweep abre/escaneia/fecha ~14 overlays em sequência (1 worker, axe real por overlay) — ~30s
         // por tema, no limite do default. Damos folga p/ não falsar timeout (não é lentidão de app).
         test.setTimeout(60_000)
-        await login(page)
+        // Vitrine no hub de docs (/componentes via rewrite do preview) — página avulsa, sem login.
+        await page.goto('/componentes')
         await setTheme(page, brand, mode)
-        await gotoMenu(page, 'Componentes')
         await page.waitForTimeout(200)
 
         for (const ov of OVERLAYS) {

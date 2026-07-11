@@ -67,7 +67,8 @@ const ROUTES: { name: string; go: (p: Page) => Promise<void> }[] = [
   { name: 'Dashboard', go: async () => {} },
   // Vitrine: dezenas de controles (botões, campos, toggles, tabs) — o indicador de foco de cada um
   // precisa ser visível e ≥3:1. O sweep cobre os ~60 primeiros tabbables da página.
-  { name: 'Componentes', go: async (p) => { await gotoMenu(p, 'Componentes') } },
+  // (Hub de docs — /componentes via rewrite do preview; o tema setado antes persiste por origem.)
+  { name: 'Componentes', go: async (p) => { await p.goto('/componentes') } },
   { name: 'Banco de talentos', go: async (p) => { await gotoMenu(p, 'Banco de talentos') } },
   { name: 'Usuários (cadastro)', go: async (p) => {
     await gotoMenu(p, 'Usuários')
