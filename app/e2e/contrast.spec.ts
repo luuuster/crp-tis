@@ -26,11 +26,13 @@ const SURFACES: { name: string; go: (p: Page, b: Brand, m: Mode) => Promise<void
     await soft.waitFor({ state: 'visible', timeout: 1500 }).then(() => soft.click()).catch(() => {})
     await expect(p.getByText('Template aplicado automaticamente.')).toBeVisible()
   } },
-  { name: 'Componentes', go: async (p, b, m) => { await login(p); await setTheme(p, b, m); await gotoMenu(p, 'Componentes') } },
+  // Vitrine no hub de docs (mapa.html; /componentes via rewrite do preview) — página avulsa, sem login;
+  // o tema é setado no dock da própria vitrine.
+  { name: 'Componentes', go: async (p, b, m) => { await p.goto('/componentes'); await setTheme(p, b, m) } },
   // Overlay aberto na vitrine: mede o texto sobre a superfície --popover/--popover-foreground
   // (que o scan fechado de "Componentes" não alcança — o conteúdo é portaled e só monta ao abrir).
   { name: 'Componentes-Popover', go: async (p, b, m) => {
-    await login(p); await setTheme(p, b, m); await gotoMenu(p, 'Componentes')
+    await p.goto('/componentes'); await setTheme(p, b, m)
     await p.getByRole('button', { name: 'Abrir popover' }).click()
     await expect(p.getByText('Dimensões')).toBeVisible()
   } },

@@ -8,10 +8,12 @@ import { BRANDS, MODES } from './themes'
 // fluxo real do app (dock + navegação). Helpers (TAGS/scan/fmt) vivem em ./axe (compartilhados com
 // showcase-a11y.spec.ts). CONTRASTE fica desligado no axe — validado por culori (ver ./axe e contrast.spec).
 // Login cai na Dashboard (AppShell); as demais telas vêm pelo MENU (sidebar), não pelo dock de abas.
+// "Componentes" mudou pro hub de docs (entrada mapa.html; /componentes via rewrite do preview) — navega
+// por URL. O tema setado antes persiste (localStorage por origem) e a vitrine tem o próprio dock.
 const TABS: { label: string; go: (p: Parameters<typeof login>[0]) => Promise<void> }[] = [
   { label: 'Dashboard', go: async () => {} },
   { label: 'Vagas', go: async (p) => { await gotoMenu(p, 'Vagas') } },
-  { label: 'Componentes', go: async (p) => { await gotoMenu(p, 'Componentes') } },
+  { label: 'Componentes', go: async (p) => { await p.goto('/componentes') } },
 ]
 
 test.describe('axe estrutural — telas de auth', () => {
