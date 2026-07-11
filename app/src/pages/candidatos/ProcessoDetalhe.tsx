@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/lib/utils'
 import { CARD } from '@/lib/surfaces'
-import { DetailScreen } from '@/components/page'
+import { DetailScreen } from '@/components/composicoes/page'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { AvaliacaoIAConteudo } from '../EntrevistasIA'

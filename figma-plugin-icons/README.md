@@ -50,8 +50,8 @@ Material em *Material Outlined/Rounded/Sharp* (+ *Fill*) com prefixo `material-<
 - **Cor (dropdown):** lista as Variables de cor do arquivo (default `primary-foreground`); stroke+fill ficam
   **ligados** a ela. Opção **“cor editável (sem bind)”** = cor fixa.
 - **Tamanho + espessura em Variables (primitivos existentes, SEM collection nova):** o plugin **reusa os
-  primitivos de `CRP/Primitives`** casando por **valor** — **`width/height` → `icon/*`** (icon/sm=16,
-  icon/md=20, icon/lg=24, icon/xl=32) e **`strokeWeight` → `border-width/*`** (a UI escolhe 1 / 1.5 / 2 / 3 / 4
+  primitivos de `CRP/Primitives`** casando por **valor** — **`width/height` → `icon/*`** (icon/16=16,
+  icon/20=20, icon/24=24, icon/32=32) e **`strokeWeight` → `border-width/*`** (a UI escolhe 1 / 1.5 / 2 / 3 / 4
   por tamanho; default óptico 16/20→**1.5px**, 24→2px, 32→**3px**). Vetores com constraint `SCALE`. Edita central nos
   primitivos e os ícones seguem. Se os primitivos não existirem (o plugin de Variables ainda não rodou), não
   liga e a UI avisa. **`border-width/1-5` (1.5px)** e **`border-width/3` (3px)** foram adicionados em

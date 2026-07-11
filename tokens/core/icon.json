@@ -1,26 +1,41 @@
 {
   "icon": {
-    "$type": "dimension",
-    "xs": {
+    "8": {
+      "$value": "8px"
+    },
+    "12": {
       "$value": "12px"
     },
-    "sm": {
+    "14": {
+      "$value": "14px"
+    },
+    "16": {
       "$value": "16px"
     },
-    "md": {
+    "18": {
+      "$value": "18px"
+    },
+    "20": {
       "$value": "20px"
     },
-    "lg": {
+    "24": {
       "$value": "24px"
     },
-    "xl": {
+    "28": {
+      "$value": "28px"
+    },
+    "32": {
       "$value": "32px"
     },
-    "2xl": {
+    "36": {
+      "$value": "36px"
+    },
+    "40": {
       "$value": "40px"
     },
-    "3xl": {
+    "48": {
       "$value": "48px"
-    }
+    },
+    "$type": "dimension"
   }
 }

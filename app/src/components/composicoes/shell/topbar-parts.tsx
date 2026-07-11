@@ -11,9 +11,9 @@ import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import type { Brand, Mode } from '@/lib/useBrandMode'
 import { Button } from '@/components/ui/button'
-import { LanguageSelect } from '@/components/LanguageSelect'
-import { ThemeToggles } from '@/components/ThemeToggles'
-import { AccountMenu } from '@/components/AccountMenu'
+import { LanguageSelect } from '@/components/composicoes/LanguageSelect'
+import { ThemeToggles } from '@/components/composicoes/ThemeToggles'
+import { AccountMenu } from '@/components/composicoes/AccountMenu'
 import { Tip } from '@/components/ui/tooltip'
 
 // Usuário-demo único da casca (mockup) — fonte única p/ as duas topbars e a tela de Editar perfil.

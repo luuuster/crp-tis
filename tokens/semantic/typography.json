@@ -136,7 +136,7 @@
         "lineHeight": "{font.lineHeight.base}",
         "letterSpacing": "{font.tracking.normal}"
       },
-      "$description": "Rótulo PADRÃO — botão md (default) — 16px · Source Sans 3 500."
+      "$description": "Rótulo genérico — 16px · Source Sans 3 500. NÃO é mais o botão md (o botão md do produto usa 14px = label-sm, alinhado ao button.tsx); use para rótulos de formulário/campo em 16px."
     },
     "label-sm": {
       "$value": {
@@ -147,6 +147,16 @@
         "letterSpacing": "{font.tracking.normal}"
       },
       "$description": "Rótulo pequeno — botão sm — 14px · Source Sans 3 500."
+    },
+    "label-xs": {
+      "$value": {
+        "fontFamily": "{font.body}",
+        "fontWeight": "{font.weight.medium}",
+        "fontSize": "{font.size.xs}",
+        "lineHeight": "{font.lineHeight.xs}",
+        "letterSpacing": "{font.tracking.normal}"
+      },
+      "$description": "Rótulo mínimo — botão xs — 12px · Source Sans 3 500."
     },
     "link": {
       "$value": {

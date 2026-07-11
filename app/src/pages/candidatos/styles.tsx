@@ -8,7 +8,7 @@ import { CheckCircle2, Circle, Clock, XCircle } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/lib/utils'
-import { badgeTone, type BadgeTone } from '@/components/page'
+import { badgeTone, type BadgeTone } from '@/components/composicoes/page'
 import { Badge } from '@/components/ui/badge'
 import type { Etapa, ResultadoFase, StatusProc } from './types'
 

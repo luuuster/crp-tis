@@ -17,14 +17,14 @@ import { CARD } from '@/lib/surfaces'
 import type { Brand, Mode } from '@/lib/useBrandMode'
 import { estaLogado, guardarEmailCandidato } from '@/lib/candidatoSessao'
 import { FASES, lerCandidaturas, type CandidaturaComVaga } from '@/lib/candidaturas'
-import { CandidatoShell } from '@/components/candidato/CandidatoShell'
+import { CandidatoShell } from '@/components/composicoes/candidato/CandidatoShell'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { ConfirmDialog } from '@/components/confirm-dialog'
+import { ConfirmDialog } from '@/components/composicoes/confirm-dialog'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { PageContainer, PageHeader, EmptyState } from '@/components/page'
+import { PageContainer, PageHeader, EmptyState } from '@/components/composicoes/page'
 
 const TOTAL = FASES.length // 5 etapas do funil
 

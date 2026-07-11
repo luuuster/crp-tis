@@ -20,11 +20,11 @@ import { cn } from '@/lib/utils'
 import { CARD, toneBadge } from '@/lib/surfaces'
 import { focusRing } from '@/lib/focus'
 import { genCaptcha } from '@/lib/captcha'
-import { CandidatoHeader } from '@/components/candidato/CandidatoHeader'
+import { CandidatoHeader } from '@/components/composicoes/candidato/CandidatoHeader'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { CaptchaBox } from '@/components/CaptchaBox'
+import { CaptchaBox } from '@/components/composicoes/CaptchaBox'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 
 // Perguntas MOCK da 2ª etapa — prosa pt-BR ligada à stack da vaga (como o resto do documento da vaga,

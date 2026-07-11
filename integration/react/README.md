@@ -26,7 +26,7 @@ import { Icon } from '@/components/Icon';
 | | Figma (plugin) | React (`<Icon>`) |
 |---|---|---|
 | Nome | SET `lucide/arrow-right` | `name="arrow-right"` (kebab, idêntico) |
-| Tamanho | `Size=16/20/24/32` → `icon/sm…xl` | `size={16\|20\|24\|32}` |
+| Tamanho | `Size=16/20/24/32` → `icon/16…32` | `size={16\|20\|24\|32}` |
 | Stroke | bind em `border-width/*` (16/20→1.5px, 24→2px, 32→3px) | mesmo stroke **absoluto** (convertido p/ o viewBox do Lucide) |
 | Cor | bind em `primary-foreground` | `currentColor` → aponte p/ a var do token |
 

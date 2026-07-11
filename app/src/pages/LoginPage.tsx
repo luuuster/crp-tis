@@ -14,7 +14,7 @@ import { AlertCircle, ArrowRight, Eye, EyeOff } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { focusRing } from '@/lib/focus'
-import { AuthLayout } from '@/components/auth/AuthLayout'
+import { AuthLayout } from '@/components/composicoes/auth/AuthLayout'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'

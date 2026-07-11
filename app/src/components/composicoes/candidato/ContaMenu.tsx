@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next'
 import { UserRound } from 'lucide-react'
 
 import { lerCandidato, sairCandidato } from '@/lib/candidatoSessao'
-import { AccountMenu } from '@/components/AccountMenu'
+import { AccountMenu } from '@/components/composicoes/AccountMenu'
 
 export function ContaMenu({ onSair }: { onSair?: () => void }) {
   const { t } = useTranslation('painel')

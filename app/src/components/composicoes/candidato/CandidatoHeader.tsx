@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils'
 import { HEADER_SURFACE } from '@/lib/surfaces'
 import { estaLogado } from '@/lib/candidatoSessao'
 import type { Mode } from '@/lib/useBrandMode'
-import { CandidatoBrandRow } from '@/components/candidato/CandidatoBrandRow'
+import { CandidatoBrandRow } from '@/components/composicoes/candidato/CandidatoBrandRow'
 
 export function CandidatoHeader({ brand, mode, onCycleBrand, onToggleMode, onSair, publico = false }: {
   brand?: string

@@ -25,7 +25,7 @@ import type { Briefing, Perfil, Tom } from '@/lib/vaga'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { VagasList, VagaDetalhe, type Vaga } from './VagasList'
-import { Sidebar, MobileNav, useIsMobile } from '@/components/shell/AppShell'
+import { Sidebar, MobileNav, useIsMobile } from '@/components/composicoes/shell/AppShell'
 import {
   BriefingForm,
   CharlieRail,

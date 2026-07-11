@@ -44,10 +44,12 @@ const buttonVariants = cva(
         xs: "h-6 gap-1 rounded-md px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3",
         sm: "min-h-[var(--button-height-sm)] gap-1.5 rounded-md px-3 has-[>svg]:px-2.5",
         lg: "min-h-[var(--button-height-lg)] rounded-md px-6 has-[>svg]:px-4",
-        icon: "size-[var(--button-height-md)]",
+        // Só-ícone: o ícone cresce com a caixa (12/16/20/24) — diferente do botão COM texto, que
+        // mantém 16px em sm/md/lg pra alinhar com o rótulo. Sem override, herdaria o size-4 (16px) da base.
+        icon: "size-[var(--button-height-md)] [&_svg:not([class*='size-'])]:size-5",
         "icon-xs": "size-6 rounded-md [&_svg:not([class*='size-'])]:size-3",
         "icon-sm": "size-[var(--button-height-sm)]",
-        "icon-lg": "size-[var(--button-height-lg)]",
+        "icon-lg": "size-[var(--button-height-lg)] [&_svg:not([class*='size-'])]:size-6",
       },
     },
     defaultVariants: {

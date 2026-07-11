@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils'
 import { CARD } from '@/lib/surfaces'
 import { formatNumber } from '@/lib/datetime'
 import type { StatusVaga as Status } from '@/lib/types'
-import { Panel, StatCard, StatusBadge, type BadgeTone } from '@/components/page'
+import { Panel, StatCard, StatusBadge, type BadgeTone } from '@/components/composicoes/page'
 import { Button } from '@/components/ui/button'
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart'
 import {

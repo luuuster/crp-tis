@@ -47,7 +47,7 @@ function makeFigma(opts) {
     // Primitivos já existentes em CRP/Primitives (o que o plugin deve REUSAR).
     const pr = newColl('CRP/Primitives');
     const seed = (name, val) => { const v = newVar(name, pr, 'FLOAT'); v.setValueForMode(pr.defaultModeId, val); };
-    seed('icon/sm', 16); seed('icon/md', 20); seed('icon/lg', 24); seed('icon/xl', 32);
+    seed('icon/16', 16); seed('icon/20', 20); seed('icon/24', 24); seed('icon/32', 32);
     seed('border-width/1', 1); seed('border-width/2', 2); seed('border-width/4', 4);
   }
 
@@ -122,13 +122,16 @@ test('1 ComponentSet por ícone (lucide/<nome>), cada um com 4 variantes Size', 
   }
 });
 
-test('grid: 6 sets na primeira linha, x = 48 + col*200', async () => {
+test('grid: sets na primeira linha, x = 48 + col*cellW (célula DINÂMICA, sem sobrepor)', async () => {
   const { figma } = makeFigma();
   const onmsg = load(figma);
   await onmsg(baseRun());
   const container = getPage(figma).children.find((n) => n.type === 'FRAME');
   const sets = container.children.filter((c) => c.type === 'COMPONENT_SET');
-  sets.forEach((s, i) => { assert.equal(s.x, 48 + i * 200); assert.equal(s.y, 48); });
+  // Célula acompanha os tamanhos (mesma fórmula do code.js): 32 + Σsizes + (n-1)*16 + PAD(48).
+  const SZ = [16, 20, 24, 32];                                            // sizes do baseRun
+  const cellW = 32 + SZ.reduce((a, b) => a + b, 0) + (SZ.length - 1) * 16 + 48;  // = 220 (> largura do set → sem overlap)
+  sets.forEach((s, i) => { assert.equal(s.x, 48 + i * cellW); assert.equal(s.y, 48); });
 });
 
 test('NÃO cria collection nova — reusa os primitivos existentes', async () => {
@@ -148,12 +151,12 @@ test('bind: width/height → icon/* (por valor) e strokeWeight → border-width/
   const set = getPage(figma).findAllWithCriteria({ types: ['COMPONENT_SET'] })[0];
 
   const v16 = set.children.find((c) => c.name === 'Size=16');
-  assert.equal(v16.boundVariables.width.id, idOf('icon/sm'));
-  assert.equal(v16.boundVariables.height.id, idOf('icon/sm'));
+  assert.equal(v16.boundVariables.width.id, idOf('icon/16'));
+  assert.equal(v16.boundVariables.height.id, idOf('icon/16'));
   for (const s of v16.findAll((n) => n.type === 'VECTOR' && n.strokes && n.strokes.length)) assert.equal(s.boundVariables.strokeWeight.id, idOf('border-width/1'));
 
   const v24 = set.children.find((c) => c.name === 'Size=24');
-  assert.equal(v24.boundVariables.width.id, idOf('icon/lg'));
+  assert.equal(v24.boundVariables.width.id, idOf('icon/24'));
   for (const s of v24.findAll((n) => n.type === 'VECTOR' && n.strokes && n.strokes.length)) assert.equal(s.boundVariables.strokeWeight.id, idOf('border-width/2'));
 });
 

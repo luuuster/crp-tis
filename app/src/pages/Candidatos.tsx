@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next'
 
 import { usePagination } from '@/lib/usePagination'
 import { useMockData } from '@/lib/useMockData'
-import { AppShell } from '@/components/shell/AppShell'
+import { AppShell } from '@/components/composicoes/shell/AppShell'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/ui/sheet'
 

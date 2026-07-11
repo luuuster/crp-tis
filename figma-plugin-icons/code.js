@@ -3,7 +3,7 @@
 // Cria, para CADA ícone, um ComponentSet `lucide/<nome>` com a propriedade Size = 16/20/24/32 (busca por
 // nome no painel Assets). Cada variante = figma.createNodeFromSvg(svg), com:
 //   • COR  (stroke E fill) ligada a uma Variable de cor escolhida na UI (default primary-foreground);
-//   • TAMANHO ligado ao primitivo `icon/<t>` (icon/sm=16…icon/xl=32) e ESPESSURA ao `border-width/<n>` —
+//   • TAMANHO ligado ao primitivo `icon/<px>` (icon/16=16…icon/32=32) e ESPESSURA ao `border-width/<n>` —
 //     ambos JÁ existentes em CRP/Primitives. NÃO cria collection; reaproveita os primitivos por VALOR.
 //
 // Robustez: try/catch por ícone; clone (1 parse de SVG por ícone); yield a cada 8 (UI + cancelar); "pular
@@ -11,7 +11,7 @@
 
 const SIZE_FALLBACK = [16, 20, 24, 32];
 const COLS = 16, CELL_W = 200, CELL_H = 96, PAD = 48;
-const ICON_COLOR = '#1E1E1E';            // fallback determinístico (Figma não resolve currentColor)
+const ICON_COLOR = '#FFFFFF';            // cor padrão do ícone no modo "editável/sem bind" — BRANCO (mostra no fundo preto do frame)
 const BUNDLE_KEY = 'crpLucide:bundle';            // legado (lucide) — fallback de leitura
 const BUNDLE_PREFIX = 'crpIcons:bundle:';         // por fonte/estilo: crpIcons:bundle:lucide | crpIcons:bundle:material:outlined
 const PREFS_KEY = 'crpLucide:prefs';
@@ -116,9 +116,10 @@ function getContainer(page, name) {
   if (!c) {
     c = figma.createFrame();
     c.name = name; c.layoutMode = 'NONE'; c.clipsContent = false;
-    safe(() => { c.fills = []; });
     page.appendChild(c); c.x = 0; c.y = 0;
   }
+  // Fundo PRETO (ícones brancos por padrão) — sempre reforça, inclusive em container já existente.
+  safe(() => { c.fills = [{ type: 'SOLID', color: { r: 0, g: 0, b: 0 } }]; });
   return c;
 }
 
@@ -163,7 +164,7 @@ function floatVal(v) {
 }
 
 // NÃO cria collection. Acha os primitivos JÁ existentes em CRP/Primitives e casa por VALOR:
-//   tamanho  -> icon/* (icon/sm=16 … icon/xl=32)      espessura -> border-width/* (1px, 2px…)
+//   tamanho  -> icon/* (icon/16=16 … icon/32=32)      espessura -> border-width/* (1px, 2px…)
 // strokeMap = { 16: 1, 20: 1, 24: 2, 32: 2 } (valor de border-width escolhido na UI, por tamanho).
 // Retorna { size:{sz:var}, stroke:{sz:var}, hasSize, hasStroke } ou null.
 async function findPrimitiveVars(sizes, strokeMap) {
@@ -315,6 +316,13 @@ async function run(msg) {
   const pageName = meta.page, prefix = meta.prefix;
   const containerName = (meta.label + (msg.version ? ' v' + msg.version : '') + (sizes.length < 4 ? ' (' + sizes.join('/') + ')' : '')).trim();
 
+  // Célula da grade DINÂMICA: o set cresce com os tamanhos (10 sizes ≈ 384px de largura), então a
+  // célula fixa antiga (200) fazia os sets se sobreporem. Calcula pela seleção + folga (PAD).
+  const _sumSizes = sizes.reduce((a, b) => a + b, 0);
+  const cellW = 32 + _sumSizes + (sizes.length - 1) * 16 + PAD;   // padding do set (16×2) + Σícones + itemSpacing + folga
+  const cellH = 32 + Math.max.apply(null, sizes) + PAD;
+  const gridCols = Math.max(1, Math.min(COLS, Math.floor(3200 / cellW)));
+
   if (!icons.length) { figma.ui.postMessage({ type: 'error', message: 'Nenhum ícone selecionado.' }); return; }
 
   // Página + foco.
@@ -377,7 +385,7 @@ async function run(msg) {
         if (ic.tags && ic.tags.length) safe(() => { set.description = ic.tags.join(', '); });
         container.appendChild(set);
         if (ox != null && oy != null) { safe(() => { set.x = ox; set.y = oy; }); }
-        else { const col = idx % COLS, row = Math.floor(idx / COLS); safe(() => { set.x = PAD + col * CELL_W; set.y = PAD + row * CELL_H; }); idx++; }
+        else { const col = idx % gridCols, row = Math.floor(idx / gridCols); safe(() => { set.x = PAD + col * cellW; set.y = PAD + row * cellH; }); idx++; }
         existingSets.set(setName, set);
         if (exists && mode === 'sync') updated++; else created++;
       } else { failed++; }
@@ -390,9 +398,9 @@ async function run(msg) {
   }
 
   safe(() => {
-    const rows = Math.max(1, Math.ceil(idx / COLS));
-    const cols = Math.max(1, Math.min(idx, COLS));
-    container.resizeWithoutConstraints(PAD * 2 + cols * CELL_W, PAD * 2 + rows * CELL_H);
+    const rows = Math.max(1, Math.ceil(idx / gridCols));
+    const cols = Math.max(1, Math.min(idx, gridCols));
+    container.resizeWithoutConstraints(PAD * 2 + cols * cellW, PAD * 2 + rows * cellH);
   });
   safe(() => { figma.currentPage.selection = [container]; figma.viewport.scrollAndZoomIntoView([container]); });
 

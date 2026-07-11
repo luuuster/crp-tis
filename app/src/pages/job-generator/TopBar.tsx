@@ -4,7 +4,7 @@ import { Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { HEADER_SURFACE } from '@/lib/surfaces'
 import { focusRing } from '@/lib/focus'
-import { TopBarMenuButton, TopBarActions, TopBarAccount } from '@/components/shell/topbar-parts'
+import { TopBarMenuButton, TopBarActions, TopBarAccount } from '@/components/composicoes/shell/topbar-parts'
 
 export function TopBar({ onToggleMenu, menuExpanded, isMobile, onCharlie, charlieOpen, onLogout, onEditarPerfil, brand, mode, onCycleBrand, onToggleMode, screen = 'lista', crumbLabel, onBackToList }: {
   onToggleMenu: () => void; menuExpanded: boolean; isMobile?: boolean; onCharlie: () => void; charlieOpen: boolean; onLogout: () => void; onEditarPerfil?: () => void

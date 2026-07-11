@@ -5,7 +5,7 @@ import * as SelectPrimitive from '@radix-ui/react-select'
 
 import { cn } from '@/lib/utils'
 import { FIELD, FLOAT } from '@/lib/surfaces'
-import { useIsMobile } from '@/components/shell/AppShell'
+import { useIsMobile } from '@/components/composicoes/shell/AppShell'
 import { MobileSheet } from './MobileSheet'
 import { SheetOptions } from './sheet-parts'
 

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import { Button } from '@/components/ui/button'
 import { Tip } from '@/components/ui/tooltip'
-import { LanguageSelect } from '@/components/LanguageSelect'
+import { LanguageSelect } from '@/components/composicoes/LanguageSelect'
 import { brandNome } from '@/lib/useBrandMode'
 import type { Brand, Mode } from '@/lib/useBrandMode'
 
