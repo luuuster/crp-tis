@@ -1,7 +1,7 @@
 ---
 description: Regra de acessibilidade (WCAG 2.2 AA) — FONTE DA VERDADE para criar/revisar qualquer componente, tela, token, CSS ou preview do crp Design System. Cobre contraste (textual + não-textual), foco, teclado, ARIA/semântica, estados (disabled/loading), formulários, motion, forced-colors, alvo de toque, responsividade e o protocolo de revisão (Definition of Done). Aplicar SEMPRE que houver UI ou a11y envolvida.
-globs:
-alwaysApply: true
+globs: app/src/**,src/**,tokens/**,preview/**,app/e2e/**,build/check.mjs
+alwaysApply: false
 ---
 
 # 06 — Acessibilidade (WCAG 2.2 AA) · crp Design System

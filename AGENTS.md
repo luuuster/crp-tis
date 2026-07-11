@@ -29,9 +29,15 @@ referência):
 
 | Regra | Escopo | Quando aplicar |
 |---|---|---|
+| [`00-proposito.mdc`](.cursor/rules/00-proposito.mdc) | Constituição: propósito, fronteiras, matriz de fontes da verdade | SEMPRE (única always-apply) |
 | [`06-accessibility.mdc`](.cursor/rules/06-accessibility.mdc) | **WCAG 2.2 AA integral** + Definition of Done de a11y | SEMPRE que houver UI/a11y |
 | [`07-figma-icones-lucide.mdc`](.cursor/rules/07-figma-icones-lucide.mdc) | Ícone no Figma = lucide REAL, instância da lib, tokenizado | SEMPRE que houver ícone indo ao Figma |
 | [`08-figma-atomic-design.mdc`](.cursor/rules/08-figma-atomic-design.mdc) | Tela no Figma = instâncias de componentes; faltou → cria antes (Atomic Design) | SEMPRE que criar/reproduzir tela no Figma |
+| [`09-figma-fidelity.mdc`](.cursor/rules/09-figma-fidelity.mdc) | Contrato de fidelidade web→Figma: estado controlado, tolerâncias, idempotência | SEMPRE que medir/reproduzir/auditar superfície no Figma |
+| [`10-mock-data-i18n.mdc`](.cursor/rules/10-mock-data-i18n.mdc) | Dados fictícios (PII proibida; gate `check:mock`) + 4 línguas | SEMPRE que criar/editar fixture, persona, locale ou teste |
+
+Cada diretório principal tem instruções de domínio próprias — leia o **AGENTS.md local** antes de
+mexer lá: [`tokens/`](tokens/AGENTS.md) · [`app/`](app/AGENTS.md) · [`crp_plugins/`](crp_plugins/AGENTS.md) · [`docs/`](docs/AGENTS.md).
 
 E as **leis transversais** (aprendidas a custo — não repita os erros):
 
@@ -48,12 +54,25 @@ E as **leis transversais** (aprendidas a custo — não repita os erros):
 7. **Mockup por design**: NÃO propor backend, auth real, banco, telemetria de produção. A fronteira
    está em [SECURITY.md](SECURITY.md) e [PROPOSITO.md](PROPOSITO.md) §4.
 
+### Especialistas disponíveis (`.claude/agents/` — read-only quando são auditores)
+
+| Agent | Papel |
+|---|---|
+| `design-system` | editar/validar tokens, temas, contrato shadcn |
+| `token-studio-export` | gerar o bundle de import do Token Studio |
+| `figma-web-fidelity` | medir a web e construir/corrigir superfícies no Figma |
+| `figma-pipeline-validator` | auditar a cadeia tokens→Variables→ícones→components→telas (drift, keys, idempotência) |
+| `frontend-pattern-reviewer` | revisar padrões do app (nível de abstração, CVA, transferível × mock-only) |
+| `ux-flow-auditor` | auditar jornadas/fluxos como UX sênior (estados, continuidade, microcopy) |
+| `accessibility-auditor` | executar a regra 06 de verdade (gates + inspeção), separando WCAG × convenção |
+
 ## 4. Comandos canônicos
 
 | Onde | Comando | O quê |
 |---|---|---|
 | raiz | `npm run build` | tokens → `dist/` (obrigatório antes do app na 1ª vez) |
-| raiz | `npm run verify` | build + check (WCAG fatal) + testes do DS |
+| raiz | `npm run verify` | build + check (WCAG fatal) + check:mock (PII) + testes do DS |
+| raiz | `npm run check:mock` | gate da regra 10: e-mail só em domínio fictício, CPF válido proibido |
 | raiz | `npm run export:figma` / `export:components` / `icons` / `export:ts` / `export:ext` | artefatos dos plugins (`crp_plugins/`) |
 | app | `npm run dev` / `dev:candidato` / `dev:mapa` | :5173 recrutador · :5172 candidato · :5174 docs/galeria |
 | app | `npm run verify` | lint + vitest + build + e2e (a matriz completa) |
@@ -71,14 +90,14 @@ E as **leis transversais** (aprendidas a custo — não repita os erros):
 ## 6. Estrutura (onde mexer)
 
 ```
-tokens/        fonte da verdade dos valores (DTCG)
-build/         compilador + gates (check.mjs, doctor.mjs, exporters)
+tokens/        fonte da verdade dos valores (DTCG)          → tokens/AGENTS.md
+build/         compilador + gates (check.mjs, doctor.mjs, check-mock-data.mjs, exporters)
 dist/          GERADO — não editar
 src/           fontes autoradas da a11y de comportamento (base.css, button.css/js)
-app/           TalentAI (recrutador + candidato + docs) — consumidor de referência
-crp_plugins/   4 plugins Figma + extensão Chrome (ver crp_plugins/README.md)
-docs/          histórico datado (planos, auditorias) — registro, NÃO onboarding
-.cursor/rules/ regras normativas 06/07/08 (valem para toda IA)
+app/           TalentAI — consumidor de referência           → app/AGENTS.md
+crp_plugins/   4 plugins Figma + extensão Chrome             → crp_plugins/AGENTS.md
+docs/          histórico datado — registro, NÃO onboarding   → docs/AGENTS.md
+.cursor/rules/ regras normativas 00 + 06–10 (valem para toda IA)
 ```
 
 ## 7. Armadilhas conhecidas (Figma e ambiente)
