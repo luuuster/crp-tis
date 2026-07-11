@@ -35,7 +35,7 @@ function FormDemo() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>E-mail</FormLabel>
-              <FormControl><Input type="email" placeholder="voce@empresa.com" {...field} /></FormControl>
+              <FormControl><Input type="email" placeholder="voce@exemplo.com" {...field} /></FormControl>
               <FormDescription>Nunca compartilhamos seu e-mail.</FormDescription>
               <FormMessage />
             </FormItem>
@@ -79,7 +79,7 @@ export const FORMULARIO_DEMOS: Demo[] = [
     Render: () => (
       <div className="grid max-w-xs gap-2">
         <Label htmlFor="d-email">E-mail</Label>
-        <Input id="d-email" type="email" placeholder="voce@empresa.com" />
+        <Input id="d-email" type="email" placeholder="voce@exemplo.com" />
       </div>
     ),
   },

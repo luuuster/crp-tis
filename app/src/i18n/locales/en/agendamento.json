@@ -10,7 +10,7 @@
     "nome": "Full name",
     "nomePlaceholder": "As on your resume",
     "email": "Email",
-    "emailPlaceholder": "you@email.com",
+    "emailPlaceholder": "you@example.com",
     "continuar": "Continue"
   },
   "logAria": "Scheduling conversation",

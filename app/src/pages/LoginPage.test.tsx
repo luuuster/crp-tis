@@ -15,7 +15,7 @@ test('e-mail inválido mostra mensagem do zod', async () => {
 test('senha curta mostra mensagem do zod', async () => {
   const user = userEvent.setup()
   render(<LoginPage />)
-  await user.type(screen.getByLabelText(/e-mail/i), 'a@b.com')
+  await user.type(screen.getByLabelText(/e-mail/i), 'a@example.com')
   await user.type(screen.getByLabelText('Senha'), '123')
   await user.click(screen.getByRole('button', { name: /entrar/i }))
   expect(await screen.findByText(/ao menos 6 caracteres/i)).toBeInTheDocument()
