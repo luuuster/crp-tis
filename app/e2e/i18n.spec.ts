@@ -28,9 +28,10 @@ test.describe('seletor de idioma', () => {
     await page.reload()
     await expect(page.locator('html')).toHaveAttribute('lang', 'es')
 
-    // Volta para pt-BR (deixa o estado limpo p/ outros testes na mesma origem)
+    // Volta para pt-BR (deixa o estado limpo p/ outros testes na mesma origem).
+    // Nome COMPLETO: só "Português" é ambíguo desde o pt-AO — casa "(Brasil)" e "(Angola)".
     await abrir()
-    await page.getByRole('menuitem', { name: 'Português' }).click()
+    await page.getByRole('menuitem', { name: 'Português (Brasil)' }).click()
     await expect(sidebar.getByRole('button', { name: 'Banco de talentos' })).toBeVisible()
   })
 })

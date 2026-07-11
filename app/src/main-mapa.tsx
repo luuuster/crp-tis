@@ -16,6 +16,8 @@ initTelemetry() // handlers globais de erro (window.onerror / unhandledrejection
 // Telas de documentação na mesma origem (:5174): / = Arquitetura, /userflow = User Flow, /componentes = Showcase.
 const path = window.location.pathname.toLowerCase()
 const tela = path.startsWith('/userflow') ? <UserFlow /> : path.startsWith('/componentes') ? <Componentes /> : <MapaArquitetura />
+// Título por rota (deep link/aba/histórico distinguíveis — antes as 3 telas dividiam "Arquitetura · TIS").
+document.title = path.startsWith('/userflow') ? 'User Flow · TIS' : path.startsWith('/componentes') ? 'Componentes · TIS' : 'Arquitetura · TIS'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
