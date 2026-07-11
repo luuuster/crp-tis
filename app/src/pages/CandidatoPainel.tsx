@@ -116,7 +116,7 @@ function LocalFiltro({ pais, estado, cidade, onAplicar }: {
     <div className="space-y-1.5">
       <div className="flex items-center gap-2">
         <p className="ty-label-sm text-muted-foreground" id={`${id}-label`}>{rotulo}</p>
-        {emBreve && <Badge variant="ghost" className="bg-warning/15 px-1.5 py-0 text-warning-text">{t('localFiltro.emBreve')}</Badge>}
+        {emBreve && <Badge variant="ghost" className="bg-warning/10 px-1.5 py-0 text-warning-text">{t('localFiltro.emBreve')}</Badge>}
       </div>
       <SearchSelect id={id} size="md" value={value} onChange={onChange} options={[todos.valor, ...opcoes]} labelOf={(v) => (v === todos.valor ? todos.rotulo : v)} aria-labelledby={`${id}-label`} disabled={emBreve} />
       {emBreve && <p className="flex items-start gap-1.5 ty-caption text-muted-foreground"><Clock className="mt-px size-3 shrink-0" aria-hidden /> {t('localFiltro.emBreveNota')}</p>}
@@ -163,7 +163,7 @@ export function CandidatoPainel({ brand, mode, onCycleBrand, onToggleMode, onSai
   // O mural É a área LOGADA. Se a pessoa chegou sem sessão (navegou direto p/ /painel), estabelece uma
   // sessão demo NA MONTAGEM (efeito, não no corpo do render — write puro) — assim a vaga aberta em NOVA ABA
   // sabe que está logado. Se ela logou pelo /acesso, o e-mail real já está salvo e isto não sobrescreve.
-  useEffect(() => { if (!estaLogado()) guardarEmailCandidato('ana.souza@exemplo.com') }, [])
+  useEffect(() => { if (!estaLogado()) guardarEmailCandidato('ana.souza@example.com') }, [])
 
   const { t } = useTranslation('painel')
   const [f, setF] = useState<FiltroVagas>(FILTRO_VAZIO)

@@ -272,7 +272,7 @@ export function CalendarioMensal({ eventos, mes, ano, anos, onMes, onAno, onMuda
               <div className="flex">
                 <span className={cn(
                   'inline-flex min-w-6 items-center justify-center rounded-md px-1.5 py-0.5 ty-caption font-semibold tabular-nums',
-                  isHoje ? 'bg-primary text-primary-foreground' : cel.dentro ? 'text-foreground' : 'text-muted-foreground/60',
+                  isHoje ? 'bg-primary text-primary-foreground' : cel.dentro ? 'text-foreground' : 'text-muted-foreground',
                 )}>{cel.d}</span>
               </div>
               {cel.dentro && (

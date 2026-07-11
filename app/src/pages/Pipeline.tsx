@@ -58,7 +58,7 @@ const eventoDoCard = (c: Card): Evento | undefined => {
 }
 const emailDe = (nome: string) =>
   // NFD separa o acento da letra-base; [^a-z\s] tira o acento (e qualquer pontuação) → "José Antônio" = jose.antonio
-  `${nome.toLowerCase().normalize('NFD').replace(/[^a-z\s]/g, '').trim().split(/\s+/).join('.')}@email.com`
+  `${nome.toLowerCase().normalize('NFD').replace(/[^a-z\s]/g, '').trim().split(/\s+/).join('.')}@example.com`
 
 // ---------- visão "Calendário" do funil: os agendamentos dos cards numa grade mensal ----------
 const ANOS_CAL = [2025, 2026, 2027]

@@ -61,7 +61,10 @@ graph TB
 
     subgraph SIS["Sistema"]
         USERS["⚙️ Usuários"]
-        COMP["🧩 Componentes"]
+    end
+
+    subgraph DOCS["Hub de documentação (:5174)"]
+        COMP["🧩 Componentes (/componentes)"]
     end
 
     Login -->|entra| DASH

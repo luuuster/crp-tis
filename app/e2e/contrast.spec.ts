@@ -72,13 +72,15 @@ const SURFACES: { name: string; go: (p: Page, b: Brand, m: Mode) => Promise<void
     await p.getByRole('button', { name: 'Diego Teste 2' }).click()
     await expect(p.getByText('Detalhes do candidato')).toBeVisible()
   } },
-  // Sheet de agendar (Teams): abre, preenche a data → renderiza os slots de disponibilidade
-  // (livre=success / selecionado=primary / ocupado=disabled) p/ medir o contraste deles.
+  // Sheet de agendar (Teams): o fluxo atual parte do DETALHE de um evento (botão "Reagendar") — a data
+  // vem dos CHIPS de disponibilidade do candidato; escolher um renderiza os slots (livre=success /
+  // selecionado=primary / ocupado=disabled) p/ medir o contraste deles.
   { name: 'Agendar-Teams', go: async (p, b, m) => {
     await login(p); await setTheme(p, b, m); await gotoMenu(p, 'Calendário de entrevistas')
-    await p.getByRole('button', { name: 'Agendar' }).first().click()
+    await p.getByRole('button', { name: /João Pereira/ }).first().click()
     await expect(p.getByRole('dialog')).toBeVisible()
-    await p.locator('#ag-data').fill('22/06/2026')
+    await p.getByRole('button', { name: 'Reagendar' }).click()
+    await p.getByRole('dialog').locator('button[aria-pressed]').first().click() // 1º chip de data do candidato
     await p.waitForTimeout(150)
   } },
 ]

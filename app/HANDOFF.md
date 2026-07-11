@@ -385,8 +385,8 @@ Setup em [src/i18n/index.ts](src/i18n/index.ts). **pt-BR é a fonte**; en e es s
   upstream); o uso real é validado nas páginas + `axe.test`.
 - **`components/page.tsx`** são os **primitivos de composição** de página (ver convenção #8). É o que você
   mais vai reusar.
-- **`components/ui/demos/` + `pages/Showcase.tsx`** são a **vitrine** (styleguide vivo). **Abra a tela
-  "Componentes" no app** para ver tudo que já existe pronto antes de criar algo novo.
+- **`components/ui/demos/` + `pages/Showcase.tsx`** são a **vitrine** (styleguide vivo). **Abra a página
+  "Componentes" no hub de docs (`npm run dev:mapa` → :5174/componentes)** para ver tudo que já existe pronto antes de criar algo novo.
 - **`a11y-manifest.ts`** declara as garantias de a11y de cada componente (usado pela vitrine/sweep).
 
 ---
@@ -397,7 +397,7 @@ Setup em [src/i18n/index.ts](src/i18n/index.ts). **pt-BR é a fonte**; en e es s
 |---|---|---|
 | Tipos | `npm run typecheck` | TS strict, sem `any` solto, i18n tipado |
 | Lint | `npm run lint` | bugs, a11y de wrapper, **e a regra do DS** (cor/tipografia) |
-| Unit (21 arquivos) | `npm run test` | lógica (Charlie, paginação, datas, vagas), `axe.test` (a11y estrutural de todas as páginas nos temas), `parity.test` (i18n) |
+| Unit | `npm run test` | lógica (Charlie, paginação, datas, vagas), `axe.test` (a11y estrutural de todas as páginas nos temas), `parity.test` (i18n) |
 | E2E (9 specs) | `npm run e2e` | `a11y` + `contrast` + `focus-visible` em **pixel real** nos 4 temas (crp/marca-b × claro/escuro), `screenshots` (captura p/ revisão) |
 | Tudo | `npm run verify` | roda os quatro acima em sequência |
 
@@ -479,7 +479,7 @@ estados loading/empty/erro, a11y) já está pronto e é o ativo que você está 
 | **token** | variável de design (cor/raio/etc.) resolvida por tema; nunca cor crua |
 | **contrato** | os tokens semânticos (nomes shadcn: `primary`, `background`, `border`…) que o app consome |
 | **paleta de dados** | tons `blue`/`violet`/`teal` (tokens `chart-*`) para categorias — **não** a marca |
-| **vitrine / Showcase** | a tela "Componentes" = styleguide vivo de tudo que existe pronto |
+| **vitrine / Showcase** | a página "Componentes" do hub de docs (:5174/componentes) = styleguide vivo de tudo que existe pronto |
 | **mockup / protótipo** | sem backend; dados em memória + `localStorage` |
 
 ---

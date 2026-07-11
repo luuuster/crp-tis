@@ -92,22 +92,22 @@ describe('axe — zero violações por página', () => {
     await expectNoViolations(<TooltipProvider><EntrevistasIA onNavigate={() => {}} /></TooltipProvider>)
   })
   it('EntrevistasIA — detalhe do candidato', async () => {
-    const c: Candidato = { id: 't', nome: 'Teste Candidato', email: 'teste@email.com', vaga: 'Desenvolvedor Backend', data: '01/06/2026', score: 70, status: 'Pendente' }
+    const c: Candidato = { id: 't', nome: 'Teste Candidato', email: 'teste@example.com', vaga: 'Desenvolvedor Backend', data: '01/06/2026', score: 70, status: 'Pendente' }
     await expectNoViolations(<TooltipProvider><CandidatoDetalhe c={c} onVoltar={() => {}} onAprovar={() => {}} onReprovar={() => {}} /></TooltipProvider>)
   })
   it('EntrevistasIA — avaliação IA embutida (etapa Triagem)', async () => {
     const d = buildDetalhe({ nome: 'Teste Candidato', vaga: 'Product Manager', data: '10/06/2026', score: 72 })
-    await expectNoViolations(<TooltipProvider><AvaliacaoIAConteudo d={d} email="teste@email.com" vaga="Product Manager" statusLabel="Aprovado bot" /></TooltipProvider>)
+    await expectNoViolations(<TooltipProvider><AvaliacaoIAConteudo d={d} email="teste@example.com" vaga="Product Manager" statusLabel="Aprovado bot" /></TooltipProvider>)
   })
   it('Candidatos', async () => {
     await expectNoViolations(<TooltipProvider><Candidatos onNavigate={() => {}} /></TooltipProvider>)
   })
   it('Candidatos — perfil/histórico', async () => {
-    const c: CandidatoBanco = { id: 'p', nome: 'Teste Candidato', email: 'teste@email.com', vaga: 'Desenvolvedor Backend', senioridade: 'Pleno', etapa: 'Entrevista RH', score: 78, atualizado: 'ontem' }
+    const c: CandidatoBanco = { id: 'p', nome: 'Teste Candidato', email: 'teste@example.com', vaga: 'Desenvolvedor Backend', senioridade: 'Pleno', etapa: 'Entrevista RH', score: 78, atualizado: 'ontem' }
     await expectNoViolations(<TooltipProvider><CandidatoPerfil c={c} onVoltar={() => {}} onAbrirProcesso={() => {}} /></TooltipProvider>)
   })
   it('Candidatos — detalhe do processo (reprovado)', async () => {
-    const c: CandidatoBanco = { id: 'p', nome: 'Teste Candidato', email: 'teste@email.com', vaga: 'Desenvolvedor Full Stack', senioridade: 'Júnior', etapa: 'Reprovado', score: 58, atualizado: 'há 5 dias' }
+    const c: CandidatoBanco = { id: 'p', nome: 'Teste Candidato', email: 'teste@example.com', vaga: 'Desenvolvedor Full Stack', senioridade: 'Júnior', etapa: 'Reprovado', score: 58, atualizado: 'há 5 dias' }
     await expectNoViolations(<TooltipProvider><ProcessoDetalhe c={c} p={buildProcessos(c)[0]} onVoltar={() => {}} /></TooltipProvider>)
   })
   it('Candidatos — Charlie (Sheet aberto)', async () => {
@@ -140,7 +140,7 @@ describe('axe — zero violações por página', () => {
     expect(result.violations, `violações axe:\n${resumo}`).toHaveLength(0)
   })
   it('InscricaoVaga — modal "Confirmar candidatura" (candidato logado)', async () => {
-    localStorage.setItem('candidato.email', 'ana.souza@exemplo.com') // simula logado
+    localStorage.setItem('candidato.email', 'ana.souza@example.com') // simula logado
     try {
       const user = userEvent.setup()
       // Logado, o header mostra a conta (ContaMenu usa Tooltip) — precisa do provider, igual ao CandidatoApp.
