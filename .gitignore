@@ -2,22 +2,22 @@ node_modules/
 dist/
 token-studio/
 # bundles de ícones gerados (regenerados por `npm run icons` e no CI)
-figma-plugin-icons/lucide-icons.json
-figma-plugin-icons/material-outlined.json
-figma-plugin-icons/material-rounded.json
-figma-plugin-icons/material-sharp.json
-figma-plugin-icons/material-outlined-fill.json
-figma-plugin-icons/material-rounded-fill.json
-figma-plugin-icons/material-sharp-fill.json
-figma-plugin-icons/code.bundled.js
+crp_plugins/figma-plugin-icons/lucide-icons.json
+crp_plugins/figma-plugin-icons/material-outlined.json
+crp_plugins/figma-plugin-icons/material-rounded.json
+crp_plugins/figma-plugin-icons/material-sharp.json
+crp_plugins/figma-plugin-icons/material-outlined-fill.json
+crp_plugins/figma-plugin-icons/material-rounded-fill.json
+crp_plugins/figma-plugin-icons/material-sharp-fill.json
+crp_plugins/figma-plugin-icons/code.bundled.js
 # variables do Figma gerado (regenerado por `npm run export:figma` e no CI)
-figma-plugin/figma-variables.json
+crp_plugins/figma-plugin/figma-variables.json
 # specs dos plugins de componentes/telas (regenerados por `npm run export:components` / `export:screens`)
-figma-plugin-components/figma-components.json
-figma-plugin-screens/figma-screens.json
+crp_plugins/figma-plugin-components/figma-components.json
+crp_plugins/figma-plugin-screens/figma-screens.json
 # referência de tokens do CRP Inspector (regenerada por `npm run export:ext`)
-crp-editor-extension/tokens.json
-crp-editor-extension/tokens.js
+crp_plugins/crp-editor-extension/tokens.json
+crp_plugins/crp-editor-extension/tokens.js
 # backups automáticos do seed-palette (--force)
 tokens/.core-backup-*/
 .cursor/

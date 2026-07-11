@@ -1,4 +1,4 @@
-// Export: componentes SHADCN do app -> figma-plugin-components/figma-components.json
+// Export: componentes SHADCN do app -> crp_plugins/figma-plugin-components/figma-components.json
 //
 // FONTE DA VERDADE: app/src/components/ui/{button,input}.tsx (shadcn) — o kit do Figma espelha
 // EXATAMENTE a API que as telas usam (variant × size do cva), com cada classe Tailwind traduzida
@@ -15,11 +15,11 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 
 const ROOT = process.cwd();
-const FV_PATH = join(ROOT, 'figma-plugin', 'figma-variables.json');
-const OUT = join(ROOT, 'figma-plugin-components', 'figma-components.json');
+const FV_PATH = join(ROOT, 'crp_plugins', 'figma-plugin', 'figma-variables.json');
+const OUT = join(ROOT, 'crp_plugins', 'figma-plugin-components', 'figma-components.json');
 // Matriz sempre COMPLETA (320): não há mais recorte nem flags --full/--min (o cva permite toda combinação variant×size).
 
-if (!existsSync(FV_PATH)) { console.error('❌ figma-plugin/figma-variables.json não existe. Rode `npm run export:figma` antes.'); process.exit(1); }
+if (!existsSync(FV_PATH)) { console.error('❌ crp_plugins/figma-plugin/figma-variables.json não existe. Rode `npm run export:figma` antes.'); process.exit(1); }
 const fv = JSON.parse(readFileSync(FV_PATH, 'utf8'));
 const varIndex = new Map();
 for (const c of fv.collections) for (const v of c.variables) varIndex.set(c.name + '::' + v.name, v);

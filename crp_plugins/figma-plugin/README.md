@@ -1,6 +1,6 @@
 # CRP DS — Tokens → Figma Variables + Styles (plugin de dev)
 
-Plugin Figma que lê o bundle **pré-resolvido** (`figma-plugin/figma-variables.json`) e **cria as
+Plugin Figma que lê o bundle **pré-resolvido** (`crp_plugins/figma-plugin/figma-variables.json`) e **cria as
 Variables e os Styles** direto no arquivo aberto — sem Token Studio, sem plano Enterprise. As
 Variables (cor/dimensão/número/família) precisam de **pro** p/ os 2 modes; os **Styles** (texto,
 cor, efeito, grid) funcionam em **qualquer plano**.
@@ -13,13 +13,13 @@ cor, efeito, grid) funcionam em **qualquer plano**.
 | Arquivo | Gerar com | Para |
 |---|---|---|
 | `token-studio/tokens.json` | `npm run export:ts` | **Token Studio** (DTCG multi-set, com `$themes`/`$metadata`; entende compostos) |
-| `figma-plugin/figma-variables.json` | `npm run export:figma` | **este plugin** (collections já resolvidas; o Figma não entende composto) |
+| `crp_plugins/figma-plugin/figma-variables.json` | `npm run export:figma` | **este plugin** (collections já resolvidas; o Figma não entende composto) |
 
 São diferentes de propósito: o Figma precisa do contrato **já fundido por tema** (marca + mode
 juntos) e dos compostos **decompostos** — coisas que o exportador do Figma faz e o do Token Studio
 não. Rode os dois de uma vez com `npm run export`.
 
-> ⚠️ **`figma-plugin/figma-variables.json` é um artefato GERADO — não vem no clone** (está no
+> ⚠️ **`crp_plugins/figma-plugin/figma-variables.json` é um artefato GERADO — não vem no clone** (está no
 > `.gitignore`, como `dist/` e os bundles de ícones). Antes de rodar o plugin, gere-o com
 > `npm run export:figma` (na raiz do repo) **ou** baixe o artifact `figma-variables` da última
 > execução do workflow **tokens** no GitHub Actions.
@@ -82,13 +82,13 @@ exportar.
 
 1. Gere o bundle do Figma no repo:
    ```bash
-   npm run export:figma     # → figma-plugin/figma-variables.json
+   npm run export:figma     # → crp_plugins/figma-plugin/figma-variables.json
    ```
 2. No Figma **desktop**, abra o arquivo onde quer as Variables (use um arquivo de time **pro** —
    times *Starter* limitam modes por collection; `CRP/Brand` e `CRP/Modes` têm 2 modes cada).
-3. **Menu → Plugins → Development → Import plugin from manifest…** → `figma-plugin/manifest.json`
+3. **Menu → Plugins → Development → Import plugin from manifest…** → `crp_plugins/figma-plugin/manifest.json`
    (só na 1ª vez).
-4. Rode o plugin → escolha `figma-plugin/figma-variables.json` → em **"O que criar"** marque as
+4. Rode o plugin → escolha `crp_plugins/figma-plugin/figma-variables.json` → em **"O que criar"** marque as
    **collections** (Primitives/Brand/Modes/Base/Components) e as **famílias de style** (Text/Paint/
    Effect/Grid) que quer — granular, não tudo-ou-nada. Clique **Pré-visualizar** (mostra o plano:
    `+novos · ~atualizar · −remover`) e depois **Criar**. (O plugin lembra suas escolhas no próximo uso.)

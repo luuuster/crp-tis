@@ -1,4 +1,4 @@
-// Gera a REFERÊNCIA de tokens consumida pela extensão CRP Inspector (crp-editor-extension/tokens.json).
+// Gera a REFERÊNCIA de tokens consumida pela extensão CRP Inspector (crp_plugins/crp-editor-extension/tokens.json).
 // Resolve as var() do dist para literais e converte cores → hex sRGB (oklchToRgb bate com o pixel do
 // navegador, validado por canvas). É um ARTEFATO gerado — não editar à mão; rode `npm run export:ext`.
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
@@ -8,7 +8,7 @@ import { oklchToRgb } from './lib/color.mjs';
 import { loadThemes } from './lib/themes.mjs';
 
 const ROOT = process.cwd();
-const OUT_DIR = join(ROOT, 'crp-editor-extension');
+const OUT_DIR = join(ROOT, 'crp_plugins', 'crp-editor-extension');
 const scopes = scopesOf(readFileSync(join(ROOT, 'dist', 'tokens.css'), 'utf8'));
 const root = scopes[':root'] || {};
 
@@ -123,4 +123,4 @@ writeFileSync(join(OUT_DIR, 'tokens.js'),
   '/* Gerado por build/export-extension-tokens.mjs — não editar à mão. */\n' +
   'globalThis.CRP_TOKENS = ' + JSON.stringify(out) + ';\n');
 const nColors = Object.values(colorsByTheme)[0] ? Object.keys(Object.values(colorsByTheme)[0]).length : 0;
-console.log(`crp-editor-extension/tokens.json ✓  (${out.themes.length} temas × ${nColors} cores, ${Object.keys(radii).length} raios, ${Object.keys(typography).length} roles)`);
+console.log(`crp_plugins/crp-editor-extension/tokens.json ✓  (${out.themes.length} temas × ${nColors} cores, ${Object.keys(radii).length} raios, ${Object.keys(typography).length} roles)`);

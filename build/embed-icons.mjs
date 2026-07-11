@@ -1,4 +1,4 @@
-// Embute os bundles de ícones DENTRO do plugin -> figma-plugin-icons/code.bundled.js
+// Embute os bundles de ícones DENTRO do plugin -> crp_plugins/figma-plugin-icons/code.bundled.js
 //
 // Por quê: o sandbox do Figma não lê disco. Pra você NÃO precisar carregar o .json no plugin, embutimos os
 // ícones no próprio código. Pra não inchar, vão GZIP+base64 (a UI descompacta sob demanda via DecompressionStream).
@@ -12,7 +12,7 @@ import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
 
 const ROOT = process.cwd();
-const DIR = join(ROOT, 'figma-plugin-icons');
+const DIR = join(ROOT, 'crp_plugins', 'figma-plugin-icons');
 // chave = como a UI identifica (lucide | material:<estilo>[:fill])
 const SOURCES = [
   { key: 'lucide', file: 'lucide-icons.json' },

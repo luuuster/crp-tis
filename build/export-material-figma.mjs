@@ -1,4 +1,4 @@
-// Export: node_modules/@material-symbols/svg-400 -> figma-plugin-icons/material-<estilo>.json
+// Export: node_modules/@material-symbols/svg-400 -> crp_plugins/figma-plugin-icons/material-<estilo>.json
 //
 // Mesma ideia do export do Lucide: empacota cada SVG num JSON que o plugin carrega e vira Components.
 // Diferenças do Material (vs Lucide): ícones são PREENCHIDOS (fill, não stroke), viewBox 0 -960 960 960,
@@ -15,7 +15,7 @@ const ROOT = process.cwd();
 const PKG = join(ROOT, 'node_modules', '@material-symbols', 'svg-400');
 const STYLES = ['outlined', 'rounded', 'sharp'];
 const SIZES = [16, 20, 24, 32];
-const OUT_DIR = join(ROOT, 'figma-plugin-icons');
+const OUT_DIR = join(ROOT, 'crp_plugins', 'figma-plugin-icons');
 
 function minifySvg(raw) {
   return raw

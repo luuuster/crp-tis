@@ -16,11 +16,13 @@
 Pipeline de **Single Source of Truth (SSOT)** para os tokens do produto CRP.
 
 ```
-Token Studio (Figma)  →  GitHub (tokens/*.json)  →  ┬→  Figma Variables (designers)
-   fonte da verdade        versionado                └→  dist/ (Tailwind v4 / shadcn → front-ends)
+tokens/*.json (GitHub)  ⇄  Token Studio (edição visual opcional)
+   fonte da verdade      →  ┬→  Figma Variables (designers, via plugin CRP)
+   (DTCG, versionado)       └→  dist/ (Tailwind v4 / shadcn → front-ends)
 ```
 
-- **Token Studio** é a **fonte da verdade**. Ninguém edita CSS nem Figma Variables à mão.
+- **`tokens/` no repo** é a **fonte da verdade** (os tokens nascem como JSON aqui; o Token Studio
+  importa/exporta esse JSON quando se quer editar visualmente). Ninguém edita CSS nem Figma Variables à mão.
 - **Designers** consomem **Figma Variables** (gerados a partir do Token Studio).
 - **Front-ends** consomem `@crp/design-tokens` (Tailwind v4 + shadcn/ui).
 - Multi-marca (`CRP`, `MarcaB`, …) × **Light/Dark**. Cores em **OKLCH**.
@@ -64,16 +66,29 @@ dist/                        # GERADO — não editar à mão
   components/button.js       # guard aria-disabled (gerado de src/components/button.js)
   tokens.{js,d.ts}           # brands/modes/themes para o provider de tema
 preview/index.html           # preview visual da troca de tema/marca (abre direto no navegador)
+crp_plugins/                 # plugins de dev (Figma + navegador) — 1 plugin por trabalho
+  figma-plugin/              #   Tokens → Figma Variables (4 collections Brand × Mode) + Styles
+  figma-plugin-icons/        #   biblioteca de ícones (Lucide/Material) como Components
+  figma-plugin-components/   #   ComponentSets shadcn (Button, Input) bindados nas Variables
+  figma-plugin-screens/      #   telas montadas com as instâncias dos componentes
+  crp-editor-extension/      #   extensão Chrome "CRP Inspector" (inspeciona tokens no app)
+integration/react/           # Code Connect dos ícones (Figma ↔ <Icon> React)
+app/                         # TalentAI — app React de demonstração (mockup; ver app/README.md)
+docs/                        # histórico de processo (planos, auditorias) — NÃO é onboarding
 ```
 
 ## Comandos
 
 ```bash
 npm install
-npm run build     # gera dist/ a partir de tokens/
-npm run check     # valida contrato, referências e contraste WCAG (AA)
-npm run preview   # build + instrução para abrir preview/index.html
-npm run export:ts # gera token-studio/tokens.json (bundle p/ importar no Token Studio)
+npm run build              # gera dist/ a partir de tokens/
+npm run check              # valida contrato, referências e contraste WCAG (AA)
+npm run doctor             # guarda anti-corrupção do working tree (roda no pre-commit)
+npm run preview            # build + instrução para abrir preview/index.html
+npm run export:ts          # gera token-studio/tokens.json (bundle p/ importar no Token Studio)
+npm run export:figma       # gera crp_plugins/figma-plugin/figma-variables.json (p/ o plugin de Variables)
+npm run export:components  # gera crp_plugins/figma-plugin-components/figma-components.json (Button/Input)
+npm run icons              # gera + embute os bundles de ícones (Lucide/Material) no plugin de ícones
 ```
 
 ## Cores das marcas
@@ -184,12 +199,12 @@ O script valida compatibilidade (refs, sets vs `$themes`/`$metadata`, `$type`) e
 
 Duas rotas para levar os tokens a **Figma Variables**:
 
-**A) Plugin próprio (direto, 1 clique — recomendado).** `figma-plugin/` é um plugin de dev que
+**A) Plugin próprio (direto, 1 clique — recomendado).** `crp_plugins/figma-plugin/` é um plugin de dev que
 lê o `token-studio/tokens.json` e **cria as Variables** no arquivo aberto, sem Token Studio nem
 Enterprise (a Plugin API escreve Variables em qualquer plano; a REST API de escrita é Enterprise-only).
 Cria 4 collections no eixo **Brand × Mode**: `CRP/Primitives`, `CRP/Base`, `CRP/Brand` (modes CRP/MarcaB),
 `CRP/Mode` (modes Light/Dark) — contrato todo como **alias** dos primitivos. Passo a passo em
-[`figma-plugin/README.md`](figma-plugin/README.md). Use um arquivo do time **pro** (times *Starter*
+[`crp_plugins/figma-plugin/README.md`](crp_plugins/figma-plugin/README.md). Use um arquivo do time **pro** (times *Starter*
 limitam modes).
 
 **B) Token Studio (manual).** Pull dos tokens do GitHub → **Export → Figma Variables** (ação manual
@@ -233,7 +248,11 @@ vira um no-op e a `main` fica verde (em vez de falhar tentando publicar a 0.0.0)
 
 ## Etapas manuais (fora deste repo de código)
 
-- Instalar o plugin **Tokens Studio for Figma** e configurar **sync GitHub** apontando para `tokens/`, formato **DTCG**, multi-file.
-- Validar na Fase 1 se a versão do plugin libera "Export to Figma Variables" no plano free.
+- **Figma Variables:** rodar o plugin `crp_plugins/figma-plugin/` no arquivo do Figma (rota A acima) —
+  é a rota recomendada e não depende de plano pago.
+- **Token Studio (opcional):** para editar visualmente, importar `token-studio/tokens.json` via
+  *Load from JSON* (formato DTCG) — ver seção "Carregar os tokens no Token Studio".
+- **Bibliotecas do Figma:** após rodar os plugins de ícones/componentes, *publicar* a biblioteca
+  (Assets → Publish) para propagar aos arquivos que a consomem.
 
 Para qualquer tarefa no pipeline, use o subagente especializado: `.claude/agents/design-system.md`.

@@ -1,4 +1,4 @@
-// Validador do figma-plugin/figma-variables.json (estrutura de 2 eixos: Brand × Modes) contra a
+// Validador do crp_plugins/figma-plugin/figma-variables.json (estrutura de 2 eixos: Brand × Modes) contra a
 // saída REAL do build (dist/themes/*.css, Style Dictionary). COMPÕE os eixos: resolve cada cor de
 // CRP/Modes para um tema completo (marca + light/dark) seguindo os aliases até o primitivo, e compara
 // com o terminal do CSS daquele tema. Se baterem, está correto de fato. Relatório (sai != 0 se erro).
@@ -9,7 +9,7 @@ import { cssValToRgb, dist } from './lib/color.mjs';
 
 const ROOT = process.cwd();
 const DIST = join(ROOT, 'dist');
-const fig = JSON.parse(readFileSync(join(ROOT, 'figma-plugin', 'figma-variables.json'), 'utf8'));
+const fig = JSON.parse(readFileSync(join(ROOT, 'crp_plugins', 'figma-plugin', 'figma-variables.json'), 'utf8'));
 
 // Marcas/modos/temas derivados de tokens/$themes.json (build/lib/themes.mjs) — marca nova entra sozinha.
 const SSOT = loadThemes(ROOT);

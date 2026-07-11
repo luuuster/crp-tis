@@ -1,8 +1,8 @@
 # Ideias de plugins Figma — backlog (futuro)
 
 > **Status:** backlog. Não começar antes de fechar o que está em voo (ver _Pré-requisitos_ no fim).
-> **Contexto:** hoje temos 2 plugins de **entrada** — `figma-plugin/` (Tokens → Variables, + auditoria de
-> drift) e `figma-plugin-icons/` (Ícones → Components). O gap do fluxo não é mais _empurrar coisa pra dentro_
+> **Contexto:** hoje temos 2 plugins de **entrada** — `crp_plugins/figma-plugin/` (Tokens → Variables, + auditoria de
+> drift) e `crp_plugins/figma-plugin-icons/` (Ícones → Components). O gap do fluxo não é mais _empurrar coisa pra dentro_
 > do Figma; é **governança, QA e saída**. É aí que estão os plugins de maior ROI.
 
 Ranqueado pelo encaixe real com o que já temos (reuso de código + valores do projeto: token-driven,
@@ -27,7 +27,7 @@ automaticamente ao token correspondente.
 
 **Reusa o que já existe:**
 - o _match por valor_ (igual o icons plugin casa `icon/*` e `border-width/*` por valor),
-- o **`numClose` / tolerância float32** que resolvemos na auditoria do `figma-plugin/` → vira o "modo fix"
+- o **`numClose` / tolerância float32** que resolvemos na auditoria do `crp_plugins/figma-plugin/` → vira o "modo fix"
   (o Figma guarda float32; o match precisa ser tolerante).
 
 **Esforço:** médio. **Por que vale:** fecha o ciclo de governança — é o que falta depois de "tokens entram".
@@ -67,7 +67,7 @@ de memória.
 **O que faz:** lê as Variables e **desenha** sozinho a rampa de cor (swatch + nome + valor + token), a escala
 de tipografia, espaçamento, raios e sombras — uma página sempre sincronizada com o export.
 
-**Reusa:** o export de Variables que o `figma-plugin/` já produz.
+**Reusa:** o export de Variables que o `crp_plugins/figma-plugin/` já produz.
 **Esforço:** médio-alto (é layout). **Por que vale:** referência viva para designers; some o "qual é o token
 mesmo?".
 
@@ -76,7 +76,7 @@ mesmo?".
 ## Não construir (Figma já faz nativo — seria retrabalho)
 
 - **Trocador de tema simples** → os _modes_ das Variables já fazem.
-- **Re-sync de tokens** → já é o `figma-plugin/`.
+- **Re-sync de tokens** → já é o `crp_plugins/figma-plugin/`.
 - **Bind de 1 variável avulsa** → nativo no Dev Mode / painel.
 
 ---
@@ -91,7 +91,7 @@ mesmo?".
 
 1. **Plano do contraste** (`muted-foreground/muted` AA + par **fatal** no `check.mjs` + tolerância float32 na
    auditoria) — toca token + barra de a11y; é dívida já identificada. O #2 herda essa base.
-2. **Validar o `figma-plugin-icons/` no Figma de verdade** (recarregar, confirmar `DecompressionStream` +
+2. **Validar o `crp_plugins/figma-plugin-icons/` no Figma de verdade** (recarregar, confirmar `DecompressionStream` +
    geração dos Components) — hoje está "verde em teste", não "validado no Figma".
 3. **Commitar/landar** a branch atual (`feat/figma-plugin-export-and-aa`) — está com muita coisa não-commitada.
 
