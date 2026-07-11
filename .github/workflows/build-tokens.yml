@@ -6,10 +6,11 @@ on:
     branches: [main]
   pull_request:
 
+# Padrão MÍNIMO (só leitura) para todos os jobs — inclusive os que rodam em PR (npm ci/run executam
+# código de dependências; write global ampliaria o raio de um supply-chain). O job `release` (único
+# que precisa escrever) declara as próprias permissões, e só roda em push na main.
 permissions:
-  contents: write      # bump de versão + push do changelog
-  packages: write      # publicar em GitHub Packages
-  pull-requests: write # changesets abre a PR "Version Packages"
+  contents: read
 
 concurrency:
   group: tokens-${{ github.ref }}
@@ -77,17 +78,6 @@ jobs:
 
       - name: Testes (plugins Figma + bundles Lucide/Material)
         run: npm test          # pure.test + bundle.test (lucide) + material.test + embed.test + run.test (lógica)
-
-      # Só na main: abre a PR "Version Packages" ou publica quando há changesets pendentes.
-      - name: Release (changesets)
-        if: github.ref == 'refs/heads/main'
-        uses: changesets/action@v1
-        with:
-          version: npx changeset version
-          publish: npm run release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # App de demonstração: typecheck + build + testes (Vitest). Roda em paralelo ao job de tokens.
   app:
@@ -166,3 +156,40 @@ jobs:
           name: playwright-report
           path: app/playwright-report/
           if-no-files-found: ignore
+
+  # Release SEPARADO (única escrita do workflow): só push na main e só com TUDO verde (tokens + app +
+  # e2e — antes o publish morava no job build e rodava mesmo com app/e2e falhando). Abre a PR "Version
+  # Packages" ou publica quando há changesets pendentes; `npm run release` builda antes de publicar.
+  release:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [build, app, e2e]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write      # bump de versão + push do changelog
+      packages: write      # publicar em GitHub Packages
+      pull-requests: write # changesets abre a PR "Version Packages"
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          registry-url: https://npm.pkg.github.com
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: npm 11 (igual ao packageManager + lock)
+        run: npm install -g npm@11.11.0
+
+      - run: npm ci
+
+      - name: Release (changesets)
+        uses: changesets/action@v1
+        with:
+          version: npx changeset version
+          publish: npm run release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
