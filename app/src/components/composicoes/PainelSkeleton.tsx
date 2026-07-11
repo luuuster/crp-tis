@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/lib/utils'
 import { CARD, HEADER_SURFACE } from '@/lib/surfaces'
-import { Logo } from '@/components/auth/Logo'
+import { Logo } from '@/components/composicoes/auth/Logo'
 import { Skeleton } from '@/components/ui/skeleton'
 
 const LARGURAS = ['w-3/4', 'w-2/3', 'w-1/2', 'w-3/5'] // larguras variadas p/ as linhas não ficarem "tijolo"

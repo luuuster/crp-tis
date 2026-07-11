@@ -19,7 +19,7 @@ import {
 
 import { cn } from '@/lib/utils'
 import { toneBadge, type Tone } from '@/lib/surfaces'
-import { DocShell } from '@/components/DocShell'
+import { DocShell } from '@/components/composicoes/DocShell'
 import { Badge } from '@/components/ui/badge'
 
 type Ator = 'rec' | 'cand' | 'pub'

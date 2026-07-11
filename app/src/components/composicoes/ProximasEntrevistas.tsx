@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils'
 import { focusRing } from '@/lib/focus'
 import { usePagination } from '@/lib/usePagination'
 import { mesAbrev, mesLongo } from '@/lib/datetime'
-import { Panel, Paginacao } from '@/components/page'
+import { Panel, Paginacao } from '@/components/composicoes/page'
 import { Input } from '@/components/ui/input'
 import type { Evento } from '@/pages/Entrevistas'
 

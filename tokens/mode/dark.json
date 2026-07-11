@@ -14,6 +14,7 @@
   "destructive":           { "$type": "color", "$value": "{color.red.600}", "$description": "red.600 (não 500) p/ o texto BRANCO passar AA no dark (4.71)." },
   "destructive-foreground":{ "$type": "color", "$value": "{color.neutral.50}" },
   "warning":               { "$type": "color", "$value": "{color.amber.400}" },
+  "warning-muted":         { "$type": "color", "$value": "color-mix(in oklch, {color.amber.400} 15%, transparent)", "$description": "Superfície WARNING suave (fundo de badge/alerta 'soft') — warning a 15%. Espelha o `bg-warning/15` da web. amber.500@15% no light, amber.400@15% no dark." },
   "warning-foreground":    { "$type": "color", "$value": "{color.amber.950}" },
   "success":               { "$type": "color", "$value": "{color.green.700}" },
   "success-foreground":    { "$type": "color", "$value": "{color.white}" },
@@ -114,5 +115,20 @@
   },
 
   "elevation-panel-l": { "$type": "boxShadow", "$value": "6px 0 24px -18px rgb(0 0 0 / 0.60)", "$description": "Elevação DIRECIONAL de painel à ESQUERDA no dark — mesma geometria do light (offset-x +6px, projeta p/ direita, spread -18px) com alpha MAIOR (60% vs 45%): a sombra precisa de mais força p/ separar do fundo escuro, espelhando como a escala elevation sobe um passo no dark. Black puro (no dark a sombra é sobre superfície escura)." },
-  "elevation-panel-r": { "$type": "boxShadow", "$value": "-16px 0 40px -24px rgb(0 0 0 / 0.45)", "$description": "Elevação DIRECIONAL de painel à DIREITA no dark — mesma geometria do light (offset-x -16px, projeta p/ esquerda, spread -24px) com alpha MAIOR (45% vs 25%) p/ ler sobre o fundo escuro. Black puro." }
+  "elevation-panel-r": { "$type": "boxShadow", "$value": "-16px 0 40px -24px rgb(0 0 0 / 0.45)", "$description": "Elevação DIRECIONAL de painel à DIREITA no dark — mesma geometria do light (offset-x -16px, projeta p/ esquerda, spread -24px) com alpha MAIOR (45% vs 25%) p/ ler sobre o fundo escuro. Black puro." },
+
+  "primary-10":     { "$type": "color", "$value": "color-mix(in oklch, {primary} 10%, transparent)", "$description": "Tinta PRIMARY a 10% — superfície de REPOUSO do botão soft (`primary-soft`). Espelha `bg-primary/10` da web. Segue MARCA e MODO via {primary} (mesma técnica do warning-muted, mas via semântico p/ herdar a marca). Par com primary-15 (hover)." },
+  "primary-15":     { "$type": "color", "$value": "color-mix(in oklch, {primary} 15%, transparent)", "$description": "Tinta PRIMARY a 15% — HOVER do botão soft (`primary-soft`). Espelha `bg-primary/15`. Segue marca e modo via {primary}." },
+  "secondary-10":   { "$type": "color", "$value": "color-mix(in oklch, {secondary} 10%, transparent)", "$description": "Tinta SECONDARY a 10% — REPOUSO do `secondary-soft`. Espelha `bg-secondary/10`. Segue marca e modo via {secondary}." },
+  "secondary-15":   { "$type": "color", "$value": "color-mix(in oklch, {secondary} 15%, transparent)", "$description": "Tinta SECONDARY a 15% — HOVER do `secondary-soft`. Espelha `bg-secondary/15`." },
+  "destructive-10": { "$type": "color", "$value": "color-mix(in oklch, {destructive} 10%, transparent)", "$description": "Tinta DESTRUCTIVE a 10% — HOVER do `destructive-outline` no LIGHT. Espelha `hover:bg-destructive/10`." },
+  "destructive-15": { "$type": "color", "$value": "color-mix(in oklch, {destructive} 15%, transparent)", "$description": "Tinta DESTRUCTIVE a 15% — HOVER do `destructive-outline` no DARK. Espelha `dark:hover:bg-destructive/15`." },
+  "warning-90":     { "$type": "color", "$value": "color-mix(in oklch, {warning} 90%, transparent)", "$description": "WARNING a 90% — HOVER do botão warning sólido. Espelha `hover:bg-warning/90`. Segue o modo via {warning} (amber.500 no light, amber.400 no dark)." },
+
+  "button-destructive-bg":               { "$type": "color", "$value": "color-mix(in oklch, {destructive} 60%, transparent)", "$description": "Botão destructive sólido — FUNDO (mode-aware). Light = destructive opaco; Dark = destructive a 60% (mais suave no fundo escuro). Espelha `bg-destructive dark:bg-destructive/60`." },
+  "button-outline-border":               { "$type": "color", "$value": "{input}", "$description": "Botão outline — BORDA (mode-aware). Light = border; Dark = input. Espelha `border dark:border-input`." },
+  "button-outline-bg":                   { "$type": "color", "$value": "color-mix(in oklch, {input} 30%, transparent)", "$description": "Botão outline E destructive-outline — FUNDO de repouso (mode-aware). Light = background; Dark = input a 30%. Espelha `bg-background dark:bg-input/30`. Um token só serve os dois slots (par light/dark idêntico)." },
+  "button-outline-hover-bg":             { "$type": "color", "$value": "color-mix(in oklch, {input} 50%, transparent)", "$description": "Botão outline — FUNDO no HOVER (mode-aware). Light = accent; Dark = input a 50%. Espelha `hover:bg-accent dark:hover:bg-input/50`." },
+  "button-ghost-hover-bg":               { "$type": "color", "$value": "color-mix(in oklch, {accent} 50%, transparent)", "$description": "Botão ghost — FUNDO no HOVER (mode-aware). Light = accent; Dark = accent a 50%. Espelha `hover:bg-accent dark:hover:bg-accent/50`." },
+  "button-destructive-outline-hover-bg": { "$type": "color", "$value": "{destructive-15}", "$description": "Botão destructive-outline — FUNDO no HOVER (mode-aware). Light = destructive a 10%; Dark = destructive a 15%. Aliasa destructive-10/destructive-15. Espelha `hover:bg-destructive/10 dark:hover:bg-destructive/15`." }
 }

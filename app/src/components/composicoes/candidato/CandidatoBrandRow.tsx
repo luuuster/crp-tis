@@ -10,9 +10,9 @@
 import { cn } from '@/lib/utils'
 import { focusRing } from '@/lib/focus'
 import type { Brand, Mode } from '@/lib/useBrandMode'
-import { Logo } from '@/components/auth/Logo'
-import { ThemeToggles } from '@/components/ThemeToggles'
-import { ContaMenu } from '@/components/candidato/ContaMenu'
+import { Logo } from '@/components/composicoes/auth/Logo'
+import { ThemeToggles } from '@/components/composicoes/ThemeToggles'
+import { ContaMenu } from '@/components/composicoes/candidato/ContaMenu'
 
 export function CandidatoBrandRow({ brand, mode, onCycleBrand, onToggleMode, onSair, logoHref, logoLabel, conta = false }: {
   brand?: string

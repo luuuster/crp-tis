@@ -163,13 +163,18 @@ write('border.json', border);
 const icon = {
   icon: {
     $type: 'dimension',
-    xs: { $value: '12px' },
-    sm: { $value: '16px' },
-    md: { $value: '20px' },
-    lg: { $value: '24px' },
-    xl: { $value: '32px' },
-    '2xl': { $value: '40px' },
-    '3xl': { $value: '48px' },
+    '8': { $value: '8px' },
+    '12': { $value: '12px' },
+    '14': { $value: '14px' },
+    '16': { $value: '16px' },
+    '18': { $value: '18px' },
+    '20': { $value: '20px' },
+    '24': { $value: '24px' },
+    '28': { $value: '28px' },
+    '32': { $value: '32px' },
+    '36': { $value: '36px' },
+    '40': { $value: '40px' },
+    '48': { $value: '48px' },
   },
 };
 write('icon.json', icon);

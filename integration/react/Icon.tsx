@@ -3,7 +3,7 @@
 //
 // Paridade 1:1 com o componente `lucide/<nome>` do Figma:
 //   • Mesmos nomes (kebab-case Lucide): "arrow-right", "chevron-down"…  (= a SET name no Figma)
-//   • size 16/20/24/32  (= primitivos icon/sm…icon/xl) — default 20px (= variante padrão do set no Figma)
+//   • size 16/20/24/32  (= primitivos icon/16…icon/32) — default 20px (= variante padrão do set no Figma)
 //   • stroke ABSOLUTO por tamanho: 16/20 → 1.5px, 24 → 2px, 32 → 3px  (= o bind do Figma em border-width/*)
 //   • cor = currentColor (herda) — aponte p/ o seu token, ex.: style={{ color: 'var(--primary-foreground)' }}
 //

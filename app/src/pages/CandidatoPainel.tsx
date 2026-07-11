@@ -20,7 +20,7 @@ import {
 } from '@/lib/vagasCatalogo'
 import { usePagination } from '@/lib/usePagination'
 import { estaLogado, guardarEmailCandidato } from '@/lib/candidatoSessao'
-import { CandidatoShell } from '@/components/candidato/CandidatoShell'
+import { CandidatoShell } from '@/components/composicoes/candidato/CandidatoShell'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -28,7 +28,7 @@ import { Separator } from '@/components/ui/separator'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { SearchSelect } from '@/pages/job-generator/fields'
-import { PageContainer, PageHeader, EmptyState, Paginacao } from '@/components/page'
+import { PageContainer, PageHeader, EmptyState, Paginacao } from '@/components/composicoes/page'
 
 const H_MD = 'h-[var(--button-height-md)]' // 40px — altura padrão dos controles de filtro (DS)
 
@@ -118,7 +118,7 @@ function LocalFiltro({ pais, estado, cidade, onAplicar }: {
         <p className="ty-label-sm text-muted-foreground" id={`${id}-label`}>{rotulo}</p>
         {emBreve && <Badge variant="ghost" className="bg-warning/15 px-1.5 py-0 text-warning-text">{t('localFiltro.emBreve')}</Badge>}
       </div>
-      <SearchSelect id={id} value={value} onChange={onChange} options={[todos.valor, ...opcoes]} labelOf={(v) => (v === todos.valor ? todos.rotulo : v)} aria-labelledby={`${id}-label`} disabled={emBreve} />
+      <SearchSelect id={id} size="md" value={value} onChange={onChange} options={[todos.valor, ...opcoes]} labelOf={(v) => (v === todos.valor ? todos.rotulo : v)} aria-labelledby={`${id}-label`} disabled={emBreve} />
       {emBreve && <p className="flex items-start gap-1.5 ty-caption text-muted-foreground"><Clock className="mt-px size-3 shrink-0" aria-hidden /> {t('localFiltro.emBreveNota')}</p>}
     </div>
   )

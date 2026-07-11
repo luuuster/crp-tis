@@ -6,7 +6,7 @@ import './i18n' // inicializa o react-i18next (pt-BR padrão + en/es) — efeito
 import { initTelemetry } from './lib/telemetry'
 import { TooltipProvider } from './components/ui/tooltip'
 import { Toaster } from './components/ui/sonner'
-import { ErrorBoundary } from './components/ErrorBoundary'
+import { ErrorBoundary } from './components/composicoes/ErrorBoundary'
 import { MapaArquitetura } from './pages/MapaArquitetura'
 import { UserFlow } from './pages/UserFlow'
 import { Componentes } from './pages/Componentes'

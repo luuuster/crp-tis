@@ -59,8 +59,8 @@
   .sizes label:has(input:focus-visible) { outline: 2px solid var(--brand); outline-offset: 1px; }
 
   /* Espessura por tamanho */
-  .strokes { display: flex; gap: var(--sp-2); }
-  .strokes .cell { flex: 1; display: flex; flex-direction: column; gap: 3px; margin: 0; }
+  .strokes { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+  .strokes .cell { flex: 1 1 52px; display: flex; flex-direction: column; gap: 3px; margin: 0; }
   .strokes .cell select { width: 100%; text-align: center; padding: 8px 4px; }
   .strokes .cell small { text-align: center; color: var(--tx-2); font-size: 11px; }
 
@@ -157,15 +157,21 @@
     <div class="field">
       <label>Tamanhos do ícone <span class="muted" style="font-weight:400">(px)</span></label>
       <div class="sizes" id="sizes">
+        <label><input type="checkbox" value="8"> 8</label>
+        <label><input type="checkbox" value="12"> 12</label>
+        <label><input type="checkbox" value="14"> 14</label>
         <label><input type="checkbox" value="16" checked> 16</label>
+        <label><input type="checkbox" value="18"> 18</label>
         <label><input type="checkbox" value="20" checked> 20</label>
         <label><input type="checkbox" value="24" checked> 24</label>
+        <label><input type="checkbox" value="28"> 28</label>
         <label><input type="checkbox" value="32" checked> 32</label>
+        <label><input type="checkbox" value="36"> 36</label>
       </div>
       <div class="subrow">
         <span class="lbl">Variante padrão <small>inserida ao colocar o componente</small></span>
         <select id="defaultSize" aria-label="Tamanho da variante padrão">
-          <option value="16">16 px</option><option value="20" selected>20 px</option><option value="24">24 px</option><option value="32">32 px</option>
+          <option value="8">8 px</option><option value="12">12 px</option><option value="14">14 px</option><option value="16">16 px</option><option value="18">18 px</option><option value="20" selected>20 px</option><option value="24">24 px</option><option value="28">28 px</option><option value="32">32 px</option><option value="36">36 px</option>
         </select>
       </div>
     </div>
@@ -173,12 +179,18 @@
     <div class="field" id="strokeField">
       <label>Espessura por tamanho do ícone <span class="muted" style="font-weight:400">(liga a <code>border-width/&lt;n&gt;</code>)</span></label>
       <div class="strokes" id="strokes">
+        <span class="cell"><select data-sz="8" aria-label="Espessura do traço p/ ícone de 8px"><option selected>1</option><option>1.5</option><option>2</option><option>3</option><option>4</option></select><small>8px</small></span>
+        <span class="cell"><select data-sz="12" aria-label="Espessura do traço p/ ícone de 12px"><option selected>1</option><option>1.5</option><option>2</option><option>3</option><option>4</option></select><small>12px</small></span>
+        <span class="cell"><select data-sz="14" aria-label="Espessura do traço p/ ícone de 14px"><option>1</option><option selected>1.5</option><option>2</option><option>3</option><option>4</option></select><small>14px</small></span>
         <span class="cell"><select data-sz="16" aria-label="Espessura do traço p/ ícone de 16px"><option>1</option><option selected>1.5</option><option>2</option><option>3</option><option>4</option></select><small>16px</small></span>
+        <span class="cell"><select data-sz="18" aria-label="Espessura do traço p/ ícone de 18px"><option>1</option><option selected>1.5</option><option>2</option><option>3</option><option>4</option></select><small>18px</small></span>
         <span class="cell"><select data-sz="20" aria-label="Espessura do traço p/ ícone de 20px"><option>1</option><option selected>1.5</option><option>2</option><option>3</option><option>4</option></select><small>20px</small></span>
         <span class="cell"><select data-sz="24" aria-label="Espessura do traço p/ ícone de 24px"><option>1</option><option>1.5</option><option selected>2</option><option>3</option><option>4</option></select><small>24px</small></span>
+        <span class="cell"><select data-sz="28" aria-label="Espessura do traço p/ ícone de 28px"><option>1</option><option>1.5</option><option selected>2</option><option>3</option><option>4</option></select><small>28px</small></span>
         <span class="cell"><select data-sz="32" aria-label="Espessura do traço p/ ícone de 32px"><option>1</option><option>1.5</option><option>2</option><option selected>3</option><option>4</option></select><small>32px</small></span>
+        <span class="cell"><select data-sz="36" aria-label="Espessura do traço p/ ícone de 36px"><option>1</option><option>1.5</option><option>2</option><option selected>3</option><option>4</option></select><small>36px</small></span>
       </div>
-      <p class="hint">Os números <b>16 · 20 · 24 · 32</b> são o <b>tamanho do ícone</b> (px); o valor do seletor é a espessura do traço de cada um.</p>
+      <p class="hint">Os números <b>8 · 12 · 14 · 16 · 18 · 20 · 24 · 28 · 32 · 36</b> são o <b>tamanho do ícone</b> (px); o valor do seletor é a espessura do traço de cada um.</p>
     </div>
 
     <div class="field">

@@ -12,9 +12,9 @@ import { cn } from '@/lib/utils'
 import { HEADER_SURFACE } from '@/lib/surfaces'
 import { focusRing } from '@/lib/focus'
 import { useBrandMode } from '@/lib/useBrandMode'
-import { Logo } from '@/components/auth/Logo'
-import { ThemeToggles } from '@/components/ThemeToggles'
-import { SectionTabs } from '@/components/SectionTabs'
+import { Logo } from '@/components/composicoes/auth/Logo'
+import { ThemeToggles } from '@/components/composicoes/ThemeToggles'
+import { SectionTabs } from '@/components/composicoes/SectionTabs'
 
 type DocTab = 'ia' | 'flow' | 'comp'
 

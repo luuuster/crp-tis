@@ -11,7 +11,7 @@
  *   - proposta → ENVIAR a proposta; depois Aceitou (→ Contratado) / Recusou (→ Reprovado).
  *   - final    → terminal (Contratado / Reprovado).
  */
-import type { BadgeTone } from '@/components/page'
+import type { BadgeTone } from '@/components/composicoes/page'
 
 export type FaseId = 'ia' | 'rh' | 'teste' | 'gestor' | 'proposta' | 'contratado' | 'reprovado'
 export type Gate = 'decisao' | 'agendar' | 'teste' | 'proposta' | 'final'

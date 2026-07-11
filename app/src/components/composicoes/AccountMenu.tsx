@@ -14,7 +14,7 @@ import { focusRing } from '@/lib/focus'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Tip } from '@/components/ui/tooltip'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { ConfirmDialog } from '@/components/confirm-dialog'
+import { ConfirmDialog } from '@/components/composicoes/confirm-dialog'
 
 // Item do menu (antes do "Sair"). `variant` só pra casos destrutivos — o "Sair" já é fixo no rodapé.
 export type AccountMenuItem = { icon: LucideIcon; label: string; onSelect: () => void; variant?: 'destructive' }

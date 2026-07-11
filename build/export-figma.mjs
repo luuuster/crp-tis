@@ -106,6 +106,28 @@ function tokenToRgb(token) {
   if (typeof v === 'string' && /^oklch/i.test(v.trim())) return oklchToRgb(v);
   return null;
 }
+// Cor de contrato com ALPHA embutido, escrita como color-mix(in <space>, {ref}|<literal> P%, transparent)
+// (exatamente o que o Tailwind v4 gera p/ bg-x/NN, ex.: warning-muted = bg-warning/15) — ou o fallback
+// rgba({ref}, A). O Figma não tem "alias com alpha", então resolvemos p/ RGBA (mesmo tratamento dos
+// STATE_ALPHAS): resolve a cor base (ref → primitivo terminal, ou literal) e aplica o alpha. → {r,g,b,a} | null.
+function alphaColorFrom(value, map) {
+  if (typeof value !== 'string') return null;
+  let inner, alpha;
+  let m = value.match(/color-mix\(\s*in\s+[\w-]+\s*,\s*(.+?)\s+([\d.]+)%\s*,\s*transparent\s*\)/i);
+  if (m) { inner = m[1].trim(); alpha = parseFloat(m[2]) / 100; }
+  else {
+    m = value.match(/^\s*rgba?\(\s*(\{[^}]+\}|#[0-9a-fA-F]{3,8}|oklch\([^)]*\))\s*,\s*([\d.]+)\s*\)\s*$/i);
+    if (!m) return null;
+    inner = m[1].trim(); alpha = parseFloat(m[2]);
+  }
+  if (!(alpha >= 0 && alpha <= 1)) return null;
+  const ref = refTarget(inner);
+  let rgb = null;
+  if (ref) { const t = resolveTerminal(ref, map); rgb = t ? tokenToRgb(t.token) : null; }
+  else rgb = tokenToRgb({ $value: inner });
+  if (!rgb) return null;
+  return { r: rgb.r, g: rgb.g, b: rgb.b, a: alpha };
+}
 function toNum(v) {
   if (typeof v === 'number') return v;
   if (typeof v !== 'string') return null;
@@ -279,7 +301,11 @@ for (const key of modeColorKeys) {
     if (!e) { warnings.push(`${key} ausente em ${setName}`); continue; }
     const la = layerAlias(e.token.$value);
     if (la) { values[modeName] = la; continue; }
-    const term = resolveTerminal(key, themeMaps[modeName === 'Light' ? 'CRP-Light' : 'CRP-Dark']);
+    const themeName = modeName === 'Light' ? 'CRP-Light' : 'CRP-Dark';
+    // cor de contrato com alpha embutido (color-mix .../transparent | rgba({ref},a)) → RGBA resolvido
+    const alphaCol = alphaColorFrom(e.token.$value, themeMaps[themeName]);
+    if (alphaCol) { values[modeName] = { color: alphaCol }; continue; }
+    const term = resolveTerminal(key, themeMaps[themeName]);
     const rgb = term ? tokenToRgb(term.token) : null;
     if (rgb) values[modeName] = { color: rgb }; else warnings.push(`cor sem valor: ${key} @ ${modeName}`);
   }
@@ -400,7 +426,7 @@ const ROLE_GROUP = {
   display: 'Display/Base',
   h1: 'Heading/H1', h2: 'Heading/H2', h3: 'Heading/H3', h4: 'Heading/H4', h5: 'Heading/H5', h6: 'Heading/H6',
   'body-lg': 'Body/Large', body: 'Body/Base', 'body-sm': 'Body/Small',
-  'label-lg': 'Label/Large', label: 'Label/Base', 'label-sm': 'Label/Small',
+  'label-lg': 'Label/Large', label: 'Label/Base', 'label-sm': 'Label/Small', 'label-xs': 'Label/XSmall',
   link: 'Link/Base', caption: 'Caption/Base', overline: 'Overline/Base', code: 'Code/Base',
 };
 const baseMapTypo = themeMaps['CRP-Light'];
@@ -472,7 +498,8 @@ const paintStyles = [];
 for (const v of modesVars) {
   if (stateNames.has(v.name)) continue; // states (primary-90…) não viram Paint Style — cor de uso do kit
   const term = resolveTerminal(v.name, themeMaps['CRP-Light']); // nomes de Modes são single-seg (path == nome)
-  const fb = term ? tokenToRgb(term.token) : null;
+  const fb = (term ? tokenToRgb(term.token) : null)
+    || (term ? alphaColorFrom(term.token.$value, themeMaps['CRP-Light']) : null); // cor com alpha (color-mix/rgba)
   paintStyles.push({
     name: 'Color/' + v.name,
     boundVariable: v.name,

@@ -14,8 +14,8 @@ import { CheckCircle2, ClipboardList, LayoutGrid } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { HEADER_SURFACE } from '@/lib/surfaces'
 import type { Brand, Mode } from '@/lib/useBrandMode'
-import { CandidatoBrandRow } from '@/components/candidato/CandidatoBrandRow'
-import { SectionTabs } from '@/components/SectionTabs'
+import { CandidatoBrandRow } from '@/components/composicoes/candidato/CandidatoBrandRow'
+import { SectionTabs } from '@/components/composicoes/SectionTabs'
 
 export type AbaCandidato = 'vagas' | 'candidaturas' | 'finalizadas'
 

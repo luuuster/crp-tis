@@ -1,44 +1,61 @@
 {
   "button": {
-    "radius": { "$type": "dimension", "$value": "{radius}" },
+    "radius": { "$type": "dimension", "$value": "{radius-md}", "$description": "rounded-md 6px, igual button.tsx (rounded-md no cva base e em todos os sizes). NÃO é o {radius} base do contrato (10px)." },
     "font-weight": { "$type": "fontWeight", "$value": "{font.weight.medium}" },
     "border-width": { "$type": "dimension", "$value": "{borderWidth.1}" },
-    "ring-width": { "$type": "dimension", "$value": "{borderWidth.3}" },
+    "ring-width": { "$type": "dimension", "$value": "{borderWidth.2}", "$description": "Anel de foco 2px, igual .focus-ring no index.css (outline: 2px solid var(--ring))." },
     "ring-offset": { "$type": "dimension", "$value": "{borderWidth.2}" },
 
     "gap": {
       "$type": "dimension",
+      "xs": { "$value": "{gap.2xs}" },
       "sm": { "$value": "{gap.2xs}" },
       "md": { "$value": "{gap.xs}" },
       "lg": { "$value": "{gap.xs}" }
     },
     "padding-x": {
       "$type": "dimension",
+      "xs": { "$value": "{inset.xs}" },
       "sm": { "$value": "{inset.sm}" },
       "md": { "$value": "{inset.md}" },
       "lg": { "$value": "{inset.lg}" }
     },
     "padding-y": {
       "$type": "dimension",
+      "$description": "xs = {inset.2xs} (4px): com font 12px + line-height xs (~16px de caixa), 4px em cima/embaixo somam exatamente os 24px de altura (h-6 da web), sem depender só do min-height.",
+      "xs": { "$value": "{inset.2xs}" },
       "sm": { "$value": "{inset.2xs}" },
       "md": { "$value": "{inset.xs}" },
       "lg": { "$value": "{inset.sm}" }
     },
     "font-size": {
       "$type": "dimension",
+      "$description": "Espelha button.tsx: a base do cva é text-sm (14px) p/ sm/md/lg; só o xs cai p/ text-xs (12px). md/lg NÃO usam 16/18 — o botão do produto é 14px.",
+      "xs": { "$value": "{font.size.xs}" },
       "sm": { "$value": "{font.size.sm}" },
-      "md": { "$value": "{font.size.base}" },
-      "lg": { "$value": "{font.size.lg}" }
+      "md": { "$value": "{font.size.sm}" },
+      "lg": { "$value": "{font.size.sm}" }
     },
     "icon-size": {
       "$type": "dimension",
-      "sm": { "$value": "{icon.sm}" },
-      "md": { "$value": "{icon.md}" },
-      "lg": { "$value": "{icon.lg}" }
+      "$description": "Botão COM texto — espelha button.tsx: a base do cva é [&_svg:not([class*='size-'])]:size-4 (16px) p/ sm/md/lg; só o xs cai p/ size-3 (12px). Aqui md/lg seguem 16px pra alinhar com o rótulo (o ícone só-ícone usa icon-only-size).",
+      "xs": { "$value": "{icon.12}" },
+      "sm": { "$value": "{icon.16}" },
+      "md": { "$value": "{icon.16}" },
+      "lg": { "$value": "{icon.16}" }
+    },
+    "icon-only-size": {
+      "$type": "dimension",
+      "$description": "Botão SÓ-ÍCONE — o ícone cresce com a caixa (button.tsx: size-6=icon-xs/12, icon-sm/16, icon/size-5=20, icon-lg/size-6=24). Sem texto pra parear, o ícone preenche mais o alvo.",
+      "xs": { "$value": "{icon.12}" },
+      "sm": { "$value": "{icon.16}" },
+      "md": { "$value": "{icon.20}" },
+      "lg": { "$value": "{icon.24}" }
     },
     "height": {
       "$type": "dimension",
-      "$description": "Altura mínima (alvo de toque). md/lg ≥ 40px (WCAG 2.5.8 / alvo confortável); sm = 32px (denso, ainda razoável). Aplicado como min-height; o padding-y mantém a aparência, a min-height garante o alvo.",
+      "$description": "Altura mínima (alvo de toque). md/lg ≥ 40px (WCAG 2.5.8 / alvo confortável); sm = 32px (denso, ainda razoável); xs = 24px (UI densa, fora da escala de toque confortável — 24px é o mínimo do alvo em WCAG 2.5.8). Aplicado como min-height; o padding-y mantém a aparência, a min-height garante o alvo.",
+      "xs": { "$value": "{space.6}" },
       "sm": { "$value": "{space.8}" },
       "md": { "$value": "{space.10}" },
       "lg": { "$value": "{space.11}" }

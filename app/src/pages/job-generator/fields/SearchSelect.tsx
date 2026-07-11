@@ -6,18 +6,20 @@ import { cn } from '@/lib/utils'
 import { FIELD, FLOAT } from '@/lib/surfaces'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
-import { useIsMobile } from '@/components/shell/AppShell'
+import { useIsMobile } from '@/components/composicoes/shell/AppShell'
 import { MobileSheet } from './MobileSheet'
 import { SheetSearch, SheetOptions } from './sheet-parts'
 
 /** Select COM BUSCA p/ listas longas (Popover + cmdk): trigger igual ao FormSelect (FIELD), com um
  * campo de busca no topo do dropdown que filtra as opções. Selecionado destacado por cor/peso (sem
  * checkmark — mesmo padrão do FormSelect). Use quando há muitas opções (regra de bolso: > 7). */
-export function SearchSelect({ id, value, onChange, options, placeholder, searchPlaceholder, labelOf, disabled, "aria-invalid": ariaInvalid, "aria-describedby": ariaDescribedby, "aria-labelledby": ariaLabelledby, "aria-required": ariaRequired }: {
+export function SearchSelect({ id, value, onChange, options, placeholder, searchPlaceholder, labelOf, disabled, size = 'lg', "aria-invalid": ariaInvalid, "aria-describedby": ariaDescribedby, "aria-labelledby": ariaLabelledby, "aria-required": ariaRequired }: {
   id: string; value: string; onChange: (v: string) => void; options: readonly string[]; placeholder?: string; searchPlaceholder?: string
   // labelOf: traduz só a EXIBIÇÃO (valor canônico pt-BR permanece em value/onChange e no filtro do cmdk).
   labelOf?: (value: string) => string
   disabled?: boolean
+  // size: 'lg' (44px, padrão dos formulários) | 'md' (40px, alinha com a linha de filtros do mural).
+  size?: 'md' | 'lg'
   "aria-invalid"?: boolean; "aria-describedby"?: string; "aria-labelledby"?: string; "aria-required"?: boolean
 }) {
   const { t } = useTranslation('gerador')
@@ -32,7 +34,8 @@ export function SearchSelect({ id, value, onChange, options, placeholder, search
       id={id} type="button" role="combobox" aria-haspopup="listbox" aria-expanded={open} aria-controls={open ? `${id}-list` : undefined} disabled={disabled}
       aria-invalid={ariaInvalid} aria-describedby={ariaDescribedby} aria-labelledby={ariaLabelledby ? `${ariaLabelledby} ${id}` : undefined} aria-required={ariaRequired}
       className={cn(
-        'flex min-h-[var(--button-height-lg)] w-full items-center justify-between gap-2 border px-3 outline-none', FIELD,
+        'flex w-full items-center justify-between gap-2 border px-3 outline-none', FIELD,
+        size === 'md' ? 'min-h-[var(--button-height-md)] rounded-md text-sm md:text-sm' : 'min-h-[var(--button-height-lg)]',
         'focus-visible:focus-ring dark:bg-input/30 dark:hover:bg-input/50',
         !value && 'text-muted-foreground',
         disabled && 'cursor-not-allowed opacity-50',

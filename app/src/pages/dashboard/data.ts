@@ -6,7 +6,7 @@
 import { Briefcase, Clock, Percent, UserCheck, Users } from 'lucide-react'
 import type { ComponentType } from 'react'
 import type { StatusVaga as Status } from '@/lib/types'
-import type { BadgeTone } from '@/components/page'
+import type { BadgeTone } from '@/components/composicoes/page'
 
 // Nome de exibição (dado mockado — não traduzido); usado na saudação e no card de destaque.
 export const NOME = 'Frank'

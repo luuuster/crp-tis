@@ -16,7 +16,7 @@ import { HEADER_SURFACE, PANEL_W } from '@/lib/surfaces'
 import { focusRingOnPrimary } from '@/lib/focus'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { TopBarMenuButton, TopBarActions, TopBarAccount } from './topbar-parts'
-import { Logo } from '@/components/auth/Logo'
+import { Logo } from '@/components/composicoes/auth/Logo'
 import logoMark from '@/assets/logo/logo-mark-white.svg'
 import logoMarkTrevo from '@/assets/logo/trevo-mark-white.svg'
 
