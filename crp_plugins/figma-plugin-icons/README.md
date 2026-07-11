@@ -13,7 +13,7 @@ por **nome do ícone**. Suporta **2 fontes** (escolhidas na UI):
 > existem como SVG no pacote. **Weight, Grade e Optical Size** ficam de fora (são eixos da *fonte variável*,
 > não há SVG estático; só dariam via render da fonte — projeto à parte).
 
-> Plugin **separado** do `figma-plugin/` (Tokens → Variables). Um não interfere no outro.
+> Plugin **separado** do `crp_plugins/figma-plugin/` (Tokens → Variables). Um não interfere no outro.
 
 > **Sobre os 3 estilos do Material (peso 400):** **Rounded** é sempre distinto (cantos arredondados). Já
 > **Outlined e Sharp são idênticos em ~47% dos ícones** — o Google só diferencia o Sharp onde há canto a
@@ -28,7 +28,7 @@ por **nome do ícone**. Suporta **2 fontes** (escolhidas na UI):
    ```
    Isso **embute** os ícones no próprio plugin (comprimidos, ~4,7 MB) — você **não carrega arquivo** no Figma.
 2. **Importar o plugin no Figma:** menu → Plugins → Development → *Import plugin from manifest…* →
-   selecione `figma-plugin-icons/manifest.json` (aponta p/ o `code.bundled.js` gerado).
+   selecione `crp_plugins/figma-plugin-icons/manifest.json` (aponta p/ o `code.bundled.js` gerado).
 3. **Rodar:** abra o plugin →
    - **1 · Conjunto:** escolha a **Fonte** (Lucide / Google Material) e, p/ Material, o **Estilo**
      (Outlined/Rounded/Sharp) e o toggle **Preenchido** (outline/fill) — **já vem embutido**, carrega na hora.

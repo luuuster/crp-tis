@@ -6,9 +6,9 @@
 >
 > | Plugin | Responsabilidade | Estado |
 > |---|---|---|
-> | `figma-plugin/` (CRP DS — Tokens) | Variables (4 modes, scopes, codeSyntax) + Styles ligados | ✅ pronto |
-> | `figma-plugin-icons/` | Components de ícones (Lucide/Material) | ✅ pronto |
-> | **`figma-plugin-components/` (NOVO)** | **ComponentSets (Button, TextField…) BINDADOS nas Variables/Styles existentes + montagem de telas com as instâncias** | ❌ este plano |
+> | `crp_plugins/figma-plugin/` (CRP DS — Tokens) | Variables (4 modes, scopes, codeSyntax) + Styles ligados | ✅ pronto |
+> | `crp_plugins/figma-plugin-icons/` | Components de ícones (Lucide/Material) | ✅ pronto |
+> | **`crp_plugins/figma-plugin-components/` (NOVO)** | **ComponentSets (Button, TextField…) BINDADOS nas Variables/Styles existentes + montagem de telas com as instâncias** | ❌ este plano |
 
 ---
 
@@ -24,7 +24,7 @@ falta e instrui: "rode o plugin CRP DS — Tokens primeiro". Nada de fallback si
 
 ### Estrutura (espelha os plugins existentes)
 ```
-figma-plugin-components/
+crp_plugins/figma-plugin-components/
   manifest.json        # id próprio, dynamic-page, networkAccess none
   code.js              # lógica: deps → criação/update → telas (funções puras extraídas p/ teste)
   ui.html              # 2 abas: "Componentes" | "Telas" (createElement/textContent, padrão do repo)

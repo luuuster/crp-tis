@@ -1,4 +1,4 @@
-// Export: tokens/ -> figma-plugin/figma-variables.json (formato RESOLVIDO p/ o plugin Figma).
+// Export: tokens/ -> crp_plugins/figma-plugin/figma-variables.json (formato RESOLVIDO p/ o plugin Figma).
 //
 // Por que um arquivo separado do token-studio/tokens.json?
 //  - O Token Studio quer DTCG multi-set (com $themes/$metadata) e entende compostos.
@@ -28,7 +28,7 @@ import { parse as parseColor, inGamut } from 'culori';
 
 const ROOT = process.cwd();
 const TOKENS = join(ROOT, 'tokens');
-const OUT_DIR = join(ROOT, 'figma-plugin');
+const OUT_DIR = join(ROOT, 'crp_plugins', 'figma-plugin');
 const OUT = join(OUT_DIR, 'figma-variables.json');
 const REM = 16;
 
@@ -576,10 +576,10 @@ for (const [, e] of coreEntries) {
   if (typeof v === 'string' && /^oklch/i.test(v.trim())) { gamutTotal++; const c = parseColor(v); if (c && !inSrgb(c)) gamutOut++; }
 }
 
-console.log('Export Figma Variables + Styles → figma-plugin/figma-variables.json');
+console.log('Export Figma Variables + Styles → crp_plugins/figma-plugin/figma-variables.json');
 console.log(`  Primitives: ${stats.primitives} | Brand (CRP/MarcaB): ${stats.brand} | Modes (Light/Dark): ${stats.modes} | Base: ${stats.base} (typografia: ${stats.typography} papéis) | Components: ${stats.components} | States (alpha): ${stats.states}`);
 console.log(`  Gamut: ${gamutOut}/${gamutTotal} cores OKLCH fora do sRGB → clampadas p/ as Variables (browser usa P3; ver README)`);
 console.log(`  Styles → text: ${styleStats.text} | effect: ${styleStats.effect} | paint (ligados a Modes): ${styleStats.paint} | grid: ${styleStats.grid}`);
 console.log(`  ignorados (composto/sem valor): ${stats.skipped}`);
 if (warnings.length) { console.log('\n⚠ Avisos:'); warnings.slice(0, 12).forEach((w) => console.log('  - ' + w)); if (warnings.length > 12) console.log('  … +' + (warnings.length - 12)); }
-console.log('\n✅ pronto — importe figma-plugin/figma-variables.json pelo plugin "CRP DS".');
+console.log('\n✅ pronto — importe crp_plugins/figma-plugin/figma-variables.json pelo plugin "CRP DS".');

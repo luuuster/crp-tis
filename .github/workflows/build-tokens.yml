@@ -61,7 +61,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: figma-variables
-          path: figma-plugin/figma-variables.json
+          path: crp_plugins/figma-plugin/figma-variables.json
           if-no-files-found: error
 
       - name: Exportar token-studio/tokens.json (bundle p/ Load from JSON, gerado e não versionado)

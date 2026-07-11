@@ -1,6 +1,6 @@
 // CRP DS — Components (plugin de dev): cria COMPONENTES (ComponentSets shadcn) bindados nas
 // Variables/Styles que o plugin "CRP DS — Tokens" já colocou no arquivo. As TELAS que USAM estes
-// componentes ficam no plugin separado "CRP DS — Screens" (figma-plugin-screens/).
+// componentes ficam no plugin separado "CRP DS — Screens" (crp_plugins/figma-plugin-screens/).
 //
 // Princípio nº 1: este plugin NÃO cria tokens — ele PROCURA (por nome) e BINDA. Se faltar
 // dependência, lista e instrui a rodar o plugin de tokens primeiro. Nunca chuta.

@@ -1,4 +1,4 @@
-// Export: node_modules/lucide-static -> figma-plugin-icons/lucide-icons.json (bundle p/ o plugin de ícones).
+// Export: node_modules/lucide-static -> crp_plugins/figma-plugin-icons/lucide-icons.json (bundle p/ o plugin de ícones).
 //
 // Por quê: o plugin roda no sandbox do Figma e NÃO lê arquivos do disco. Então empacotamos cada ícone
 // Lucide como uma string SVG (minificada) num único JSON que o plugin carrega via <input type=file>.
@@ -14,7 +14,7 @@ import { join, basename } from 'node:path';
 const ROOT = process.cwd();
 const LUCIDE = join(ROOT, 'node_modules', 'lucide-static');
 const ICONS_DIR = join(LUCIDE, 'icons');
-const OUT_DIR = join(ROOT, 'figma-plugin-icons');
+const OUT_DIR = join(ROOT, 'crp_plugins', 'figma-plugin-icons');
 const OUT = join(OUT_DIR, 'lucide-icons.json');
 
 const SIZES = [16, 20, 24, 32];

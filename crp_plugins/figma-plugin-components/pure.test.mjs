@@ -22,7 +22,7 @@ const F = new Function([
 if (!existsSync(join(DIR, '..', 'figma-plugin', 'figma-variables.json')))
   throw new Error('figma-variables.json ausente — rode `npm run export:figma` antes do teste.');
 // spec REAL gerado pelo build (garante que teste e artefato não divergem)
-execSync('node build/export-components.mjs', { cwd: join(DIR, '..'), stdio: 'pipe' });
+execSync('node build/export-components.mjs', { cwd: join(DIR, '..', '..'), stdio: 'pipe' });
 const SPEC = JSON.parse(readFileSync(join(DIR, 'figma-components.json'), 'utf8'));
 const FV = JSON.parse(readFileSync(join(DIR, '..', 'figma-plugin', 'figma-variables.json'), 'utf8'));
 

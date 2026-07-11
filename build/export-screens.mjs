@@ -1,4 +1,4 @@
-// Export: page-spec autorado -> figma-plugin-screens/figma-screens.json
+// Export: page-spec autorado -> crp_plugins/figma-plugin-screens/figma-screens.json
 //
 // v1: telas como COMPOSIÇÃO de instâncias dos ComponentSets (aba Componentes) + primitivos
 // simples (textos com Text Style, "field" = label + caixa bindada em border/input). A tela no
@@ -10,11 +10,11 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 
 const ROOT = process.cwd();
-const FV = JSON.parse(readFileSync(join(ROOT, 'figma-plugin', 'figma-variables.json'), 'utf8'));
-const COMPS_PATH = join(ROOT, 'figma-plugin-components', 'figma-components.json');
+const FV = JSON.parse(readFileSync(join(ROOT, 'crp_plugins', 'figma-plugin', 'figma-variables.json'), 'utf8'));
+const COMPS_PATH = join(ROOT, 'crp_plugins', 'figma-plugin-components', 'figma-components.json');
 if (!existsSync(COMPS_PATH)) { console.error('❌ rode `npm run export:components` antes.'); process.exit(1); }
 const COMPS = JSON.parse(readFileSync(COMPS_PATH, 'utf8'));
-const OUT = join(ROOT, 'figma-plugin-screens', 'figma-screens.json');
+const OUT = join(ROOT, 'crp_plugins', 'figma-plugin-screens', 'figma-screens.json');
 
 const varIndex = new Set(); for (const c of FV.collections) for (const v of c.variables) varIndex.add(c.name + '::' + v.name);
 const textStyles = new Set(FV.styles.text.map((s) => s.name));

@@ -1,5 +1,5 @@
 // CRP DS — Tokens → Figma Variables + Styles.
-// Consome figma-plugin/figma-variables.json (gerado por `npm run export:figma`): collections
+// Consome crp_plugins/figma-plugin/figma-variables.json (gerado por `npm run export:figma`): collections
 // JÁ RESOLVIDAS — Primitives (paleta), Brand (CRP/MarcaB), Modes (Light/Dark), Base (semânticos
 // invariáveis + tipografia escalar) e Components — MAIS `styles` (compostos: Text/Effect/Paint/Grid).
 //
@@ -119,7 +119,7 @@ function normalizeParts(p) {
 }
 function validDoc(doc) { return !!(doc && (Array.isArray(doc.collections) || doc.styles)); }
 function docErr() {
-  return new Error('JSON inesperado. Selecione figma-plugin/figma-variables.json (gere com ' +
+  return new Error('JSON inesperado. Selecione crp_plugins/figma-plugin/figma-variables.json (gere com ' +
     '`npm run export:figma`) — não o tokens.json do Token Studio.');
 }
 

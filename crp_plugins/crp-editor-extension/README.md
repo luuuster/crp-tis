@@ -24,9 +24,9 @@ pro front ou pra uma IA implementar. Sem passar pelo Figma.
    ```bash
    npm run build && npm run export:ext
    ```
-   Isso (re)gera `crp-editor-extension/tokens.json` e `tokens.js` a partir de `dist/tokens.css`.
+   Isso (re)gera `crp_plugins/crp-editor-extension/tokens.json` e `tokens.js` a partir de `dist/tokens.css`.
 2. Em `chrome://extensions`, ligue **Modo do desenvolvedor**.
-3. **Carregar sem compactação** → selecione a pasta `crp-editor-extension/`.
+3. **Carregar sem compactação** → selecione a pasta `crp_plugins/crp-editor-extension/`.
 4. Abra qualquer página e **clique no ícone** do CRP Inspector (liga/desliga).
 
 > Páginas `chrome://`, a Chrome Web Store e PDFs bloqueiam injeção — é esperado.

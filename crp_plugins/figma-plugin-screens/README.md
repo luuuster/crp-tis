@@ -5,9 +5,9 @@ instanciando os ComponentSets que o plugin de Components já criou.
 
 | Plugin | Faz |
 |---|---|
-| `figma-plugin/` (Tokens) | Variables (4 modes) + Styles ligados |
-| `figma-plugin-icons/` | Components de ícones |
-| `figma-plugin-components/` | ComponentSets shadcn (Button, Input) bindados nas Variables/Styles |
+| `crp_plugins/figma-plugin/` (Tokens) | Variables (4 modes) + Styles ligados |
+| `crp_plugins/figma-plugin-icons/` | Components de ícones |
+| `crp_plugins/figma-plugin-components/` | ComponentSets shadcn (Button, Input) bindados nas Variables/Styles |
 | **este** | **TELAS montadas com as instâncias desses ComponentSets + textos/fields bindados** |
 
 ## Princípios
@@ -36,5 +36,5 @@ No Figma (arquivo que já recebeu os plugins de **Tokens** e **Components**):
 
 - Pré-requisito de runtime: os ComponentSets têm de existir na página **CRP Components** (rode o
   plugin **CRP DS — Components** antes). O plugin acusa se faltar.
-- Testes da lógica pura: `figma-plugin-screens/pure.test.mjs` (roda no `npm test`).
+- Testes da lógica pura: `crp_plugins/figma-plugin-screens/pure.test.mjs` (roda no `npm test`).
 - `figma-screens.json` é ARTEFATO gerado (gitignored) — não editar à mão.

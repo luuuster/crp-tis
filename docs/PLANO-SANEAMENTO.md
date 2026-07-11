@@ -35,7 +35,7 @@ correto ao estado atual, armadilhas conhecidas, estratégia de rollback e
    reimplementar parsing.
 
 **Decisões já tomadas com o dono do repo:**
-- `figma-plugin/figma-variables.json` → **ignorar no git e gerar no CI**.
+- `crp_plugins/figma-plugin/figma-variables.json` → **ignorar no git e gerar no CI**.
 - Profundidade: **plano de ação executável**, à prova de bugs.
 
 ---
@@ -94,9 +94,9 @@ bundles de ícones: artefato gerado, **não** commitado. Elimina diffs
 gigantes e ruidosos a cada mudança de token.
 
 ### Diagnóstico (estado atual confirmado)
-- `figma-plugin/figma-variables.json` **está rastreado** (`git ls-files`).
+- `crp_plugins/figma-plugin/figma-variables.json` **está rastreado** (`git ls-files`).
 - Gerado por `build/export-figma.mjs` (escreve em
-  `figma-plugin/figma-variables.json`, linha 29/520).
+  `crp_plugins/figma-plugin/figma-variables.json`, linha 29/520).
 - `.gitignore` já ignora `dist/`, `token-studio/` e os 7 bundles de ícones
   + `code.bundled.js` — mas **não** este JSON (inconsistência).
 - O `pure.test.mjs` do plugin **não lê** o JSON (testa só funções puras),
@@ -107,12 +107,12 @@ gigantes e ruidosos a cada mudança de token.
 1. **`.gitignore`** — adicionar no bloco de artefatos de plugin:
    ```gitignore
    # variables do Figma gerado (regenerado por `npm run export:figma` e no CI)
-   figma-plugin/figma-variables.json
+   crp_plugins/figma-plugin/figma-variables.json
    ```
 
 2. **Remover do índice mantendo o arquivo local:**
    ```bash
-   git rm --cached figma-plugin/figma-variables.json
+   git rm --cached crp_plugins/figma-plugin/figma-variables.json
    ```
 
 3. **CI** (`.github/workflows/build-tokens.yml`) — adicionar a geração
@@ -126,11 +126,11 @@ gigantes e ruidosos a cada mudança de token.
      uses: actions/upload-artifact@v4
      with:
        name: figma-variables
-       path: figma-plugin/figma-variables.json
+       path: crp_plugins/figma-plugin/figma-variables.json
        if-no-files-found: error
    ```
 
-4. **`figma-plugin/README.md`** — adicionar nota no topo do passo-a-passo:
+4. **`crp_plugins/figma-plugin/README.md`** — adicionar nota no topo do passo-a-passo:
    o arquivo não vem no clone; gere com `npm run export:figma` (na raiz) ou
    baixe o artifact `figma-variables` da última execução do workflow.
 
@@ -146,7 +146,7 @@ Reverter o commit. Como o arquivo continua sendo gerável por
 
 ### Definition of Done
 - [ ] `git status` limpo após `npm run export:figma` (JSON não aparece).
-- [ ] `git ls-files figma-plugin/` não lista mais o JSON.
+- [ ] `git ls-files crp_plugins/figma-plugin/` não lista mais o JSON.
 - [ ] CI gera o JSON e sobe o artifact com sucesso.
 - [ ] README do plugin explica como obtê-lo.
 
@@ -492,7 +492,7 @@ ou bundle desatualizado. O JSON de variables já carrega
    de versão diferente.
 
 4. **Changelog por plugin** — seção "## Changelog" em
-   `figma-plugin/README.md` e `figma-plugin-icons/README.md` registrando
+   `crp_plugins/figma-plugin/README.md` e `crp_plugins/figma-plugin-icons/README.md` registrando
    mudanças de comportamento relevantes.
 
 ### Armadilhas

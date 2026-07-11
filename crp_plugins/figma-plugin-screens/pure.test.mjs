@@ -22,8 +22,8 @@ const F = new Function([
 if (!existsSync(join(ROOT, 'figma-plugin', 'figma-variables.json')))
   throw new Error('figma-variables.json ausente — rode `npm run export:figma` antes do teste.');
 // specs REAIS gerados pelo build (garante que teste e artefato não divergem)
-execSync('node build/export-components.mjs', { cwd: ROOT, stdio: 'pipe' });
-execSync('node build/export-screens.mjs', { cwd: ROOT, stdio: 'pipe' });
+execSync('node build/export-components.mjs', { cwd: join(DIR, '..', '..'), stdio: 'pipe' });
+execSync('node build/export-screens.mjs', { cwd: join(DIR, '..', '..'), stdio: 'pipe' });
 const SCREENS = JSON.parse(readFileSync(join(DIR, 'figma-screens.json'), 'utf8'));
 const SPEC = JSON.parse(readFileSync(join(ROOT, 'figma-plugin-components', 'figma-components.json'), 'utf8'));
 const FV = JSON.parse(readFileSync(join(ROOT, 'figma-plugin', 'figma-variables.json'), 'utf8'));

@@ -4,10 +4,10 @@ Terceiro plugin do pipeline code→Figma (padrão do repo: **um plugin por traba
 
 | Plugin | Faz |
 |---|---|
-| `figma-plugin/` (Tokens) | Variables (4 modes) + Styles ligados |
-| `figma-plugin-icons/` | Components de ícones |
+| `crp_plugins/figma-plugin/` (Tokens) | Variables (4 modes) + Styles ligados |
+| `crp_plugins/figma-plugin-icons/` | Components de ícones |
 | **este** | **ComponentSets shadcn (Button, Input) BINDADOS nas Variables/Styles existentes** |
-| `figma-plugin-screens/` | Telas montadas com as instâncias destes componentes |
+| `crp_plugins/figma-plugin-screens/` | Telas montadas com as instâncias destes componentes |
 
 ## Princípios
 
@@ -32,14 +32,14 @@ No Figma (arquivo que JÁ recebeu o plugin de Tokens):
 1. Import plugin from manifest → este diretório.
 2. Escolher `figma-components.json` → "Criar / atualizar componentes"
    → página **CRP Components** com os ComponentSets bindados (set anterior é preservado com sufixo).
-3. Para montar **telas** com estes componentes, use o plugin separado **`figma-plugin-screens/`**
+3. Para montar **telas** com estes componentes, use o plugin separado **`crp_plugins/figma-plugin-screens/`**
    (CRP DS — Screens).
 
 ## Notas
 
 - Troca de marca/tema funciona nos componentes gerados (binds vivos nas Variables).
 - `dark:bg-input/30` do Input: nuances por modo documentadas em `docs/PLANO-CODE-TO-FIGMA.md`.
-- Testes da lógica pura: `figma-plugin-components/pure.test.mjs` (roda no `npm test`).
+- Testes da lógica pura: `crp_plugins/figma-plugin-components/pure.test.mjs` (roda no `npm test`).
 - `figma-components.json` é ARTEFATO gerado (gitignored) — não editar à mão.
 
 ## TODO de render (gap plugin × atom/button vivo)

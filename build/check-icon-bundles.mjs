@@ -6,7 +6,7 @@
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 
-const DIR = join(process.cwd(), 'figma-plugin-icons');
+const DIR = join(process.cwd(), 'crp_plugins', 'figma-plugin-icons');
 const REQUIRED = [
   'lucide-icons.json',                                   // bundle.test + run.test
   'material-outlined.json', 'material-outlined-fill.json',
@@ -17,7 +17,7 @@ const REQUIRED = [
 const missing = REQUIRED.filter((f) => !existsSync(join(DIR, f)));
 if (missing.length) {
   console.error(`\n⛔ Faltam ${missing.length} bundle(s) de ícone (gerados, não versionados):`);
-  for (const f of missing) console.error(`   • figma-plugin-icons/${f}`);
+  for (const f of missing) console.error(`   • crp_plugins/figma-plugin-icons/${f}`);
   console.error('\n   Rode `npm run icons` para gerá-los (export Lucide/Material + embed; pode levar alguns minutos),');
   console.error('   depois `npm test` de novo. (O CI já faz essa ordem automaticamente.)\n');
   process.exit(1);
