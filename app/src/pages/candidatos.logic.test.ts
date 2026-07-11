@@ -6,7 +6,7 @@ import { areaInfo, charlieRank, pick, pickN, senioridadeScore, type Candidato } 
 const cand = (over: Partial<Candidato> = {}): Candidato => ({
   id: '1',
   nome: 'Fulano de Tal',
-  email: 'fulano@email.com',
+  email: 'fulano@example.com',
   vaga: 'Desenvolvedor Backend',
   senioridade: 'Pleno',
   etapa: 'Triagem IA',

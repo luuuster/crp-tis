@@ -132,20 +132,20 @@ const DETALHE_JAIR: Detalhe = {
 }
 
 const CANDIDATOS_INICIAL: Candidato[] = [
-  { id: '1', nome: 'Diego Teste 2', email: 'jairgoncol3456@gmail.com', vaga: 'Product Manager', data: '10/06/2026', score: 68, status: 'Pendente', detalhe: DETALHE_DIEGO },
-  { id: '2', nome: 'Jair Carmona Gon', email: 'jairgon3456@gmail.com', vaga: 'Desenvolvedor Backend', data: '05/06/2026', score: 82, status: 'Pendente', detalhe: DETALHE_JAIR },
-  { id: '3', nome: 'Mariana Lopes', email: 'mariana.lopes@email.com', vaga: 'Desenvolvedor Full Stack', data: '09/06/2026', score: 91, status: 'Aprovado bot' },
-  { id: '4', nome: 'Rodrigo Alves', email: 'rodrigo.alves@email.com', vaga: 'UX Designer III', data: '08/06/2026', score: 74, status: 'Pendente' },
-  { id: '5', nome: 'Carla Mendonça', email: 'carla.mendonca@email.com', vaga: 'Engenheiro de Dados', data: '07/06/2026', score: 88, status: 'Aprovado bot' },
-  { id: '6', nome: 'Felipe Santos', email: 'felipe.santos@email.com', vaga: 'Analista de QA', data: '06/06/2026', score: 65, status: 'Pendente' },
-  { id: '7', nome: 'Bianca Ferreira', email: 'bianca.ferreira@email.com', vaga: 'Desenvolvedor Backend', data: '04/06/2026', score: 95, status: 'Aprovado RH' },
-  { id: '8', nome: 'Gustavo Pereira', email: 'gustavo.pereira@email.com', vaga: 'Product Manager', data: '03/06/2026', score: 58, status: 'Reprovado' },
-  { id: '9', nome: 'Larissa Castro', email: 'larissa.castro@email.com', vaga: 'Cientista de Dados', data: '09/06/2026', score: 84, status: 'Pendente' },
-  { id: '10', nome: 'Vitor Hugo', email: 'vitor.hugo@email.com', vaga: 'DevOps Engineer', data: '08/06/2026', score: 79, status: 'Aprovado bot' },
-  { id: '11', nome: 'Aline Ramos', email: 'aline.ramos@email.com', vaga: 'Tech Lead Frontend', data: '07/06/2026', score: 90, status: 'Aprovado RH' },
-  { id: '12', nome: 'Daniel Moreira', email: 'daniel.moreira@email.com', vaga: 'Desenvolvedor Mobile', data: '05/06/2026', score: 62, status: 'Pendente' },
-  { id: '13', nome: 'Patrícia Lima', email: 'patricia.lima@email.com', vaga: 'UX Designer III', data: '04/06/2026', score: 49, status: 'Reprovado' },
-  { id: '14', nome: 'Ricardo Nunes', email: 'ricardo.nunes@email.com', vaga: 'Analista de QA', data: '02/06/2026', score: 71, status: 'Pendente' },
+  { id: '1', nome: 'Diego Teste 2', email: 'diego.teste@example.com', vaga: 'Product Manager', data: '10/06/2026', score: 68, status: 'Pendente', detalhe: DETALHE_DIEGO },
+  { id: '2', nome: 'Jair Gonçalves', email: 'jair.goncalves@example.com', vaga: 'Desenvolvedor Backend', data: '05/06/2026', score: 82, status: 'Pendente', detalhe: DETALHE_JAIR },
+  { id: '3', nome: 'Mariana Lopes', email: 'mariana.lopes@example.com', vaga: 'Desenvolvedor Full Stack', data: '09/06/2026', score: 91, status: 'Aprovado bot' },
+  { id: '4', nome: 'Rodrigo Alves', email: 'rodrigo.alves@example.com', vaga: 'UX Designer III', data: '08/06/2026', score: 74, status: 'Pendente' },
+  { id: '5', nome: 'Carla Mendonça', email: 'carla.mendonca@example.com', vaga: 'Engenheiro de Dados', data: '07/06/2026', score: 88, status: 'Aprovado bot' },
+  { id: '6', nome: 'Felipe Santos', email: 'felipe.santos@example.com', vaga: 'Analista de QA', data: '06/06/2026', score: 65, status: 'Pendente' },
+  { id: '7', nome: 'Bianca Ferreira', email: 'bianca.ferreira@example.com', vaga: 'Desenvolvedor Backend', data: '04/06/2026', score: 95, status: 'Aprovado RH' },
+  { id: '8', nome: 'Gustavo Pereira', email: 'gustavo.pereira@example.com', vaga: 'Product Manager', data: '03/06/2026', score: 58, status: 'Reprovado' },
+  { id: '9', nome: 'Larissa Castro', email: 'larissa.castro@example.com', vaga: 'Cientista de Dados', data: '09/06/2026', score: 84, status: 'Pendente' },
+  { id: '10', nome: 'Vitor Hugo', email: 'vitor.hugo@example.com', vaga: 'DevOps Engineer', data: '08/06/2026', score: 79, status: 'Aprovado bot' },
+  { id: '11', nome: 'Aline Ramos', email: 'aline.ramos@example.com', vaga: 'Tech Lead Frontend', data: '07/06/2026', score: 90, status: 'Aprovado RH' },
+  { id: '12', nome: 'Daniel Moreira', email: 'daniel.moreira@example.com', vaga: 'Desenvolvedor Mobile', data: '05/06/2026', score: 62, status: 'Pendente' },
+  { id: '13', nome: 'Patrícia Lima', email: 'patricia.lima@example.com', vaga: 'UX Designer III', data: '04/06/2026', score: 49, status: 'Reprovado' },
+  { id: '14', nome: 'Ricardo Nunes', email: 'ricardo.nunes@example.com', vaga: 'Analista de QA', data: '02/06/2026', score: 71, status: 'Pendente' },
 ]
 
 // Competências por vaga (fallback do builder p/ os candidatos sem detalhe escrito à mão).

@@ -202,7 +202,7 @@ export function CandidatoCandidaturas({ brand, mode, onCycleBrand, onToggleMode,
   tipo?: 'andamento' | 'finalizadas'
 }) {
   // Mesma garantia do mural: se chegou sem sessão, estabelece uma demo NA MONTAGEM (efeito, não no render).
-  useEffect(() => { if (!estaLogado()) guardarEmailCandidato('ana.souza@exemplo.com') }, [])
+  useEffect(() => { if (!estaLogado()) guardarEmailCandidato('ana.souza@example.com') }, [])
   const { t } = useTranslation('painel')
   const ns = tipo === 'finalizadas' ? 'finalizadas' : 'candidaturas' // namespace de textos da página
   // Cada aba mostra um conjunto: "Minhas candidaturas" = em andamento · "Finalizadas" = aprovada/reprovada.
