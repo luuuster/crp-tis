@@ -1,0 +1,155 @@
+---
+description: Regra NORMATIVA para CONSTRUIR TELAS no Figma. Define a FONTE DA VERDADE dos componentes (as pastas app/src/components/ui, app/src/components e app/src/pages) e obriga: toda tela DEVE ser montada com componentes que JÁ existem (instâncias, nunca redesenho à mão); se um componente necessário NÃO existir, ele DEVE ser criado PRIMEIRO — seguindo Atomic Design (átomo → molécula → organismo → template → página) — e só então instanciado. O Figma espelha a web. Aplicar sempre que uma tela/fluxo for reproduzido ou criado no Figma.
+globs:
+alwaysApply: true
+---
+
+# 08 — Telas no Figma via componentes existentes + Atomic Design
+
+> **Regra normativa.** "DEVE" = obrigatório, "NUNCA" = proibido. Objetivo: no Figma, uma **tela é um
+> arranjo de componentes**, não um desenho. Os componentes saem de um lugar só — o código da web —
+> e o Figma **espelha** esse código. A tela nasce de peças que já existem; o que falta vira
+> **componente novo, criado por Atomic Design**, ANTES de entrar na tela.
+
+---
+
+## 1. FONTE DA VERDADE — de onde saem os componentes
+
+Os componentes **NÃO** são inventados no Figma. A **fonte da verdade é o código da web**, em
+`app/src/`, organizado em **três camadas** (que já são, na prática, o Atomic Design). Na web, uma tela
+**importa** dessas pastas; no Figma, a tela é montada com as **instâncias equivalentes** — mesma peça,
+mesmo nome, mesma hierarquia.
+
+### Camada 1 — Primitivas do Design System → `app/src/components/ui/`
+shadcn/ui. Genéricas, reutilizáveis, **sem regra de negócio**. São os **átomos e moléculas** (+ alguns
+organismos-base). É a base de tudo — a maioria das telas importa daqui (`@/components/ui/<nome>`).
+
+- **⚛️ Átomos** (indivisíveis): `avatar` `badge` `button` `checkbox` `input` `input-otp` `kbd` `label`
+  `progress` `radio-group` `separator` `skeleton` `slider` `spinner` `switch` `textarea` `toggle` `aspect-ratio`
+- **🧬 Moléculas** (grupos simples de átomos, 1 função): `field` `form` `input-group` `button-group`
+  `toggle-group` `select` `combobox` `date-picker` `card` `alert` `breadcrumb` `pagination` `tabs`
+  `accordion` `collapsible` `item` `empty` `tooltip` `hover-card` `popover` `dropdown-menu` `context-menu`
+  `dialog` `alert-dialog`
+- **🦠 Organismos-base** (complexos, mas ainda genéricos): `table` `sidebar` `navigation-menu` `menubar`
+  `sheet` `drawer` `command` `calendar` `carousel` `chart` `resizable` `scroll-area` `sonner`
+- **Não são componentes:** `direction.tsx` (utilitário) e `ui/demos/` (galeria dos docs :5174).
+
+### Camada 2 — Composições da aplicação → `app/src/components/composicoes/`
+Construídas **a partir** das primitivas, já **com contexto do produto**. São os **organismos** e **templates**.
+(Ficam em `composicoes/`, irmã de `ui/`; `components/` tem só essas duas pastas.)
+
+- **🦠 Organismos:** `AccountMenu` `LanguageSelect` `ThemeToggles` `ViewTabs` `SectionTabs` `ExportButton`
+  `CaptchaBox` `CalendarioMensal` `ProximasEntrevistas` `PainelSkeleton` `confirm-dialog`
+  `shell/topbar-parts` `candidato/CandidatoHeader` `candidato/CandidatoBrandRow` `candidato/ContaMenu`
+  `auth/BrandPanel` `auth/Logo`
+- **📐 Templates** (esqueleto/layout — "shells"): `shell/AppShell` `candidato/CandidatoShell` `DocShell`
+  `auth/AuthLayout` `page.tsx`
+- **Não é UI:** `ErrorBoundary.tsx` (técnico).
+
+### Camada 3 — Páginas → `app/src/pages/`
+As **telas finais**, com conteúdo real. São as **páginas**.
+
+- **Telas** (arquivos na raiz de `pages/`): `VagasList` `Dashboard` `Pipeline` `Candidatos` `Entrevistas`
+  `JobGenerator` `Usuarios` `LoginPage` `RegisterPage` `CandidatoPainel` `CandidatoCandidaturas` … etc.
+- **Componentes LOCAIS de tela** (subpastas `pages/<tela>/…`): peças que **só aquela tela usa** — não são
+  DS compartilhado. Ex.: `pages/job-generator/Stepper`, `…/fields/SearchSelect`, `pages/dashboard/widgets`,
+  `pages/candidatos/ProcessoDetalhe`, `pages/pipeline/EntrevistaFinalizada`.
+
+### Mapa web ↔ Figma (o que espelha o quê)
+
+| Camada (Atomic) | Pasta na web (fonte) | O que vira no Figma |
+|---|---|---|
+| Átomos + Moléculas | `app/src/components/ui/` | **componente na biblioteca** (reutilizado por várias telas) |
+| Organismos + Templates | `app/src/components/composicoes/` | **componente na biblioteca** (organismo/shell) |
+| Páginas | `app/src/pages/` (raiz) | **frame de tela** montado com instâncias |
+| Componente local de tela | `app/src/pages/<tela>/…` | **componente local** daquela tela (não vai pra biblioteca compartilhada) |
+
+> Regra prática de reuso: **peça usada em ≥2 telas → componente na biblioteca**; **peça exclusiva de 1
+> tela → componente local** da tela. Espelha exatamente a fronteira do código (`ui/` vs `pages/<tela>/`).
+
+---
+
+## 2. Os dois princípios duros
+
+1. **Montar com o que já existe.** Cada pedaço da tela **DEVE** ser uma **instância** do componente
+   equivalente ao que a web importa. **NUNCA** redesenhar à mão (retângulo + texto + vetor) algo que já é
+   componente. Uma tela "à mão" que só *parece* com os componentes está errada — tem que ser o componente.
+2. **Faltou peça → cria a peça primeiro.** Se a tela precisa de algo que **não existe** como componente no
+   Figma, o fluxo é: **PARAR de montar → criar o componente (por Atomic Design) → só então instanciá-lo.**
+   NUNCA improvisar o elemento solto direto na tela. **O componente vem antes do uso.**
+
+---
+
+## 3. Atomic Design — as 5 etapas (fonte: Brad Frost, *Atomic Design*, cap. 2)
+
+*"Uma metodologia composta por cinco etapas distintas trabalhando juntas para criar sistemas de design de
+interface de forma mais deliberada e hierárquica."*
+
+| Etapa | Definição (Brad Frost) | Onde vive no crp_ds |
+|---|---|---|
+| **Átomos** | *"blocos fundamentais… não podem ser divididos sem deixar de ser funcionais"* (label, input, button, ícone). | `ui/` (indivisíveis) + ícone = instância **lucide**. |
+| **Moléculas** | *"grupos relativamente simples de elementos funcionando como unidade"* (label+input+button = search form). Aderem ao **single responsibility** — "fazem uma coisa e fazem bem". | `ui/` compostos (`field`, `select`, `tabs`…). |
+| **Organismos** | *"componentes complexos compostos de moléculas/átomos/outros organismos"*, formando **seções distintas** (ex.: header). | `ui/` complexos (`table`, `sidebar`) + `composicoes/` (AppShell topbar, CandidatoHeader…). |
+| **Templates** | *"objetos de nível de página que posicionam componentes num layout e articulam a estrutura de conteúdo"* — esqueleto, sem conteúdo real. | os **shells**: `AppShell`, `CandidatoShell`, `DocShell`, `AuthLayout`. |
+| **Páginas** | *"instâncias específicas de templates com conteúdo real"* — o que o usuário vê; testa a resiliência do sistema. | `pages/` (Vagas, Painel…). |
+
+**Não é linear e não é dogma.** Frost: *"essencialmente é apenas um modelo mental"* — as camadas coexistem;
+a hierarquia serve para **decidir a ordem de construção** e **nomear** as peças, não para brigar se algo "é
+molécula ou organismo". Se for ambíguo, escolha o mais útil e siga (princípio decisor da molécula = *single
+responsibility*: se faz mais de uma coisa, tende a organismo).
+
+---
+
+## 4. Como classificar uma peça nova
+
+- **Indivisível?** → **átomo** (ícone, input). | **Grupo pequeno que faz UMA coisa bem?** → **molécula**
+  (campo, botão-com-ícone). | **Seção autônoma juntando moléculas?** → **organismo** (topbar, card).
+- **Arranjo dos organismos num layout, sem conteúdo?** → **template**. | **Template + conteúdo real?** → **página**.
+
+---
+
+## 5. Fluxo obrigatório para criar uma tela
+
+1. **Ler os imports da tela na web** (a fonte da verdade). Ex.: `grep "@/components" pages/VagasList.tsx`
+   → `ui/table` `ui/badge` `ui/button` `ui/select` `ui/tooltip` `ui/input`. Isso é a **lista de peças** exata.
+2. **Decompor** o que sobra (composições/locais) em organismo → molécula → átomo, medindo o DOM (fidelidade).
+3. **Inventariar no Figma** (`findAllWithCriteria({types:['COMPONENT_SET','COMPONENT']})` / `search_design_system`):
+   marcar cada peça como **existe** ou **falta**.
+4. **Criar as faltantes de baixo para cima** (átomo → molécula → organismo), cada uma pelas regras da §6.
+   Um organismo só é montado quando **todas** as suas moléculas/átomos já existem (como instâncias aninhadas).
+5. **Montar a tela como página**: template (layout) + instâncias + conteúdo real. **Nada solto.**
+6. **Verificar** (fidelidade): screenshot Figma × web; medidas/cores/espaçamentos batendo.
+
+---
+
+## 6. Como criar o componente novo (obrigatório)
+
+- **De baixo para cima.** Nada "chumbado": o organismo compõe **instâncias** dos átomos/moléculas (nesting).
+- **Component Set + Variants + Component Properties.** Estados/tamanhos/slots viram **variantes** e
+  **propriedades** (boolean p/ mostrar-ocultar, text p/ conteúdo, instance-swap p/ ícone). Nada de duplicar frames.
+- **Tokens light/dark.** Toda cor/tipografia **bindada a Variable** (theme-aware), nunca hex chumbado. (regra 06 / [[colored-text-uses-text-tokens]].)
+- **Ícones = instância lucide.** Segue a **regra 07** (biblioteca "Icons Lucide"; não existe no lucide → avisar). NUNCA vetor à mão.
+- **Nomenclatura espelhando a web.** Mesmo nome do arquivo/pasta de origem, com o nível: `atom/…`,
+  `molecule/…`, `organism/…`. Peça de `ui/` → biblioteca; peça de `pages/<tela>/` → componente local da tela.
+- **Não duplicar.** Já existe (mesmo precisando de variante nova)? **Estenda** o componente existente. Reuso > cópia.
+- **Fidelidade medida.** Tamanho/raio/padding/cor vêm de **medição do DOM** (Playwright), nunca "no olho".
+
+---
+
+## 7. Quando falta definição no DS → alinhar antes
+
+Se a peça exigir uma decisão que **não está no Design System** (tamanho, token, estado inexistente),
+**PARE e alinhe com o usuário** — não invente valor ([[surface-ds-gaps]]). Idem se um ícone não existir no
+lucide (regra 07): avisar, nunca substituir.
+
+---
+
+## 8. Definition of Done (tela no Figma)
+
+- [ ] A lista de peças saiu dos **imports da tela na web** (`app/src/…`), não de suposição.
+- [ ] Toda peça visível é **instância** de um componente (0 elementos redesenhados à mão).
+- [ ] Todo componente que faltava foi **criado antes** de ser usado, de baixo para cima (Atomic Design).
+- [ ] Componentes novos têm Variants/Properties, cores/tipografia **bindadas a token** (light/dark) e ícones **lucide** (regra 07).
+- [ ] Reuso respeitado: peça de `ui/` na biblioteca, peça de `pages/<tela>/` como componente local; nada duplicado.
+- [ ] Lacuna de DS (ou ícone ausente no lucide) foi **reportada ao usuário**, não improvisada.
+- [ ] A tela final bate com a web (medida), não aproximada.
