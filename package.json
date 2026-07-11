@@ -53,6 +53,7 @@
     "verify:figma": "node build/verify-figma.mjs",
     "pretest": "node build/check-icon-bundles.mjs",
     "test": "node --test build/lib/color.test.mjs build/lib/css.test.mjs build/lib/themes.test.mjs crp_plugins/crp-editor-extension/match.test.mjs crp_plugins/figma-plugin/pure.test.mjs crp_plugins/figma-plugin-components/pure.test.mjs crp_plugins/figma-plugin-screens/pure.test.mjs crp_plugins/figma-plugin-icons/bundle.test.mjs crp_plugins/figma-plugin-icons/run.test.mjs crp_plugins/figma-plugin-icons/material.test.mjs crp_plugins/figma-plugin-icons/embed.test.mjs",
+    "verify": "npm run build && npm run check && npm test",
     "preview": "npm run build && node -e \"console.log('Build OK. Abra preview/index.html no navegador.')\"",
     "release": "npm run build && changeset publish",
     "prepublishOnly": "npm run build && npm run check"
