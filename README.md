@@ -1,5 +1,8 @@
 # CRP Design System — `@crp/design-tokens`
 
+> 🎯 **Novo por aqui? Comece pelo [PROPOSITO.md](PROPOSITO.md)** — o que este projeto é, para que serve
+> e como as peças (mockup + design system + Figma) se conectam.
+
 > ## 🖥️ Quer rodar o **APP** (TalentAI)? → vá para [`app/`](app/)
 > **Este README é só do Design System (os tokens).** O app React fica na pasta **[`app/`](app/README.md)**.
 > Rodar:
