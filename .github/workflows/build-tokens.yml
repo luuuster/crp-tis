@@ -20,7 +20,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           persist-credentials: false # validação não escreve — não deixar o token no .git
@@ -84,7 +84,7 @@ jobs:
   app:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false # validação não escreve — não deixar o token no .git
 
@@ -116,7 +116,7 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false # validação não escreve — não deixar o token no .git
 
@@ -174,7 +174,7 @@ jobs:
       packages: write      # publicar em GitHub Packages
       pull-requests: write # changesets abre a PR "Version Packages"
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
