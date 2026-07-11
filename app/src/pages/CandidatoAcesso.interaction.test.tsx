@@ -14,7 +14,7 @@ describe('CandidatoAcesso — interação', () => {
     render(<TooltipProvider><CandidatoAcesso /></TooltipProvider>)
 
     // login com a senha provisória (labels exatos p/ não casar com o botão "Mostrar senha")
-    await user.type(screen.getByLabelText('E-mail'), 'a@b.com')
+    await user.type(screen.getByLabelText('E-mail'), 'a@example.com')
     await user.type(screen.getByLabelText('Senha provisória'), 'Provisoria123')
     await user.click(screen.getByRole('button', { name: 'Entrar' }))
 

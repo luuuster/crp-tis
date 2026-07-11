@@ -1,7 +1,7 @@
 ---
 description: Regra NORMATIVA para ícones em qualquer trabalho no Figma do projeto (telas, componentes, biblioteca). Todo ícone criado no Figma DEVE ser o mesmo ícone lucide que a aplicação web usa (lucide-react), com a geometria EXATA — nunca um vetor "parecido"/geométrico à mão. Se um ícone não existir no lucide, PARE e avise o usuário. Aplicar sempre que houver ícone indo para o Figma.
-globs:
-alwaysApply: true
+globs: crp_plugins/figma-plugin-icons/**,build/export-lucide-figma.mjs,build/export-material-figma.mjs,build/embed-icons.mjs
+alwaysApply: false
 ---
 
 # 07 — Ícones no Figma = lucide de verdade (paridade web↔Figma)

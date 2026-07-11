@@ -305,8 +305,9 @@ completos do pipeline no [README da raiz](../README.md). O essencial para o fron
   `--background`, `--radius`…) para os utilitários (`bg-primary`, `text-foreground`, `rounded-lg`…). Então
   **toda classe Tailwind de cor/raio resolve para um token** e responde a `.dark`/`[data-brand]`
   automaticamente.
-- **Fonte da verdade dos tokens = Token Studio (Figma)**, versionado em `tokens/*.json`, buildado para
-  `dist/`. **Nunca** edite `dist/` nem cor à mão. Para mudar uma cor: Token Studio → `npm run build` (raiz).
+- **Fonte da verdade dos tokens = `tokens/*.json` versionados no repo** (DTCG), buildados para `dist/`.
+  Token Studio é ferramenta opcional de edição visual (import/export) — o canônico é o que está
+  commitado. **Nunca** edite `dist/` nem cor à mão. Para mudar uma cor: edite `tokens/` → `npm run build` (raiz).
 - **Marcas:** CRP (azul, exibida como "TIS") e Marca B (verde, exibida como "Trevo"). Cada uma tem
   rampa/fontes próprias nos tokens; a troca é só `data-brand`.
 

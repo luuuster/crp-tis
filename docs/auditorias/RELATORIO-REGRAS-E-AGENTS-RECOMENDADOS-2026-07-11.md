@@ -8,6 +8,36 @@
 
 ---
 
+## ✅ Remediação (2026-07-11 — mesma data, em duas levas)
+
+O conteúdo original segue intacto abaixo; este bloco registra o que foi IMPLEMENTADO.
+
+**Leva 1 (governança-base):** `.cursor/rules/` versionada (§4.2); `AGENTS.md` raiz criado (§5.1/§12);
+`CLAUDE.md` com import; SSOT `tokens/` declarada no README (§4.3, parcial).
+
+**Leva 2 (o restante executável):**
+
+| Recomendação | Entregue como |
+|---|---|
+| Fase 0 — contradição SSOT no agent `design-system` (§4.3, §8) | descrição + Princípio 1 corrigidos: `tokens/` versionado manda; Token Studio = editor opcional |
+| Fase 0 — `app/HANDOFF.md` apontando Token Studio como fonte (§4.7) | corrigido |
+| Fase 0 — template de PR com 3 idiomas (§4.7) | corrigido para 4 (pt-BR/en/es/pt-AO) |
+| R00/R01 — constituição + matriz de verdades (§6) | `.cursor/rules/00-proposito.mdc` (única always-apply) |
+| §4.5 — regras longas com `alwaysApply: true` | 06/07/08 agora disparam por globs/descrição |
+| R09 — contrato de fidelidade verificável (§6) | `.cursor/rules/09-figma-fidelity.mdc` (tolerâncias declaradas) |
+| R10/R11 — dados mock + i18n (§6) | `.cursor/rules/10-mock-data-i18n.mdc` |
+| Fase 4 — gate de dados mock/PII (§5.4) | `build/check-mock-data.mjs` (`npm run check:mock`, no `verify` da raiz e no CI); 1ª rodada achou e corrigiu 15 placeholders com domínio real |
+| Fase 1 — AGENTS.md por domínio (§5.2) | `tokens/`, `app/`, `crp_plugins/`, `docs/` (com ciclo de vida documental = R13 essencial) |
+| Fase 3 — 4 agents essenciais (§7, §10) | `frontend-pattern-reviewer`, `ux-flow-auditor`, `accessibility-auditor`, `figma-pipeline-validator` — todos com gatilho/não-gatilho/autoridade/saída (§14), auditores read-only (§4.12) |
+
+**Deliberadamente adiado** (conforme §16 "fazer depois"): agent de visual regression (falta baseline/
+tolerância formalizada em screenshots), agent de mock/i18n (começou como regra 10 + gate), agent
+curador de docs (virou regra em `docs/AGENTS.md`), verificador de links, pseudo-localização,
+manifesto de cobertura Figma. **Dispensado:** `repository-purpose-guardian` (§7-A01) — o próprio
+relatório o considera dispensável com um AGENTS.md raiz bom; a regra 00 cumpre a triagem.
+
+---
+
 ## 1. Resposta direta: sim, o propósito foi entendido
 
 Este repositório não é uma aplicação de produção incompleta. Ele é um **mockup web navegável de alta fidelidade**, construído com padrões reais de front-end, UX/UI, acessibilidade e design system, para cumprir quatro funções centrais:

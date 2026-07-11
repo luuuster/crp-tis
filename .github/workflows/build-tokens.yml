@@ -111,6 +111,9 @@ jobs:
           npm run build
           npm test
 
+      - name: Dados mock (regra 10 — e-mail só em domínio fictício; CPF válido é proibido)
+        run: npm run check:mock
+
   # E2E: a dimensão que o jsdom NÃO vê — no render real, 4 temas × telas: axe ESTRUTURAL +
   # CONTRASTE por pixel (culori) + FOCO visível ≥3:1. Em paralelo aos demais jobs.
   e2e:
