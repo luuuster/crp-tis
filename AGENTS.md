@@ -39,6 +39,11 @@ referência):
 Cada diretório principal tem instruções de domínio próprias — leia o **AGENTS.md local** antes de
 mexer lá: [`tokens/`](tokens/AGENTS.md) · [`app/`](app/AGENTS.md) · [`crp_plugins/`](crp_plugins/AGENTS.md) · [`docs/`](docs/AGENTS.md).
 
+**Uma política, vários adaptadores:** o Cursor aplica os `.mdc` nativamente (frontmatter/globs);
+o Claude Code auto-carrega o espelho **gerado** [`.claude/rules/`](.claude/rules/) (`npm run
+sync:rules`; drift reprova no `pretest`); Codex e outras IAs leem este arquivo e os de domínio.
+O conteúdo normativo é UM só — quem edita, edita o `.mdc` e regenera o espelho.
+
 E as **leis transversais** (aprendidas a custo — não repita os erros):
 
 1. **Web manda.** Divergiu entre Figma/token/doc e a web renderizada? A web está certa.

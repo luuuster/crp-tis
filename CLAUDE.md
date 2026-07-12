@@ -3,7 +3,15 @@
 @AGENTS.md
 
 > O arquivo acima ([AGENTS.md](AGENTS.md)) é a orientação canônica (identidade, autoridade, regras
-> normativas 06/07/08, DoD). O que segue é o operacional específico do Claude Code nesta máquina.
+> normativas 00 + 06–10, DoD). O que segue é o operacional específico do Claude Code nesta máquina.
+
+## Regras — `.claude/rules/` é ESPELHO GERADO (nunca editar)
+
+As regras canônicas vivem em **`.cursor/rules/*.mdc`**. O Claude Code não processa `.mdc`
+(`@import` não resolve a extensão — testado 2026-07-11), então `.claude/rules/*.md` é um espelho
+**gerado** por `npm run sync:rules`, auto-carregado no contexto de toda sessão. Mudou uma regra?
+Edite o `.mdc` → `npm run sync:rules` → commite os dois. O `pretest` da raiz reprova drift
+(`sync-rules.mjs --check`), aqui e no CI.
 
 ## Ambiente (Windows) — gotchas que JÁ causaram estrago
 

@@ -1,0 +1,43 @@
+<!-- GERADO por build/sync-rules.mjs a partir de .cursor/rules/09-figma-fidelity.mdc — NÃO EDITAR AQUI.
+     Edite o .mdc canônico e rode `npm run sync:rules`. O pretest reprova drift. -->
+
+> **Quando aplicar:** Contrato de fidelidade web → Figma — transforma "pixel-fiel" em critérios VERIFICÁVEIS (estado controlado, medição de DOM, tolerâncias declaradas, screenshot dos dois lados, idempotência). Aplicar sempre que uma superfície da web for reproduzida, corrigida ou auditada no Figma.
+
+# 09 — Contrato de fidelidade web → Figma
+
+> **Regra normativa.** "Pixel-fiel" não é impressão — é um contrato mensurável. Complementa as
+> regras 07 (ícones lucide) e 08 (telas por instâncias); o executor de referência é o agent
+> [figma-web-fidelity](../../.claude/agents/figma-web-fidelity.md).
+
+## 1. Estado controlado ANTES de medir
+
+- **Viewport declarado** (padrão 1440px de largura), **tema declarado** (marca × light/dark) e
+  **estado declarado** (logado? overlay aberto? qual rota?). Medição sem esses 3 é inválida.
+- Fontes carregadas (`document.fonts.ready`) e animações assentadas antes de capturar.
+- A mesma superfície DEVE ser capturada dos DOIS lados (screenshot web + screenshot Figma).
+
+## 2. Como medir (nunca "no olho")
+
+- Medidas: `getBoundingClientRect` · estilos: `getComputedStyle` — via `node tools/measure.mjs
+  <url> <seletor...>` (parametrizado; não recriar scripts descartáveis).
+- Cores: RESOLVIDAS e COMPOSTAS (OKLCH→sRGB via canvas/culori; alpha composto sobre o fundo real).
+  No Figma, cor entra **bindada à Variable** do token — nunca hex solto (alpha mora NA Variable).
+- Tipografia: família, peso, tamanho E line-height exatos do computed style.
+
+## 3. Tolerâncias (fora disso = drift, e drift é bug)
+
+| Dimensão | Tolerância |
+|---|---|
+| Largura/altura/posição/espaçamento | **±1px** (arredondamento de subpixel) |
+| Cor | **exata** (mesmo hex resolvido; sem "quase igual") |
+| Fonte (família/peso/tamanho/line-height) | **exata** |
+| Conteúdo textual | equivalente ao estado capturado |
+
+## 4. Construção e reexecução
+
+- Toda peça é **instância de componente** (regra 08); ícone é instância da lib lucide (regra 07).
+- Reexecutar um export/plugin DEVE ser idempotente: atualiza em vez de duplicar página/lib/tela.
+- Padrão reversível para substituições em massa: renomear o antigo para `OLD:*`, instanciar o novo,
+  verificar medido, SÓ ENTÃO remover o `OLD:*`.
+- Relatório de entrega: antes/depois com as medidas coletadas e os desvios encontrados (se um lado
+  não pôde ser verificado, DECLARAR — não afirmar fidelidade sem os dois screenshots).
