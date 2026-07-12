@@ -88,7 +88,7 @@ npm run build              # gera dist/ a partir de tokens/
 npm run check              # valida contrato, referências e contraste WCAG (AA)
 npm run doctor             # guarda anti-corrupção do working tree (roda no pre-commit)
 npm run preview            # build + instrução para abrir preview/index.html
-npm run export:ts          # gera token-studio/tokens.json (bundle p/ importar no Token Studio)
+npm run export:ts          # gera tokens/token-studio/tokens.json (bundle p/ importar no Token Studio)
 npm run export:figma       # gera crp_plugins/figma-plugin/figma-variables.json (p/ o plugin de Variables)
 npm run export:components  # gera crp_plugins/figma-plugin-components/figma-components.json (Button/Input)
 npm run icons              # gera + embute os bundles de ícones (Lucide/Material) no plugin de ícones
@@ -186,14 +186,14 @@ import "@crp/design-tokens/components/button.js";    // guard de ativação p/ [
 
 Os tokens nascem como JSON no repo. Para levá-los ao plugin via **Load from JSON**:
 
-1. `npm run export:ts` → gera `token-studio/tokens.json` (8 sets + `$themes` + `$metadata`).
+1. `npm run export:ts` → gera `tokens/token-studio/tokens.json` (8 sets + `$themes` + `$metadata`).
 2. No Token Studio (Figma): **Settings → ative "Use DTCG format"**.
-3. **Load from file/JSON** → selecione `token-studio/tokens.json`.
+3. **Load from file/JSON** → selecione `tokens/token-studio/tokens.json`.
 4. Confirme os 8 sets + 4 themes; aplique `CRP-Light` para validar.
 
 O script valida compatibilidade (refs, sets vs `$themes`/`$metadata`, `$type`) e falha se algo quebraria o import. Detalhes no agente `token-studio-export` (`.claude/agents/`).
 
-> ⚠️ **`token-studio/tokens.json` é GERADO e gitignored** (como o `figma-variables.json`). Ele NÃO acompanha
+> ⚠️ **`tokens/token-studio/tokens.json` é GERADO e gitignored** (como o `figma-variables.json`). Ele NÃO acompanha
 > o git, então pode ficar **stale** se você mudou tokens depois de gerá-lo — **rode `npm run export:ts`
 > antes de importar**. O CI também o publica como **artifact** (`token-studio`) a cada build da `main`,
 > então dá pra baixar a versão canônica de lá em vez de regenerar.
@@ -203,7 +203,7 @@ O script valida compatibilidade (refs, sets vs `$themes`/`$metadata`, `$type`) e
 Duas rotas para levar os tokens a **Figma Variables**:
 
 **A) Plugin próprio (direto, 1 clique — recomendado).** `crp_plugins/figma-plugin/` é um plugin de dev que
-lê o `token-studio/tokens.json` e **cria as Variables** no arquivo aberto, sem Token Studio nem
+lê o `tokens/token-studio/tokens.json` e **cria as Variables** no arquivo aberto, sem Token Studio nem
 Enterprise (a Plugin API escreve Variables em qualquer plano; a REST API de escrita é Enterprise-only).
 Cria 4 collections no eixo **Brand × Mode**: `CRP/Primitives`, `CRP/Base`, `CRP/Brand` (modes CRP/MarcaB),
 `CRP/Mode` (modes Light/Dark) — contrato todo como **alias** dos primitivos. Passo a passo em
@@ -253,7 +253,7 @@ vira um no-op e a `main` fica verde (em vez de falhar tentando publicar a 0.0.0)
 
 - **Figma Variables:** rodar o plugin `crp_plugins/figma-plugin/` no arquivo do Figma (rota A acima) —
   é a rota recomendada e não depende de plano pago.
-- **Token Studio (opcional):** para editar visualmente, importar `token-studio/tokens.json` via
+- **Token Studio (opcional):** para editar visualmente, importar `tokens/token-studio/tokens.json` via
   *Load from JSON* (formato DTCG) — ver seção "Carregar os tokens no Token Studio".
 - **Bibliotecas do Figma:** após rodar os plugins de ícones/componentes, *publicar* a biblioteca
   (Assets → Publish) para propagar aos arquivos que a consomem.

@@ -12,7 +12,7 @@ cor, efeito, grid) funcionam em **qualquer plano**.
 
 | Arquivo | Gerar com | Para |
 |---|---|---|
-| `token-studio/tokens.json` | `npm run export:ts` | **Token Studio** (DTCG multi-set, com `$themes`/`$metadata`; entende compostos) |
+| `tokens/token-studio/tokens.json` | `npm run export:ts` | **Token Studio** (DTCG multi-set, com `$themes`/`$metadata`; entende compostos) |
 | `crp_plugins/figma-plugin/figma-variables.json` | `npm run export:figma` | **este plugin** (collections já resolvidas; o Figma não entende composto) |
 
 São diferentes de propósito: o Figma precisa do contrato **já fundido por tema** (marca + mode

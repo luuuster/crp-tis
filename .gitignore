@@ -1,6 +1,6 @@
 node_modules/
 dist/
-token-studio/
+tokens/token-studio/
 # bundles de ícones gerados (regenerados por `npm run icons` e no CI)
 crp_plugins/figma-plugin-icons/lucide-icons.json
 crp_plugins/figma-plugin-icons/material-outlined.json

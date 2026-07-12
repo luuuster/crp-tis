@@ -1,6 +1,6 @@
 // Export: tokens/ -> crp_plugins/figma-plugin/figma-variables.json (formato RESOLVIDO p/ o plugin Figma).
 //
-// Por que um arquivo separado do token-studio/tokens.json?
+// Por que um arquivo separado do tokens/token-studio/tokens.json?
 //  - O Token Studio quer DTCG multi-set (com $themes/$metadata) e entende compostos.
 //  - O Figma Variables NÃO entende composto, e precisa do contrato JÁ FUNDIDO por tema
 //    (brand + mode juntos). Aqui resolvemos os 4 temas (CRP/MarcaB × Light/Dark) como o build

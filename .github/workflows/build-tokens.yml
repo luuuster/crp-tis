@@ -64,14 +64,14 @@ jobs:
           path: crp_plugins/figma-plugin/figma-variables.json
           if-no-files-found: error
 
-      - name: Exportar token-studio/tokens.json (bundle p/ Load from JSON, gerado e não versionado)
+      - name: Exportar tokens/token-studio/tokens.json (bundle p/ Load from JSON, gerado e não versionado)
         run: npm run export:ts
 
-      - name: Publicar token-studio/tokens.json (artifact)
+      - name: Publicar tokens/token-studio/tokens.json (artifact)
         uses: actions/upload-artifact@v7
         with:
           name: token-studio
-          path: token-studio/tokens.json
+          path: tokens/token-studio/tokens.json
           if-no-files-found: error
 
       - name: Gerar e embutir bundles de ícones (Lucide + Material)

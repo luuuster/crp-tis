@@ -1,7 +1,9 @@
 # tokens/ — instruções de domínio (herda o [AGENTS.md](../AGENTS.md) raiz)
 
 Fonte da verdade dos **valores de design** (DTCG: `$value`/`$type` por token). Tudo aqui é
-autorado e revisado por PR; `dist/` e os JSONs dos plugins são gerados a partir daqui.
+autorado e revisado por PR — com UMA exceção: **`token-studio/` é subpasta GERADA** (bundle
+single-file para o "Load from JSON" do Token Studio, via `npm run export:ts`; gitignored, fora
+da varredura de sets do exporter). `dist/` e os JSONs dos plugins também são gerados daqui.
 
 ## Estrutura e taxonomia
 

@@ -12,21 +12,21 @@ tools: Read, Write, Edit, Glob, Grep, Bash
 Você gera e valida o **bundle single-file** dos tokens do `crp_ds` para importar no **Token Studio** via "Load from JSON". Foco único: levar `tokens/` (repo) → arquivo importável no plugin.
 
 ## Objetivo
-Rodar o export, garantir que o bundle importa **sem quebrar** no Token Studio, e guiar o designer no import. Ponto final: `token-studio/tokens.json` válido + passos do plugin.
+Rodar o export, garantir que o bundle importa **sem quebrar** no Token Studio, e guiar o designer no import. Ponto final: `tokens/token-studio/tokens.json` válido + passos do plugin.
 
 ## Guardrails — NUNCA
 - Nunca edite `tokens/` — é a **fonte da verdade**. Este agente é **read-only** sobre ela.
 - Incompatibilidade encontrada na validação → **reporte apontando o arquivo/token a corrigir**; não mute a fonte aqui (correção é do agente `design-system` / Token Studio).
-- Nunca edite/commite `token-studio/tokens.json` à mão — é **gerado** por `npm run export:ts`.
+- Nunca edite/commite `tokens/token-studio/tokens.json` à mão — é **gerado** por `npm run export:ts`.
 - O plugin precisa estar em **modo DTCG** (`$value`/`$type`) no import — sem isso ele não lê nossos tokens.
 - Não tente "importar no Figma" via código — o "Load from JSON" é manual no plugin.
 
 ## Como funciona
-`build/export-token-studio.mjs` lê o `tokens/` multi-file e monta o **formato single-file** do Token Studio: cada **set** vira uma chave de topo, mais as chaves especiais `$themes` (array) e `$metadata` (`tokenSetOrder`). Valida e grava em `token-studio/tokens.json`.
+`build/export-token-studio.mjs` lê o `tokens/` multi-file e monta o **formato single-file** do Token Studio: cada **set** vira uma chave de topo, mais as chaves especiais `$themes` (array) e `$metadata` (`tokenSetOrder`). Valida e grava em `tokens/token-studio/tokens.json`.
 
 ## Comando
 ```bash
-npm run export:ts        # → token-studio/tokens.json
+npm run export:ts        # → tokens/token-studio/tokens.json
 ```
 
 ## Exemplo — shape do bundle
@@ -43,7 +43,7 @@ npm run export:ts        # → token-studio/tokens.json
 ## Passo a passo no plugin (Load from JSON)
 1. No Figma, abra **Tokens Studio**.
 2. **Settings → ative "Use DTCG format"** (obrigatório — nossos tokens são `$value`/`$type`).
-3. Menu/Tools → **Load from file/JSON** (ou colar) → selecione `token-studio/tokens.json`.
+3. Menu/Tools → **Load from file/JSON** (ou colar) → selecione `tokens/token-studio/tokens.json`.
 4. Confirme que apareceram os **8 sets** (`core/*`, `semantic/base`, `brand/*`, `mode/*`) e os **4 themes** (`CRP-Light/Dark`, `MarcaB-Light/Dark`).
 5. Aplique um theme (ex.: CRP-Light) e valide visualmente (background branco, primary azul CRP).
 
@@ -57,7 +57,7 @@ npm run export:ts        # → token-studio/tokens.json
 ## Definition of Done + recuperação de erro
 **Pronto =** `npm run export:ts` termina com:
 `✅ export OK — bundle pronto para "Load from JSON" no Token Studio …`
-e `token-studio/tokens.json` tem chaves = 8 sets + `$themes` + `$metadata`. Hoje o único aviso esperado é o do `components/button`. Qualquer `❌` bloqueia.
+e `tokens/token-studio/tokens.json` tem chaves = 8 sets + `$themes` + `$metadata`. Hoje o único aviso esperado é o do `components/button`. Qualquer `❌` bloqueia.
 
 | Sintoma | Causa | Correção (na FONTE, não no bundle) |
 |---|---|---|

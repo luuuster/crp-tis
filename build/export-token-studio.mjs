@@ -1,5 +1,5 @@
 // Export: tokens/ (multi-file) -> bundle SINGLE-FILE do Token Studio (para "Load from JSON").
-// Lê tokens/, VALIDA compatibilidade e grava dist/token-studio/tokens.json.
+// Lê tokens/, VALIDA compatibilidade e grava tokens/token-studio/tokens.json.
 // Read-only sobre tokens/ (a fonte): NÃO edita nada em tokens/. O bundle é GERADO.
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
@@ -7,7 +7,8 @@ import { join } from 'node:path';
 const ROOT = process.cwd();
 const TOKENS = join(ROOT, 'tokens');
 // Fora de dist/ de propósito: `npm run build` faz rm em dist/ e apagaria o bundle.
-const OUT_DIR = join(ROOT, 'token-studio');
+// Dentro de tokens/ (subpasta GERADA e gitignored) — é a visão Token Studio da própria fonte.
+const OUT_DIR = join(ROOT, 'tokens', 'token-studio');
 const OUT = join(OUT_DIR, 'tokens.json');
 
 // $type aceitos pelo Token Studio (DTCG + legados). Fora disso → aviso.
@@ -70,6 +71,7 @@ function listSets(dir) {
   for (const name of readdirSync(dir)) {
     if (name.startsWith('.')) continue; // ignora dot-dirs (ex.: backups .core-backup-* do seed)
     const full = join(dir, name);
+    if (full === OUT_DIR) continue; // a própria saída (tokens/token-studio/) não é set
     if (statSync(full).isDirectory()) out.push(...listSets(full));
     else if (name.endsWith('.json')) {
       const r = rel(full).slice('tokens/'.length).replace(/\.json$/, '');
