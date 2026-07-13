@@ -1,4 +1,4 @@
-// Build dos tokens: Token Studio (JSON/DTCG) -> CSS (Tailwind v4 / shadcn).
+// Build dos tokens: tokens/ (JSON/DTCG) -> CSS (Tailwind v4 / shadcn).
 // Fonte da verdade = tokens/. Saída GERADA = dist/. NUNCA edite dist/ à mão.
 //
 // Estratégia (ver §6 #2 e #4 do plano):
@@ -23,7 +23,7 @@ const THEMES_DIR = join(DIST, 'themes');
 
 register(StyleDictionary);
 
-// Cada theme (brand×mode) do Token Studio -> um seletor CSS — DERIVADO de tokens/$themes.json
+// Cada theme (brand×mode) de tokens/ -> um seletor CSS — DERIVADO de tokens/$themes.json
 // (build/lib/themes.mjs): dark via classe `.dark` (padrão shadcn/next-themes); marca via
 // [data-brand]; marca default (1ª do grupo Brand) sem atributo. Adicionar marca = editar SÓ o $themes.
 const SELECTOR = loadThemes(ROOT).selectorsByTheme;
@@ -64,7 +64,7 @@ function emitAuthored(srcRel, distRel) {
 }
 
 // Remove o header do SD e os comentários inline de hex (/** #rrggbb */, vindos do $description)
-// SEM colapsar linhas. O hex de referência vive no color.json/Token Studio, não no CSS de produção.
+// SEM colapsar linhas. O hex de referência vive no color.json (tokens/), não no CSS de produção.
 function stripComments(css) {
   return css
     .replace(/\/\*\*[\s\S]*?\*\//g, '') // header + comentários inline /** ... */
@@ -140,7 +140,7 @@ async function main() {
   }
 
   // 4a) tokens.css = primitivos (:root) + cada bloco de tema no seu seletor.
-  const header = `/**\n * CRP Design System — tokens.css\n * GERADO automaticamente a partir de tokens/. NÃO EDITE À MÃO.\n * Fonte da verdade: Token Studio.\n */\n\n`;
+  const header = `/**\n * CRP Design System — tokens.css\n * GERADO automaticamente a partir de tokens/. NÃO EDITE À MÃO.\n * Fonte da verdade: tokens/ (DTCG).\n */\n\n`;
   const tokensCss = header + stripComments(primitivesCss) + '\n\n' +
     Object.entries(stripped).map(([name, css]) => `/* theme: ${name} */\n${css}`).join('\n');
   writeFileSync(join(DIST, 'tokens.css'), tokensCss);

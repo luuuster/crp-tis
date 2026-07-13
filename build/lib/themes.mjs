@@ -1,5 +1,5 @@
-// Fonte ÚNICA de marcas/temas do build — deriva tudo de tokens/$themes.json (SSOT do
-// Token Studio). Antes, marca/modo/seletor viviam hardcoded em 5 scripts; adicionar uma
+// Fonte ÚNICA de marcas/temas do build — deriva tudo de tokens/$themes.json (SSOT
+// versionada, formato DTCG). Antes, marca/modo/seletor viviam hardcoded em 5 scripts; adicionar uma
 // marca exigia ~5 edições e esquecer uma era bug silencioso (o check.mjs valida a coerência).
 //
 // Convenções (as únicas coisas que NÃO estão no $themes.json):

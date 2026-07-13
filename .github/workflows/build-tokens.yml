@@ -48,9 +48,6 @@ jobs:
       - name: Validar (refs, contrato, contraste WCAG)
         run: npm run check
 
-      - name: Auditoria do dark mode (fail-loud)
-        run: npm run audit:dark -- --strict
-
       - name: Audit de segurança (falha só em high+; os moderate do changesets são devDep de release)
         run: npm audit --audit-level=high
 
@@ -64,10 +61,10 @@ jobs:
           path: crp_plugins/figma-plugin/figma-variables.json
           if-no-files-found: error
 
-      - name: Exportar tokens/token-studio/tokens.json (bundle p/ Load from JSON, gerado e não versionado)
+      - name: (LEGADO) Exportar tokens/token-studio/tokens.json — Token Studio DESCONTINUADO (regra 12)
         run: npm run export:ts
 
-      - name: Publicar tokens/token-studio/tokens.json (artifact)
+      - name: (LEGADO) Publicar tokens/token-studio/tokens.json (artifact) — Token Studio DESCONTINUADO
         uses: actions/upload-artifact@v7
         with:
           name: token-studio

@@ -1,7 +1,8 @@
 # crp_plugins/ — instruções de domínio (herda o [AGENTS.md](../AGENTS.md) raiz)
 
 4 plugins Figma + extensão Chrome. Papel na cadeia: **materializar downstream** o que `tokens/` e
-o app definem. Inventário e comandos por plugin: [README.md](README.md).
+o app definem — **a web é a fonte da verdade; o Figma é espelho** (fluxo web→plugin→Figma, **regra
+12**; Token Studio DESCONTINUADO). Inventário e comandos por plugin: [README.md](README.md).
 
 ## Lei central: quase tudo aqui é GERADO
 

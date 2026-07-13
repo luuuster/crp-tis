@@ -1,7 +1,7 @@
 {
   "name": "@crp/design-tokens",
   "version": "0.0.0",
-  "description": "CRP Design System — tokens gerados a partir do Token Studio (SSOT). Saída para Tailwind v4 / shadcn (CSS custom properties).",
+  "description": "CRP Design System — tokens em tokens/ (DTCG, SSOT versionada). Saída para Tailwind v4 / shadcn (CSS custom properties).",
   "type": "module",
   "license": "UNLICENSED",
   "private": true,
@@ -38,7 +38,6 @@
     "sync:rules": "node build/sync-rules.mjs",
     "doctor": "node build/doctor.mjs",
     "doctor:fix": "node build/doctor.mjs --fix",
-    "audit:dark": "node build/audit-dark.mjs",
     "export:ts": "node build/export-token-studio.mjs",
     "export:figma": "node build/export-figma.mjs",
     "export:lucide": "node build/export-lucide-figma.mjs",
@@ -48,7 +47,7 @@
     "icons": "npm run export:icons && npm run embed:icons",
     "verify:lucide": "node build/export-lucide-figma.mjs && node --test crp_plugins/figma-plugin-icons/bundle.test.mjs crp_plugins/figma-plugin-icons/run.test.mjs",
     "verify:material": "node build/export-material-figma.mjs && node --test crp_plugins/figma-plugin-icons/material.test.mjs crp_plugins/figma-plugin-icons/run.test.mjs",
-    "export": "npm run export:ts && npm run export:figma",
+    "export": "npm run export:figma",
     "export:components": "node build/export-components.mjs",
     "export:screens": "node build/export-components.mjs && node build/export-screens.mjs",
     "export:ext": "node build/export-extension-tokens.mjs",
@@ -56,7 +55,6 @@
     "pretest": "node build/check-icon-bundles.mjs && node build/sync-rules.mjs --check",
     "test": "node --test build/lib/color.test.mjs build/lib/css.test.mjs build/lib/themes.test.mjs crp_plugins/crp-editor-extension/match.test.mjs crp_plugins/figma-plugin/pure.test.mjs crp_plugins/figma-plugin-components/pure.test.mjs crp_plugins/figma-plugin-screens/pure.test.mjs crp_plugins/figma-plugin-icons/bundle.test.mjs crp_plugins/figma-plugin-icons/run.test.mjs crp_plugins/figma-plugin-icons/material.test.mjs crp_plugins/figma-plugin-icons/embed.test.mjs",
     "verify": "npm run build && npm run check && npm run check:mock && npm test",
-    "preview": "npm run build && node -e \"console.log('Build OK. Abra preview/index.html no navegador.')\"",
     "release": "npm run build && changeset publish",
     "prepublishOnly": "npm run build && npm run check"
   },

@@ -1,5 +1,5 @@
 // Contrato de build/lib/themes.mjs — deriva marcas/modos/temas/seletores de tokens/$themes.json
-// (SSOT do Token Studio). Testa o repo real (documenta o contrato vigente) + os guards por fixture.
+// (SSOT versionada, DTCG). Testa o repo real (documenta o contrato vigente) + os guards por fixture.
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';

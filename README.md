@@ -14,26 +14,25 @@
 > npm run dev:mapa                #    docs/mapa   → http://localhost:5174  (arquitetura, fluxo, galeria do DS)
 > ```
 > ⚠️ O passo 1 (`npm run build` na raiz) **não é opcional** — sem ele a pasta `dist/` não existe e o app quebra ao subir.
-> O [`preview/index.html`](preview/index.html) citado abaixo é só a **vitrine dos tokens** (Botões/Texto/Charts), **não** o app.
 
 Pipeline de **Single Source of Truth (SSOT)** para os tokens do produto CRP.
 
 ```
-tokens/*.json (GitHub)  ⇄  Token Studio (edição visual opcional)
-   fonte da verdade      →  ┬→  Figma Variables (designers, via plugin CRP)
-   (DTCG, versionado)       └→  dist/ (Tailwind v4 / shadcn → front-ends)
+tokens/*.json (GitHub)   ┬→  Figma Variables (designers, via plugin próprio CRP DS)
+   fonte da verdade       └→  dist/ (Tailwind v4 / shadcn → front-ends)
+   (DTCG, versionado)         (Token Studio DESCONTINUADO — regra 12)
 ```
 
-- **`tokens/` no repo** é a **fonte da verdade** (os tokens nascem como JSON aqui; o Token Studio
-  importa/exporta esse JSON quando se quer editar visualmente). Ninguém edita CSS nem Figma Variables à mão.
-- **Designers** consomem **Figma Variables** (gerados a partir do Token Studio).
+- **`tokens/` no repo** é a **fonte da verdade** dos valores (os tokens nascem como JSON aqui). O
+  Token Studio está **DESCONTINUADO** (regra 12). Ninguém edita CSS nem Figma Variables à mão.
+- **Designers** consomem **Figma Variables** (gerados pelo **plugin próprio** a partir de `tokens/`).
 - **Front-ends** consomem `@crp/design-tokens` (Tailwind v4 + shadcn/ui).
 - Multi-marca (`CRP`, `MarcaB`, …) × **Light/Dark**. Cores em **OKLCH**.
 
 ## Estrutura
 
 ```
-tokens/                      # SSOT (sincronizado pelo Token Studio, formato DTCG)
+tokens/                      # SSOT (formato DTCG, versionado)
   $metadata.json             # ordem dos token sets
   $themes.json               # grupos Brand × Mode → 4 themes
   core/                      # PRIMITIVOS — paridade total com o Tailwind v4 (+ marca)
@@ -68,7 +67,6 @@ dist/                        # GERADO — não editar à mão
   components/button.css      # componente .btn (gerado de src/components/button.css)
   components/button.js       # guard aria-disabled (gerado de src/components/button.js)
   tokens.{js,d.ts}           # brands/modes/themes para o provider de tema
-preview/index.html           # preview visual da troca de tema/marca (abre direto no navegador)
 crp_plugins/                 # plugins de dev (Figma + navegador) — 1 plugin por trabalho
   figma-plugin/              #   Tokens → Figma Variables (4 collections Brand × Mode) + Styles
   figma-plugin-icons/        #   biblioteca de ícones (Lucide/Material) como Components
@@ -87,8 +85,7 @@ npm install
 npm run build              # gera dist/ a partir de tokens/
 npm run check              # valida contrato, referências e contraste WCAG (AA)
 npm run doctor             # guarda anti-corrupção do working tree (roda no pre-commit)
-npm run preview            # build + instrução para abrir preview/index.html
-npm run export:ts          # gera tokens/token-studio/tokens.json (bundle p/ importar no Token Studio)
+npm run export:ts          # (LEGADO) bundle Token Studio — DESCONTINUADO (regra 12); use o plugin próprio
 npm run export:figma       # gera crp_plugins/figma-plugin/figma-variables.json (p/ o plugin de Variables)
 npm run export:components  # gera crp_plugins/figma-plugin-components/figma-components.json (Button/Input)
 npm run icons              # gera + embute os bundles de ícones (Lucide/Material) no plugin de ícones
@@ -109,7 +106,7 @@ Cada marca tem rampa própria em `color.brand.<marca>.<papel>` (50–950 + `DEFA
 
 **Secundárias** (`#8e51ff`, `#2886F3`) ficam disponíveis **apenas** como primitivos em `color.brand.<marca>.secondary.*` — não aplicadas ao contrato shadcn (prontas para usar onde você decidir). Os `chart-*` usam paleta genérica do Tailwind (não as cores de marca).
 
-> Os primitivos `core/*` foram semeados do Tailwind v4 + marcas por `build/seed-palette.mjs` (config `BRANDS` no topo). Para trocar uma cor de marca, adicionar marca, ou atualizar do Tailwind: edite o script e rode `node build/seed-palette.mjs` (⚠ sobrescreve `core/`), **ou** edite direto no Token Studio.
+> Os primitivos `core/*` foram semeados do Tailwind v4 + marcas por `build/seed-palette.mjs` (config `BRANDS` no topo). Para trocar uma cor de marca, adicionar marca, ou atualizar do Tailwind: edite o script e rode `node build/seed-palette.mjs` (⚠ sobrescreve `core/`). O Token Studio está DESCONTINUADO (regra 12).
 
 ## Taxonomia (3 tiers)
 
@@ -148,7 +145,7 @@ Os componentes (`npx shadcn@latest add button card …`) passam a pegar as cores
 
 ## Acessibilidade (a11y) no produto
 
-A a11y de **comportamento** (foco global, `prefers-reduced-motion`, `forced-colors`, e o componente `.btn` acessível) é **shippada no `dist/`** — não fica só nos previews. Importe:
+A a11y de **comportamento** (foco global, `prefers-reduced-motion`, `forced-colors`, e o componente `.btn` acessível) é **shippada no `dist/`** — vai junto do pacote, não depende do consumidor. Importe:
 
 ```js
 import "@crp/design-tokens/theme.css";              // (ou tokens.css) — o contrato de tokens
@@ -180,9 +177,12 @@ import "@crp/design-tokens/components/button.js";    // guard de ativação p/ [
 
 - **WCAG 2.2 AA.** Contraste **textual** (≥ 4.5:1) e **não-textual / 1.4.11** (≥ 3:1: borda de outline em repouso e anel de foco) são validados em **CI** (`npm run check`) nos 4 temas (CRP/MarcaB × Light/Dark).
 - O `check.mjs` também falha o build se `dist/base.css`, `dist/components/button.css` ou `dist/components/button.js` faltarem ou perderem suas regras-chave (foco+`--ring`, `prefers-reduced-motion`, `forced-colors`, estados do botão, guard `aria-disabled`).
-- Fonte da verdade desses artefatos = **`src/`** (autorado). O build LÊ `src/` e ESCREVE em `dist/` com header "GERADO" — **nunca edite `dist/` à mão**. Os previews (`preview/button.html`, `preview/login.html`) **consomem o `dist/`** — a demo prova o artefato shippado, sem CSS/JS duplicado.
+- Fonte da verdade desses artefatos = **`src/`** (autorado). O build LÊ `src/` e ESCREVE em `dist/` com header "GERADO" — **nunca edite `dist/` à mão**. O consumidor de referência do que é shippado é o **app** (`app/`), cujo e2e valida contraste por pixel, foco e alturas nos 4 temas.
 
-## Carregar os tokens no Token Studio (bootstrap, arquivo único)
+## Carregar os tokens no Token Studio (DESCONTINUADO — legado)
+
+> ⚠️ **Token Studio foi descontinuado (regra 12).** Use a rota A (plugin próprio) da seção "Figma
+> Variables". Esta seção fica só como referência histórica.
 
 Os tokens nascem como JSON no repo. Para levá-los ao plugin via **Load from JSON**:
 
@@ -203,15 +203,15 @@ O script valida compatibilidade (refs, sets vs `$themes`/`$metadata`, `$type`) e
 Duas rotas para levar os tokens a **Figma Variables**:
 
 **A) Plugin próprio (direto, 1 clique — recomendado).** `crp_plugins/figma-plugin/` é um plugin de dev que
-lê o `tokens/token-studio/tokens.json` e **cria as Variables** no arquivo aberto, sem Token Studio nem
+lê o `crp_plugins/figma-plugin/figma-variables.json` e **cria as Variables** no arquivo aberto, sem Token Studio nem
 Enterprise (a Plugin API escreve Variables em qualquer plano; a REST API de escrita é Enterprise-only).
 Cria 4 collections no eixo **Brand × Mode**: `CRP/Primitives`, `CRP/Base`, `CRP/Brand` (modes CRP/MarcaB),
 `CRP/Mode` (modes Light/Dark) — contrato todo como **alias** dos primitivos. Passo a passo em
 [`crp_plugins/figma-plugin/README.md`](crp_plugins/figma-plugin/README.md). Use um arquivo do time **pro** (times *Starter*
 limitam modes).
 
-**B) Token Studio (manual).** Pull dos tokens do GitHub → **Export → Figma Variables** (ação manual
-do plugin; sync automático exigiria Pro/Enterprise).
+**B) Token Studio (manual) — DESCONTINUADO (regra 12).** Rota legada, mantida só como referência
+histórica; use sempre a rota A (plugin próprio).
 
 ⚠️ Só escalares (cor/número/string/bool) viram Variables. Tipografia/sombra (compostos) viram **Styles**.
 
@@ -253,8 +253,7 @@ vira um no-op e a `main` fica verde (em vez de falhar tentando publicar a 0.0.0)
 
 - **Figma Variables:** rodar o plugin `crp_plugins/figma-plugin/` no arquivo do Figma (rota A acima) —
   é a rota recomendada e não depende de plano pago.
-- **Token Studio (opcional):** para editar visualmente, importar `tokens/token-studio/tokens.json` via
-  *Load from JSON* (formato DTCG) — ver seção "Carregar os tokens no Token Studio".
+- **Token Studio — DESCONTINUADO (regra 12):** rota legada; use o **plugin próprio** (rota A acima).
 - **Bibliotecas do Figma:** após rodar os plugins de ícones/componentes, *publicar* a biblioteca
   (Assets → Publish) para propagar aos arquivos que a consomem.
 

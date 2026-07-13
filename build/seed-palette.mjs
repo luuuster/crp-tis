@@ -5,7 +5,7 @@
 // container, shadow (box/inset/drop/text), blur, perspective, aspect, ease, duration e animate.
 //
 // ⚠ SOBRESCREVE os arquivos em tokens/core/ — use só para semear/atualizar do Tailwind; depois
-// disso a fonte da verdade é o Token Studio. Mudou a cor da marca? Edite os hexes e re-rode.
+// disso a fonte da verdade é `tokens/` (versionado). Mudou a cor da marca? Edite os hexes e re-rode.
 //
 // Tipos compostos (sombra/easing) são guardados com o $type que o sd-transforms preserva sem
 // "fazer conta" (boxShadow/cubicBezier) — ver probe; 'other' NÃO é seguro (resolveMath avalia).
@@ -25,7 +25,7 @@ const entriesMatching = (re) =>
   Object.entries(vars).map(([k, v]) => [k.match(re), v]).filter(([m]) => m);
 const write = (file, obj) => writeFileSync(`tokens/core/${file}`, JSON.stringify(obj, null, 2) + '\n');
 
-// SALVAGUARDA: sobrescrever tokens/core/ destrói edições feitas via Token Studio (a SSOT). Exige
+// SALVAGUARDA: sobrescrever tokens/core/ destrói edições em `tokens/` (a SSOT versionada). Exige
 // --force e faz BACKUP automático antes de escrever. Sem --force (e com core/ já existente), recusa.
 const CORE_FILES = ['color', 'dimension', 'border', 'icon', 'typography', 'shadow', 'effect', 'motion']
   .map((f) => `tokens/core/${f}.json`);
@@ -33,7 +33,7 @@ const FORCE = process.argv.includes('--force');
 {
   const existing = CORE_FILES.filter((f) => existsSync(f));
   if (existing.length && !FORCE) {
-    console.error('⛔ seed-palette: tokens/core/ já existe e seria SOBRESCRITO — isto apaga edições feitas no Token Studio (a SSOT).');
+    console.error('⛔ seed-palette: tokens/core/ já existe e seria SOBRESCRITO — isto apaga edições em tokens/ (a SSOT versionada).');
     console.error('   Rode com --force para confirmar (um backup é criado automaticamente antes).');
     console.error('   Arquivos em risco:', existing.map((f) => f.split('/').pop()).join(', '));
     process.exit(1);

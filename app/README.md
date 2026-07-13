@@ -14,7 +14,7 @@ App React (Vite + TypeScript + Tailwind v4) que usa os componentes do **shadcn/u
   então os utilitários do shadcn (`bg-primary`, `text-foreground`, `ring-ring`, `rounded-lg`…) resolvem
   para os tokens do CRP **em runtime**.
 - Trocar **marca/tema** = alternar `[data-brand="marca-b"]` e `.dark` no `<html>` (mesmo mecanismo dos previews).
-- **Nunca** se edita cor/raio à mão: muda no Token Studio → `npm run build` na raiz → o app segue.
+- **Nunca** se edita cor/raio à mão: muda em `tokens/` → `npm run build` na raiz → o app segue.
 
 ## Rodar
 

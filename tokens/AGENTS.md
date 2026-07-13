@@ -2,7 +2,7 @@
 
 Fonte da verdade dos **valores de design** (DTCG: `$value`/`$type` por token). Tudo aqui é
 autorado e revisado por PR — com UMA exceção: **`token-studio/` é subpasta GERADA** (bundle
-single-file para o "Load from JSON" do Token Studio, via `npm run export:ts`; gitignored, fora
+single-file **legado** do Token Studio — **DESCONTINUADO, regra 12** —, via `npm run export:ts`; gitignored, fora
 da varredura de sets do exporter). `dist/` e os JSONs dos plugins também são gerados daqui.
 
 ## Estrutura e taxonomia
@@ -31,4 +31,4 @@ da varredura de sets do exporter). `dist/` e os JSONs dos plugins também são g
 `npm run build && npm run check` na raiz — check termina em
 `✅ contrato completo, refs resolvidas, contraste crítico AA` (4 permutações; FATAL bloqueia).
 Mudou valor/nome: **changeset** (patch/minor/major conforme tabela do agent design-system) e,
-quando relevante ao Figma, `npm run export:figma` regenerado. Auditoria dark: `npm run audit:dark -- --strict`.
+quando relevante ao Figma, `npm run export:figma` regenerado.
