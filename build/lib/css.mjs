@@ -1,6 +1,6 @@
-// Parsing de CSS gerado + resolução de var() + composição de color-mix — COMPARTILHADO
-// entre check.mjs e audit-dark.mjs (antes duplicado nos dois; divergência silenciosa era
-// questão de tempo). Opera sobre dist/tokens.css (output do build), não sobre as fontes.
+// Parsing de CSS gerado + resolução de var() + composição de color-mix — biblioteca do
+// check.mjs (nasceu compartilhada com o antigo audit-dark; o módulo único evita a divergência
+// silenciosa de cópias). Opera sobre dist/tokens.css (output do build), não sobre as fontes.
 import { parse, wcagContrast, formatHex, converter, interpolate } from 'culori';
 
 // Parse de blocos: [{ selector, decls: { '--name': value } }]

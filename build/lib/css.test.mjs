@@ -1,6 +1,6 @@
 // Contrato de build/lib/css.mjs — parsing do CSS gerado, resolução de var() e composição de cor.
-// Compartilhado por check.mjs e audit-dark.mjs; divergência silenciosa entre cópias era o risco
-// que motivou o módulo. Estes testes fixam o comportamento.
+// Consumido pelo check.mjs; divergência silenciosa entre cópias era o risco que motivou o
+// módulo. Estes testes fixam o comportamento.
 import { describe, it, mock } from 'node:test';
 import assert from 'node:assert/strict';
 import { parseBlocks, scopesOf, makeResolve, contrast, tintOver, mixOklch } from './css.mjs';

@@ -171,7 +171,7 @@ if (existsSync(COMPONENTS_DIR)) {
 }
 
 // ----------------------------------------------------------------
-// USO-DE-COR (texto) — varredura das FONTES (preview/ + src/).
+// USO-DE-COR (texto) — varredura das FONTES (src/).
 // Um TOKEN de PREENCHIMENTO (primary/secondary/destructive/warning/success/info) NÃO pode
 // ser usado como `color:` de TEXTO: no dark ele é um shade escuro e reprova AA como texto
 // (ex.: erro com --destructive = red.600 → 3.64 sobre o card). O texto dessas variantes usa
@@ -181,7 +181,7 @@ if (existsSync(COMPONENTS_DIR)) {
 // O check de TOKEN não pega isto (o token está certo; o USO é que está errado). FATAL.
 // ----------------------------------------------------------------
 const FILL_TOKENS = ['primary', 'secondary', 'destructive', 'warning', 'success', 'info'];
-const LINT_DIRS = ['preview', 'src/components', 'src/a11y'];
+const LINT_DIRS = ['src/components', 'src/a11y'];
 const usageErrors = [];
 for (const dir of LINT_DIRS) {
   const abs = join(process.cwd(), dir);
@@ -350,7 +350,7 @@ for (const [label, sel] of Object.entries(EXPECTED_SELECTORS)) {
 //    (b) ANEL de foco (--ring), opaco, contra bg E card (o anel fica no offset, sobre a superfície).
 //    Os tints do outline são os MESMOS accents de texto por intent.
 const NONTEXT = 3.0;
-// (intent -> token de tint usado como borda do outline; espelha o mapa --_tint no button.html)
+// (intent -> token de tint usado como borda do outline; espelha o mapa --_tint de src/components/button.css)
 const OUTLINE_TINTS = ['primary-text', 'secondary-text', 'destructive-text', 'warning-text', 'success-text', 'info-text'];
 for (const [label, sel] of Object.entries(EXPECTED_SELECTORS)) {
   const scope = bySelector[sel];

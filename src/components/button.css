@@ -1,8 +1,9 @@
 /**
  * CRP Design System — Botão (`.btn`), 100% token-driven.
  *
- * O artefato REAL do "nosso botão": o sistema acessível auditado no preview/button.html,
- * extraído e organizado em @layer components. Tudo via var(--...) — sem valores chumbados.
+ * O artefato REAL do "nosso botão": sistema acessível organizado em @layer components,
+ * validado pelo check.mjs (contraste/estados) e consumido pelo app. Tudo via var(--...) —
+ * sem valores chumbados.
  *
  * Importe com a base de a11y e o contrato de tokens:
  *   import "@crp/design-tokens/tokens.css";          (ou theme.css, no fluxo Tailwind)
