@@ -34,6 +34,12 @@ Pode rodar exporters em modo leitura/diff via Bash para comparar artefato gerado
    `app/src/components/ui/*` (contagem e nomes; ex.: button = 10 variants × 8 sizes × 4 states).
 4. **Telas:** toda peça é instância (nada de OLD:*, nada de vetor solto redesenhado); binds de cor
    apontam para Variables do token certo (INSTANCE_SWAP costuma perder bind — checar amostras).
+4b. **Varredura PROFUNDA de cor crua (gate — regra 09 §5):** recursiva por nó, **DENTRO** das
+   instâncias, dos componentes-master, dos **slots ocultos** (spinner/ícone com default off) e dos
+   **vetores de ícone** — todo paint SOLID (fill **E** stroke) bindado a Variable (ou removido se
+   wrapper invisível). Reportar `rawColorCount` por superfície; **≠0 = não está pronto**. Não contar só
+   os nós de topo (foi assim que o Download branco/invisível do Exportar e 640 fills crus do
+   `atom/button` passaram). Shadow = effect style (nunca raw); ring = stroke bindado separado.
 5. **Idempotência:** relatar o que uma reexecução dos exporters duplicaria (nome/página/keys).
 6. **Fidelidade amostral:** para 2–3 superfícies, screenshot Figma × web (preview/dev) e medidas
    (tolerâncias da regra 09: ±1px, cor exata).

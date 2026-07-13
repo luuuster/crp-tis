@@ -1,5 +1,5 @@
 ---
-description: Contrato de fidelidade web → Figma — transforma "pixel-fiel" em critérios VERIFICÁVEIS (estado controlado, medição de DOM, tolerâncias declaradas, screenshot dos dois lados, idempotência). Aplicar sempre que uma superfície da web for reproduzida, corrigida ou auditada no Figma.
+description: Contrato de fidelidade web → Figma — transforma "pixel-fiel" em critérios VERIFICÁVEIS (estado controlado, medição de DOM, tolerâncias declaradas, screenshot dos dois lados, idempotência) + AUDITORIA PROFUNDA por nó antes de "pronto" (0 cor crua inclusive DENTRO de instâncias, componentes, slots ocultos e vetores de ícone). Aplicar sempre que uma superfície da web for reproduzida, corrigida ou auditada no Figma.
 globs: crp_plugins/**,tools/measure.mjs,.claude/agents/figma-web-fidelity.md
 alwaysApply: false
 ---
@@ -44,3 +44,26 @@ alwaysApply: false
   verificar medido, SÓ ENTÃO remover o `OLD:*`.
 - Relatório de entrega: antes/depois com as medidas coletadas e os desvios encontrados (se um lado
   não pôde ser verificado, DECLARAR — não afirmar fidelidade sem os dois screenshots).
+
+## 5. Auditoria PROFUNDA antes de "pronto" (DoD — obrigatória)
+
+"Pronto" só existe depois de uma **auditoria por nó, RECURSIVA** da tela/componente inteiro — **não
+basta olhar as superfícies de topo**. Cor crua e ícone errado se escondem DENTRO das instâncias, no
+componente-master, em **slots ocultos** (spinner, ícone com default desligado) e nos **vetores de
+ícone**. (Lição real: o ícone Download do botão Exportar ficou branco cru/invisível, e 640 fills
+crus do `atom/button` passaram — porque a varredura contou só "as superfícies criadas".)
+
+- **0 cor crua** — `rawColorCount: 0` **PROVADO por varredura** (não afirmado): todo paint SOLID
+  (fill **E** stroke), inclusive **dentro de instâncias**, no **master**, em **slots ocultos** e nos
+  **vetores de ícone**, está **bindado a Variable** (ou removido, se wrapper invisível sem token). O
+  alpha mora NA Variable, nunca no `paint.opacity`.
+- **Shadow via effect style** existente (nunca raw); ring/borda = **stroke bindado**, separado da sombra.
+- **Ícone = lucide real** (regra 07), recolorido **bindado** ao token do contexto — o INSTANCE_SWAP
+  perde a cor, então **religar sempre**. Nenhum vetor à mão, nenhum ícone branco visível.
+- **Cada valor medido vs a web** (pixel/DOM via `getComputedStyle`/amostragem de pixel), nunca "no
+  olho" nem de relatório de terceiro.
+- **Screenshot dos dois lados conferido** antes de "pronto"; pendência não-verificável é DECLARADA.
+
+Executor/gate: o [figma-pipeline-validator](../../.claude/agents/figma-pipeline-validator.md)
+(auditor read-only) roda essa varredura profunda como **gate final** de toda tela — falhou = não está
+pronto.
