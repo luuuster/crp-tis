@@ -33,13 +33,21 @@ const CHART_CONFIG = { total: { label: 'Contratações', color: 'var(--chart-1)'
 export const DADOS_DEMOS: Demo[] = [
   {
     id: 'badge', component: 'badge', section: 'dados', title: 'Badge',
-    desc: 'Rótulo de status; variantes seguem a marca.',
+    desc: 'Rótulo de status; variantes seguem a marca. Escala sm/md/lg (20/22/26px).',
     Render: () => (
-      <div className="flex flex-wrap gap-2">
-        <Badge>Default</Badge>
-        <Badge variant="secondary">Secondary</Badge>
-        <Badge variant="destructive">Destructive</Badge>
-        <Badge variant="outline">Outline</Badge>
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-wrap gap-2">
+          <Badge>Default</Badge>
+          <Badge variant="secondary">Secondary</Badge>
+          <Badge variant="destructive">Destructive</Badge>
+          <Badge variant="outline">Outline</Badge>
+          <Badge variant="ghost">Ghost</Badge>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge variant="outline" size="sm">Small</Badge>
+          <Badge variant="outline" size="md">Medium</Badge>
+          <Badge variant="outline" size="lg">Large</Badge>
+        </div>
       </div>
     ),
   },

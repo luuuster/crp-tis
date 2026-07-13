@@ -5,7 +5,9 @@ import { Slot } from "radix-ui"
 import { cn } from "@/lib/utils"
 
 const badgeVariants = cva(
-  "inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-full border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:focus-ring aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3",
+  // Base agnóstica de tamanho. As dimensões (padding/altura/tipo/ícone) vivem em `size`.
+  // Altura = line-height + padding-y×2 + borda×2 (border-box): sm 20 · md 22 · lg 26.
+  "inline-flex w-fit shrink-0 items-center justify-center overflow-hidden rounded-full border border-transparent font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:focus-ring aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none",
   {
     variants: {
       variant: {
@@ -19,9 +21,15 @@ const badgeVariants = cva(
         ghost: "[a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
         link: "text-primary-text underline-offset-4 [a&]:hover:underline",
       },
+      size: {
+        sm: "gap-1 px-1.5 py-px text-xs [&>svg]:size-3", // 20px · 12/16 · ícone 12
+        md: "gap-1 px-2 py-0.5 text-xs [&>svg]:size-3", // 22px · 12/16 · ícone 12
+        lg: "gap-1.5 px-2.5 py-0.5 text-sm [&>svg]:size-4", // 26px · 14/20 · ícone 16
+      },
     },
     defaultVariants: {
       variant: "default",
+      size: "md",
     },
   }
 )
@@ -29,6 +37,7 @@ const badgeVariants = cva(
 function Badge({
   className,
   variant = "default",
+  size = "md",
   asChild = false,
   ...props
 }: React.ComponentProps<"span"> &
@@ -39,7 +48,8 @@ function Badge({
     <Comp
       data-slot="badge"
       data-variant={variant}
-      className={cn(badgeVariants({ variant }), className)}
+      data-size={size}
+      className={cn(badgeVariants({ variant, size }), className)}
       {...props}
     />
   )
