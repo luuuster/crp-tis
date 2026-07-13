@@ -70,7 +70,8 @@
   "perfil": {
     "voltar": "Back to the pool",
     "verCurriculo": "View latest résumé",
-    "toastCurriculo": "{{nome}}'s latest résumé (demo).",
+    "toastCurriculo": "{{nome}}'s résumé",
+    "toastCurriculoDescricao": "Opening the latest résumé submitted by the candidate.",
     "overline": "Candidate profile",
     "ariaResumo": "History summary",
     "kpi": {

@@ -23,7 +23,8 @@
   "conta": {
     "label": "Your account",
     "minha": "Edit profile",
-    "contaDemo": "Account (demo).",
+    "contaDemo": "My account",
+    "contaDemoDescricao": "Profile editing is coming in the full version of the platform.",
     "sair": "Sign out"
   },
   "sairConfirm": {

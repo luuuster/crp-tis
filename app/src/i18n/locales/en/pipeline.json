@@ -94,10 +94,15 @@
     "antiga": "Oldest analysis"
   },
   "toast": {
-    "avancou": "{{nome}} advanced to {{fase}}.",
-    "reprovado": "{{nome}} moved to Rejected.",
-    "reagendada": "{{nome}}'s interview rescheduled for {{quando}}.",
-    "contratado": "{{nome}} was hired! 🎉",
-    "curriculo": "The resume is illustrative in this demo."
+    "avancou": "Candidate advanced",
+    "avancouDescricao": "{{nome}} was moved to {{fase}}.",
+    "reprovado": "Candidate rejected",
+    "reprovadoDescricao": "{{nome}} was moved to Rejected.",
+    "reagendada": "Interview rescheduled",
+    "reagendadaDescricao": "{{nome}}'s interview was rescheduled for {{quando}}.",
+    "contratado": "Hire completed 🎉",
+    "contratadoDescricao": "{{nome}} was hired. Congratulations on wrapping up the process!",
+    "curriculo": "Candidate's résumé",
+    "curriculoDescricao": "In this prototype, the résumé is illustrative."
   }
 }

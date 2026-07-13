@@ -62,10 +62,13 @@
     "etapaValor": "Interview, hiring process",
     "entrarChamada": "Join the call",
     "verLocal": "View location",
-    "toastEntrando": "Joining the call… (demo)",
+    "toastEntrando": "Joining the call…",
+    "toastEntrandoDescricao": "Opening the interview video room.",
     "baixarRoteiro": "Download script",
-    "roteiroBaixado": "{{cand}}'s interview script downloaded.",
-    "toastLocalCopiado": "Location address copied (demo).",
+    "roteiroBaixado": "Script downloaded",
+    "roteiroBaixadoDescricao": "The script for the interview with {{cand}} was downloaded.",
+    "toastLocalCopiado": "Address copied",
+    "toastLocalCopiadoDescricao": "The interview address was copied to your clipboard.",
     "reagendar": "Reschedule",
     "cancelar": "Cancel",
     "cancelarTitulo": "Cancel this interview?",
@@ -127,6 +130,7 @@
     "agendada_one": "Interview with {{cand}} scheduled for {{data}} at {{hora}} · {{count}} interviewer{{via}}.",
     "agendada_other": "Interview with {{cand}} scheduled for {{data}} at {{hora}} · {{count}} interviewers{{via}}.",
     "viaTeams": " · Teams meeting created and invite sent",
-    "cancelada": "Interview with {{cand}} canceled, returned to the queue."
+    "cancelada": "Interview canceled",
+    "canceladaDescricao": "The interview with {{cand}} was canceled and the candidate went back to the scheduling queue."
   }
 }

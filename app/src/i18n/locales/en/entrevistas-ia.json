@@ -27,12 +27,16 @@
     "reprovarDescricao": "The selected candidates will be moved to “Rejected”, ending their participation in the hiring process."
   },
   "toast": {
-    "aprovadosLote": "{{n}} candidate(s) approved by HR (demo).",
-    "reprovadosLote": "{{n}} candidate(s) rejected (demo).",
-    "decisaoIndividual": "Candidate \"{{nome}}\" {{verbo}} (demo).",
+    "aprovadosLote": "Candidates approved",
+    "aprovadosLoteDescricao": "{{n}} candidate(s) approved by HR move on to the next stage.",
+    "reprovadosLote": "Candidates rejected",
+    "reprovadosLoteDescricao": "{{n}} candidate(s) were rejected in this process.",
+    "decisaoIndividual": "Decision recorded",
+    "decisaoIndividualDescricao": "\"{{nome}}\" {{verbo}}.",
     "verboAprovado": "approved by HR",
     "verboReprovado": "rejected",
-    "curriculo": "Résumé submitted by the candidate (demo)."
+    "curriculo": "Candidate's résumé",
+    "curriculoDescricao": "Opening the résumé submitted by the candidate."
   },
   "tabela": {
     "candidato": "Candidate",

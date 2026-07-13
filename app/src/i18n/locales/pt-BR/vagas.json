@@ -46,7 +46,8 @@
     "confirmar": "Fechar vaga"
   },
   "toast": {
-    "fechada": "Vaga \"{{vaga}}\" fechada (demo)."
+    "fechada": "Vaga fechada",
+    "fechadaDescricao": "\"{{vaga}}\" foi encerrada e não recebe mais candidaturas — continua na lista como Fechada."
   },
   "detalhe": {
     "overline": "Vaga",

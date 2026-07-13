@@ -46,7 +46,8 @@
     "confirmar": "Close job"
   },
   "toast": {
-    "fechada": "Job \"{{vaga}}\" closed (demo)."
+    "fechada": "Job closed",
+    "fechadaDescricao": "\"{{vaga}}\" was closed and no longer accepts applications — it stays in the list as Closed."
   },
   "detalhe": {
     "overline": "Job",

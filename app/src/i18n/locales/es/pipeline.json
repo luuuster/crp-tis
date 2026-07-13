@@ -94,10 +94,15 @@
     "antiga": "Análisis más antiguo"
   },
   "toast": {
-    "avancou": "{{nome}} avanzó a {{fase}}.",
-    "reprovado": "{{nome}} se movió a Rechazado.",
-    "reagendada": "Entrevista de {{nome}} reprogramada para {{quando}}.",
-    "contratado": "¡{{nome}} fue contratado! 🎉",
-    "curriculo": "El currículum es ilustrativo en esta demo."
+    "avancou": "Candidato avanzó",
+    "avancouDescricao": "{{nome}} se movió a {{fase}}.",
+    "reprovado": "Candidato rechazado",
+    "reprovadoDescricao": "{{nome}} se movió a Rechazado.",
+    "reagendada": "Entrevista reprogramada",
+    "reagendadaDescricao": "La entrevista de {{nome}} se reprogramó para {{quando}}.",
+    "contratado": "Contratación concluida 🎉",
+    "contratadoDescricao": "{{nome}} fue contratado. ¡Felicidades por cerrar el proceso!",
+    "curriculo": "Currículum del candidato",
+    "curriculoDescricao": "En este prototipo, el currículum es ilustrativo."
   }
 }

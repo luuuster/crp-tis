@@ -23,7 +23,8 @@
   "conta": {
     "label": "Sua conta",
     "minha": "Editar perfil",
-    "contaDemo": "Conta (demo).",
+    "contaDemo": "Minha conta",
+    "contaDemoDescricao": "A edição de perfil chega na versão completa da plataforma.",
     "sair": "Sair"
   },
   "sairConfirm": {

@@ -62,10 +62,13 @@
     "etapaValor": "Entrevista, proceso de selección",
     "entrarChamada": "Unirse a la llamada",
     "verLocal": "Ver lugar",
-    "toastEntrando": "Uniéndose a la llamada… (demo)",
+    "toastEntrando": "Uniéndose a la llamada…",
+    "toastEntrandoDescricao": "Abriendo la sala de video de la entrevista.",
     "baixarRoteiro": "Descargar guion",
-    "roteiroBaixado": "Guion de entrevista de {{cand}} descargado.",
-    "toastLocalCopiado": "Dirección del lugar copiada (demo).",
+    "roteiroBaixado": "Guion descargado",
+    "roteiroBaixadoDescricao": "Se descargó el guion de la entrevista con {{cand}}.",
+    "toastLocalCopiado": "Dirección copiada",
+    "toastLocalCopiadoDescricao": "La dirección de la entrevista se copió al portapapeles.",
     "reagendar": "Reprogramar",
     "cancelar": "Cancelar",
     "cancelarTitulo": "¿Cancelar esta entrevista?",
@@ -127,6 +130,7 @@
     "agendada_one": "Entrevista con {{cand}} programada para el {{data}} a las {{hora}} · {{count}} entrevistador{{via}}.",
     "agendada_other": "Entrevista con {{cand}} programada para el {{data}} a las {{hora}} · {{count}} entrevistadores{{via}}.",
     "viaTeams": " · reunión de Teams creada e invitación enviada",
-    "cancelada": "Entrevista con {{cand}} cancelada, volvió a la cola."
+    "cancelada": "Entrevista cancelada",
+    "canceladaDescricao": "La entrevista con {{cand}} se canceló y el candidato volvió a la cola de programación."
   }
 }

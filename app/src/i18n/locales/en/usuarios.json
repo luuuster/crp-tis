@@ -101,11 +101,16 @@
     "cadastrarUsuario": "Add user"
   },
   "toast": {
-    "atualizado": "User \"{{nome}}\" updated (demo).",
-    "cadastrado": "User \"{{nome}}\" added (demo).",
-    "desativado": "Access for \"{{nome}}\" deactivated (demo).",
-    "reativado": "Access for \"{{nome}}\" reactivated (demo).",
-    "reenviado": "Invite resent to {{email}} (demo)."
+    "atualizado": "User updated",
+    "atualizadoDescricao": "\"{{nome}}\"'s details were saved.",
+    "cadastrado": "User added",
+    "cadastradoDescricao": "\"{{nome}}\" was added to the team and can now access the platform.",
+    "desativado": "Access deactivated",
+    "desativadoDescricao": "\"{{nome}}\" can no longer sign in — you can reactivate them anytime.",
+    "reativado": "Access reactivated",
+    "reativadoDescricao": "\"{{nome}}\" can access the platform again.",
+    "reenviado": "Invite resent",
+    "reenviadoDescricao": "A new access invite was sent to {{email}}."
   },
   "confirmDesativar": {
     "titulo": "Deactivate access?",

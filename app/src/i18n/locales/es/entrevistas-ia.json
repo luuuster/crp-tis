@@ -27,12 +27,16 @@
     "reprovarDescricao": "Los candidatos seleccionados pasarán a “Rechazado”, finalizando su participación en el proceso de selección."
   },
   "toast": {
-    "aprovadosLote": "{{n}} candidato(s) aprobado(s) por RR. HH. (demo).",
-    "reprovadosLote": "{{n}} candidato(s) rechazado(s) (demo).",
-    "decisaoIndividual": "Candidato \"{{nome}}\" {{verbo}} (demo).",
+    "aprovadosLote": "Candidatos aprobados",
+    "aprovadosLoteDescricao": "{{n}} candidato(s) aprobados por RR. HH. pasan a la siguiente etapa.",
+    "reprovadosLote": "Candidatos rechazados",
+    "reprovadosLoteDescricao": "{{n}} candidato(s) fueron rechazados en este proceso.",
+    "decisaoIndividual": "Decisión registrada",
+    "decisaoIndividualDescricao": "\"{{nome}}\" {{verbo}}.",
     "verboAprovado": "aprobado por RR. HH.",
     "verboReprovado": "rechazado",
-    "curriculo": "Currículum enviado por el candidato (demo)."
+    "curriculo": "Currículum del candidato",
+    "curriculoDescricao": "Abriendo el currículum enviado por el candidato."
   },
   "tabela": {
     "candidato": "Candidato",

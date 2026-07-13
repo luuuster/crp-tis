@@ -70,7 +70,8 @@
   "perfil": {
     "voltar": "Volver al banco",
     "verCurriculo": "Ver último currículum",
-    "toastCurriculo": "Último currículum de {{nome}} (demo).",
+    "toastCurriculo": "Currículum de {{nome}}",
+    "toastCurriculoDescricao": "Abriendo el currículum más reciente enviado por el candidato.",
     "overline": "Perfil del candidato",
     "ariaResumo": "Resumen del historial",
     "kpi": {

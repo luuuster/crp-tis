@@ -46,7 +46,8 @@
     "confirmar": "Cerrar vacante"
   },
   "toast": {
-    "fechada": "Vacante \"{{vaga}}\" cerrada (demo)."
+    "fechada": "Vacante cerrada",
+    "fechadaDescricao": "\"{{vaga}}\" se cerró y ya no recibe candidaturas — permanece en la lista como Cerrada."
   },
   "detalhe": {
     "overline": "Vacante",

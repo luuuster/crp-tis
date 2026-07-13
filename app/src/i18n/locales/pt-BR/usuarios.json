@@ -101,11 +101,16 @@
     "cadastrarUsuario": "Cadastrar usuário"
   },
   "toast": {
-    "atualizado": "Usuário \"{{nome}}\" atualizado (demo).",
-    "cadastrado": "Usuário \"{{nome}}\" cadastrado (demo).",
-    "desativado": "Acesso de \"{{nome}}\" desativado (demo).",
-    "reativado": "Acesso de \"{{nome}}\" reativado (demo).",
-    "reenviado": "Convite reenviado para {{email}} (demo)."
+    "atualizado": "Usuário atualizado",
+    "atualizadoDescricao": "Os dados de \"{{nome}}\" foram salvos.",
+    "cadastrado": "Usuário cadastrado",
+    "cadastradoDescricao": "\"{{nome}}\" foi adicionado à equipe e já pode acessar a plataforma.",
+    "desativado": "Acesso desativado",
+    "desativadoDescricao": "\"{{nome}}\" não consegue mais entrar na plataforma — você pode reativar quando quiser.",
+    "reativado": "Acesso reativado",
+    "reativadoDescricao": "\"{{nome}}\" voltou a ter acesso à plataforma.",
+    "reenviado": "Convite reenviado",
+    "reenviadoDescricao": "Um novo convite de acesso foi enviado para {{email}}."
   },
   "confirmDesativar": {
     "titulo": "Desativar acesso?",
