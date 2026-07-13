@@ -46,12 +46,17 @@ function VagaCard({ v, dias, onAbrir }: { v: VagaPublica; dias: number; onAbrir:
   ]
   return (
     <article className={cn(CARD, 'group flex h-full flex-col gap-4 p-5 transition-[transform,border-color,box-shadow] hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg')}>
-      {/* Topo: data de publicação + prazo de expiração na MESMA linha (urgência ≤7 dias em âmbar). */}
+      {/* Topo: data de publicação + prazo de expiração, ambos em TAG (Badge), na MESMA linha.
+          Publicada = ghost (fantasma: sem borda, sem fundo; -ml-2 mantém o texto alinhado à esquerda).
+          Expira: não urgente = outline muted (mesma família da tag PcD); ≤7 dias = soft âmbar (warning/10 + -text). */}
       <div className="flex items-center justify-between gap-2 ty-caption font-medium">
-        <span className="text-muted-foreground">{t('card.publicadaEm', { data: v.publicada })}</span>
-        <span className={cn('flex shrink-0 items-center gap-1.5', urgente ? 'text-warning-text' : 'text-muted-foreground')}>
+        <Badge variant="ghost" className="-ml-2 font-medium text-muted-foreground">{t('card.publicadaEm', { data: v.publicada })}</Badge>
+        <Badge
+          variant="outline"
+          className={cn('gap-1.5 font-medium', urgente ? 'border-transparent bg-warning/10 text-warning-text' : 'text-muted-foreground')}
+        >
           <Clock className="size-3.5 shrink-0" aria-hidden /> {prazoLabel}
-        </span>
+        </Badge>
       </div>
 
       {/* Cargo + tags (nível sólido; modelo/modalidade em contorno). Sem empresa — tudo TIS. */}
