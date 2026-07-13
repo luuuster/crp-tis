@@ -171,11 +171,11 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
     const dados = { nome: form.nome.trim(), email: form.email.trim(), telefone: form.telefone.trim(), cpf: form.cpf.trim(), tipoPessoa: form.tipoPessoa, nascimento: form.nascimento.trim(), funcao: form.funcao }
     if (editing) {
       setUsuarios((us) => us.map((x) => (x.id === editing.id ? { ...x, ...dados } : x)))
-      toast.success(t('toast.atualizado', { nome: dados.nome }))
+      toast.success(t('toast.atualizado'), { description: t('toast.atualizadoDescricao', { nome: dados.nome }) })
     } else {
       const novo: Usuario = { id: `u-${usuarios.length + 1}-${dados.email}`, status: 'Ativo', ultimoAcesso: 'agora', ...dados }
       setUsuarios((us) => [novo, ...us])
-      toast.success(t('toast.cadastrado', { nome: dados.nome }))
+      toast.success(t('toast.cadastrado'), { description: t('toast.cadastradoDescricao', { nome: dados.nome }) })
     }
     setDialogOpen(false)
   }
@@ -183,16 +183,17 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
   const confirmarDesativar = () => {
     if (!desativar) return
     setUsuarios((us) => us.map((x) => (x.id === desativar.id ? { ...x, status: 'Inativo', ultimoAcesso: 'inativo' } : x)))
-    toast.success(t('toast.desativado', { nome: desativar.nome }))
+    // Desativar = ação destrutiva (tira acesso; o fluxo inteiro é destructive) → error (vermelho). Reativar abaixo volta a success.
+    toast.error(t('toast.desativado'), { description: t('toast.desativadoDescricao', { nome: desativar.nome }) })
     setDesativar(null)
   }
   const confirmarReativar = () => {
     if (!reativarU) return
     setUsuarios((us) => us.map((x) => (x.id === reativarU.id ? { ...x, status: 'Ativo', ultimoAcesso: 'agora' } : x)))
-    toast.success(t('toast.reativado', { nome: reativarU.nome }))
+    toast.success(t('toast.reativado'), { description: t('toast.reativadoDescricao', { nome: reativarU.nome }) })
     setReativarU(null)
   }
-  const reenviar = (u: Usuario) => toast.info(t('toast.reenviado', { email: u.email }))
+  const reenviar = (u: Usuario) => toast.info(t('toast.reenviado'), { description: t('toast.reenviadoDescricao', { email: u.email }) })
 
   // Exporta a lista FILTRADA (não só a página) — nome, e-mail, função, status, último acesso.
   const exportar = () => exportCsv(t('export.arquivo'), filtrados, [
@@ -301,7 +302,7 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
                         ) : u.status === 'Inativo' ? (
                           <Tip label={t('acoes.reativar', { nome: u.nome })}><Button variant="ghost" size="icon-sm" aria-label={t('acoes.reativar', { nome: u.nome })} onClick={() => setReativarU(u)} className="text-muted-foreground hover:bg-success/10 hover:text-success-text"><UserCheck /></Button></Tip>
                         ) : (
-                          <Tip label={t('acoes.desativar', { nome: u.nome })}><Button variant="ghost" size="icon-sm" aria-label={t('acoes.desativar', { nome: u.nome })} disabled={u.voce} onClick={() => setDesativar(u)} className="text-muted-foreground hover:bg-warning/10 hover:text-warning-text"><UserMinus /></Button></Tip>
+                          <Tip label={t('acoes.desativar', { nome: u.nome })}><Button variant="ghost" size="icon-sm" aria-label={t('acoes.desativar', { nome: u.nome })} disabled={u.voce} onClick={() => setDesativar(u)} className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive-text"><UserMinus /></Button></Tip>
                         )}
                       </div>
                     </TableCell>
@@ -353,7 +354,7 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
                         ) : u.status === 'Inativo' ? (
                           <Tip label={t('acoes.reativar', { nome: u.nome })}><Button variant="ghost" size="icon-sm" aria-label={t('acoes.reativar', { nome: u.nome })} onClick={() => setReativarU(u)} className="text-muted-foreground hover:bg-success/10 hover:text-success-text"><UserCheck /></Button></Tip>
                         ) : (
-                          <Tip label={t('acoes.desativar', { nome: u.nome })}><Button variant="ghost" size="icon-sm" aria-label={t('acoes.desativar', { nome: u.nome })} disabled={u.voce} onClick={() => setDesativar(u)} className="text-muted-foreground hover:bg-warning/10 hover:text-warning-text"><UserMinus /></Button></Tip>
+                          <Tip label={t('acoes.desativar', { nome: u.nome })}><Button variant="ghost" size="icon-sm" aria-label={t('acoes.desativar', { nome: u.nome })} disabled={u.voce} onClick={() => setDesativar(u)} className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive-text"><UserMinus /></Button></Tip>
                         )}
                       </div>
                     </div>
@@ -497,7 +498,7 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
       <AlertDialog open={!!desativar} onOpenChange={(o) => { if (!o) setDesativar(null) }}>
         <AlertDialogContent className="max-w-md">
           <div className="flex items-start gap-4">
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-warning/10 text-warning-text" aria-hidden><UserMinus className="size-5" /></span>
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-destructive-text" aria-hidden><UserMinus className="size-5" /></span>
             <div className="space-y-1.5">
               <AlertDialogTitle>{t('confirmDesativar.titulo')}</AlertDialogTitle>
               <AlertDialogDescription><span className="font-medium text-foreground">{desativar?.nome}</span> {t('confirmDesativar.descPre')} <span className="font-medium text-foreground">{t('confirmDesativar.statusInativo')}</span>{t('confirmDesativar.descPos')}</AlertDialogDescription>
@@ -505,7 +506,7 @@ export function Usuarios({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
           </div>
           <AlertDialogFooter>
             <AlertDialogCancel>{tc('acao.cancelar')}</AlertDialogCancel>
-            <AlertDialogAction variant="warning" onClick={confirmarDesativar}>{t('confirmDesativar.acao')}</AlertDialogAction>
+            <AlertDialogAction variant="destructive" onClick={confirmarDesativar}>{t('confirmDesativar.acao')}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

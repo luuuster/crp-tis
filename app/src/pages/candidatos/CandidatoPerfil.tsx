@@ -50,7 +50,7 @@ export function CandidatoPerfil({ c, onVoltar, onAbrirProcesso }: { c: Candidato
       footer={
         <>
           <Button variant="ghost" onClick={onVoltar}><ChevronLeft aria-hidden /> {t('perfil.voltar')}</Button>
-          <Button onClick={() => toast.info(t('perfil.toastCurriculo', { nome: c.nome }))}><FileText aria-hidden /> {t('perfil.verCurriculo')}</Button>
+          <Button onClick={() => toast.info(t('perfil.toastCurriculo', { nome: c.nome }), { description: t('perfil.toastCurriculoDescricao') })}><FileText aria-hidden /> {t('perfil.verCurriculo')}</Button>
         </>
       }
     >

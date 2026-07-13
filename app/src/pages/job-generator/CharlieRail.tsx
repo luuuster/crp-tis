@@ -97,8 +97,8 @@ export function CharlieRail({ open, onClose, step, msgs, onSuggestion, onSend, o
           <Textarea id="charlie-input" value={draft} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submit() } }} placeholder={t('charlie.inputPlaceholder')} className="min-h-10 resize-none border-0 bg-transparent p-1 shadow-none focus-visible:ring-0" />
           <div className="flex items-center justify-between gap-2 pt-1">
             <div className="flex items-center gap-0.5">
-              <Button variant="ghost" size="icon" aria-label={t('charlie.anexar')} onClick={() => toast.info(t('charlie.anexarToast'))}><Paperclip /></Button>
-              <Button variant="ghost" size="icon" aria-label={t('charlie.voz')} onClick={() => toast.info(t('charlie.vozToast'))}><Mic /></Button>
+              <Button variant="ghost" size="icon" aria-label={t('charlie.anexar')} onClick={() => toast.info(t('charlie.anexarToast'), { description: t('charlie.anexarToastDescricao') })}><Paperclip /></Button>
+              <Button variant="ghost" size="icon" aria-label={t('charlie.voz')} onClick={() => toast.info(t('charlie.vozToast'), { description: t('charlie.vozToastDescricao') })}><Mic /></Button>
             </div>
             <div className="flex items-center gap-2">
               {msgs.length > 0 && (

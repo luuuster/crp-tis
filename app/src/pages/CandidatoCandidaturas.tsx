@@ -130,7 +130,7 @@ function CandidaturaCard({ c, onDesistir }: { c: CandidaturaComVaga; onDesistir:
             open={confirmar} onOpenChange={setConfirmar} icon={Ban} tone="destructive" confirmVariant="destructive"
             title={t('candidaturas.desistirConfirm.titulo')} description={t('candidaturas.desistirConfirm.descricao')}
             cancelLabel={t('candidaturas.desistirConfirm.voltar')} confirmLabel={t('candidaturas.desistirConfirm.confirmar')}
-            onConfirm={() => { onDesistir(c.id); toast.success(t('candidaturas.desistido', { cargo: v.briefing.cargo })) }}
+            onConfirm={() => { onDesistir(c.id); toast.error(t('candidaturas.desistido', { cargo: v.briefing.cargo })) }}
           />
         </>
       )}

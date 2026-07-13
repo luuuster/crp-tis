@@ -383,9 +383,9 @@ export function Pipeline({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
     const n = mover(vendo)
     setData((cs) => cs.map((x) => (x.id === n.id ? n : x)))
     if (kind === 'aprovar') {
-      if (n.fase === 'contratado') toast.success(t('toast.contratado', { nome: vendo.nome }))
-      else toast.success(t('toast.avancou', { nome: vendo.nome, fase: t(`fase.${n.fase}` as 'fase.ia') }))
-    } else toast(t('toast.reprovado', { nome: vendo.nome }))
+      if (n.fase === 'contratado') toast.success(t('toast.contratado'), { description: t('toast.contratadoDescricao', { nome: vendo.nome }) })
+      else toast.success(t('toast.avancou'), { description: t('toast.avancouDescricao', { nome: vendo.nome, fase: t(`fase.${n.fase}` as 'fase.ia') }) })
+    } else toast(t('toast.reprovado'), { description: t('toast.reprovadoDescricao', { nome: vendo.nome }) })
     setVendo(null)
   }
 
@@ -395,7 +395,7 @@ export function Pipeline({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
     const quando = `${String(ev.d).padStart(2, '0')}/${String(ev.m + 1).padStart(2, '0')}/${ev.y} ${ev.hora}`
     // Preserva o FORMATO escolhido no formulário (antes o reagendar sempre regravava como Online).
     setData((cs) => cs.map((x) => (x.id === reagendando.id ? { ...x, agendamento: quando, tipo: ev.tipo } : x)))
-    toast.success(t('toast.reagendada', { nome: reagendando.nome, quando }))
+    toast.success(t('toast.reagendada'), { description: t('toast.reagendadaDescricao', { nome: reagendando.nome, quando }) })
     setReagendando(null)
   }
 
@@ -425,7 +425,7 @@ export function Pipeline({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
           c={candidatoProc(vendo)}
           p={processoDe(vendo)}
           onVoltar={() => setVendo(null)}
-          acoesInicio={<Button variant="secondary-soft" onClick={() => toast.info(t('toast.curriculo'))}><FileText aria-hidden /> {t('verCurriculo')}</Button>}
+          acoesInicio={<Button variant="secondary-soft" onClick={() => toast.info(t('toast.curriculo'), { description: t('toast.curriculoDescricao') })}><FileText aria-hidden /> {t('verCurriculo')}</Button>}
           acaoEtapa={
             // Roteiro personalizado da IA para a entrevista deste candidato (baixar → usar → reenviar preenchido).
             <Button
@@ -439,7 +439,7 @@ export function Pipeline({ onNavigate, brand, mode, onCycleBrand, onToggleMode }
                   tipo: te(`formato.${ev?.tipo ?? 'Online'}`),
                   entrevistadores: ev?.entrevistadores?.length ? ev.entrevistadores : painelDe({ cand: vendo.nome }),
                 })
-                toast.success(te('detalhe.roteiroBaixado', { cand: vendo.nome }))
+                toast.success(te('detalhe.roteiroBaixado'), { description: te('detalhe.roteiroBaixadoDescricao', { cand: vendo.nome }) })
               }}
             >
               <FileDown aria-hidden /> {te('detalhe.baixarRoteiro')}

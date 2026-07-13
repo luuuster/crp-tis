@@ -134,7 +134,7 @@ export function AgendamentoDetalhe({ ev, onReagendar, onCancelar }: {
 
       {/* rodapé */}
       <footer className="space-y-2 border-t border-border/40 p-4 pb-[calc(1rem_+_env(safe-area-inset-bottom))]">
-        <Button className="w-full" onClick={() => (online ? toast.success(t('detalhe.toastEntrando')) : toast.info(t('detalhe.toastLocalCopiado')))}>
+        <Button className="w-full" onClick={() => (online ? toast.success(t('detalhe.toastEntrando'), { description: t('detalhe.toastEntrandoDescricao') }) : toast.info(t('detalhe.toastLocalCopiado'), { description: t('detalhe.toastLocalCopiadoDescricao') }))}>
           {online ? <><Video aria-hidden /> {t('detalhe.entrarChamada')}</> : <><MapPin aria-hidden /> {t('detalhe.verLocal')}</>}
         </Button>
         {/* Roteiro personalizado (IA) para o entrevistador levar à conversa; reenviado preenchido no fim. */}
@@ -142,7 +142,7 @@ export function AgendamentoDetalhe({ ev, onReagendar, onCancelar }: {
           variant="outline" className="w-full"
           onClick={() => {
             void baixarRoteiro({ cand: ev.cand, vaga: ev.vaga, data: `${ev.d}/${ev.m + 1}/${ev.y}`, hora: ev.hora, tipo: online ? t('detalhe.online') : t('detalhe.presencial'), entrevistadores: intvs })
-            toast.success(t('detalhe.roteiroBaixado', { cand: ev.cand }))
+            toast.success(t('detalhe.roteiroBaixado'), { description: t('detalhe.roteiroBaixadoDescricao', { cand: ev.cand }) })
           }}
         >
           <FileDown aria-hidden /> {t('detalhe.baixarRoteiro')}
@@ -487,7 +487,8 @@ export function Entrevistas({ onNavigate, brand, mode, onCycleBrand, onToggleMod
                   onCancelar={() => {
                     setEventos((prev) => prev.filter((e) => e !== detalhe))
                     setDetalhe(null)
-                    toast.info(t('toast.cancelada', { cand: detalhe.cand }))
+                    // Cancelar entrevista = ação destrutiva (o confirm é destructive) → error (vermelho), não info/âmbar.
+                    toast.error(t('toast.cancelada'), { description: t('toast.canceladaDescricao', { cand: detalhe.cand }) })
                   }}
                 />
               </>

@@ -291,7 +291,7 @@ export function CandidatoDetalhe({ c, onVoltar, onAprovar, onReprovar }: { c: Ca
         <>
           <div className="flex flex-wrap items-center gap-2">
             <Button variant="ghost" onClick={onVoltar}><ChevronLeft aria-hidden /> {t('detalhe.voltarLista')}</Button>
-            <Button variant="secondary-soft" onClick={() => toast.info(t('toast.curriculo'))}><FileText aria-hidden /> {t('detalhe.abrirCurriculo')}</Button>
+            <Button variant="secondary-soft" onClick={() => toast.info(t('toast.curriculo'), { description: t('toast.curriculoDescricao') })}><FileText aria-hidden /> {t('detalhe.abrirCurriculo')}</Button>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <ConfirmDialog
@@ -507,7 +507,7 @@ export function AvaliacaoIAConteudo({ d, email, vaga, statusLabel, ocultarScore,
       <div>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h4 className="flex items-center gap-2 ty-body-sm font-semibold text-foreground"><FileSearch className="size-4 text-muted-foreground" aria-hidden /> {t('detalhe.analiseTitulo')}</h4>
-          {!ocultarCurriculo && <Button variant="secondary-soft" size="sm" onClick={() => toast.info(t('toast.curriculo'))}><FileText aria-hidden /> {t('detalhe.abrirCurriculo')}</Button>}
+          {!ocultarCurriculo && <Button variant="secondary-soft" size="sm" onClick={() => toast.info(t('toast.curriculo'), { description: t('toast.curriculoDescricao') })}><FileText aria-hidden /> {t('detalhe.abrirCurriculo')}</Button>}
         </div>
         <p className="mt-2 ty-body-sm leading-relaxed text-muted-foreground">{d.analiseCandidato}</p>
         <div className="mt-3 flex flex-wrap gap-2">
@@ -585,22 +585,25 @@ export function EntrevistasIA({ onNavigate, brand, mode, onCycleBrand, onToggleM
       return next
     })
 
-  const aplicar = (novo: StatusIA, msg: (n: number) => string) => {
+  const aplicar = (novo: StatusIA, notify: (n: number) => void) => {
     if (sel.size === 0) return
     const n = sel.size
     setCands((cs) => cs.map((c) => (sel.has(c.id) ? { ...c, status: novo } : c)))
-    toast.success(msg(n))
+    notify(n)
     setSel(new Set())
   }
-  const aprovar = () => aplicar('Aprovado RH', (n) => t('toast.aprovadosLote', { n }))
-  const reprovar = () => aplicar('Reprovado', (n) => t('toast.reprovadosLote', { n }))
+  const aprovar = () => aplicar('Aprovado RH', (n) => toast.success(t('toast.aprovadosLote'), { description: t('toast.aprovadosLoteDescricao', { n }) }))
+  // Reprovar = decisão destrutiva → error (vermelho), ecoando o botão de confirmar (destructive); aprovar fica success (verde).
+  const reprovar = () => aplicar('Reprovado', (n) => toast.error(t('toast.reprovadosLote'), { description: t('toast.reprovadosLoteDescricao', { n }) }))
 
   // Decisão individual na tela de detalhe → muda o status do candidato e volta para a listagem.
   // `verbo` é a chave do toast traduzido (aprovado pelo RH / reprovado), não o valor de estado.
   const decidirDetalhe = (novo: StatusIA, verbo: string) => {
     if (!vendo) return
     setCands((cs) => cs.map((x) => (x.id === vendo.id ? { ...x, status: novo } : x)))
-    toast.success(t('toast.decisaoIndividual', { nome: vendo.nome, verbo }))
+    // A cor segue a decisão (= a cor do botão de confirmar): reprovar = error (vermelho, destructive), aprovar = success (verde).
+    const notificar = novo === 'Reprovado' ? toast.error : toast.success
+    notificar(t('toast.decisaoIndividual'), { description: t('toast.decisaoIndividualDescricao', { nome: vendo.nome, verbo }) })
     setVendo(null)
   }
 

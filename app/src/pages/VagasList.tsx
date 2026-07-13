@@ -15,7 +15,6 @@ import { cn } from '@/lib/utils'
 import { CARD } from '@/lib/surfaces'
 import { usePagination } from '@/lib/usePagination'
 import { PageContainer, PageHeader, StatCard, Paginacao, StatusBadge, EmptyState, TableSkeleton, ErrorState, type BadgeTone } from '@/components/composicoes/page'
-import { useMockData } from '@/lib/useMockData'
 import { ExportButton } from '@/components/composicoes/ExportButton'
 import { exportCsv, type CsvColumn } from '@/lib/exportCsv'
 import { VagaDocumento } from '@/lib/vaga'
@@ -33,7 +32,9 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 // `type Vaga` mora em ./vagas.logic (lar do builder); re-exportado aqui p/ JobGenerator continuar importando de './VagasList'.
 export type { Vaga } from './vagas.logic'
 
-const VAGAS_INICIAL: Vaga[] = [
+// A lista inicial é exportada para o JobGenerator (dono do estado das vagas — assim "Salvar rascunho" e o
+// deep-link por id chegam à MESMA fonte de dados que a tabela renderiza).
+export const VAGAS_INICIAL: Vaga[] = [
   mkVaga(
     { id: '1', data: '10/01/2026', inscritos: 80, aprovados: 15, status: 'Aberta' },
     {
@@ -276,10 +277,12 @@ export function VagaDetalhe({ vaga }: { vaga: Vaga }) {
   )
 }
 
-export function VagasList({ onAbrirVaga, onEditVaga, onVerVaga }: { onAbrirVaga: () => void; onEditVaga: (vaga: Vaga) => void; onVerVaga: (vaga: Vaga) => void }) {
+export function VagasList({ vagas, setVagas, loading, error, retry, onAbrirVaga, onEditVaga, onVerVaga }: {
+  vagas: Vaga[]; setVagas: (u: Vaga[] | ((p: Vaga[]) => Vaga[])) => void; loading: boolean; error: Error | null; retry: () => void
+  onAbrirVaga: () => void; onEditVaga: (vaga: Vaga) => void; onVerVaga: (vaga: Vaga) => void
+}) {
   const { t } = useTranslation('vagas')
   const { t: tc } = useTranslation('common')
-  const { data: vagas, setData: setVagas, loading, error, retry } = useMockData<Vaga[]>('vagas', () => VAGAS_INICIAL, [])
   const [status, setStatus] = useState<(typeof STATUS_FILTROS)[number]>('Todos')
   const [q, setQ] = useState('')
   const [dataF, setDataF] = useState('Todas')
@@ -320,7 +323,8 @@ export function VagasList({ onAbrirVaga, onEditVaga, onVerVaga }: { onAbrirVaga:
   const fecharVaga = () => {
     if (!fechar) return
     setVagas((vs) => vs.map((x) => (x.id === fechar.id ? { ...x, status: 'Fechada' } : x)))
-    toast.success(t('toast.fechada', { vaga: fechar.vaga }))
+    // Fechar vaga = ação destrutiva (encerra; o fluxo inteiro é destructive) → error (vermelho), ecoando o botão de confirmar.
+    toast.error(t('toast.fechada'), { description: t('toast.fechadaDescricao', { vaga: fechar.vaga }) })
     setFechar(null)
   }
 
@@ -441,7 +445,7 @@ export function VagasList({ onAbrirVaga, onEditVaga, onVerVaga }: { onAbrirVaga:
                   <TableCell className="py-3 text-right">
                     <div className="flex justify-end gap-1">
                       <Tip label={t('acoes.editar', { vaga: v.vaga })}><Button variant="ghost" size="icon-sm" aria-label={t('acoes.editar', { vaga: v.vaga })} onClick={(e) => { e.stopPropagation(); onEditVaga(v) }} className="text-muted-foreground hover:bg-primary/10 hover:text-primary-text"><Pencil /></Button></Tip>
-                      <Tip label={t('acoes.fechar', { vaga: v.vaga })}><Button variant="ghost" size="icon-sm" aria-label={t('acoes.fechar', { vaga: v.vaga })} onClick={(e) => { e.stopPropagation(); setFechar(v) }} className="text-muted-foreground hover:bg-warning/10 hover:text-warning-text"><Lock /></Button></Tip>
+                      <Tip label={t('acoes.fechar', { vaga: v.vaga })}><Button variant="ghost" size="icon-sm" aria-label={t('acoes.fechar', { vaga: v.vaga })} onClick={(e) => { e.stopPropagation(); setFechar(v) }} className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive-text"><Lock /></Button></Tip>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -485,7 +489,7 @@ export function VagasList({ onAbrirVaga, onEditVaga, onVerVaga }: { onAbrirVaga:
                     </div>
                     <div className="flex gap-1">
                       <Tip label={t('acoes.editar', { vaga: v.vaga })}><Button variant="ghost" size="icon-sm" aria-label={t('acoes.editar', { vaga: v.vaga })} onClick={() => onEditVaga(v)} className="text-muted-foreground hover:bg-primary/10 hover:text-primary-text"><Pencil /></Button></Tip>
-                      <Tip label={t('acoes.fechar', { vaga: v.vaga })}><Button variant="ghost" size="icon-sm" aria-label={t('acoes.fechar', { vaga: v.vaga })} onClick={() => setFechar(v)} className="text-muted-foreground hover:bg-warning/10 hover:text-warning-text"><Lock /></Button></Tip>
+                      <Tip label={t('acoes.fechar', { vaga: v.vaga })}><Button variant="ghost" size="icon-sm" aria-label={t('acoes.fechar', { vaga: v.vaga })} onClick={() => setFechar(v)} className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive-text"><Lock /></Button></Tip>
                     </div>
                   </div>
                 </li>
@@ -506,7 +510,7 @@ export function VagasList({ onAbrirVaga, onEditVaga, onVerVaga }: { onAbrirVaga:
       <AlertDialog open={!!fechar} onOpenChange={(o) => { if (!o) setFechar(null) }}>
         <AlertDialogContent className="max-w-md">
           <div className="flex items-start gap-4">
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-warning/10 text-warning-text" aria-hidden><Lock className="size-5" /></span>
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-destructive-text" aria-hidden><Lock className="size-5" /></span>
             <div className="space-y-1.5">
               <AlertDialogTitle>{t('fecharDialog.titulo')}</AlertDialogTitle>
               <AlertDialogDescription>
@@ -521,7 +525,7 @@ export function VagasList({ onAbrirVaga, onEditVaga, onVerVaga }: { onAbrirVaga:
           </div>
           <AlertDialogFooter>
             <AlertDialogCancel>{tc('acao.cancelar')}</AlertDialogCancel>
-            <AlertDialogAction variant="warning" onClick={fecharVaga}>{t('fecharDialog.confirmar')}</AlertDialogAction>
+            <AlertDialogAction variant="destructive" onClick={fecharVaga}>{t('fecharDialog.confirmar')}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

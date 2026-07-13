@@ -32,9 +32,11 @@ function Toaster(props: ToasterProps) {
           toast: "!shadow-xl",
           // a descrição herda a cor do tipo (texto sobre o fill/superfície do tipo) — sem atenuar, p/ manter AA.
           description: "!text-current",
-          // botão de ação (ex.: "Avançar assim mesmo"): botão ÂMBAR sólido do DS (par warning/-foreground,
-          // AA no check.mjs) em vez do pill preto padrão do sonner. Só os toasts de aviso usam ação hoje.
-          actionButton: "!bg-warning !text-warning-foreground !font-semibold !rounded-md hover:!bg-warning/90",
+          // botão de ação (ex.: "Retomar edição", "Avançar assim mesmo"): estilo UNIVERSAL que harmoniza com
+          // QUALQUER tipo de toast — overlay escuro translúcido + `text-current` (herda a cor do tipo). Assim o
+          // botão fica legível tanto no sucesso VERDE (texto branco) quanto no aviso ÂMBAR soft (texto -text),
+          // sem o clash "âmbar no verde". (Antes era âmbar fixo, quando só avisos tinham ação.)
+          actionButton: "!bg-black/15 hover:!bg-black/25 !text-current !font-semibold !rounded-md !border-0",
         },
       }}
       style={

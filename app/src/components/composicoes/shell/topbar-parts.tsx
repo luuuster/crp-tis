@@ -53,7 +53,7 @@ export function TopBarAccount({ onLogout, onEditarPerfil }: { onLogout: () => vo
     <AccountMenu
       iniciais={DEMO_USER.iniciais} nome={DEMO_USER.nome} email={DEMO_USER.email}
       triggerLabel={t('conta.label')}
-      items={[{ icon: UserRound, label: t('conta.minha'), onSelect: () => (onEditarPerfil ? onEditarPerfil() : toast.info(t('conta.contaDemo'))) }]}
+      items={[{ icon: UserRound, label: t('conta.minha'), onSelect: () => (onEditarPerfil ? onEditarPerfil() : toast.info(t('conta.contaDemo'), { description: t('conta.contaDemoDescricao') })) }]}
       sairLabel={t('conta.sair')} sair={onLogout}
       sairConfirm={{ titulo: t('sairConfirm.titulo'), descricao: t('sairConfirm.descricao'), voltar: t('sairConfirm.voltar'), sair: t('sairConfirm.sair') }}
     />

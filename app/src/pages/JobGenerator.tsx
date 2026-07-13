@@ -16,15 +16,18 @@
  * o shell (sidebar + topbar + rodapés) e o roteamento de `screen`. Os subcomponentes (formulários,
  * primitivos de campo, Charlie, revisão, modelo/validação) vivem em ./job-generator/*.
  */
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { AlertTriangle, ArrowRight, ChevronLeft, Pencil, Rocket, Save, X } from 'lucide-react'
 
 import type { Briefing, Perfil, Tom } from '@/lib/vaga'
+import { useMockData } from '@/lib/useMockData'
+import { parseVagaSub, vagaSubPath } from '@/lib/urlView'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { VagasList, VagaDetalhe, type Vaga } from './VagasList'
+import { VagasList, VagaDetalhe, VAGAS_INICIAL, type Vaga } from './VagasList'
+import { mkVaga } from './vagas.logic'
 import { Sidebar, MobileNav, useIsMobile } from '@/components/composicoes/shell/AppShell'
 import {
   BriefingForm,
@@ -57,6 +60,9 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
   onNavigate?: (v: string) => void; brand?: string; mode?: string; onCycleBrand?: () => void; onToggleMode?: () => void
 } = {}) {
   const { t } = useTranslation('gerador')
+  // O JobGenerator é DONO das vagas (não o VagasList): assim "Salvar rascunho" grava na mesma lista que a
+  // tabela mostra, e o deep-link por id (Fase de rotas) resolve a vaga aqui. VagasList recebe tudo por props.
+  const { data: vagas, setData: setVagas, loading: vagasLoading, error: vagasError, retry: vagasRetry } = useMockData<Vaga[]>('vagas', () => VAGAS_INICIAL, [])
   const [step, setStep] = useState(1)
   const [data, setData] = useState<Briefing>(BRIEFING_INICIAL)
   const [perfil, setPerfil] = useState<Perfil>(PERFIL_INICIAL)
@@ -98,11 +104,15 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
   const resetWizard = () => { setData(BRIEFING_INICIAL); setPerfil(PERFIL_INICIAL); setResumoOverride(null); setTom('Equilibrado'); setShowErrors({}); setStep(1); setEditingVaga(null); setRevisado(false); setOverridden(false) }
   // Lista → wizard de CRIAÇÃO (do zero, editingVaga = null).
   const irParaWizard = () => { resetWizard(); setScreen('wizard') }
+  // Preenche o wizard com a vaga em modo edição (sem toast nem URL) — reusado por editarVaga e pela rota.
+  const carregarVaga = (v: Vaga) => {
+    setData(v.briefing); setPerfil(v.perfil); setResumoOverride(null); setTom('Equilibrado'); setShowErrors({}); setStep(1); setRevisado(false); setOverridden(false)
+    setEditingVaga(v)
+  }
   // "Editar" abre o MESMO wizard, mas PREENCHIDO com a vaga e em modo edição (não a tela em branco).
   const editarVaga = (v: Vaga) => {
-    setData(v.briefing); setPerfil(v.perfil); setResumoOverride(null); setTom('Equilibrado'); setShowErrors({}); setStep(1); setRevisado(false); setOverridden(false)
-    setEditingVaga(v); setCharlieOpen(false); setScreen('wizard')
-    toast.info(t('toast.editando', { cargo: v.briefing.cargo }))
+    carregarVaga(v); setCharlieOpen(false); setScreen('wizard')
+    toast.info(t('toast.editando'), { description: t('toast.editandoDescricao', { cargo: v.briefing.cargo }) })
   }
   // Lista → detalhe (clique na linha) e detalhe → editar.
   const verVaga = (v: Vaga) => { setCharlieOpen(false); setVagaSel(v); setScreen('detalhe') }
@@ -110,7 +120,61 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
   // Qualquer tela → lista (fecha o Charlie, zera o rascunho e descarta a vaga aberta). É o destino do menu "Vagas".
   const irParaLista = () => { resetWizard(); setCharlieOpen(false); setVagaSel(null); setScreen('lista') }
   // Cancelar a criação só executa após a confirmação na modal (volta à lista).
-  const resetAll = () => { const editando = !!editingVaga; irParaLista(); toast.info(editando ? t('toast.edicaoCancelada') : t('toast.criacaoCancelada')) }
+  const resetAll = () => { const editando = !!editingVaga; irParaLista(); toast.info(editando ? t('toast.edicaoCancelada') : t('toast.criacaoCancelada'), { description: editando ? t('toast.edicaoCanceladaDescricao') : t('toast.criacaoCanceladaDescricao') }) }
+  // Salvar rascunho DE VERDADE: grava a vaga atual (briefing+perfil) na lista com status Rascunho e volta à
+  // lista, onde ela aparece de fato. Editando um rascunho → atualiza (mantém id/data/números); criando →
+  // nova entrada (id/data de agora, 0 inscritos/aprovados). Título vazio recebe o rótulo "Nova vaga".
+  const salvarRascunho = () => {
+    const hoje = new Date()
+    const dataHoje = `${String(hoje.getDate()).padStart(2, '0')}/${String(hoje.getMonth() + 1).padStart(2, '0')}/${hoje.getFullYear()}`
+    const meta = editingVaga
+      ? { id: editingVaga.id, data: editingVaga.data, inscritos: editingVaga.inscritos, aprovados: editingVaga.aprovados, status: 'Rascunho' as const }
+      : { id: String(Date.now()), data: dataHoje, inscritos: 0, aprovados: 0, status: 'Rascunho' as const }
+    const nova = mkVaga(meta, data, perfil)
+    if (!nova.vaga.trim()) nova.vaga = t('crumb.novaVaga')
+    setVagas((vs) => (vs.some((x) => x.id === nova.id) ? vs.map((x) => (x.id === nova.id ? nova : x)) : [nova, ...vs]))
+    irParaLista()
+    toast.success(t('toast.rascunhoSalvo'), {
+      description: t('toast.rascunhoSalvoDescricao', { cargo: nova.vaga }),
+      action: { label: t('toast.retomarEdicao'), onClick: () => editarVaga(nova) },
+    })
+  }
+
+  // ── Roteamento por URL dos sub-estados (deep-link + botão voltar), SEM recarregar ────────────────
+  // `/vagas`=lista · `/vagas/nova`=criar · `/vagas/:id`=ver · `/vagas/:id/editar`=editar. Aplica o
+  // sub-path ao estado (montagem/popstate, sem toast); um effect derivado escreve a URL na navegação.
+  const aplicarRota = (pathname: string) => {
+    const sub = parseVagaSub(pathname)
+    if (sub.screen === 'wizard') {
+      if ('id' in sub) { const v = vagas.find((x) => x.id === sub.id); if (v) { carregarVaga(v); setCharlieOpen(false); setScreen('wizard'); return } }
+      else { resetWizard(); setCharlieOpen(false); setVagaSel(null); setScreen('wizard'); return }
+    } else if (sub.screen === 'detalhe') {
+      const v = vagas.find((x) => x.id === sub.id); if (v) { setCharlieOpen(false); setVagaSel(v); setScreen('detalhe'); return }
+    }
+    setScreen('lista')
+  }
+  const rotaAplicada = useRef(false)
+  // Deep-link na montagem: espera as vagas carregarem (id→Vaga) e aplica UMA vez.
+  useEffect(() => {
+    if (rotaAplicada.current || vagasLoading) return
+    rotaAplicada.current = true
+    aplicarRota(window.location.pathname)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vagasLoading])
+  // Escreve a URL quando o sub-estado muda (pushState → botão voltar funciona). Só com o gerador ATIVO
+  // (path /vagas*) e após a rota inicial — senão o deep-link seria sobrescrito pelo estado default.
+  useEffect(() => {
+    if (!rotaAplicada.current || !window.location.pathname.toLowerCase().startsWith('/vagas')) return
+    const p = vagaSubPath(screen, editingVaga?.id ?? null, vagaSel?.id ?? null)
+    if (window.location.pathname !== p) window.history.pushState(null, '', p)
+  }, [screen, editingVaga, vagaSel])
+  // Voltar/avançar do navegador: re-sincroniza o sub-estado (só em rotas /vagas).
+  useEffect(() => {
+    const onPop = () => { if (window.location.pathname.toLowerCase().startsWith('/vagas')) aplicarRota(window.location.pathname) }
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vagas])
 
   // mutuamente exclusivos: expandir o menu fecha o Charlie; abrir o Charlie recolhe o menu.
   const setLeft = (v: boolean) => { setLeftExpanded(v); if (v) setCharlieOpen(false) }
@@ -196,7 +260,7 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
         {/* relative: ancora os filhos `sr-only` (position:absolute) AQUI, senão eles escapam p/ o <html>
             e esticam o documento (espaço em branco rolável abaixo do app). */}
         <main className="relative min-h-0 flex-1 overflow-y-auto">
-          {screen === 'lista' && <VagasList onAbrirVaga={irParaWizard} onEditVaga={editarVaga} onVerVaga={verVaga} />}
+          {screen === 'lista' && <VagasList vagas={vagas} setVagas={setVagas} loading={vagasLoading} error={vagasError} retry={vagasRetry} onAbrirVaga={irParaWizard} onEditVaga={editarVaga} onVerVaga={verVaga} />}
           {screen === 'detalhe' && vagaSel && <VagaDetalhe vaga={vagaSel} />}
           {screen === 'wizard' && (
             <div className="mx-auto max-w-5xl space-y-7 px-5 py-8 lg:px-8">
@@ -238,7 +302,7 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
                   icon={Save} tone="secondary"
                   title={t('dialog.salvarRascunhoTitulo')}
                   description={t('dialog.salvarRascunhoDescricao')}
-                  cancelLabel={t('footer.voltar')} confirmLabel={t('dialog.salvarRascunhoConfirmar')} confirmVariant="secondary" onConfirm={() => toast.success(t('toast.rascunhoSalvo'))}
+                  cancelLabel={t('footer.voltar')} confirmLabel={t('dialog.salvarRascunhoConfirmar')} confirmVariant="secondary" onConfirm={salvarRascunho}
                 />
               )}
             </div>
@@ -268,7 +332,7 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
           icon={Rocket} tone="primary"
           title={republicar ? t('dialog.republicarTitulo') : t('dialog.publicarTitulo')}
           description={republicar ? t('dialog.republicarDescricao') : isEditing ? t('dialog.publicarEdicaoDescricao') : t('dialog.publicarDescricao')}
-          cancelLabel={t('dialog.revisarAntes')} confirmLabel={finalCtaLabel} confirmVariant="default" onConfirm={() => { toast.success(republicar ? t('toast.vagaRepublicada') : t('toast.vagaPublicada')); irParaLista() }}
+          cancelLabel={t('dialog.revisarAntes')} confirmLabel={finalCtaLabel} confirmVariant="default" onConfirm={() => { toast.success(republicar ? t('toast.vagaRepublicada') : t('toast.vagaPublicada'), { description: republicar ? t('toast.vagaRepublicadaDescricao', { cargo: data.cargo }) : t('toast.vagaPublicadaDescricao', { cargo: data.cargo }) }); irParaLista() }}
         />
       </div>
 

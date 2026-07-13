@@ -9,6 +9,7 @@ import { ErrorBoundary } from '@/components/composicoes/ErrorBoundary'
 import { ThemeToggles, DOCK } from '@/components/composicoes/ThemeToggles'
 import { useBrandMode, readStored } from '@/lib/useBrandMode'
 import { LoginPage } from '@/pages/LoginPage'
+import { viewFromPath, VIEW_PATH } from '@/lib/urlView'
 
 // Code-split: Dashboard (recharts) só carrega após o login — corta o chunk inicial
 // (aviso de >500 kB do vite build) sem mudar comportamento. (A galeria de Componentes mudou
@@ -39,7 +40,8 @@ const PageFallback = () => {
 
 export function App() {
   const { brand, mode, cycleBrand, toggleMode } = useBrandMode()
-  const [view, setView] = useState<View>(() => readStored('crp.view', VIEWS, 'login'))
+  // Tela inicial: a URL manda (deep-link /vagas etc.); sem rota casada, cai no localStorage/login.
+  const [view, setView] = useState<View>(() => viewFromPath() ?? readStored('crp.view', VIEWS, 'login'))
   // A aba "Vagas" (Gerador) usa forceMount e preserva seu estado interno (lista/detalhe/wizard).
   const [geradorKey, setGeradorKey] = useState(0)
 
@@ -52,6 +54,21 @@ export function App() {
     }
   }, [view])
 
+  // Sincroniza URL ↔ view SEM recarregar (deep-link + botão voltar), preservando o forceMount/estado.
+  // Na montagem alinha a URL à view resolvida (ex.: restaurada do localStorage); popstate (voltar/avançar)
+  // reflete a URL de volta no estado. A escrita da URL na navegação normal é feita em `navigate`.
+  useEffect(() => {
+    const path = VIEW_PATH[view]
+    // `viewFromPath` (não o pathname exato) para não sobrescrever as SUBROTAS de /vagas (/vagas/nova,
+    // /vagas/:id…), que resolvem para `gerador` e são roteadas dentro do JobGenerator.
+    if (viewFromPath() !== view) window.history.replaceState(null, '', path)
+    const onPop = () => setView(viewFromPath() ?? 'login')
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+    // Só na montagem: alinha a URL inicial e registra o listener (view inicial é estável aqui).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const loggedIn = view === 'dashboard' || view === 'gerador' || view === 'entrevistas' || view === 'entrevistas-ia' || view === 'candidatos' || view === 'pipeline' || view === 'usuarios' || view === 'perfil'
 
   // Navegação central. Ao ir para a aba "Vagas" vindo de OUTRA tela, remonta o Gerador (bump no `key`)
@@ -60,6 +77,9 @@ export function App() {
   const navigate = (v: View) => {
     if (v === 'gerador' && view !== 'gerador') setGeradorKey((k) => k + 1)
     setView(v)
+    // Reflete a navegação na URL (pushState = entra no histórico → botão voltar funciona). Sem recarga.
+    const path = VIEW_PATH[v]
+    if (window.location.pathname !== path) window.history.pushState(null, '', path)
   }
 
   return (
@@ -116,7 +136,7 @@ export function App() {
         <>
           <div className={DOCK}><ThemeToggles brand={brand} mode={mode} onCycleBrand={cycleBrand} onToggleMode={toggleMode} /></div>
           <ErrorBoundary>
-            <LoginPage onLogin={() => setView('dashboard')} brand={brand} />
+            <LoginPage onLogin={() => navigate('dashboard')} brand={brand} />
           </ErrorBoundary>
         </>
       )}
