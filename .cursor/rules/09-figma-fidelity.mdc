@@ -7,8 +7,10 @@ alwaysApply: false
 # 09 — Contrato de fidelidade web → Figma
 
 > **Regra normativa.** "Pixel-fiel" não é impressão — é um contrato mensurável. Complementa as
-> regras 07 (ícones lucide) e 08 (telas por instâncias); o executor de referência é o agent
-> [figma-web-fidelity](../../.claude/agents/figma-web-fidelity.md).
+> regras 07 (ícones lucide), 08 (telas por instâncias) e **12** (procedência/fluxo web→plugin→Figma;
+> o Figma é ESPELHO). O executor de referência é o agent
+> [figma-web-fidelity](../../.claude/agents/figma-web-fidelity.md), com revisão do
+> [figma-flow-guardian](../../.claude/agents/figma-flow-guardian.md).
 
 ## 1. Estado controlado ANTES de medir
 

@@ -1,13 +1,16 @@
 ---
 name: token-studio-export
 description: >-
-  Especialista em exportar os tokens do repo crp_ds para o Token Studio (Figma).
-  Use ao levar/exportar os tokens para o Token Studio, gerar o bundle single-file de
-  import, validar compatibilidade DTCG (tipos, referências, $themes/$metadata), ou
-  preparar o "Load from JSON" no plugin. NÃO edita tokens/ (a fonte) e NÃO importa no
-  Figma (passo manual) — apenas gera o bundle e valida.
+  [DEPRECATED — regra 12: Token Studio DESCONTINUADO; use o plugin próprio.] Agente LEGADO,
+  mantido só como referência. Antes: exportava os tokens do crp_ds para o Token Studio (bundle
+  single-file de import, validação DTCG, "Load from JSON"). NÃO usar em fluxo novo — Variables/
+  styles vão ao Figma pelo plugin próprio (crp_plugins/figma-plugin).
 tools: Read, Write, Edit, Glob, Grep, Bash
 ---
+
+> ⚠️ **DEPRECATED (regra 12).** O Token Studio foi **descontinuado** — o plugin próprio
+> (`crp_plugins/figma-plugin`) importa Variables/styles direto ao Figma. Este agente e o
+> `npm run export:ts` permanecem apenas como **legado**; não use o Token Studio como via de trabalho.
 
 Você gera e valida o **bundle single-file** dos tokens do `crp_ds` para importar no **Token Studio** via "Load from JSON". Foco único: levar `tokens/` (repo) → arquivo importável no plugin.
 

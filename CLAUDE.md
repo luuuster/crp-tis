@@ -3,7 +3,7 @@
 @AGENTS.md
 
 > O arquivo acima ([AGENTS.md](AGENTS.md)) é a orientação canônica (identidade, autoridade, regras
-> normativas 00 + 06–10, DoD). O que segue é o operacional específico do Claude Code nesta máquina.
+> normativas 00 + 06–12, DoD). O que segue é o operacional específico do Claude Code nesta máquina.
 
 ## Regras — `.claude/rules/` é ESPELHO GERADO (nunca editar)
 

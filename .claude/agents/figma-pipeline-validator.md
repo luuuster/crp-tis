@@ -17,7 +17,7 @@ objeto é a CADEIA inteira, não uma tela (regras 07/08/09 em `.cursor/rules/`, 
 - **Use quando:** "o Figma está em dia com o código?"; depois de mudança em tokens/exporters;
   antes de republicar a library; suspeita de drift ou de referência quebrada (re-key).
 - **NÃO use para:** construir/corrigir telas ou componentes (→ `figma-web-fidelity`), editar
-  tokens (→ `design-system`), gerar bundle Token Studio (→ `token-studio-export`).
+  tokens (→ `design-system`), gerar bundle Token Studio — **DESCONTINUADO** (→ `token-studio-export`, legado).
 
 ## Autoridade
 

@@ -1,7 +1,7 @@
 <!-- GERADO por build/sync-rules.mjs a partir de .cursor/rules/08-figma-atomic-design.mdc — NÃO EDITAR AQUI.
      Edite o .mdc canônico e rode `npm run sync:rules`. O pretest reprova drift. -->
 
-> **Quando aplicar:** Regra NORMATIVA para CONSTRUIR TELAS no Figma. Define a FONTE DA VERDADE dos componentes (as pastas app/src/components/ui, app/src/components e app/src/pages) e obriga: toda tela DEVE ser montada com componentes que JÁ existem (instâncias, nunca redesenho à mão); se um componente necessário NÃO existir, ele DEVE ser criado PRIMEIRO — seguindo Atomic Design (átomo → molécula → organismo → template → página) — e só então instanciado. O Figma espelha a web. Aplicar sempre que uma tela/fluxo for reproduzido ou criado no Figma.
+> **Quando aplicar:** Regra NORMATIVA para CONSTRUIR TELAS no Figma. Define a FONTE DA VERDADE dos componentes (as pastas app/src/components/ui, app/src/components e app/src/pages) e obriga: toda tela DEVE ser montada com componentes que JÁ existem (instâncias, nunca redesenho à mão); se um componente necessário NÃO existir, ele DEVE ser criado PRIMEIRO — seguindo Atomic Design (átomo → molécula → organismo → template → página) — e só então instanciado. TODA propriedade DEVE ser bindada a Variable (cor, tipografia, gap, padding, radius, tamanho, opacidade — nada cru), e as Variants/Properties do componente espelham o CVA da web. O Figma espelha a web. Aplicar sempre que uma tela/fluxo for reproduzido ou criado no Figma.
 
 # 08 — Telas no Figma via componentes existentes + Atomic Design
 
@@ -68,7 +68,7 @@ As **telas finais**, com conteúdo real. São as **páginas**.
 
 ---
 
-## 2. Os dois princípios duros
+## 2. Os três princípios duros
 
 1. **Montar com o que já existe.** Cada pedaço da tela **DEVE** ser uma **instância** do componente
    equivalente ao que a web importa. **NUNCA** redesenhar à mão (retângulo + texto + vetor) algo que já é
@@ -76,6 +76,12 @@ As **telas finais**, com conteúdo real. São as **páginas**.
 2. **Faltou peça → cria a peça primeiro.** Se a tela precisa de algo que **não existe** como componente no
    Figma, o fluxo é: **PARAR de montar → criar o componente (por Atomic Design) → só então instanciá-lo.**
    NUNCA improvisar o elemento solto direto na tela. **O componente vem antes do uso.**
+3. **Tudo vinculado a Variable.** Cada propriedade de cada nó **DEVE** referenciar uma **Variable** do
+   token — **nunca** valor cru. Não é só cor/tipografia: também **gap** (`space/*`), **padding**
+   (`space/*`), **cornerRadius** (`radius-*`), **tamanho/altura** (`button/height/*`, `space/*`…),
+   **opacidade** (`opacity/*`) e **borda** (`border-width/*`). Valor chumbado = violação. Falta a
+   Variable? **PARE e alinhe** — o valor nasce em `tokens/` (ex.: o meio-passo `space/2_5` = 10px),
+   nunca inventado no Figma ([[surface-ds-gaps]]).
 
 ---
 
@@ -126,7 +132,13 @@ responsibility*: se faz mais de uma coisa, tende a organismo).
 - **De baixo para cima.** Nada "chumbado": o organismo compõe **instâncias** dos átomos/moléculas (nesting).
 - **Component Set + Variants + Component Properties.** Estados/tamanhos/slots viram **variantes** e
   **propriedades** (boolean p/ mostrar-ocultar, text p/ conteúdo, instance-swap p/ ícone). Nada de duplicar frames.
-- **Tokens light/dark.** Toda cor/tipografia **bindada a Variable** (theme-aware), nunca hex chumbado. (regra 06 / [[colored-text-uses-text-tokens]].)
+- **Tudo bindado a Variable, theme-aware (3º princípio, §2).** Não só cor/tipografia — **gap** (`space/*`),
+  **padding** (`space/*`), **cornerRadius** (`radius-*`), **tamanho/altura**, **opacidade** (`opacity/*`) e
+  **borda** (`border-width/*`) também. **Nunca** valor cru. Alpha mora NA Variable
+  ([[figma-token-alpha-not-paint-opacity]]); cor de texto usa os tokens `*-text` ([[colored-text-uses-text-tokens]], regra 06).
+- **Variants/Properties = a API da web (CVA).** As variantes/tamanhos/estados do componente **espelham o
+  cva** de `app/src/components/ui/<peça>` (mesmos nomes e contagem; ex.: `atom/button` ≡ o cva de
+  `button.tsx`). "Igual ao da web" inclui a API, não só o visual — auditado pelo `figma-pipeline-validator`.
 - **Ícones = instância lucide.** Segue a **regra 07** (biblioteca "Icons Lucide"; não existe no lucide → avisar). NUNCA vetor à mão.
 - **Nomenclatura espelhando a web.** Mesmo nome do arquivo/pasta de origem, com o nível: `atom/…`,
   `molecule/…`, `organism/…`. Peça de `ui/` → biblioteca; peça de `pages/<tela>/` → componente local da tela.
@@ -148,7 +160,8 @@ lucide (regra 07): avisar, nunca substituir.
 - [ ] A lista de peças saiu dos **imports da tela na web** (`app/src/…`), não de suposição.
 - [ ] Toda peça visível é **instância** de um componente (0 elementos redesenhados à mão).
 - [ ] Todo componente que faltava foi **criado antes** de ser usado, de baixo para cima (Atomic Design).
-- [ ] Componentes novos têm Variants/Properties, cores/tipografia **bindadas a token** (light/dark) e ícones **lucide** (regra 07).
+- [ ] Componentes novos têm Variants/Properties (espelhando o **CVA da web** — mesmas variantes/sizes/estados) e ícones **lucide** (regra 07).
+- [ ] **Toda propriedade** — cor, tipografia, gap, padding, radius, tamanho, opacidade, borda — **bindada a Variable** (light/dark). **0 valor cru** no Figma (3º princípio, §2).
 - [ ] Reuso respeitado: peça de `ui/` na biblioteca, peça de `pages/<tela>/` como componente local; nada duplicado.
 - [ ] Lacuna de DS (ou ícone ausente no lucide) foi **reportada ao usuário**, não improvisada.
 - [ ] A tela final bate com a web (medida), não aproximada.

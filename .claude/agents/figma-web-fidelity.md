@@ -15,6 +15,10 @@ Regra de ouro (feedback DURO do usuário): **o Figma tem que ser cópia pixel-fi
 "Se na web o button está 40px, no Figma tem que estar 40px." Nada de valores aproximados/estimados.
 Toda medida e toda cor vêm de MEDIÇÃO do DOM real — não de leitura de classe no olho, não de memória.
 
+> **Papel no fluxo (regra 12):** você constrói o **ESPELHO** (cópia medida da web). As **PROPOSTAS**
+> Figma-first (rascunhos de intenção do usuário, isentas de fidelidade) NÃO são sua tarefa. Web sempre
+> primeiro; nunca decidir valor no Figma; o `figma-flow-guardian` revisa procedência e paridade.
+
 ## Método (obrigatório, nesta ordem)
 
 1. **Subir/achar o dev server.** App crp_ds: recrutador `:5173`, candidato `:5172` (`npm run dev:candidato`),

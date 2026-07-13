@@ -1,7 +1,7 @@
 <!-- GERADO por build/sync-rules.mjs a partir de .cursor/rules/06-accessibility.mdc — NÃO EDITAR AQUI.
      Edite o .mdc canônico e rode `npm run sync:rules`. O pretest reprova drift. -->
 
-> **Quando aplicar:** Regra de acessibilidade (WCAG 2.2 AA) — FONTE DA VERDADE para criar/revisar qualquer componente, tela, token, CSS ou preview do crp Design System. Cobre contraste (textual + não-textual), foco, teclado, ARIA/semântica, estados (disabled/loading), formulários, motion, forced-colors, alvo de toque, responsividade e o protocolo de revisão (Definition of Done). Aplicar SEMPRE que houver UI ou a11y envolvida.
+> **Quando aplicar:** Regra de acessibilidade (WCAG 2.2 AA) — FONTE DA VERDADE para criar/revisar qualquer componente, tela, token ou CSS do crp Design System. Cobre contraste (textual + não-textual), foco, teclado, ARIA/semântica, estados (disabled/loading), formulários, motion, forced-colors, alvo de toque, responsividade e o protocolo de revisão (Definition of Done). Aplicar SEMPRE que houver UI ou a11y envolvida.
 
 # 06 — Acessibilidade (WCAG 2.2 AA) · crp Design System
 
@@ -11,10 +11,10 @@
 
 ## 0. Escopo e nível-alvo
 
-- **Alvo: WCAG 2.2 nível AA em 100%** dos tokens, componentes, telas, previews e artefatos shippados.
+- **Alvo: WCAG 2.2 nível AA em 100%** dos tokens, componentes, telas e artefatos shippados.
   Buscar **AAA** quando viável: **2.5.5** (alvo ≥44px) e **2.4.13** (aparência do foco).
-- Aplica à **foundation** (`tokens/`, `dist/base.css`, `dist/components/*`), aos **componentes** (`@crp/ui`),
-  às **telas** (app) e aos **previews** (`preview/*.html`).
+- Aplica à **foundation** (`tokens/`, `dist/base.css`, `dist/components/*`), aos **componentes** (`@crp/ui`)
+  e às **telas** (app).
 - **"Pronto" só existe com a a11y verificada** (§7). Não basta o feliz-caminho. Validação real > "deveria estar ok".
 - Sempre testar em **light E dark** e em **mobile (320px) + zoom 200%**.
 

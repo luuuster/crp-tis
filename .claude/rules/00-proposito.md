@@ -1,7 +1,7 @@
 <!-- GERADO por build/sync-rules.mjs a partir de .cursor/rules/00-proposito.mdc — NÃO EDITAR AQUI.
      Edite o .mdc canônico e rode `npm run sync:rules`. O pretest reprova drift. -->
 
-> **Quando aplicar:** Constituição do repositório — propósito, fronteiras e matriz de fontes da verdade. É a ÚNICA regra sempre aplicada; as demais (06–10) disparam por contexto. Orienta qualquer IA (Claude, Codex, Cursor) antes de qualquer mudança.
+> **Quando aplicar:** Constituição do repositório — propósito, fronteiras e matriz de fontes da verdade. É a ÚNICA regra sempre aplicada; as demais (06–12) disparam por contexto. Orienta qualquer IA (Claude, Codex, Cursor) antes de qualquer mudança.
 
 # 00 — Propósito, fronteiras e fontes da verdade
 
@@ -24,9 +24,10 @@
 ```text
 tokens/ (DTCG)          → valores de design (cor, medida, tipo) — nunca hex/px chumbado
 componentes + CVA       → API de variantes/tamanhos (app/src/components/ui/*)
-DOM renderizado         → aparência/medida resultante (medir, nunca supor)
+WEB (DOM renderizado)   → FONTE DA VERDADE do sistema: aparência/medida/comportamento (medir, nunca supor)
 fluxo/página + docs     → intenção de UX
-Figma                   → downstream: reproduz tokens/componentes/medidas da web
+Figma                   → ESPELHO downstream: cópia MEDIDA da web via plugins (p/ clientes/devs) — nunca fonte
+Token Studio            → DESCONTINUADO — o plugin próprio importa Variables/styles direto (regra 12)
 dist/, JSONs de plugin  → GERADOS — nunca editar, nunca fonte
 ```
 
@@ -34,6 +35,10 @@ dist/, JSONs de plugin  → GERADOS — nunca editar, nunca fonte
 domínio; (3) corrija a origem, nunca o artefato; (4) regenere o downstream; (5) meça de novo.
 "Web manda" significa que o RENDERIZADO ganha de Figma/doc — não que um bug da web deva ser
 copiado para os tokens: bug se corrige na origem dele.
+
+**Fluxo web → Figma:** desenvolve-se na WEB primeiro → plugins próprios → Figma (espelho medido, p/
+apresentação a clientes/devs). O contrato completo — incluindo a exceção da PROPOSTA Figma-first
+(intenção, isenta de fidelidade) que depois vira web e volta como espelho — é a **regra 12**.
 
 ## 3. Antes de dizer "pronto"
 

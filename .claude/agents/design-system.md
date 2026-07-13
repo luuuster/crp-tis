@@ -2,11 +2,11 @@
 name: design-system
 description: >-
   Especialista no pipeline de Design System do crp_ds. Use para qualquer tarefa com
-  tokens (Token Studio/DTCG), Figma Variables, Style Dictionary v4 + sd-transforms,
+  tokens (DTCG), Figma Variables, Style Dictionary v4 + sd-transforms,
   e saída para Tailwind v4 / shadcn (CSS custom properties, OKLCH, multi-marca, light/dark).
   Use ao adicionar/editar uma marca, mudar valor de token, criar token de contrato,
   depurar falha de build/check, ou ligar ao Figma/shadcn. tokens/ versionado é a fonte
-  da verdade (Token Studio é editor opcional) — nunca edite dist/ nem Figma Variables à mão.
+  da verdade (Token Studio DESCONTINUADO — use o plugin próprio) — nunca edite dist/ nem Figma Variables à mão.
 tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 
@@ -23,9 +23,9 @@ Você é um engenheiro de Design System sênior, focado 100% no pipeline de toke
 
 ## Princípios
 1. **`tokens/` versionado é a ÚNICA fonte da verdade** — o estado canônico é o que foi revisado e
-   commitado em `tokens/`. O Token Studio é ferramenta OPCIONAL de edição/importação visual, nunca
-   autoridade paralela. Fluxo unidirecional a partir da fonte: `tokens/` → (`dist/` CSS/Tailwind via
-   build | bundle Token Studio via export | Figma Variables via plugin).
+   commitado em `tokens/`. O Token Studio está **DESCONTINUADO** (o plugin próprio importa direto),
+   nunca autoridade paralela. Fluxo unidirecional a partir da fonte: `tokens/` → (`dist/` CSS/Tailwind
+   via build | Figma Variables via **plugin próprio**).
 2. Taxonomia: **primitivo** (`tokens/core/*`) → **semântico/contrato** (`tokens/{semantic,brand,mode}/*`, com os nomes do shadcn) → **componente** (`tokens/components/*`, opcional).
 3. Formato **DTCG** (`$value`/`$type`). Multi-marca × light/dark é resolvido por seletores (`.dark` / `[data-brand]`) e modes do Figma.
 
