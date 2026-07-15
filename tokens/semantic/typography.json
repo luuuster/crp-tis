@@ -51,12 +51,12 @@
     "h3": {
       "$value": {
         "fontFamily": "{font.heading}",
-        "fontWeight": "{font.weight.semibold}",
+        "fontWeight": "{font.weight.bold}",
         "fontSize": "{font.size.3xl}",
         "lineHeight": "{font.lineHeight.3xl}",
-        "letterSpacing": "{font.tracking.normal}"
+        "letterSpacing": "{font.tracking.tight}"
       },
-      "$description": "Subseção — 30px · Inter 600."
+      "$description": "Título de página/subseção do PRODUTO — 30px · Inter 700 · tracking -0.025em. Bold+tight como h1/h2 (é o tratamento real dos títulos do app: PageHeader, StatCard, 'Nova vaga' do gerador, VagasList). Antes era SemiBold/tracking normal, mas o uso real — e agora canônico — é bold+tight; o h4–h6 seguem SemiBold."
     },
     "h4": {
       "$value": {

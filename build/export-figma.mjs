@@ -491,6 +491,16 @@ for (const [label, themeName] of [['Light', 'CRP-Light'], ['Dark', 'CRP-Dark']])
     effectStyles.push({ name: 'Elevation/' + label + '/' + key, effects, description: 'Sombra de elevação ' + key + ' (' + label.toLowerCase() + ').' });
     styleStats.effect++;
   }
+  // Sombras DIRECIONAIS de painel (sidebar à esquerda, copiloto à direita) — a web usa shadow-panel-l/r.
+  // São tokens top-level (elevation-panel-l/r), não entram no laço elevation.* acima; viram effect style próprio.
+  for (const key of ['panel-l', 'panel-r']) {
+    const term = resolveTerminal('elevation-' + key, themeMaps[themeName]);
+    if (!term || typeof term.token.$value !== 'string') continue;
+    const effects = parseShadow(term.token.$value);
+    if (!effects.length) continue;
+    effectStyles.push({ name: 'Elevation/' + label + '/' + key, effects, description: 'Sombra direcional de painel ' + key + ' (' + label.toLowerCase() + ').' });
+    styleStats.effect++;
+  }
 }
 
 // 3) PAINT — contrato de cor de CRP/Modes; cada Paint Style LIGADO à sua Variable (segue Brand×Modes).
