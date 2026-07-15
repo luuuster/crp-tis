@@ -82,7 +82,7 @@ export function Showcase() {
 
       <section className="mb-10 space-y-3">
         <Badge variant="secondary">shadcn/ui × @crp/design-tokens</Badge>
-        <h1 className="font-heading text-3xl font-bold tracking-tight">Componentes tematizados pelos seus tokens</h1>
+        <h1 className="ty-h3">Componentes tematizados pelos seus tokens</h1>
         <p className="max-w-2xl text-muted-foreground">
           Troque a <strong className="text-foreground">marca</strong> e o <strong className="text-foreground">tema</strong> no
           canto superior direito — cada componente re-tematiza em runtime, direto do contrato de tokens. Cada um tem

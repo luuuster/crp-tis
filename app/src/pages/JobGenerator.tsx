@@ -266,7 +266,7 @@ export function JobGenerator({ onNavigate, brand, mode, onCycleBrand, onToggleMo
             <div className="mx-auto max-w-5xl space-y-7 px-5 py-8 lg:px-8">
               <header className="space-y-3">
                 <p className="ty-overline text-muted-foreground">{t('header.etapaLinha', { modo: isEditing ? t('header.eyebrowEdicao') : t('header.eyebrowCriacao'), num: String(step).padStart(2, '0'), eyebrow: t(`steps.${step as 1 | 2 | 3}.eyebrow`) })}</p>
-                <h1 className="font-heading text-3xl font-bold tracking-tight">{isEditing ? t('header.tituloEditar') : t('header.tituloNova')}</h1>
+                <h1 className="ty-h3">{isEditing ? t('header.tituloEditar') : t('header.tituloNova')}</h1>
                 {isEditing
                   ? <p className="max-w-2xl ty-body text-muted-foreground">{t('header.descEditarAntes')}<span className="font-medium text-foreground">{editingVaga.briefing.cargo}</span>{t('header.descEditarDepois')}</p>
                   : <p className="max-w-2xl ty-body text-muted-foreground">{t('header.descNova')}</p>}

@@ -33,7 +33,7 @@ export function PageHeader({ icon: Icon, title, desc, actions }: { icon?: IconTy
   return (
     <header className="flex flex-wrap items-start justify-between gap-4">
       <div className="space-y-1.5">
-        <h1 className="flex items-center gap-2.5 font-heading text-3xl font-bold tracking-tight text-foreground">
+        <h1 className="flex items-center gap-2.5 ty-h3 text-foreground">
           {Icon && <Icon className="size-7 shrink-0 text-primary-text" aria-hidden />}
           {title}
         </h1>
@@ -79,7 +79,7 @@ export function StatCard({ icon: Icon, label, value, delta, loading, className }
       {loading ? (
         <Skeleton className="mt-3 h-9 w-20" />
       ) : (
-        <p className="mt-3 font-heading text-3xl font-bold tabular-nums tracking-tight text-foreground">{value}</p>
+        <p className="mt-3 ty-h3 tabular-nums text-foreground">{value}</p>
       )}
       {!loading && delta}
     </div>
