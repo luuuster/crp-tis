@@ -17,7 +17,8 @@
     "vazio": "No jobs found with these filters."
   },
   "tabela": {
-    "data": "Date",
+    "dataAbertura": "Opening date",
+    "limiteSubmissao": "Submission deadline",
     "vaga": "Job",
     "senioridade": "Seniority",
     "modelo": "Model",
@@ -27,7 +28,8 @@
     "acoes": "Actions"
   },
   "filtro": {
-    "data": "Filter by date",
+    "data": "Filter by opening date",
+    "limite": "Filter by submission deadline",
     "senioridade": "Filter by seniority",
     "modelo": "Filter by model",
     "status": "Filter by status"
@@ -68,7 +70,8 @@
   "export": {
     "arquivo": "jobs",
     "col": {
-      "data": "Date",
+      "dataAbertura": "Opening date",
+      "limiteSubmissao": "Submission deadline",
       "cargo": "Role",
       "senioridade": "Seniority",
       "modelo": "Model",

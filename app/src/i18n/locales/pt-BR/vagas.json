@@ -17,7 +17,8 @@
     "vazio": "Nenhuma vaga encontrada com esses filtros."
   },
   "tabela": {
-    "data": "Data",
+    "dataAbertura": "Data de abertura",
+    "limiteSubmissao": "Limite de submissão",
     "vaga": "Vaga",
     "senioridade": "Senioridade",
     "modelo": "Modelo",
@@ -27,7 +28,8 @@
     "acoes": "Ações"
   },
   "filtro": {
-    "data": "Filtrar por data",
+    "data": "Filtrar por data de abertura",
+    "limite": "Filtrar por limite de submissão",
     "senioridade": "Filtrar por senioridade",
     "modelo": "Filtrar por modelo",
     "status": "Filtrar por status"
@@ -68,7 +70,8 @@
   "export": {
     "arquivo": "vagas",
     "col": {
-      "data": "Data",
+      "dataAbertura": "Data de abertura",
+      "limiteSubmissao": "Limite de submissão",
       "cargo": "Cargo",
       "senioridade": "Senioridade",
       "modelo": "Modelo",

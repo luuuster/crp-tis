@@ -15,13 +15,14 @@ import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "@/compon
 // nativo (cujo calendário o navegador desenha e NÃO é estilizável). `value`/`onChange` usam ISO
 // 'yyyy-MM-dd' p/ casar com a lógica de formulário existente. Clicar no campo OU no ícone abre o
 // calendário; o foco permanece no campo (onOpenAutoFocus prevenido) para continuar DIGITANDO.
-function DatePicker({ id, value, onChange, placeholder = "dd/mm/aaaa", disabled, className }: {
+function DatePicker({ id, value, onChange, placeholder = "dd/mm/aaaa", disabled, className, "aria-label": ariaLabel }: {
   id?: string
   value: string
   onChange: (iso: string) => void
   placeholder?: string
   disabled?: boolean
   className?: string
+  "aria-label"?: string
 }) {
   // Idioma do CALENDÁRIO (nomes de mês/semana) acompanha o app; o INPUT segue dd/mm/aaaa (formato BR fixo).
   const { t, i18n } = useTranslation("common")
@@ -64,6 +65,7 @@ function DatePicker({ id, value, onChange, placeholder = "dd/mm/aaaa", disabled,
         <div className="relative">
           <Input
             id={id}
+            aria-label={ariaLabel}
             value={texto}
             onChange={(e) => digitar(e.target.value)}
             onClick={() => !disabled && setOpen(true)}

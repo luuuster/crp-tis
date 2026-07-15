@@ -17,7 +17,8 @@
     "vazio": "No se encontraron vacantes con estos filtros."
   },
   "tabela": {
-    "data": "Fecha",
+    "dataAbertura": "Fecha de apertura",
+    "limiteSubmissao": "Límite de envío",
     "vaga": "Vacante",
     "senioridade": "Seniority",
     "modelo": "Modelo",
@@ -27,7 +28,8 @@
     "acoes": "Acciones"
   },
   "filtro": {
-    "data": "Filtrar por fecha",
+    "data": "Filtrar por fecha de apertura",
+    "limite": "Filtrar por límite de envío",
     "senioridade": "Filtrar por seniority",
     "modelo": "Filtrar por modelo",
     "status": "Filtrar por estado"
@@ -68,7 +70,8 @@
   "export": {
     "arquivo": "vacantes",
     "col": {
-      "data": "Fecha",
+      "dataAbertura": "Fecha de apertura",
+      "limiteSubmissao": "Límite de envío",
       "cargo": "Cargo",
       "senioridade": "Seniority",
       "modelo": "Modelo",

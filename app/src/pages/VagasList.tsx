@@ -19,7 +19,7 @@ import { ExportButton } from '@/components/composicoes/ExportButton'
 import { exportCsv, type CsvColumn } from '@/lib/exportCsv'
 import { VagaDocumento } from '@/lib/vaga'
 import { type StatusVaga as Status } from '@/lib/types'
-import { BENEF, PROCESSO, mkGen, mkVaga, type Vaga } from './vagas.logic'
+import { BENEF, PROCESSO, dataParaIso, mkGen, mkVaga, type Vaga } from './vagas.logic'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Tip } from '@/components/ui/tooltip'
@@ -27,6 +27,7 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { DatePicker } from '@/components/ui/date-picker'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogTitle } from '@/components/ui/alert-dialog'
 
 // `type Vaga` mora em ./vagas.logic (lar do builder); re-exportado aqui p/ JobGenerator continuar importando de './VagasList'.
@@ -38,7 +39,7 @@ export const VAGAS_INICIAL: Vaga[] = [
   mkVaga(
     { id: '1', data: '10/01/2026', inscritos: 80, aprovados: 15, status: 'Aberta' },
     {
-      cargo: 'Desenvolvedor Full Stack', nivel: 'Sênior', modelo: 'Remoto',
+      cargo: 'Desenvolvedor Full Stack — Plataforma de Recrutamento com IA', nivel: 'Sênior', modelo: 'Remoto',
       cliente: 'TIS Talent AI Platform', gestor: 'Carlos Mendes',
       desafio: 'O TIS Talent AI Platform está evoluindo sua experiência de ponta a ponta e precisa de reforço para acelerar a entrega de novas funcionalidades web.',
       objetivo: 'Entregar features completas, do banco à interface, com qualidade, performance e boa experiência para quem usa a plataforma.',
@@ -238,7 +239,7 @@ export function VagaDetalhe({ vaga }: { vaga: Vaga }) {
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="space-y-1.5">
             <p className="ty-overline text-muted-foreground">{t('detalhe.overline')}</p>
-            <h1 className="font-heading text-3xl font-bold tracking-tight text-foreground">{vaga.vaga}</h1>
+            <h1 className="ty-h3 text-foreground">{vaga.vaga}</h1>
           </div>
           <StatusBadge value={statusLabel(t, vaga.status)} tones={{ [statusLabel(t, vaga.status)]: STATUS_TOM[vaga.status] }} />
         </div>
@@ -285,13 +286,14 @@ export function VagasList({ vagas, setVagas, loading, error, retry, onAbrirVaga,
   const { t: tc } = useTranslation('common')
   const [status, setStatus] = useState<(typeof STATUS_FILTROS)[number]>('Todos')
   const [q, setQ] = useState('')
-  const [dataF, setDataF] = useState('Todas')
+  const [dataF, setDataF] = useState('')
+  const [limiteF, setLimiteF] = useState('')
   const [senioridadeF, setSenioridadeF] = useState('Todas')
   const [modeloF, setModeloF] = useState('Todos')
   const [fechar, setFechar] = useState<Vaga | null>(null)
 
-  // Opções de filtro derivadas dos dados (sentinela "Todas/Todos" primeiro).
-  const datas = ['Todas', ...Array.from(new Set(vagas.map((v) => v.data)))]
+  // Opções de filtro derivadas dos dados (sentinela "Todas/Todos" primeiro). A data virou DatePicker
+  // (calendário) — filtra pela data de ABERTURA, então não precisa mais da lista de datas distintas.
   const senioridades = ['Todas', ...Array.from(new Set(vagas.map((v) => v.senioridade)))]
   const modelos = ['Todos', ...Array.from(new Set(vagas.map((v) => v.modelo)))]
 
@@ -304,7 +306,8 @@ export function VagasList({ vagas, setVagas, loading, error, retry, onAbrirVaga,
   const filtradas = vagas.filter(
     (v) =>
       (status === 'Todos' || v.status === status) &&
-      (dataF === 'Todas' || v.data === dataF) &&
+      (dataF === '' || dataParaIso(v.data) === dataF) &&
+      (limiteF === '' || dataParaIso(v.limite) === limiteF) &&
       (senioridadeF === 'Todas' || v.senioridade === senioridadeF) &&
       (modeloF === 'Todos' || v.modelo === modeloF) &&
       v.vaga.toLowerCase().includes(q.trim().toLowerCase()),
@@ -316,8 +319,8 @@ export function VagasList({ vagas, setVagas, loading, error, retry, onAbrirVaga,
   const resetPage = () => setPage(1)
 
   // Estado vazio: oferece "Limpar filtros" quando há filtro/busca ativos (zera tudo e volta à 1ª página).
-  const filtrosAtivos = status !== 'Todos' || q !== '' || dataF !== 'Todas' || senioridadeF !== 'Todas' || modeloF !== 'Todos'
-  const limparFiltros = () => { setStatus('Todos'); setQ(''); setDataF('Todas'); setSenioridadeF('Todas'); setModeloF('Todos'); resetPage() }
+  const filtrosAtivos = status !== 'Todos' || q !== '' || dataF !== '' || limiteF !== '' || senioridadeF !== 'Todas' || modeloF !== 'Todos'
+  const limparFiltros = () => { setStatus('Todos'); setQ(''); setDataF(''); setLimiteF(''); setSenioridadeF('Todas'); setModeloF('Todos'); resetPage() }
 
   // Fechar a vaga = mudar o status para "Fechada" (NÃO remove da lista; ela continua visível, encerrada).
   const fecharVaga = () => {
@@ -336,7 +339,8 @@ export function VagasList({ vagas, setVagas, loading, error, retry, onAbrirVaga,
   // Export CSV da lista FILTRADA (não só a página). Cabeçalhos via t(); DADOS das vagas ficam como estão.
   const exportarCsv = () => {
     const colunas: CsvColumn<Vaga>[] = [
-      { header: t('export.col.data'), value: (v) => v.data },
+      { header: t('export.col.dataAbertura'), value: (v) => v.data },
+      { header: t('export.col.limiteSubmissao'), value: (v) => v.limite },
       { header: t('export.col.cargo'), value: (v) => v.vaga },
       { header: t('export.col.senioridade'), value: (v) => v.senioridade },
       { header: t('export.col.modelo'), value: (v) => v.modelo },
@@ -382,8 +386,9 @@ export function VagasList({ vagas, setVagas, loading, error, retry, onAbrirVaga,
         <Table className="[&_:is(th,td):first-child]:pl-5 [&_:is(th,td):last-child]:pr-5">
           <TableHeader>
             <TableRow className="hover:bg-transparent">
-              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">{t('tabela.data')}</TableHead>
-              <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">{t('tabela.vaga')}</TableHead>
+              <TableHead className="w-[132px] ty-caption font-semibold tracking-wide text-muted-foreground uppercase">{t('tabela.dataAbertura')}</TableHead>
+              <TableHead className="w-[132px] ty-caption font-semibold tracking-wide text-muted-foreground uppercase">{t('tabela.limiteSubmissao')}</TableHead>
+              <TableHead className="w-[280px] ty-caption font-semibold tracking-wide text-muted-foreground uppercase">{t('tabela.vaga')}</TableHead>
               <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">{t('tabela.senioridade')}</TableHead>
               <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase">{t('tabela.modelo')}</TableHead>
               <TableHead className="ty-caption font-semibold tracking-wide text-muted-foreground uppercase text-right">{t('tabela.inscritos')}</TableHead>
@@ -394,7 +399,8 @@ export function VagasList({ vagas, setVagas, loading, error, retry, onAbrirVaga,
             {/* Linha de FILTRO, barra de ferramentas (td, não th: não são cabeçalhos de coluna). Busca
                 alinhada à coluna Vaga, status à coluna Status. */}
             <TableRow className="bg-muted/20 hover:bg-muted/20">
-              <TableCell className="py-2"><ColFilter value={dataF} onChange={(v) => { setDataF(v); resetPage() }} options={datas} label={t('filtro.data')} format={fmtTodas} /></TableCell>
+              <TableCell className="py-2"><DatePicker value={dataF} onChange={(v) => { setDataF(v); resetPage() }} placeholder={tc('filtro.todas')} aria-label={t('filtro.data')} className="ty-body-sm font-normal" /></TableCell>
+              <TableCell className="py-2"><DatePicker value={limiteF} onChange={(v) => { setLimiteF(v); resetPage() }} placeholder={tc('filtro.todas')} aria-label={t('filtro.limite')} className="ty-body-sm font-normal" /></TableCell>
               <TableCell className="py-2">
                 <div className="relative">
                   <Search className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" aria-hidden />
@@ -411,14 +417,14 @@ export function VagasList({ vagas, setVagas, loading, error, retry, onAbrirVaga,
           </TableHeader>
           <TableBody>
             {loading ? (
-              <TableSkeleton cols={8} />
+              <TableSkeleton cols={9} />
             ) : error ? (
               <TableRow className="hover:bg-transparent">
-                <TableCell colSpan={8} className="p-0"><ErrorState onRetry={retry} /></TableCell>
+                <TableCell colSpan={9} className="p-0"><ErrorState onRetry={retry} /></TableCell>
               </TableRow>
             ) : filtradas.length === 0 ? (
               <TableRow className="hover:bg-transparent">
-                <TableCell colSpan={8} className="p-0">
+                <TableCell colSpan={9} className="p-0">
                   <EmptyState
                     icon={Search}
                     title={t('lista.vazio')}
@@ -434,8 +440,9 @@ export function VagasList({ vagas, setVagas, loading, error, retry, onAbrirVaga,
                 // role="button" quebraria a estrutura ARIA da tabela (rowgroup→row) e reprovaria no axe.
                 <TableRow key={v.id} onClick={() => onVerVaga(v)} className="cursor-pointer">
                   <TableCell className="py-3 ty-body-sm tabular-nums text-muted-foreground">{v.data}</TableCell>
+                  <TableCell className="py-3 ty-body-sm tabular-nums text-muted-foreground">{v.limite}</TableCell>
                   <TableCell className="py-3">
-                    <button type="button" onClick={(e) => { e.stopPropagation(); onVerVaga(v) }} className="rounded-sm text-left ty-body-sm font-medium text-foreground transition-colors hover:text-primary-text focus-visible:focus-ring">{v.vaga}</button>
+                    <button type="button" title={v.vaga} onClick={(e) => { e.stopPropagation(); onVerVaga(v) }} className="block max-w-[280px] rounded-sm text-left ty-body-sm font-medium text-foreground transition-colors hover:text-primary-text focus-visible:focus-ring"><span className="line-clamp-2 whitespace-normal">{v.vaga}</span></button>
                   </TableCell>
                   <TableCell className="py-3"><Badge variant="ghost" className="bg-muted ty-caption font-medium text-muted-foreground">{v.senioridade}</Badge></TableCell>
                   <TableCell className="py-3 ty-body-sm text-muted-foreground">{v.modelo}</TableCell>
@@ -462,7 +469,8 @@ export function VagasList({ vagas, setVagas, loading, error, retry, onAbrirVaga,
             <Input value={q} onChange={(e) => { setQ(e.target.value); resetPage() }} placeholder={t('busca.placeholder')} aria-label={t('busca.aria')} className="h-[var(--button-height-md)] pl-9 ty-body-sm font-normal" />
           </div>
           <div className="grid grid-cols-2 gap-2">
-            <ColFilter value={dataF} onChange={(v) => { setDataF(v); resetPage() }} options={datas} label={t('filtro.data')} format={fmtTodas} />
+            <DatePicker value={dataF} onChange={(v) => { setDataF(v); resetPage() }} placeholder={tc('filtro.todas')} aria-label={t('filtro.data')} className="ty-body-sm font-normal" />
+            <DatePicker value={limiteF} onChange={(v) => { setLimiteF(v); resetPage() }} placeholder={tc('filtro.todas')} aria-label={t('filtro.limite')} className="ty-body-sm font-normal" />
             <ColFilter value={senioridadeF} onChange={(v) => { setSenioridadeF(v); resetPage() }} options={senioridades} label={t('filtro.senioridade')} format={fmtTodas} />
             <ColFilter value={modeloF} onChange={(v) => { setModeloF(v); resetPage() }} options={modelos} label={t('filtro.modelo')} format={fmtTodos} />
             <ColFilter value={status} onChange={(v) => { setStatus(v as (typeof STATUS_FILTROS)[number]); resetPage() }} options={STATUS_FILTROS} label={t('filtro.status')} format={fmtStatus} />
@@ -476,11 +484,15 @@ export function VagasList({ vagas, setVagas, loading, error, retry, onAbrirVaga,
               {pageItems.map((v) => (
                 <li key={v.id} className={cn(CARD, 'space-y-3 p-4')}>
                   <div className="flex items-start justify-between gap-2">
-                    <button type="button" onClick={() => onVerVaga(v)} className="rounded-sm text-left ty-body-sm font-semibold text-foreground transition-colors hover:text-primary-text focus-visible:focus-ring">{v.vaga}</button>
+                    <button type="button" title={v.vaga} onClick={() => onVerVaga(v)} className="rounded-sm text-left ty-body-sm font-semibold text-foreground transition-colors hover:text-primary-text focus-visible:focus-ring"><span className="line-clamp-2 whitespace-normal">{v.vaga}</span></button>
                     <StatusBadge value={statusLabel(t, v.status)} tones={{ [statusLabel(t, v.status)]: STATUS_TOM[v.status] }} />
                   </div>
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1 ty-caption text-muted-foreground">
-                    <span>{v.senioridade}</span><span aria-hidden>·</span><span>{v.modelo}</span><span aria-hidden>·</span><span className="tabular-nums">{v.data}</span>
+                    <span>{v.senioridade}</span><span aria-hidden>·</span><span>{v.modelo}</span>
+                  </div>
+                  <div className="flex flex-wrap gap-x-3 gap-y-1 ty-caption text-muted-foreground">
+                    <span>{t('tabela.dataAbertura')}: <span className="tabular-nums text-foreground">{v.data}</span></span>
+                    <span>{t('tabela.limiteSubmissao')}: <span className="tabular-nums text-foreground">{v.limite}</span></span>
                   </div>
                   <div className="flex items-center justify-between gap-2 border-t border-border/50 pt-3">
                     <div className="flex gap-4 ty-caption text-muted-foreground">

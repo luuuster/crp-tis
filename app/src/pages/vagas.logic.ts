@@ -3,6 +3,8 @@
  * construtores `mkVaga`/`mkGen`, separados da tela (VagasList.tsx) para serem testáveis sem React.
  * Importa Briefing/Perfil de '@/lib/vaga' e StatusVaga de '@/lib/types' — não importa de VagasList.tsx (sem ciclo).
  */
+import { addDays, format, isValid, parse } from 'date-fns'
+
 import { type Briefing, type Perfil } from '@/lib/vaga'
 import { type StatusVaga as Status } from '@/lib/types'
 
@@ -10,6 +12,9 @@ import { type StatusVaga as Status } from '@/lib/types'
 // (vaga/senioridade/modelo) são DERIVADOS do briefing pelo mkVaga — fonte única, sem risco de divergência.
 export type Vaga = {
   id: string; data: string; inscritos: number; aprovados: number; status: Status
+  // limite = DATA-LIMITE de submissão, DERIVADA (data de abertura + prazo de divulgação do briefing) —
+  // não é um campo à parte de fixture: mesma fonte da abertura, sem risco de divergência. Formato dd/MM/yyyy.
+  limite: string
   vaga: string; senioridade: string; modelo: string
   briefing: Briefing; perfil: Perfil
 }
@@ -20,7 +25,18 @@ export const PROCESSO: string[] = ['Triagem de currículo', 'Teste técnico', 'E
 
 // Constrói uma Vaga derivando os campos da tabela do próprio briefing (cargo/nível/modelo).
 export function mkVaga(meta: { id: string; data: string; inscritos: number; aprovados: number; status: Status }, briefing: Briefing, perfil: Perfil): Vaga {
-  return { ...meta, vaga: briefing.cargo, senioridade: briefing.nivel, modelo: briefing.modelo, briefing, perfil }
+  const abertura = parse(meta.data, 'dd/MM/yyyy', new Date())
+  // Sem prazo de divulgação (ou data inválida) não há como derivar o limite → cai na própria abertura.
+  const limite = isValid(abertura) && typeof briefing.prazo === 'number'
+    ? format(addDays(abertura, briefing.prazo), 'dd/MM/yyyy')
+    : meta.data
+  return { ...meta, limite, vaga: briefing.cargo, senioridade: briefing.nivel, modelo: briefing.modelo, briefing, perfil }
+}
+
+// Data de exibição (dd/MM/yyyy) → ISO (yyyy-MM-dd) — casa com o value do DatePicker usado no filtro de data.
+export function dataParaIso(dataBR: string): string {
+  const d = parse(dataBR, 'dd/MM/yyyy', new Date())
+  return isValid(d) ? format(d, 'yyyy-MM-dd') : ''
 }
 
 // Vaga "genérica" completa (detalhe íntegro) a partir do cargo — povoa a lista p/ demonstrar a paginação.
