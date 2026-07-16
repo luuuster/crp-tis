@@ -42,8 +42,10 @@ export function PerfilForm({ perfil, set, showErrors }: { perfil: Perfil; set: S
             <fieldset className="space-y-2">
               <legend className="ty-label-sm text-muted-foreground">{t('perfil.exigenciasLegenda')}</legend>
               <div className="grid gap-2 sm:grid-cols-3">
+                {/* Altura do controle vem do token lg (44px), como todo controle do DS. É `min-h` (não `h`)
+                    porque em 320px/zoom 200% o rótulo quebra em 2 linhas — altura fixa cortaria o texto. */}
                 {EXIGENCIAS.map((e) => (
-                  <label key={e} className={cn('flex cursor-pointer items-center gap-2.5 rounded-lg border border-border/70 bg-muted/40 px-3 py-2.5 ty-body-sm transition-colors hover:border-border hover:bg-muted/60', focusRing)}>
+                  <label key={e} className={cn('flex min-h-[var(--button-height-lg)] cursor-pointer items-center gap-2.5 rounded-lg border border-border/70 bg-muted/40 px-3 ty-body-sm transition-colors hover:border-border hover:bg-muted/60', focusRing)}>
                     <Checkbox checked={perfil.exigencias.includes(e)} onCheckedChange={(v) => toggleExig(e, v === true)} />
                     {exigLabel(e)}
                   </label>
