@@ -35,6 +35,14 @@ const TONE: Record<Severity, { Icon: typeof AlertTriangle; cls: string }> = {
   ok: { Icon: CheckCircle2, cls: 'text-success-text' },
 }
 
+// Tom do card "Qualidade & Revisão" por faixa de score (fundo a 5%, texto na variante -text AA, barra sólida).
+// NÃO confundir com o `tom` da DESCRIÇÃO (Equilibrado/Descontraído/Formal), que é prop deste componente.
+const SCORE_TOM = {
+  destructive: { card: 'bg-destructive/5', text: 'text-destructive-text', bar: 'bg-destructive' },
+  warning: { card: 'bg-warning/5', text: 'text-warning-text', bar: 'bg-warning' },
+  success: { card: 'bg-success/5', text: 'text-success-text', bar: 'bg-success' },
+} as const
+
 function FindingRow({ f, t, onAjustar }: { f: Finding; t: TFunction<'gerador'>; onAjustar: (n: 1 | 2 | 3) => void }) {
   const { Icon, cls } = TONE[f.severity]
   return (
@@ -89,6 +97,10 @@ export function ReviewStep({ data, perfil, tom, onTom, set, resumoOverride, onRe
   const charOk = previewLen <= 2000
   const score = Math.max(0, (totalReq ? (totalReq - missingCount) / totalReq : 1) * 100 - (charOk ? 0 : 8))
   const aprovado = missingCount === 0 && charOk
+  // Tom do card/score/barra por FAIXA de score: abaixo de 50 a vaga está longe de publicável (vermelho),
+  // 50–99 pede ajuste (âmbar), 100 = pronta (verde). Crítica do Charlie também força o vermelho.
+  // As classes ficam literais no mapa porque o Tailwind não enxerga classe montada por template string.
+  const scoreTom: keyof typeof SCORE_TOM = (revisado && criticas > 0) || score < 50 ? 'destructive' : aprovado ? 'success' : 'warning'
   const pendencias = [
     ...(requiredBriefingOk(data) ? [] : [{ label: t('review.briefingIncompleto'), goto: 1 }]),
     ...(requiredPerfilOk(perfil) ? [] : [{ label: t('review.perfilIncompleto'), goto: 2 }]),
@@ -133,18 +145,18 @@ export function ReviewStep({ data, perfil, tom, onTom, set, resumoOverride, onRe
         <h2 className="ty-overline text-muted-foreground">{t('review.acoes')}</h2>
 
         {/* Card único "Qualidade & Revisão": faixa compacta de completude + análise de consistência do Charlie. */}
-        <div className={cn(CARD, 'space-y-4 p-4', revisado && criticas > 0 ? 'bg-destructive/5' : aprovado ? 'bg-success/5' : 'bg-warning/5')}>
+        <div className={cn(CARD, 'space-y-4 p-4', SCORE_TOM[scoreTom].card)}>
           {/* Qualidade (completude) — número inline + barra fina, sem o número gigante de antes */}
           <div className="space-y-2">
             <div className="flex items-center justify-between gap-2">
-              <span className="ty-label-sm text-muted-foreground">{t('review.scoreQualidade')}</span>
-              <span className={cn('inline-flex items-center gap-1.5 ty-label-sm font-semibold', aprovado ? 'text-success-text' : 'text-warning-text')}>
+              <span className="ty-label-sm text-foreground">{t('review.scoreQualidade')}</span>
+              <span className={cn('inline-flex items-center gap-1.5 ty-label-sm font-semibold', SCORE_TOM[scoreTom].text)}>
                 {aprovado ? <CheckCircle2 className="size-4 shrink-0" aria-hidden /> : <AlertTriangle className="size-4 shrink-0" aria-hidden />}
                 <span className="tabular-nums text-foreground">{score.toFixed(0)}</span><span className="text-muted-foreground">/100</span>
               </span>
             </div>
             <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted" role="progressbar" aria-valuenow={Math.round(score)} aria-valuemin={0} aria-valuemax={100} aria-label={t('review.scoreQualidade')}>
-              <div className={cn('h-full rounded-full motion-safe:transition-[width] motion-safe:duration-500', aprovado ? 'bg-success' : 'bg-warning')} style={{ width: `${score}%` }} />
+              <div className={cn('h-full rounded-full motion-safe:transition-[width] motion-safe:duration-500', SCORE_TOM[scoreTom].bar)} style={{ width: `${score}%` }} />
             </div>
             {pendencias.length > 0 && (
               <ul className="space-y-1.5 pt-1">
