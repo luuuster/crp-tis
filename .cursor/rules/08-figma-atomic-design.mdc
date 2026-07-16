@@ -1,5 +1,5 @@
 ---
-description: Regra NORMATIVA para CONSTRUIR TELAS no Figma. Define a FONTE DA VERDADE dos componentes (as pastas app/src/components/ui, app/src/components e app/src/pages) e obriga: toda tela DEVE ser montada com componentes que JÁ existem (instâncias, nunca redesenho à mão); se um componente necessário NÃO existir, ele DEVE ser criado PRIMEIRO — seguindo Atomic Design (átomo → molécula → organismo → template → página) — e só então instanciado. TODA propriedade DEVE ser bindada a Variable (cor, tipografia, gap, padding, radius, tamanho, opacidade — nada cru) e TODO nó de TEXTO DEVE usar um text style (papel text/* — nunca fonte crua), e as Variants/Properties do componente espelham o CVA da web. O Figma espelha a web. Aplicar sempre que uma tela/fluxo for reproduzido ou criado no Figma.
+description: Regra NORMATIVA para CONSTRUIR TELAS no Figma. Define a FONTE DA VERDADE dos componentes (as pastas app/src/components/ui, app/src/components e app/src/pages) e obriga: toda tela DEVE ser montada com componentes que JÁ existem (instâncias, nunca redesenho à mão); se um componente necessário NÃO existir, ele DEVE ser criado PRIMEIRO — seguindo Atomic Design (átomo → molécula → organismo → template → página) — e só então instanciado. TODA propriedade DEVE ser bindada a Variable (cor, tipografia, gap, padding, radius, tamanho, opacidade — nada cru) e TODO nó de TEXTO DEVE usar um text style (papel text/* — nunca fonte crua), e as Variants/Properties do componente espelham o CVA da web. O master é MODELO genérico (Título/Descrição/Label) — o conteúdo real do mock entra só na INSTÂNCIA, na hora de montar a tela, senão a peça não se reaproveita. O Figma espelha a web. Aplicar sempre que uma tela/fluxo for reproduzido ou criado no Figma.
 globs: crp_plugins/figma-plugin-components/**,crp_plugins/figma-plugin-screens/**,build/export-components.mjs,build/export-screens.mjs
 alwaysApply: false
 ---
@@ -69,7 +69,7 @@ As **telas finais**, com conteúdo real. São as **páginas**.
 
 ---
 
-## 2. Os quatro princípios duros
+## 2. Os cinco princípios duros
 
 1. **Montar com o que já existe.** Cada pedaço da tela **DEVE** ser uma **instância** do componente
    equivalente ao que a web importa. **NUNCA** redesenhar à mão (retângulo + texto + vetor) algo que já é
@@ -91,6 +91,15 @@ As **telas finais**, com conteúdo real. São as **páginas**.
    Sem match exato = **gap de DS**: **PARE e alinhe** (o papel nasce em `tokens/typography`), **nunca
    force** o snapping. Ao **criar** o componente já nasça com style (`createText` → `setTextStyleIdAsync`),
    não deixe "pra depois" ([[figma-text-styles-bind-masters]]).
+5. **Master é MODELO genérico — o conteúdo real mora na INSTÂNCIA.** O master **DEVE** nascer com
+   placeholder (`Título`, `Descrição`, `OVERLINE`, `Label`, contagem `0`); o dado do mock entra **na hora
+   de montar a tela**, via as component properties da instância. Master com conteúdo chumbado amarra a
+   peça a UMA tela e mata o reuso — **NUNCA** copiar texto do mock para dentro do master (vale para átomo
+   também). **Ordem obrigatória:** genericizar o master **ANTES** de aplicar o real na instância — setar
+   uma prop com o valor que ela **já tem** é no-op e **não cria override**, então trocar o master depois
+   faz a instância **reverter** (custou `section/Responsabilidades` 292→196 e o artigo 1870→1734).
+   Depois de mexer em master, **conferir ALTURA das instâncias** — a varredura de cor/style fica verde e
+   não acusa reversão de texto.
 
 ---
 
@@ -155,6 +164,9 @@ responsibility*: se faz mais de uma coisa, tende a organismo).
 - **Nomenclatura espelhando a web.** Mesmo nome do arquivo/pasta de origem, com o nível: `atom/…`,
   `molecule/…`, `organism/…`. Peça de `ui/` → biblioteca; peça de `pages/<tela>/` → componente local da tela.
 - **Não duplicar.** Já existe (mesmo precisando de variante nova)? **Estenda** o componente existente. Reuso > cópia.
+- **Nasce genérico (5º princípio, §2).** Placeholder no master (`Título`/`Descrição`/`Label`/`0`), conteúdo
+  real só na instância. Se for genericizar um master que já tem mock: **capturar → genericizar o master →
+  re-aplicar na instância → verificar altura** (nessa ordem, senão a instância reverte).
 - **Fidelidade medida.** Tamanho/raio/padding/cor vêm de **medição do DOM** (Playwright), nunca "no olho".
 
 ---
@@ -175,6 +187,7 @@ lucide (regra 07): avisar, nunca substituir.
 - [ ] Componentes novos têm Variants/Properties (espelhando o **CVA da web** — mesmas variantes/sizes/estados) e ícones **lucide** (regra 07).
 - [ ] **Toda propriedade** — cor, tipografia, gap, padding, radius, tamanho, opacidade, borda — **bindada a Variable** (light/dark). **0 valor cru** no Figma (3º princípio, §2).
 - [ ] **Todo nó de texto usa text style** (papel `text/*`, bindado no master, match exato — 4º princípio, §2). **0 texto com fonte crua.**
+- [ ] **Master é modelo genérico** (5º princípio, §2): **0 conteúdo do mock chumbado em master** — o dado real está na **instância**, e nenhum placeholder (`Título`/`Descrição`/`Label`) vazou para a tela.
 - [ ] Reuso respeitado: peça de `ui/` na biblioteca, peça de `pages/<tela>/` como componente local; nada duplicado.
 - [ ] Lacuna de DS (ou ícone ausente no lucide) foi **reportada ao usuário**, não improvisada.
 - [ ] A tela final bate com a web (medida), não aproximada.
